@@ -1,6 +1,7 @@
 import React from "react"
 import { StyleSheet, Text, View } from 'react-native';
 import { BoxListComponent } from "../components/box-list.component";
+import { Box } from "../models/box.model";
 
 export class HomeScreen extends React.Component {
     static navigationOptions = {
@@ -13,7 +14,7 @@ export class HomeScreen extends React.Component {
                 <Text style={styles.titlePage}>Boxes</Text>
                 <BoxListComponent></BoxListComponent>
             </View>
-        );
+        )
     }
 }
 

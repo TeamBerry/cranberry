@@ -1,10 +1,58 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text, FlatList, View, ActivityIndicator } from "react-native";
+import { Box } from "../models/box.model";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export class BoxListComponent extends React.Component {
-    render() {
+    state = {
+        error: null,
+        hasLoadedBoxes: false,
+        boxes: []
+    }
+
+    componentDidMount() {
+        this.getBoxes()
+    }
+
+    async getBoxes() {
+        try {
+            // const boxes = await (await fetch('https://araza.berrybox.tv/boxes')).json()
+            const boxes = [{ name: 'Box 1', _id: '5cd35f7dsf' }, { name: 'Box 2', _id: '53cds3f9' }]
+            this.setState({ boxes, hasLoadedBoxes: true })
+        } catch (error) {
+            this.setState({ error, hasLoadedBoxes: true })
+        }
+    }
+
+    renderBox(data) {
         return (
-            <Text>HEY, I'M A LIST</Text>
+            <TouchableOpacity>
+                <View>
+                    <Text>{data.name}</Text>
+                </View>
+            </TouchableOpacity>
         )
+    }
+
+    render() {
+        const { boxes, hasLoadedBoxes } = this.state
+
+        if (!hasLoadedBoxes) {
+            return (
+                <FlatList
+                    data={boxes}
+                    renderItem={({ item, index, separators }) => (
+                        <TouchableOpacity>
+                            <View>
+                                <Text>{item.name}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item.name}
+                />
+            )
+        } else {
+            return <ActivityIndicator />
+        }
     }
 }
