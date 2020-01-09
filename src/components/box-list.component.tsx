@@ -1,6 +1,5 @@
 import React from "react";
 import { Text, FlatList, View, ActivityIndicator } from "react-native";
-import { Box } from "../models/box.model";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 export class BoxListComponent extends React.Component {
@@ -13,7 +12,7 @@ export class BoxListComponent extends React.Component {
     async componentDidMount() {
         try {
             // const boxes = await (await fetch('https://araza.berrybox.tv/boxes')).json()
-            const boxes = [{ name: 'Box 1', _id: '5cd35f7dsf' }, { name: 'Box 2', _id: '53cds3f9' }]
+            const boxes = [{ name: 'Box 1', _id: '5cd35f7dsf' }, { name: 'Box 2', _id: '53cds3f9' }, { name: 'Box 3', _id: '5cd687df3f'}]
             this.setState({ boxes, hasLoadedBoxes: true })
         } catch (error) {
             this.setState({ error, hasLoadedBoxes: true })
@@ -33,7 +32,7 @@ export class BoxListComponent extends React.Component {
     render() {
         const { boxes, hasLoadedBoxes } = this.state
 
-        if (!hasLoadedBoxes) {
+        if (hasLoadedBoxes) {
             return (
                 <FlatList
                     data={boxes}
