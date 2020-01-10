@@ -1,7 +1,7 @@
 import React from "react";
-import { Text, FlatList, View, ActivityIndicator } from "react-native";
+import { Text, FlatList, View, ActivityIndicator, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import BoxListItem from "./box-list-item.component";
+import BoxCard from "./box-card.component";
 
 export class BoxListComponent extends React.Component {
     state = {
@@ -29,7 +29,9 @@ export class BoxListComponent extends React.Component {
                 <FlatList
                     data={boxes}
                     renderItem={({ item, index, separators }) => (
-                        <BoxListItem {...item}></BoxListItem>
+                        <View style={styles.card}>
+                            <BoxCard {...item} ></BoxCard>
+                        </View>
                     )}
                     keyExtractor={(item) => item.name}
                 />
@@ -39,3 +41,9 @@ export class BoxListComponent extends React.Component {
         }
     }
 }
+
+const styles = StyleSheet.create({
+    card: {
+        paddingBottom: 10
+    }
+})
