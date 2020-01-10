@@ -29,11 +29,7 @@ export class BoxListComponent extends React.Component {
                 <FlatList
                     data={boxes}
                     renderItem={({ item, index, separators }) => (
-                        <TouchableOpacity>
-                            <View>
-                                <Text>{item.name}</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <BoxListItem {...item}></BoxListItem>
                     )}
                     keyExtractor={(item) => item.name}
                 />

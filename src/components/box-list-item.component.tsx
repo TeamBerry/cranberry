@@ -2,11 +2,11 @@ import React from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 import { Box } from "../models/box.model"
 
-const BoxListItem = ({ name }) => {
+const BoxListItem = (box: Box) => {
     return (
         <TouchableOpacity>
             <View>
-                <Text>{name}</Text>
+                <Text>Box name: {box.name}</Text>
             </View>
         </TouchableOpacity>
     )
