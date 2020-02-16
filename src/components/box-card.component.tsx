@@ -2,19 +2,35 @@ import React from "react"
 import { Text, TouchableOpacity, View, Image, StyleSheet } from "react-native"
 import { Box } from "../models/box.model"
 
+const displayCurrentvideo = (box: Box) => {
+    return box.playlist.find(video => video.startTime !== null && video.endTime === null)
+}
+
 const BoxCard = (box: Box) => {
+    const currentVideo = displayCurrentvideo(box);
+    console.log('Current Video: ', currentVideo);
+
     return (
         <TouchableOpacity>
             <View style={styles.card}>
                 <View>
-                    <Image
+                    {currentVideo ? (<Image
                         style={{ width: 100, height: 100 }}
-                        source={{ uri: 'https://i.ytimg.com/vi/0he85BszwL8/hqdefault.jpg' }}
-                    />
+                        source={{ uri: `https://i.ytimg.com/vi/${currentVideo.video.link}/hqdefault.jpg` }}
+                    />) : (<Image
+                        style={{ width: 100, height: 100 }}
+                        source={{ uri: 'https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/default-picture' }}
+                    >
+                    </Image>)
+                    }
                 </View>
                 <View style={styles.boxInfo}>
                     <Text style={styles.boxTitle}>{box.name}</Text>
-                    <Text>Currently Playing</Text>
+                    <Text>Playing: {currentVideo?.video?.name || 'Nothing'}</Text>
+                    <View style={styles.boxModes}>
+                        <Text style={styles.boxMode}>Random</Text>
+                        <Text style={styles.boxMode}>Loop</Text>
+                    </View>
                 </View>
             </View>
         </TouchableOpacity>
@@ -25,7 +41,10 @@ const styles = StyleSheet.create({
     card: {
         height: 100,
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        borderColor: '#979797',
+        borderStyle: 'solid',
+        borderWidth: 1
     },
     boxInfo: {
         marginLeft: 5
@@ -33,6 +52,20 @@ const styles = StyleSheet.create({
     boxTitle: {
         fontSize: 20,
         color: '#009AEB'
+    },
+    boxModes: {
+        flex: 1,
+        flexDirection: 'row'
+    },
+    boxMode: {
+        backgroundColor: '#979797',
+        color: 'white',
+        borderRadius: 10,
+        width: 80,
+        height: 20,
+        textAlign: 'center',
+        marginRight: 3,
+        marginLeft: 3
     }
 })
 

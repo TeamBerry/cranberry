@@ -12,8 +12,7 @@ export class BoxListComponent extends React.Component {
 
     async componentDidMount() {
         try {
-            // const boxes = await (await fetch('https://araza.berrybox.tv/boxes')).json()
-            const boxes = [{ name: 'Box 1', _id: '5cd35f7dsf' }, { name: 'Box 2', _id: '53cds3f9' }, { name: 'Box 3', _id: '5cd687df3f' }]
+            const boxes = await (await fetch('https://araza.berrybox.tv/boxes')).json()
             console.log('GOT BOXES')
             this.setState({ boxes, hasLoadedBoxes: true })
         } catch (error) {

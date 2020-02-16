@@ -25,7 +25,9 @@ const styles = StyleSheet.create({
         paddingLeft: '5%',
     },
     titlePage: {
+        // fontFamily: 'Montserrat',
         fontSize: 30,
-        marginTop: '1%'
+        marginTop: '1%',
+        marginBottom: 10
     }
 });
