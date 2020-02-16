@@ -14,10 +14,10 @@ export class HomeScreen extends React.Component {
         hasLoadedBoxes: boolean,
         boxes: Array<Box>
     } = {
-        error: null,
-        hasLoadedBoxes: false,
-        boxes: []
-    }
+            error: null,
+            hasLoadedBoxes: false,
+            boxes: []
+        }
 
     async componentDidMount() {
         try {
@@ -29,7 +29,6 @@ export class HomeScreen extends React.Component {
     }
 
     render() {
-        console.log('PROPS: ', this.props);
         const { boxes, hasLoadedBoxes } = this.state
 
         return (
@@ -40,7 +39,7 @@ export class HomeScreen extends React.Component {
                         data={boxes}
                         renderItem={({ item, index, separators }) => (
                             <TouchableOpacity style={styles.card}
-                                onPress={() => console.log('PRESS', item._id)}>
+                                onPress={() => this.props.navigation.navigate('Box', {boxToken: item._id})}>
                                 <BoxCard {...item}
                                 ></BoxCard>
                             </TouchableOpacity>
