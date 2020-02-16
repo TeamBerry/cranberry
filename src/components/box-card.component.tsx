@@ -41,10 +41,7 @@ const styles = StyleSheet.create({
     card: {
         height: 100,
         flex: 1,
-        flexDirection: 'row',
-        borderColor: '#979797',
-        borderStyle: 'solid',
-        borderWidth: 1
+        flexDirection: 'row'
     },
     boxInfo: {
         marginLeft: 5
