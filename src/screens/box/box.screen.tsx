@@ -3,11 +3,34 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Box } from '../../models/box.model';
 
-export class BoxScreen extends React.Component {
+export class BoxScreen extends React.Component<{ route, navigation }> {
+    boxToken: string = this.props.route.params.boxToken
+
+    state: {
+        error: any,
+        hasLoadedBox: boolean,
+        box: Box
+    } = {
+            error: null,
+            hasLoadedBox: false,
+            box: null
+        }
+
+    async componentDidMount() {
+        try {
+            const box: Box = await (await fetch(`https://araza.berrybox.tv/boxes/${this.boxToken}`)).json()
+            this.setState({ box, hasLoadedBox: true })
+        } catch (error) {
+            this.setState({ error, hasLoadedBox: true })
+        }
+    }
+
     render() {
+        const { box, hasLoadedBox } = this.state
+        
         return (
             <View>
-                <Text>THIS IS A BOX.</Text>
+                <Text>THIS IS A BOX WITH TOKEN: {this.boxToken}.</Text>
             </View>
         )
     }
