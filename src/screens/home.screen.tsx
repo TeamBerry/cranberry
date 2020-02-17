@@ -4,7 +4,7 @@ import { Box } from "../models/box.model";
 import BoxCard from "./../components/box-card.component";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-export class HomeScreen extends React.Component {
+export class HomeScreen extends React.Component<{navigation}> {
     static navigationOptions = {
         title: 'Home'
     }
