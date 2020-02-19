@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from 'react-native';
+import Player from './components/player.component';
 import PanelComponent from './components/panel.component';
 import { Box } from '../../models/box.model';
 
@@ -30,7 +31,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 
         return (
             <View>
-                <Text>THIS IS A BOX WITH TOKEN: {this.boxToken}.</Text>
+                <Player></Player>
                 <PanelComponent></PanelComponent>
             </View>
         )
