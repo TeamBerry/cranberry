@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from 'react-native';
-
+import PanelComponent from './components/panel.component';
 import { Box } from '../../models/box.model';
 
 export class BoxScreen extends React.Component<{ route, navigation }> {
@@ -27,10 +27,11 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 
     render() {
         const { box, hasLoadedBox } = this.state
-        
+
         return (
             <View>
                 <Text>THIS IS A BOX WITH TOKEN: {this.boxToken}.</Text>
+                <PanelComponent></PanelComponent>
             </View>
         )
     }
