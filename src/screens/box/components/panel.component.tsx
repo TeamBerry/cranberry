@@ -5,14 +5,17 @@ import ChatTab from './chat-tab.component';
 import QueueTab from './queue-tab.component';
 import SearchTab from './search-tab.component';
 import { Box } from "../../../models/box.model";
+import SocketContext from './../box.context';
 
 export type Panel = 'chat' | 'queue' | 'users' | 'search'
 
-const PanelComponent = () => {
+const PanelComponent = props => {
 
     let activePanel: Panel = 'chat';
 
-    function Tab(props) {
+    console.log('Socket: ', props.socket)
+
+    function DisplayTab(props) {
         const selectedPanel = props.activePanel
 
         switch (selectedPanel) {
@@ -35,7 +38,10 @@ const PanelComponent = () => {
         <View>
             <Text>Panel Icons</Text>
             <View>
-                <Tab selectedPanel={activePanel}></Tab>
+                {/* <DisplayTab selectedPanel={activePanel}></DisplayTab> */}
+                <SocketContext.Consumer>
+                    {socket => <ChatTab socket={socket}></ChatTab>}
+                </SocketContext.Consumer>
             </View>
         </View>
     )
