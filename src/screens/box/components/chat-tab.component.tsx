@@ -8,6 +8,7 @@ const ChatTab = props => {
 
     const [messages, setMessages] = useState([] as Array<Message>)
 
+    // TODO: Fix this mess (doubling effect on every trigger, wtf)
     useEffect(() => {
         console.log('USE EFFECT')
         props.socket.on('chat', (newMessage: Message) => {
