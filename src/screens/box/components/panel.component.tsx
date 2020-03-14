@@ -13,8 +13,6 @@ const PanelComponent = props => {
 
     let activePanel: Panel = 'chat';
 
-    console.log('Socket: ', props.socket)
-
     function DisplayTab(props) {
         const selectedPanel = props.activePanel
 

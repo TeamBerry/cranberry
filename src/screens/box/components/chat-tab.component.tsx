@@ -1,23 +1,29 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { View, Text, TextInput, FlatList, ActivityIndicator } from "react-native"
 import { Message } from './../../../models/message.model'
 
 import ChatMessage from './chat-message.component';
 
 const ChatTab = props => {
-    this.props.socket.on('chat', msg => {
-        this.setState({ messages: [...msg] })
-    })
 
+    const [messages, setMessages] = useState([] as Array<Message>)
+
+    useEffect(() => {
+        console.log('USE EFFECT')
+        props.socket.on('chat', (newMessage: Message) => {
+            console.log('Recieved new message: ', newMessage)
+            setMessages(messages.concat(newMessage))
+        })
+    }, [messages])
 
     return (
         <View>
             <View>
                 <FlatList
-                    data={this.state.messages}
+                    data={messages}
                     renderItem={({ item, index, separators }) => (
                         // <ChatMessage {...item}></ChatMessage>
-                        <Text>Message</Text>
+                        <Text>{item.contents}</Text>
                     )}
                 />
             </View>
