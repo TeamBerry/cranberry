@@ -5,7 +5,7 @@ import { Message } from "../../../models/message.model"
 const ChatMessage = (message: Message) => {
     return (
         <View>
-            <Text>{message}</Text>
+            <Text>{message.contents}</Text>
         </View>
     )
 }

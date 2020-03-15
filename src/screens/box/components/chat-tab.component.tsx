@@ -8,25 +8,21 @@ const ChatTab = props => {
 
     const [messages, setMessages] = useState([] as Array<Message>)
 
-    // TODO: Fix this mess (doubling effect on every trigger, wtf)
     useEffect(() => {
-        console.log('USE EFFECT')
         props.socket.on('chat', (newMessage: Message) => {
-            console.log('Recieved new message: ', newMessage)
-            setMessages(messages.concat(newMessage))
+            setMessages(messages => [...messages, newMessage])
         })
-    }, [messages])
+    }, [])
 
     return (
         <View>
             <View>
-                <FlatList
-                    data={messages}
-                    renderItem={({ item, index, separators }) => (
-                        // <ChatMessage {...item}></ChatMessage>
-                        <Text>{item.contents}</Text>
-                    )}
-                />
+                {messages.map(message => {
+                    return (
+                        <Text>{message.contents}</Text>
+                        // <ChatMessage message={message}></ChatMessage>
+                    )
+                })}
             </View>
             <View>
                 {/* <TextInput

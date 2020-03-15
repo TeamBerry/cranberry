@@ -30,6 +30,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
             console.log('Box loaded. Connecting.')
             this.socketConnection = io('https://boquila.berrybox.tv', { transports: ['websocket'] });
             this.socketConnection.on('connect', () => {
+                if (!this.state.socket) {
                     console.log('Connection attempt')
                     this.socketConnection.emit('auth', {
                         origin: 'BERRYBOX MOBILE',
@@ -37,7 +38,8 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                         boxToken: box._id,
                         userToken: 'user-35743736d7sq63f83cx4'
                     })
-                })
+                }
+            })
             this.socketConnection
                 .on('confirm', (feedback) => {
                     console.log('Connected', feedback)
@@ -50,6 +52,10 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         } catch (error) {
             this.setState({ error, hasLoadedBox: true })
         }
+    }
+
+    async componentWillUnmount() {
+        this.socketConnection.disconnect()
     }
 
     render() {
