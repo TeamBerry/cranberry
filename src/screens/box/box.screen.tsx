@@ -65,7 +65,14 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
             <BoxContext.Provider value={this.state.socket}>
                 <View>
                     {this.state.socket ? (
-                        // <Player {...this.props}></Player>
+                        <BoxContext.Consumer>
+                            {socket => <Player {...this.props} socket={socket}></Player>}
+                        </BoxContext.Consumer>
+                    ) : (
+                            <ActivityIndicator></ActivityIndicator>
+                    )
+                    }
+                    {this.state.socket ? (
                         <BoxContext.Consumer>
                             {socket => <PanelComponent {...this.props} socket={socket}></PanelComponent>}
                         </BoxContext.Consumer>
