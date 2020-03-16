@@ -3,6 +3,7 @@ import { View, Text, TextInput, FlatList, ActivityIndicator, StyleSheet } from "
 import { Message } from '@teamberry/muscadine'
 
 import ChatMessage from './chat-message.component';
+import { ScrollView } from "react-native-gesture-handler";
 
 const ChatTab = props => {
 
@@ -16,14 +17,13 @@ const ChatTab = props => {
 
     return (
         <View>
-            <View style={styles.messageList}>
+            <ScrollView style={styles.messageList}>
                 {messages.map(message => {
                     return (
-                        <Text key={message.time.toString()}>{message.contents}</Text>
-                        // <ChatMessage message={message}></ChatMessage>
+                        <ChatMessage message={message}></ChatMessage>
                     )
                 })}
-            </View>
+            </ScrollView>
             <View>
                 {/* <TextInput
                         style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
@@ -37,7 +37,9 @@ const ChatTab = props => {
 
 const styles = StyleSheet.create({
     messageList: {
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        height: 340,
+        backgroundColor: '#E5E5E5',
     }
 })
 

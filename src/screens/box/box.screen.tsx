@@ -9,7 +9,7 @@ import BoxContext from "./box.context";
 
 export class BoxScreen extends React.Component<{ route, navigation }> {
     boxToken: string = this.props.route.params.boxToken
-    socketConnection
+    socketConnection = null
 
     state: {
         error: any,
@@ -28,7 +28,12 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
             const box: Box = await (await fetch(`https://araza.berrybox.tv/boxes/${this.boxToken}`)).json()
             this.setState({ box, hasLoadedBox: true })
             console.log('Box loaded. Connecting.')
-            this.socketConnection = io('https://boquila.berrybox.tv', { transports: ['websocket'] });
+            this.socketConnection = io('https://boquila.berrybox.tv', {
+                transports: ['websocket'],
+                reconnection: true,
+                reconnectionDelay: 500,
+                reconnectionAttempts: 10
+            });
             this.socketConnection.on('connect', () => {
                 if (!this.state.socket) {
                     console.log('Connection attempt')
@@ -66,7 +71,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                 <View style={styles.playerView}>
                     {this.state.socket ? (
                         <BoxContext.Consumer>
-                            {socket => <Player {...this.props} socket={socket}></Player>}
+                            {socket => <Player {...this.props} socket={socket} boxToken={this.boxToken}></Player>}
                         </BoxContext.Consumer>
                     ) : (
                             <ActivityIndicator></ActivityIndicator>
