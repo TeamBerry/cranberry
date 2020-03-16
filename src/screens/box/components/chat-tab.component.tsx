@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, TextInput, FlatList, ActivityIndicator, StyleSheet } from "react-native"
+import { View, Text, TextInput, FlatList, ActivityIndicator, StyleSheet, KeyboardAvoidingView } from "react-native"
 import { Message } from '@teamberry/muscadine'
 
 import ChatMessage from './chat-message.component';
@@ -15,31 +15,53 @@ const ChatTab = props => {
         })
     }, [])
 
+    const sendMessage = contents => {
+        const newMessage: Message = new Message({
+            author: '5dcd89d6fc9a6c5b3758a0ae',
+            contents,
+            source: 'user',
+            scope: props.boxToken
+        })
+        props.socket.emit('chat', newMessage)
+    }
+
     return (
-        <View>
+        <KeyboardAvoidingView style={styles.chatTab} enabled>
             <ScrollView style={styles.messageList}>
                 {messages.map(message => {
                     return (
-                        <ChatMessage message={message}></ChatMessage>
+                        // <ChatMessage message={message}></ChatMessage>
+                        <Text key={message.time.toString()}>{message.contents}</Text>
                     )
                 })}
             </ScrollView>
-            <View>
-                {/* <TextInput
-                        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-                        onChangeText={text => onChangeText(text)}
-                        value={value}
-                    ></TextInput> */}
+            <View style={styles.chatInputContainer}>
+                <TextInput
+                    style={styles.chatInput}
+                    placeholder='Type to chat...'
+                ></TextInput>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 
 const styles = StyleSheet.create({
+    chatTab: {
+        backgroundColor: '#E5E5E5',
+        paddingBottom: 300,
+    },
     messageList: {
         paddingHorizontal: 10,
         height: 340,
-        backgroundColor: '#E5E5E5',
+    },
+    chatInputContainer: {
+        padding: 10
+    },
+    chatInput: {
+        padding: 4,
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1
     }
 })
 
