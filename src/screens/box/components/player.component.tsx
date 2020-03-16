@@ -25,7 +25,7 @@ const Player = props => {
         <View>
             {video ? (
                 // <YouTube
-                //     apiKey='AIzaSyAkgG3bQFJrdHX0PmpHJ4BFeMdz9h_RZZk'
+                //     apiKey=''
                 //     videoId={video.link}
                 // />
                 <Image
