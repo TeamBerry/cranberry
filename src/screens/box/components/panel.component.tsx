@@ -39,7 +39,7 @@ const PanelComponent = props => {
     return (
         <View>
             <View style={styles.iconTabs}>
-                <Text>Panel Icons</Text>
+                <Text>Chat</Text>
             </View>
             <View>
                 <SocketContext.Consumer>
@@ -52,7 +52,7 @@ const PanelComponent = props => {
 
 const styles = StyleSheet.create({
     iconTabs: {
-        height: '15%',
+        height: '7%',
     }
 })
 
