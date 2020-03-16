@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"
-import { View, Text, ActivityIndicator } from "react-native"
+import { View, Text, ActivityIndicator, Image } from "react-native"
 import YouTube from 'react-native-youtube'
 
 const Player = props => {
@@ -8,13 +8,13 @@ const Player = props => {
 
     useEffect(() => {
         props.socket.on('sync', (syncPacket) => {
-            console.log('GET SYNC: ', syncPacket)
+            console.log('GET SYNC PACKET: ', syncPacket)
             setVideo(video => syncPacket.item.video)
         })
-    }, [])
+    }, [video])
 
     useEffect(() => {
-        console.log('CONNECTING TO SYNC')
+        console.log('CONNECTING TO SYNC...')
         props.socket.emit('start', {
             boxToken: '5e6b9281d5b5b131ce107597',
             userToken: 'user-35743736d7sq63f83cx4'
@@ -24,10 +24,14 @@ const Player = props => {
     return (
         <View>
             {video ? (
-                <YouTube
-                    apiKey='AIzaSyAkgG3bQFJrdHX0PmpHJ4BFeMdz9h_RZZk'
-                    videoId={video.link}
-                />
+                // <YouTube
+                //     apiKey='AIzaSyAkgG3bQFJrdHX0PmpHJ4BFeMdz9h_RZZk'
+                //     videoId={video.link}
+                // />
+                <Image
+                        style={{ width: 400, height: 200 }}
+                        source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
+                    />
             ): (
                 <ActivityIndicator></ActivityIndicator>
             )}

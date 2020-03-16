@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, TextInput, FlatList, ActivityIndicator } from "react-native"
-import { Message } from './../../../models/message.model'
+import { View, Text, TextInput, FlatList, ActivityIndicator, StyleSheet } from "react-native"
+import { Message } from '@teamberry/muscadine'
 
 import ChatMessage from './chat-message.component';
 
@@ -16,10 +16,10 @@ const ChatTab = props => {
 
     return (
         <View>
-            <View>
+            <View style={styles.messageList}>
                 {messages.map(message => {
                     return (
-                        <Text>{message.contents}</Text>
+                        <Text key={message.time.toString()}>{message.contents}</Text>
                         // <ChatMessage message={message}></ChatMessage>
                     )
                 })}
@@ -34,5 +34,11 @@ const ChatTab = props => {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    messageList: {
+        paddingHorizontal: 10
+    }
+})
 
 export default ChatTab

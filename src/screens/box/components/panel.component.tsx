@@ -18,7 +18,11 @@ const PanelComponent = props => {
 
         switch (selectedPanel) {
             case 'chat':
-                return <ChatTab></ChatTab>
+                return (
+                    <SocketContext.Consumer>
+                        {socket => <ChatTab socket={socket}></ChatTab>}
+                    </SocketContext.Consumer>
+                )
 
             case 'queue':
                 return <QueueTab></QueueTab>
@@ -34,9 +38,10 @@ const PanelComponent = props => {
 
     return (
         <View>
-            <Text>Panel Icons</Text>
+            <View style={styles.iconTabs}>
+                <Text>Panel Icons</Text>
+            </View>
             <View>
-                {/* <DisplayTab selectedPanel={activePanel}></DisplayTab> */}
                 <SocketContext.Consumer>
                     {socket => <ChatTab socket={socket}></ChatTab>}
                 </SocketContext.Consumer>
@@ -44,5 +49,11 @@ const PanelComponent = props => {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    iconTabs: {
+        height: '15%',
+    }
+})
 
 export default PanelComponent
