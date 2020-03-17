@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const ChatTab = props => {
 
     const [messages, setMessages] = useState([] as Array<Message>)
+    const [messageInput, setMessageInput] = useState('')
 
     useEffect(() => {
         props.socket.on('chat', (newMessage: Message) => {
@@ -16,14 +17,15 @@ const ChatTab = props => {
         })
     }, [])
 
-    const sendMessage = contents => {
+    const sendMessage = () => {
         const newMessage: Message = new Message({
             author: '5dcd89d6fc9a6c5b3758a0ae',
-            contents,
+            contents: messageInput,
             source: 'user',
             scope: props.boxToken
         })
         props.socket.emit('chat', newMessage)
+        setMessageInput('')
     }
 
     return (
@@ -39,6 +41,9 @@ const ChatTab = props => {
                 <TextInput
                     style={styles.chatInput}
                     placeholder='Type to chat...'
+                    onChangeText={(text) => setMessageInput(text)}
+                    value={messageInput}
+                    onSubmitEditing={() => sendMessage()}
                     ></TextInput>
             </KeyboardAvoidingView>
         </SafeAreaView>
