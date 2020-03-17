@@ -68,7 +68,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 
         return (
             <BoxContext.Provider value={this.state.socket}>
-                <View style={styles.playerView}>
+                <View>
                     {this.state.socket ? (
                         <BoxContext.Consumer>
                             {socket => <Player {...this.props} socket={socket} boxToken={this.boxToken}></Player>}
@@ -77,7 +77,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                             <ActivityIndicator></ActivityIndicator>
                     )}
                 </View>
-                <View style={styles.panelView}>
+                <View>
                     {this.state.socket ? (
                         <BoxContext.Consumer>
                             {socket => <PanelComponent {...this.props} socket={socket}></PanelComponent>}
@@ -92,10 +92,4 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 }
 
 const styles = StyleSheet.create({
-    playerView: {
-        height: '33%'
-    },
-    panelView: {
-        height: '67%'
-    }
 });

@@ -4,6 +4,7 @@ import { Message } from '@teamberry/muscadine'
 
 import ChatMessage from './chat-message.component';
 import { ScrollView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const ChatTab = props => {
 
@@ -26,42 +27,39 @@ const ChatTab = props => {
     }
 
     return (
-        <KeyboardAvoidingView style={styles.chatTab} enabled>
-            <ScrollView style={styles.messageList}>
-                {messages.map(message => {
-                    return (
-                        // <ChatMessage message={message}></ChatMessage>
-                        <Text key={message.time.toString()}>{message.contents}</Text>
-                    )
-                })}
-            </ScrollView>
-            <View style={styles.chatInputContainer}>
+        <SafeAreaView style={styles.chatTab}>
+            <KeyboardAvoidingView style={styles.messageList} behavior="padding" enabled>
+                <ScrollView style={styles.messageList}>
+                    {messages.map((message, index) => {
+                        return (
+                            <ChatMessage key={index} message={message}></ChatMessage>
+                        )
+                    })}
+                </ScrollView>
                 <TextInput
                     style={styles.chatInput}
                     placeholder='Type to chat...'
-                ></TextInput>
-            </View>
-        </KeyboardAvoidingView>
+                    ></TextInput>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     chatTab: {
         backgroundColor: '#E5E5E5',
-        paddingBottom: 300,
+        height: '88%',
+        flex: 0
     },
     messageList: {
-        paddingHorizontal: 10,
-        height: 340,
-    },
-    chatInputContainer: {
-        padding: 10
+        paddingHorizontal: 5,
+        flex: 1,
     },
     chatInput: {
         padding: 4,
         height: 40,
-        borderColor: 'gray',
-        borderWidth: 1
+        backgroundColor: '#D8D8D8',
+        justifyContent: "flex-end"
     }
 })
 

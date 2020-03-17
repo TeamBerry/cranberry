@@ -1,5 +1,5 @@
 import React from "react"
-import { Text, TouchableOpacity, View, Image, StyleSheet } from "react-native"
+import { Text, TouchableOpacity, View, Image, StyleSheet, KeyboardAvoidingView } from "react-native"
 
 import ChatTab from './chat-tab.component';
 import QueueTab from './queue-tab.component';
@@ -12,6 +12,7 @@ export type Panel = 'chat' | 'queue' | 'users' | 'search'
 const PanelComponent = props => {
 
     let activePanel: Panel = 'chat';
+    const KVO: number = 100;
 
     function DisplayTab(props) {
         const selectedPanel = props.activePanel
@@ -38,21 +39,16 @@ const PanelComponent = props => {
 
     return (
         <View>
-            <View style={styles.iconTabs}>
-                <Text>Chat</Text>
-            </View>
-            <View>
-                <SocketContext.Consumer>
-                    {socket => <ChatTab socket={socket}></ChatTab>}
-                </SocketContext.Consumer>
-            </View>
+            <SocketContext.Consumer>
+                {socket => <ChatTab style={{display: 'flex'}} socket={socket}></ChatTab>}
+            </SocketContext.Consumer>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     iconTabs: {
-        height: '7%',
+        height: 35,
     }
 })
 
