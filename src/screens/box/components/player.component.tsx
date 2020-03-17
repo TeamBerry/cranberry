@@ -17,7 +17,7 @@ const Player = props => {
         console.log('CONNECTING TO SYNC...')
         props.socket.emit('start', {
             boxToken: props.boxToken,
-            userToken: 'user-35743736d7sq63f83cx4'
+            userToken: '5e715f673640b31cb895238f'
         })
     }, [])
 

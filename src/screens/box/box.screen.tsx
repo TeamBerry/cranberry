@@ -38,10 +38,10 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                 if (!this.state.socket) {
                     console.log('Connection attempt')
                     this.socketConnection.emit('auth', {
-                        origin: 'BERRYBOX MOBILE',
+                        origin: 'Cranberry',
                         type: 'sync',
                         boxToken: box._id,
-                        userToken: 'user-35743736d7sq63f83cx4'
+                        userToken: '5e715f673640b31cb895238f'
                     })
                 }
             })
@@ -79,9 +79,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                 </View>
                 <View>
                     {this.state.socket ? (
-                        <BoxContext.Consumer>
-                            {socket => <PanelComponent {...this.props} socket={socket}></PanelComponent>}
-                        </BoxContext.Consumer>
+                        <PanelComponent boxToken={this.boxToken}></PanelComponent>
                     ) : (
                             <ActivityIndicator></ActivityIndicator>
                         )}

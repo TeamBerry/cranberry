@@ -6,7 +6,7 @@ import ChatMessage from './chat-message.component';
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const ChatTab = props => {
+const ChatTab = (props: {socket: any, boxToken: string}) => {
 
     const [messages, setMessages] = useState([] as Array<Message>)
     const [messageInput, setMessageInput] = useState('')
@@ -19,7 +19,7 @@ const ChatTab = props => {
 
     const sendMessage = () => {
         const newMessage: Message = new Message({
-            author: '5dcd89d6fc9a6c5b3758a0ae',
+            author: '5e715f673640b31cb895238f',
             contents: messageInput,
             source: 'user',
             scope: props.boxToken
