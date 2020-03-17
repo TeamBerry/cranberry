@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, TextInput, FlatList, ActivityIndicator, StyleSheet, KeyboardAvoidingView } from "react-native"
+import { TextInput, StyleSheet, KeyboardAvoidingView } from "react-native"
 import { Message } from '@teamberry/muscadine'
 
 import ChatMessage from './chat-message.component';
