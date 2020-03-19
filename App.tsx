@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect, useMemo, createContext } from 'react';
+import React, { useReducer, useEffect, useMemo } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
@@ -7,6 +7,7 @@ import LoginScreen from './src/screens/login.screen';
 import { AsyncStorage } from "react-native";
 import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
+import CustomHeader from './src/components/custom-header.component';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
@@ -95,7 +96,11 @@ export default function App({navigation}) {
                         />
                     ) : (
                         <>
-                            <Stack.Screen name="Home" component={HomeScreen} />
+                                <Stack.Screen
+                                    name="Home"
+                                    component={HomeScreen}
+                                    options={{ headerTitle: props => <CustomHeader {...props} />}}
+                                />
                                 <Stack.Screen
                                     name="Box"
                                     options={{
