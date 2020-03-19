@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { TextInput, StyleSheet, KeyboardAvoidingView } from "react-native"
-import { Message } from '@teamberry/muscadine'
+import { Message, FeedbackMessage } from '@teamberry/muscadine'
 
 import ChatMessage from './chat-message.component';
 import { ScrollView } from "react-native-gesture-handler";
@@ -8,11 +8,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const ChatTab = (props: {socket: any, boxToken: string}) => {
 
-    const [messages, setMessages] = useState([] as Array<Message>)
+    const welcomeMessage: FeedbackMessage = {
+        author: null,
+        contents: 'Welcome to the box!',
+        feedbackType: 'success',
+        scope: props.boxToken,
+        source: 'system',
+        time: new Date()
+    }
+
+    const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage>)
     const [messageInput, setMessageInput] = useState('')
 
     useEffect(() => {
-        props.socket.on('chat', (newMessage: Message) => {
+        props.socket.on('chat', (newMessage: Message | FeedbackMessage) => {
             setMessages(messages => [...messages, newMessage])
         })
     }, [])
