@@ -1,75 +1,58 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Text, Image, StyleSheet, View, Button, KeyboardAvoidingView } from "react-native";
 import FormTextInput from "../components/form-text-input.component";
-import axios from 'axios';
-import AsyncStorage from '@react-native-community/async-storage';
+import AuthContext from "../shared/auth.context";
+// import AsyncStorage from '@react-native-community/async-storage';
 
-export class LoginScreen extends React.Component<{ navigation }> {
 
-    readonly state = {
-        email: '',
-        password: ''
+export default function LoginScreen ({navigation}) {
+
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const onEmailChange = (email: string) => {
+        setEmail(email)
     }
 
-    onEmailChange(email: string) {
-        this.setState({email})
+    const onPasswordChange = (password: string) => {
+        setPassword(password)
     }
 
-    onPasswordChange(password: string) {
-        this.setState({password})
-    }
+    const { signIn } = useContext(AuthContext);
 
-    login() {
-        console.log('LOGIN: ', this.state.email, this.state.password)
-        axios.post(`https://araza.berrybox.tv/auth/login`,
-            {
-                mail: this.state.email,
-                password: this.state.password
-            }
-        ).then(async (response) => {
-            await AsyncStorage.setItem('BBOX-token', response.data.bearer)
-            await AsyncStorage.setItem('BBOX-expires_at', response.data.expiresIn)
-            await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject))
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
-
-    render() {
-        return (
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior="padding"
-            >
-                <Image
-                    source={require('./../assets/berrybox-logo-master.png')}
-                    style={styles.image}
-                ></Image>
-                <View style={styles.form}>
-                    <FormTextInput
-                        value={this.state.email}
-                        onChangeText={(email) => this.onEmailChange(email)}
-                        placeholder='Email address'
-                        autoCorrect={false}
-                        keyboardType='email-address'
-                        returnKeyType='next'
-                    ></FormTextInput>
-                    <FormTextInput
-                        value={this.state.password}
-                        onChangeText={(password) => this.onPasswordChange(password)}
-                        placeholder='Password'
-                        secureTextEntry={true}
-                        returnKeyType='done'
-                        onSubmitEditing={() => this.login()}
-                    ></FormTextInput>
-                    <Button
-                        title="Log in"
-                        onPress={() => this.login()}
-                    />
-                </View>
-            </KeyboardAvoidingView>
-        )
-    }
+    return (
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior="padding"
+        >
+            <Image
+                source={require('./../assets/berrybox-logo-master.png')}
+                style={styles.image}
+            ></Image>
+            <View style={styles.form}>
+                <FormTextInput
+                    value={email}
+                    onChangeText={(email) => onEmailChange(email)}
+                    placeholder='Email address'
+                    autoCorrect={false}
+                    keyboardType='email-address'
+                    returnKeyType='next'
+                ></FormTextInput>
+                <FormTextInput
+                    value={password}
+                    onChangeText={(password) => onPasswordChange(password)}
+                    placeholder='Password'
+                    secureTextEntry={true}
+                    returnKeyType='done'
+                    onSubmitEditing={() => signIn({email, password})}
+                ></FormTextInput>
+                <Button
+                    title="Log in"
+                    onPress={() => signIn({email, password})}
+                />
+            </View>
+        </KeyboardAvoidingView>
+    )
 }
 
 const styles = StyleSheet.create({
