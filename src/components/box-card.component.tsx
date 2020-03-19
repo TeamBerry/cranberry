@@ -8,7 +8,6 @@ const displayCurrentvideo = (box: Box) => {
 
 const BoxCard = (box: Box) => {
     const currentVideo = displayCurrentvideo(box);
-    console.log('Current Video: ', currentVideo);
 
     return (
         <TouchableOpacity>

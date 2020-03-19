@@ -1,21 +1,20 @@
 import React from 'react';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack'
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
+import { BoxScreen } from './src/screens/box/box.screen';
 
-const AppNavigator = createStackNavigator(
-    {
-        Home: HomeScreen
-    },
-    {
-        initialRouteName: 'Home'
-    }
-)
-
-const AppContainer = createAppContainer(AppNavigator)
+const Stack = createStackNavigator();
 
 export default class App extends React.Component {
     render() {
-        return <AppContainer />
+        return <NavigationContainer>
+            <Stack.Navigator initialRouteName="Home">
+                <Stack.Screen name="Home" component={HomeScreen}></Stack.Screen>
+                <Stack.Screen name="Box">
+                    {props => <BoxScreen {...props}></BoxScreen>}
+                </Stack.Screen>
+            </Stack.Navigator>
+        </NavigationContainer>
     }
 }
