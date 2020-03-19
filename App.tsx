@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import { LoginScreen } from './src/screens/login.screen';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
 
@@ -14,6 +15,14 @@ export default class App extends React.Component {
     } = {
         isLoading: true,
         userToken: null
+        }
+
+    async getSession() {
+        const session = await AsyncStorage.getItem('BBOX-token')
+
+        if (session) {
+            this.state.userToken = session
+        }
     }
 
     render() {
@@ -24,7 +33,8 @@ export default class App extends React.Component {
                         name="Login"
                         component={LoginScreen}
                         options={{
-                            animationTypeForReplace: 'pop'
+                            animationTypeForReplace: 'pop',
+                            headerShown: false
                         }}
                     />
                 ) : (
