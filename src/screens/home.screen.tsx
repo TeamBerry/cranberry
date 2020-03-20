@@ -67,7 +67,7 @@ export class HomeScreen extends React.Component<{navigation}> {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#262626',
         paddingLeft: '2%',
         paddingRight: '2%'
     },
@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
         // fontFamily: 'Montserrat',
         fontSize: 30,
         marginTop: '1%',
-        marginBottom: 10
+        marginBottom: 10,
+        color: 'white'
     },
     card: {
         paddingBottom: 10

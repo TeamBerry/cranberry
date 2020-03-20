@@ -77,7 +77,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                             <ActivityIndicator></ActivityIndicator>
                     )}
                 </View>
-                <View>
+                <View style={styles.panelSpace}>
                     {this.state.socket ? (
                         <PanelComponent boxToken={this.boxToken}></PanelComponent>
                     ) : (
@@ -90,4 +90,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 }
 
 const styles = StyleSheet.create({
+    panelSpace: {
+        backgroundColor: '#404040'
+    }
 });

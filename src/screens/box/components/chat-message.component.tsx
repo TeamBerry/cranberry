@@ -15,7 +15,7 @@ const renderAuthor = message => {
 const ChatMessage = ({ message }) => (
     <View style={styles.message} >
         {(message.source !== 'system' && message.source !== 'bot') ? (
-            <Text>{renderAuthor(message)} {message.contents}</Text>
+            <Text style={styles.userMessage}>{renderAuthor(message)} {message.contents}</Text>
         ) : (
                 <Text style={styles.systemMessage}>{message.contents}</Text>
         )}
@@ -24,13 +24,17 @@ const ChatMessage = ({ message }) => (
 
 const styles = StyleSheet.create({
     message: {
-        paddingVertical: 3
+        paddingVertical: 3,
     },
     author: {
         fontWeight: "700",
     },
     systemMessage: {
-        fontStyle: 'italic'
+        fontStyle: 'italic',
+        color: '#BBBBBB'
+    },
+    userMessage: {
+        color: 'white'
     }
 })
 

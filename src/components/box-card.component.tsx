@@ -25,7 +25,7 @@ const BoxCard = (box: Box) => {
                 </View>
                 <View style={styles.boxInfo}>
                     <Text style={styles.boxTitle}>{box.name}</Text>
-                    <Text>Playing: {currentVideo?.video?.name || 'Nothing'}</Text>
+                    <Text style={styles.boxCurrent}>Playing: {currentVideo?.video?.name || 'Nothing'}</Text>
                     <View style={styles.boxModes}>
                         <Text style={styles.boxMode}>Random</Text>
                         <Text style={styles.boxMode}>Loop</Text>
@@ -48,6 +48,9 @@ const styles = StyleSheet.create({
     boxTitle: {
         fontSize: 20,
         color: '#009AEB'
+    },
+    boxCurrent: {
+        color: '#e6e6e6'
     },
     boxModes: {
         flex: 1,
