@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#262626',
-        paddingLeft: '2%',
-        paddingRight: '2%'
+        paddingLeft: '4%',
+        paddingRight: '4%'
     },
     titlePage: {
         // fontFamily: 'Montserrat',

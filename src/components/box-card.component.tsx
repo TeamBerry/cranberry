@@ -9,6 +9,8 @@ const displayCurrentvideo = (box: Box) => {
 const BoxCard = (box: Box) => {
     const currentVideo = displayCurrentvideo(box);
 
+    const defaultPicture = 'https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/default-picture'
+
     return (
         <TouchableOpacity>
             <View style={styles.card}>
@@ -24,8 +26,15 @@ const BoxCard = (box: Box) => {
                     }
                 </View>
                 <View style={styles.boxInfo}>
-                    <Text style={styles.boxTitle}>{box.name}</Text>
-                    <Text style={styles.boxCurrent}>Playing: {currentVideo?.video?.name || 'Nothing'}</Text>
+                    <Text style={styles.boxTitle} numberOfLines={1}>{box.name}</Text>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                        <Image
+                            source={{ uri: `https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/${box.creator._id}-picture` }}
+                            style={styles.boxCreator}
+                        />
+                        <Text style={{color: 'white', paddingLeft: 4}}>{box.creator.name}</Text>
+                    </View>
+                    <Text style={styles.boxCurrent} numberOfLines={1}>{currentVideo?.video?.name || 'Nothing'}</Text>
                     <View style={styles.boxModes}>
                         <Text style={styles.boxMode}>Random</Text>
                         <Text style={styles.boxMode}>Loop</Text>
@@ -39,18 +48,25 @@ const BoxCard = (box: Box) => {
 const styles = StyleSheet.create({
     card: {
         height: 100,
+        width: 230,
         flex: 1,
         flexDirection: 'row'
     },
     boxInfo: {
-        marginLeft: 5
+        marginLeft: 10,
+        justifyContent: 'space-around'
     },
     boxTitle: {
         fontSize: 20,
-        color: '#009AEB'
+        color: '#009AEB',
+    },
+    boxCreator: {
+        height: 20,
+        width: 20,
+        borderRadius: 10
     },
     boxCurrent: {
-        color: '#e6e6e6'
+        color: '#e6e6e6',
     },
     boxModes: {
         flex: 1,
