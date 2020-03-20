@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, StyleSheet } from "react-native";
 import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
 import CustomHeader from './src/components/custom-header.component';
@@ -99,7 +99,10 @@ export default function App({navigation}) {
                                 <Stack.Screen
                                     name="Home"
                                     component={HomeScreen}
-                                    options={{ headerTitle: props => <CustomHeader {...props} />}}
+                                    options={{
+                                        headerStyle: styles.headerStyle,
+                                        headerTitle: props => <CustomHeader {...props} />
+                                    }}
                                 />
                                 <Stack.Screen
                                     name="Box"
@@ -115,3 +118,11 @@ export default function App({navigation}) {
         </AuthContext.Provider>
     )
 }
+
+const styles = StyleSheet.create({
+    headerStyle: {
+        backgroundColor: '#262626',
+        elevation: 0,
+        shadowOpacity: 0
+    }
+})
