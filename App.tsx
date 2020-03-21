@@ -4,10 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
-import { AsyncStorage, StyleSheet } from "react-native";
+import { AsyncStorage, StyleSheet, processColor } from "react-native";
 import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
-import CustomHeader from './src/components/custom-header.component';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
@@ -96,20 +95,19 @@ export default function App({navigation}) {
                         />
                     ) : (
                         <>
-                                <Stack.Screen
-                                    name="Home"
-                                    component={HomeScreen}
-                                    options={{
-                                        headerStyle: styles.headerStyle,
-                                        headerTitle: props => <CustomHeader {...props} />
-                                    }}
-                                />
-                                <Stack.Screen
-                                    name="Box"
-                                    options={{
-                                        headerShown: false
-                                    }}
-                                >{props => <BoxScreen {...props}></BoxScreen>}</Stack.Screen>
+                            <Stack.Screen
+                                name="Home"
+                                component={HomeScreen}
+                                options={{
+                                    headerShown: false
+                                }}
+                            />
+                            <Stack.Screen
+                                name="Box"
+                                options={{
+                                    headerShown: false
+                                }}
+                            >{props => <BoxScreen {...props}></BoxScreen>}</Stack.Screen>
                         </>
                     )
                 }

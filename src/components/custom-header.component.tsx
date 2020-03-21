@@ -21,7 +21,7 @@ const CustomHeader = props => {
 
     return (
         <>
-            <View>
+            <View style={styles.container}>
                 <Image
                     style={styles.userImage}
                     source={{uri: `https://berrybox-user-pictures.s3.eu-west-1.amazonaws.com/profile-pictures/${user?.settings.picture}`}}
@@ -36,6 +36,13 @@ const CustomHeader = props => {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        height: 60,
+        flex: 0,
+        justifyContent: 'center',
+        backgroundColor: '#262626',
+        paddingHorizontal: 10
+    },
     userImage: {
         height: 30,
         width: 30,
