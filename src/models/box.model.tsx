@@ -12,6 +12,7 @@ export class Box {
     createdAt: Date
     updatedAt: Date
     options: {
-        random: boolean
+        random: boolean,
+        loop: boolean
     }
 }

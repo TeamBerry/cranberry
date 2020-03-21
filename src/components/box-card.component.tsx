@@ -36,8 +36,12 @@ const BoxCard = (box: Box) => {
                     </View>
                     <Text style={styles.boxCurrent} numberOfLines={1}>{currentVideo?.video?.name || 'Nothing'}</Text>
                     <View style={styles.boxModes}>
-                        <Text style={styles.boxMode}>Random</Text>
-                        <Text style={styles.boxMode}>Loop</Text>
+                        {box.options.random ? (
+                            <Text style={styles.boxMode}>Random</Text>
+                        ) : (<></>)}
+                        {box.options.loop ? (
+                            <Text style={styles.boxMode}>Loop</Text>
+                        ) : (<></>)}
                     </View>
                 </View>
             </View>
