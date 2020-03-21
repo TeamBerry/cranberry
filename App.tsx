@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
-import { AsyncStorage, StyleSheet, processColor } from "react-native";
+import { AsyncStorage, StyleSheet } from "react-native";
 import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
 // import AsyncStorage from '@react-native-community/async-storage';
