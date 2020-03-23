@@ -1,18 +1,23 @@
-import React, { useReducer, useEffect, useMemo } from 'react';
+import React, { useReducer, useEffect, useMemo, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
-import { AsyncStorage, StyleSheet } from "react-native";
+import { AsyncStorage, View, Image } from "react-native";
 import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
 import * as Font from 'expo-font';
+import { AppLoading, SplashScreen } from 'expo';
+import { Asset } from 'expo-asset';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
 
-export default function App({navigation}) {
+export default function App({ navigation }) {
+    const [isSplashReady, setSplash] = useState(false)
+    const [isAppReady, setApp] = useState(false)
+
     const [state, dispatch] = useReducer(
         (prevState, action) => {
             switch (action.type) {
@@ -44,17 +49,8 @@ export default function App({navigation}) {
     )
 
     useEffect(() => {
-        Font.loadAsync({
-            'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
-            'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
-            'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
-            'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
-            'Montserrat-Light': require('./assets/fonts/Montserrat-Light.ttf'),
-            'Montserrat-Thin': require('./assets/fonts/Montserrat-Thin.ttf')
-        })
-    })
+        SplashScreen.preventAutoHide();
 
-    useEffect(() => {
         const bootstrapAsync = async () => {
             let userToken = null;
 
@@ -97,6 +93,50 @@ export default function App({navigation}) {
         []
     );
 
+
+    const _cacheSplashResourcesAsync = async () => {
+        const img = require('./assets/berrybox-logo-master.png');
+
+        return Asset.fromModule(img).downloadAsync();
+    }
+
+    const _cacheResourcesAsync = async () => {
+        await Font.loadAsync({
+            'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+            'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+            'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
+            'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
+            'Montserrat-Light': require('./assets/fonts/Montserrat-Light.ttf'),
+            'Montserrat-Thin': require('./assets/fonts/Montserrat-Thin.ttf')
+        });
+
+        SplashScreen.hide();
+        setApp(true);
+      };
+
+    if (!isSplashReady) {
+        return (
+            <AppLoading
+                startAsync={_cacheSplashResourcesAsync}
+                onFinish={() => setSplash(true)}
+                onError={console.warn}
+                autoHideSplash={false}
+            />
+        )
+    }
+
+    if (!isAppReady) {
+        return (
+            <View style={{flex: 1}}>
+            <Image
+                    source={require('./assets/berrybox-logo-master.png')}
+                    onLoadEnd={_cacheResourcesAsync}
+                />
+            </View>
+        )
+    } else {
+
+
     return (
         <AuthContext.Provider value={authContext}>
             <NavigationContainer>
@@ -132,4 +172,6 @@ export default function App({navigation}) {
             </NavigationContainer>
         </AuthContext.Provider>
     )
+    }
+
 }
