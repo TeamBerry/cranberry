@@ -75,7 +75,12 @@ export default function App({navigation}) {
                     console.log(error)
                 })
             },
-            signOut: () => dispatch({ type: 'SIGN_OUT' })
+            signOut: async () => {
+                await AsyncStorage.removeItem('BBOX-token')
+                await AsyncStorage.removeItem('BBOX-expires_at')
+                await AsyncStorage.removeItem('BBOX-user')
+                dispatch({ type: 'SIGN_OUT' })
+            }
         }),
         []
     );

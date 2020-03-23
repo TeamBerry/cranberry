@@ -24,14 +24,18 @@ const CustomMenu = () => {
         <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
                 <StatusBar barStyle='dark-content' />
         </View>
-            <View style={styles.container}>
+        <View style={styles.container}>
+            {user ? (
                 <View>
-                <Image
-                    style={styles.userImage}
-                    source={{uri: `https://berrybox-user-pictures.s3.eu-west-1.amazonaws.com/profile-pictures/${user?.settings.picture}`}}
-                />
-                    <Text style={styles.userName}>{user.name}</Text>
+                    <Image
+                        style={styles.userImage}
+                        source={{uri: `https://berrybox-user-pictures.s3.eu-west-1.amazonaws.com/profile-pictures/${user?.settings.picture}`}}
+                    />
+                    <Text style={styles.userName}>{user?.name}</Text>
                 </View>
+            ): (
+                <></>
+            )}
         </View>
         </>
     )
