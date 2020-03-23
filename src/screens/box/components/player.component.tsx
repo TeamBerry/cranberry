@@ -4,6 +4,7 @@ import YouTube from 'react-native-youtube'
 
 const Player = props => {
 
+    const [isLoading, setLoading] = useState(true)
     const [video, setVideo] = useState(null)
 
     useEffect(() => {
@@ -11,6 +12,7 @@ const Player = props => {
             console.log('GET SYNC PACKET: ', syncPacket)
             setVideo(video => syncPacket.item.video)
         })
+        setLoading(false)
     }, [video])
 
     useEffect(() => {
@@ -21,6 +23,12 @@ const Player = props => {
         })
     }, [])
 
+    if (isLoading) {
+        return (
+            <ActivityIndicator />
+        )
+    }
+
     return (
         <View>
             {video ? (
@@ -29,11 +37,14 @@ const Player = props => {
                 //     videoId={video.link}
                 // />
                 <Image
-                        style={{ width: 400, height: 200 }}
-                        source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
-                    />
+                    style={{ width: 400, height: 200 }}
+                    source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
+                />
             ): (
-                <ActivityIndicator></ActivityIndicator>
+                <Image
+                    style={{ width: 400, height: 200 }}
+                    source={require('./../../../../assets/berrybox-logo-master.png')}
+                />
             )}
         </View>
     )
