@@ -95,7 +95,7 @@ export default function App({ navigation }) {
 
 
     const _cacheSplashResourcesAsync = async () => {
-        const img = require('./assets/berrybox-logo-master.png');
+        const img = require('./assets/splash.png');
 
         return Asset.fromModule(img).downloadAsync();
     }
@@ -129,7 +129,7 @@ export default function App({ navigation }) {
         return (
             <View style={{flex: 1}}>
             <Image
-                    source={require('./assets/berrybox-logo-master.png')}
+                    source={require('./assets/splash.png')}
                     onLoadEnd={_cacheResourcesAsync}
                 />
             </View>
