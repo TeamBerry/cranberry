@@ -45,16 +45,19 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#404040',
         height: '100%',
-        padding: 20
+        padding: 20,
+        alignItems: 'center'
     },
     userImage: {
         height: 50,
         width: 50,
-        borderRadius: 25
+        borderRadius: 25,
     },
     userName: {
+        paddingTop: 10,
         fontSize: 20,
-        color: 'white'
+        color: 'white',
+        fontFamily: 'Montserrat-SemiBold'
     }
 })
 

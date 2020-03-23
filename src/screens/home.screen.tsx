@@ -85,10 +85,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#262626',
         paddingLeft: 10,
-        paddingRight: 10
     },
     titlePage: {
-        // fontFamily: 'Montserrat',
+        fontFamily: 'Montserrat-SemiBold',
         fontSize: 30,
         marginTop: '1%',
         marginBottom: 10,

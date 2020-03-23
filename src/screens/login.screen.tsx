@@ -26,7 +26,7 @@ export default function LoginScreen ({navigation}) {
             behavior="padding"
         >
             <Image
-                source={require('./../assets/berrybox-logo-master.png')}
+                source={require('./../../assets/berrybox-logo-master.png')}
                 style={styles.image}
             ></Image>
             <View style={styles.form}>

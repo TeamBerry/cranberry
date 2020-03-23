@@ -72,7 +72,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                 <StatusBar barStyle='dark-content' />
             </View>
             <BoxContext.Provider value={this.state.socket}>
-                <View>
+                <View style={styles.playerSpace}>
                     {this.state.socket ? (
                         <BoxContext.Consumer>
                             {socket => <Player {...this.props} socket={socket} boxToken={this.boxToken}></Player>}
@@ -96,6 +96,11 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 
 const styles = StyleSheet.create({
     panelSpace: {
-        backgroundColor: '#404040'
+        backgroundColor: '#404040',
+        height: '88%'
+    },
+    playerSpace: {
+        height: 200,
+        backgroundColor: '#262626'
     }
 });

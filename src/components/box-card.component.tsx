@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     boxTitle: {
         fontSize: 20,
         color: '#009AEB',
+        fontFamily: 'Montserrat-Regular'
     },
     boxCreator: {
         height: 20,

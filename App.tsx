@@ -43,8 +43,19 @@ export default function App({navigation}) {
     )
 
     useEffect(() => {
+        Font.loadAsync({
+            'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+            'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+            'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
+            'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
+            'Montserrat-Light': require('./assets/fonts/Montserrat-Light.ttf'),
+            'Montserrat-Thin': require('./assets/fonts/Montserrat-Thin.ttf')
+        })
+    })
+
+    useEffect(() => {
         const bootstrapAsync = async () => {
-            let userToken;
+            let userToken = null;
 
             try {
                 userToken = await AsyncStorage.getItem('BBOX-token')
@@ -121,11 +132,3 @@ export default function App({navigation}) {
         </AuthContext.Provider>
     )
 }
-
-const styles = StyleSheet.create({
-    headerStyle: {
-        backgroundColor: '#262626',
-        elevation: 0,
-        shadowOpacity: 0
-    }
-})

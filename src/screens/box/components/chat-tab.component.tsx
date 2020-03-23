@@ -62,7 +62,8 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
 const styles = StyleSheet.create({
     chatTab: {
         height: '88%',
-        flex: 0
+        flex: 0,
+        backgroundColor: '#404040'
     },
     messageList: {
         paddingHorizontal: 5,
