@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Text, TouchableOpacity, View, Image, StyleSheet } from "react-native"
 import { Box } from "../models/box.model"
 
@@ -10,6 +10,28 @@ const BoxCard = (box: Box) => {
     const currentVideo = displayCurrentvideo(box);
 
     const defaultPicture = 'https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/default-picture'
+
+    const [couldLoadPicture, setLoading] = useState(true)
+
+
+    const LoadPicture = () => {
+        if (couldLoadPicture) {
+            return (
+                <Image
+                    source={{ uri: `https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/${box.creator._id}-picture` }}
+                    onError={() => setLoading(false)}
+                    style={styles.boxCreator}
+                />
+                )
+        } else {
+            return (
+                <Image
+                    source={{ uri: 'https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/default-picture' }}
+                    style={styles.boxCreator}
+                />
+                )
+        }
+    }
 
     return (
         <TouchableOpacity>
@@ -27,11 +49,8 @@ const BoxCard = (box: Box) => {
                 </View>
                 <View style={styles.boxInfo}>
                     <Text style={styles.boxTitle} numberOfLines={1}>{box.name}</Text>
-                    <View style={{flex: 1, flexDirection: 'row'}}>
-                        <Image
-                            source={{ uri: `https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/${box.creator._id}-picture` }}
-                            style={styles.boxCreator}
-                        />
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <LoadPicture />
                         <Text style={{color: 'white', paddingLeft: 4}}>{box.creator.name}</Text>
                     </View>
                     <Text style={styles.boxCurrent} numberOfLines={1}>{currentVideo?.video?.name || 'Nothing'}</Text>
