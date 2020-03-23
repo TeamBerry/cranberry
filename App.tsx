@@ -7,6 +7,7 @@ import LoginScreen from './src/screens/login.screen';
 import { AsyncStorage, StyleSheet } from "react-native";
 import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
+import * as Font from 'expo-font';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
