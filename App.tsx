@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect, useMemo, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
@@ -10,6 +10,7 @@ import axios from 'axios';
 import * as Font from 'expo-font';
 import { AppLoading, SplashScreen } from 'expo';
 import { Asset } from 'expo-asset';
+import { darkTheme, lightTheme } from './src/shared/themes';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
@@ -112,7 +113,15 @@ export default function App({ navigation }) {
 
         SplashScreen.hide();
         setApp(true);
-      };
+    };
+
+    const ActiveTheme = {
+        ...DefaultTheme,
+        colors: {
+            ...DefaultTheme.colors,
+            ...lightTheme.colors
+        }
+    }
 
     if (!isSplashReady) {
         return (
@@ -134,12 +143,11 @@ export default function App({ navigation }) {
                 />
             </View>
         )
-    } else {
-
+    }
 
     return (
         <AuthContext.Provider value={authContext}>
-            <NavigationContainer>
+            <NavigationContainer theme={ActiveTheme}>
                 <Stack.Navigator>
                     {state.userToken === null ? (
                         <Stack.Screen
@@ -172,6 +180,4 @@ export default function App({ navigation }) {
             </NavigationContainer>
         </AuthContext.Provider>
     )
-    }
-
 }
