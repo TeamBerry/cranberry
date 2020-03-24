@@ -37,13 +37,16 @@ const CustomHeader = props => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-between'
+        height: 60,
+        flex: 0,
+        justifyContent: 'center',
+        backgroundColor: '#262626',
+        paddingHorizontal: 10
     },
     userImage: {
         height: 30,
-        width: 30
+        width: 30,
+        borderRadius: 15
     }
 })
 

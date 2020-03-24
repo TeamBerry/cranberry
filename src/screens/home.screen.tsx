@@ -1,8 +1,11 @@
 import React from "react"
-import { StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl, Platform, StatusBar } from 'react-native';
 import { Box } from "../models/box.model";
 import BoxCard from "./../components/box-card.component";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import CustomMenu from "../components/custom-menu.component";
+import SideMenu from 'react-native-side-menu';
+import CustomHeader from "../components/custom-header.component";
 
 export class HomeScreen extends React.Component<{navigation}> {
     static navigationOptions = {
@@ -37,10 +40,16 @@ export class HomeScreen extends React.Component<{navigation}> {
         this.getBoxes();
     }
 
+
     render() {
         const { boxes, hasLoadedBoxes } = this.state
 
         return (
+            <SideMenu menu={<CustomMenu/>}>
+            <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
+                <StatusBar barStyle='dark-content' />
+            </View>
+            <CustomHeader style={styles.headerStyle}></CustomHeader>
             <View style={styles.container}>
                 <Text style={styles.titlePage}>Boxes</Text>
                 {hasLoadedBoxes ? (
@@ -59,23 +68,30 @@ export class HomeScreen extends React.Component<{navigation}> {
                 ) : (
                         <ActivityIndicator />
                     )}
-            </View>
+                </View>
+            </SideMenu>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    headerStyle: {
+        backgroundColor: '#262626',
+        height: 40,
+        elevation: 0,
+        shadowOpacity: 0
+    },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        paddingLeft: '2%',
-        paddingRight: '2%'
+        backgroundColor: '#262626',
+        paddingLeft: 10,
     },
     titlePage: {
-        // fontFamily: 'Montserrat',
+        fontFamily: 'Montserrat-SemiBold',
         fontSize: 30,
         marginTop: '1%',
-        marginBottom: 10
+        marginBottom: 10,
+        color: 'white'
     },
     card: {
         paddingBottom: 10

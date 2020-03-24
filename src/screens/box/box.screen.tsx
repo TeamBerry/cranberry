@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, StatusBar, Platform } from 'react-native';
 import io from "socket.io-client";
 
 import Player from './components/player.component';
@@ -67,8 +67,12 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         const { box, hasLoadedBox } = this.state
 
         return (
+            <>
+            <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: 'black'}}>
+                <StatusBar barStyle='dark-content' />
+            </View>
             <BoxContext.Provider value={this.state.socket}>
-                <View>
+                <View style={styles.playerSpace}>
                     {this.state.socket ? (
                         <BoxContext.Consumer>
                             {socket => <Player {...this.props} socket={socket} boxToken={this.boxToken}></Player>}
@@ -77,17 +81,26 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                             <ActivityIndicator></ActivityIndicator>
                     )}
                 </View>
-                <View>
+                <View style={styles.panelSpace}>
                     {this.state.socket ? (
                         <PanelComponent boxToken={this.boxToken}></PanelComponent>
                     ) : (
                             <ActivityIndicator></ActivityIndicator>
                         )}
                 </View>
-            </BoxContext.Provider>
+                </BoxContext.Provider>
+            </>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    panelSpace: {
+        backgroundColor: '#404040',
+        height: '88%'
+    },
+    playerSpace: {
+        height: 200,
+        backgroundColor: '#262626'
+    }
 });

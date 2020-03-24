@@ -1,18 +1,24 @@
-import React, { useReducer, useEffect, useMemo } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useReducer, useEffect, useMemo, useState } from 'react';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, View, Image } from "react-native";
 import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
-import CustomHeader from './src/components/custom-header.component';
+import * as Font from 'expo-font';
+import { AppLoading, SplashScreen } from 'expo';
+import { Asset } from 'expo-asset';
+import { darkTheme, lightTheme } from './src/shared/themes';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
 
-export default function App({navigation}) {
+export default function App({ navigation }) {
+    const [isSplashReady, setSplash] = useState(false)
+    const [isAppReady, setApp] = useState(false)
+
     const [state, dispatch] = useReducer(
         (prevState, action) => {
             switch (action.type) {
@@ -44,8 +50,10 @@ export default function App({navigation}) {
     )
 
     useEffect(() => {
+        SplashScreen.preventAutoHide();
+
         const bootstrapAsync = async () => {
-            let userToken;
+            let userToken = null;
 
             try {
                 userToken = await AsyncStorage.getItem('BBOX-token')
@@ -76,14 +84,70 @@ export default function App({navigation}) {
                     console.log(error)
                 })
             },
-            signOut: () => dispatch({ type: 'SIGN_OUT' })
+            signOut: async () => {
+                await AsyncStorage.removeItem('BBOX-token')
+                await AsyncStorage.removeItem('BBOX-expires_at')
+                await AsyncStorage.removeItem('BBOX-user')
+                dispatch({ type: 'SIGN_OUT' })
+            }
         }),
         []
     );
 
+
+    const _cacheSplashResourcesAsync = async () => {
+        const img = require('./assets/splash.png');
+
+        return Asset.fromModule(img).downloadAsync();
+    }
+
+    const _cacheResourcesAsync = async () => {
+        await Font.loadAsync({
+            'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+            'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+            'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
+            'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
+            'Montserrat-Light': require('./assets/fonts/Montserrat-Light.ttf'),
+            'Montserrat-Thin': require('./assets/fonts/Montserrat-Thin.ttf')
+        });
+
+        SplashScreen.hide();
+        setApp(true);
+    };
+
+    const ActiveTheme = {
+        ...DefaultTheme,
+        colors: {
+            ...DefaultTheme.colors,
+            ...lightTheme.colors
+        }
+    }
+
+    if (!isSplashReady) {
+        return (
+            <AppLoading
+                startAsync={_cacheSplashResourcesAsync}
+                onFinish={() => setSplash(true)}
+                onError={console.warn}
+                autoHideSplash={false}
+            />
+        )
+    }
+
+    if (!isAppReady) {
+        return (
+            <View style={{flex: 1}}>
+            <Image
+                    source={require('./assets/splash.png')}
+                    onLoadEnd={_cacheResourcesAsync}
+                />
+            </View>
+        )
+    }
+
     return (
         <AuthContext.Provider value={authContext}>
-            <NavigationContainer>
+            <NavigationContainer theme={ActiveTheme}>
                 <Stack.Navigator>
                     {state.userToken === null ? (
                         <Stack.Screen
@@ -96,17 +160,19 @@ export default function App({navigation}) {
                         />
                     ) : (
                         <>
-                                <Stack.Screen
-                                    name="Home"
-                                    component={HomeScreen}
-                                    options={{ headerTitle: props => <CustomHeader {...props} />}}
-                                />
-                                <Stack.Screen
-                                    name="Box"
-                                    options={{
-                                        headerShown: false
-                                    }}
-                                >{props => <BoxScreen {...props}></BoxScreen>}</Stack.Screen>
+                            <Stack.Screen
+                                name="Home"
+                                component={HomeScreen}
+                                options={{
+                                    headerShown: false
+                                }}
+                            />
+                            <Stack.Screen
+                                name="Box"
+                                options={{
+                                    headerShown: false
+                                }}
+                            >{props => <BoxScreen {...props}></BoxScreen>}</Stack.Screen>
                         </>
                     )
                 }
