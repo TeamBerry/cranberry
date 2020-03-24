@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderColor: '#009aeb',
         padding: 10,
-        borderRadius: 5
+        borderRadius: 5,
+        color: 'white',
     }
 })
 

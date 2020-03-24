@@ -46,9 +46,9 @@ export class HomeScreen extends React.Component<{navigation}> {
 
         return (
             <SideMenu menu={<CustomMenu/>}>
-            <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
+            {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
                 <StatusBar barStyle='dark-content' />
-            </View>
+            </View> */}
             <CustomHeader style={styles.headerStyle}></CustomHeader>
             <View style={styles.container}>
                 <Text style={styles.titlePage}>Boxes</Text>

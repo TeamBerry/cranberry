@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, ActivityIndicator, StatusBar, Platform } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, StatusBar, Platform } from 'react-native';
 import io from "socket.io-client";
 
 import Player from './components/player.component';
@@ -68,9 +68,9 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 
         return (
             <>
-            <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: 'black'}}>
+            {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: 'black'}}>
                 <StatusBar barStyle='dark-content' />
-            </View>
+            </View> */}
             <BoxContext.Provider value={this.state.socket}>
                 <View style={styles.playerSpace}>
                     {this.state.socket ? (
