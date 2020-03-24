@@ -10,7 +10,7 @@ const Player = props => {
     useEffect(() => {
         props.socket.on('sync', (syncPacket) => {
             console.log('GET SYNC PACKET: ', syncPacket)
-            setVideo(video => syncPacket.item.video)
+            setVideo(syncPacket.item.video)
         })
         setLoading(false)
     }, [video])
@@ -32,14 +32,16 @@ const Player = props => {
     return (
         <View>
             {video ? (
-                // <YouTube
-                //     apiKey=''
-                //     videoId={video.link}
-                // />
-                <Image
-                    style={{ width: 400, height: 200 }}
-                    source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
+                <YouTube
+                    apiKey=''
+                    play={true}
+                    videoId={video.link}
+                    style={{ alignSelf: 'stretch', height: 200 }}
                 />
+                // <Image
+                //     style={{ width: 400, height: 200 }}
+                //     source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
+                // />
             ): (
                 <Image
                     style={{ width: 400, height: 200 }}
