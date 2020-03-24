@@ -20,9 +20,9 @@ const CustomMenu = () => {
 
     return (
         <>
-        <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
+        {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
                 <StatusBar barStyle='dark-content' />
-        </View>
+        </View> */}
         <View style={styles.container}>
             {user ? (
                 <View>
