@@ -9,7 +9,6 @@ const CustomMenu = () => {
         const bootstrap = async () => {
             try {
                 const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'))
-                console.log(user)
                 setUser(user)
             } catch (e) {
                 console.error('Session could not be obtained')
