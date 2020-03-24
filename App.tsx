@@ -7,17 +7,13 @@ import LoginScreen from './src/screens/login.screen';
 import { AsyncStorage, View, Image } from "react-native";
 import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
-import * as Font from 'expo-font';
-import { AppLoading, SplashScreen } from 'expo';
-import { Asset } from 'expo-asset';
 import { darkTheme, lightTheme } from './src/shared/themes';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
 
 export default function App({ navigation }) {
-    const [isSplashReady, setSplash] = useState(false)
-    const [isAppReady, setApp] = useState(false)
+    const [isAppReady, setAppReadiness] = useState(false)
 
     const [state, dispatch] = useReducer(
         (prevState, action) => {
@@ -50,8 +46,6 @@ export default function App({ navigation }) {
     )
 
     useEffect(() => {
-        SplashScreen.preventAutoHide();
-
         const bootstrapAsync = async () => {
             let userToken = null;
 
@@ -62,6 +56,9 @@ export default function App({ navigation }) {
             }
 
             dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+            setTimeout(() => {
+                setAppReadiness(true);
+            }, 2000);
         }
 
         bootstrapAsync();
@@ -95,24 +92,15 @@ export default function App({ navigation }) {
     );
 
 
-    const _cacheSplashResourcesAsync = async () => {
-        const img = require('./assets/splash.png');
-
-        return Asset.fromModule(img).downloadAsync();
-    }
-
     const _cacheResourcesAsync = async () => {
-        await Font.loadAsync({
-            'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
-            'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
-            'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
-            'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
-            'Montserrat-Light': require('./assets/fonts/Montserrat-Light.ttf'),
-            'Montserrat-Thin': require('./assets/fonts/Montserrat-Thin.ttf')
-        });
-
-        SplashScreen.hide();
-        setApp(true);
+        // await Font.loadAsync({
+        //     'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+        //     'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+        //     'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
+        //     'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
+        //     'Montserrat-Light': require('./assets/fonts/Montserrat-Light.ttf'),
+        //     'Montserrat-Thin': require('./assets/fonts/Montserrat-Thin.ttf')
+        // });
     };
 
     const ActiveTheme = {
@@ -123,23 +111,13 @@ export default function App({ navigation }) {
         }
     }
 
-    if (!isSplashReady) {
-        return (
-            <AppLoading
-                startAsync={_cacheSplashResourcesAsync}
-                onFinish={() => setSplash(true)}
-                onError={console.warn}
-                autoHideSplash={false}
-            />
-        )
-    }
-
     if (!isAppReady) {
         return (
             <View style={{flex: 1}}>
             <Image
                     source={require('./assets/splash.png')}
                     onLoadEnd={_cacheResourcesAsync}
+                    style={{height: '100%', width: '100%'}}
                 />
             </View>
         )
