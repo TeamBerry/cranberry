@@ -1,11 +1,13 @@
 import React, { useState, useContext } from "react";
-import { StyleSheet, View, ActivityIndicator, StatusBar, Platform, AsyncStorage } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, StatusBar, Platform, AsyncStorage, Text } from 'react-native';
 import io from "socket.io-client";
 
 import Player from './components/player.component';
 import PanelComponent from './components/panel.component';
 import { Box } from '../../models/box.model';
 import BoxContext from "./box.context";
+import { SyncPacket } from "@teamberry/muscadine";
+import Queue from "./components/queue.component";
 
 export class BoxScreen extends React.Component<{ route, navigation }> {
     boxToken: string = this.props.route.params.boxToken
@@ -15,12 +17,14 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         error: any,
         hasLoadedBox: boolean,
         box: Box,
-        socket: any
+        socket: any,
+        currentQueueItem: SyncPacket['item']
     } = {
             error: null,
             hasLoadedBox: false,
             box: null,
-            socket: null
+            socket: null,
+            currentQueueItem: null
         }
 
     async componentDidMount() {
@@ -53,6 +57,10 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                     this.setState({ socket: this.socketConnection })
                 })
             this.socketConnection
+                .on('sync', (syncPacket: SyncPacket) => {
+                    this.setState({ currentQueueItem: syncPacket.item });
+                })
+            this.socketConnection
                 .on('denied', () => {
                     console.log('DENIED')
                 })
@@ -83,6 +91,9 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                             <ActivityIndicator></ActivityIndicator>
                     )}
                 </View>
+                <View style={styles.queueSpace}>
+                    <Queue box={this.state.box} currentVideo={this.state.currentQueueItem}></Queue>
+                </View>
                 <View style={styles.panelSpace}>
                     {this.state.socket ? (
                         <PanelComponent boxToken={this.boxToken}></PanelComponent>
@@ -99,10 +110,17 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 const styles = StyleSheet.create({
     panelSpace: {
         backgroundColor: '#404040',
-        height: '88%'
+        height: '79%'
     },
     playerSpace: {
         height: 200,
         backgroundColor: '#262626'
+    },
+    queueSpace: {
+        height: 50,
+        backgroundColor: '#404040',
+        color: 'white',
+        paddingLeft: 10,
+        paddingTop: 5,
     }
 });
