@@ -50,6 +50,7 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
                 <TextInput
                     style={styles.chatInput}
                     placeholder='Type to chat...'
+                    placeholderTextColor='white'
                     onChangeText={(text) => setMessageInput(text)}
                     value={messageInput}
                     onSubmitEditing={() => sendMessage()}
@@ -61,9 +62,10 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
 
 const styles = StyleSheet.create({
     chatTab: {
-        height: '88%',
+        height: '90%',
+        paddingTop: 7,
         flex: 0,
-        backgroundColor: '#404040'
+        backgroundColor: '#262626'
     },
     messageList: {
         paddingHorizontal: 5,
@@ -71,6 +73,7 @@ const styles = StyleSheet.create({
     },
     chatInput: {
         padding: 10,
+        marginBottom: 5,
         height: 40,
         backgroundColor: '#303030',
         borderColor: '#009AEB',
@@ -78,7 +81,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         justifyContent: "flex-end",
-        color: 'white'
+        color: 'white',
     }
 })
 

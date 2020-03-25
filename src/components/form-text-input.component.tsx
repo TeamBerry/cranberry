@@ -4,6 +4,7 @@ import { StyleSheet, TextInput } from "react-native"
 const FormTextInput = props => {
     return (
         <TextInput
+            placeholderTextColor='white'
             style={styles.textInput}
             {...props}
         />
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
         borderColor: '#009aeb',
         padding: 10,
         borderRadius: 5,
-        color: 'white',
+        color: 'white'
     }
 })
 
