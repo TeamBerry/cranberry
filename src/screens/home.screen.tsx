@@ -1,11 +1,10 @@
 import React from "react"
-import { StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl, Platform, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl, Image, Platform, StatusBar, AsyncStorage } from 'react-native';
 import { Box } from "../models/box.model";
 import BoxCard from "./../components/box-card.component";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CustomMenu from "../components/custom-menu.component";
 import SideMenu from 'react-native-side-menu';
-import CustomHeader from "../components/custom-header.component";
 
 export class HomeScreen extends React.Component<{navigation}> {
     static navigationOptions = {
@@ -16,13 +15,19 @@ export class HomeScreen extends React.Component<{navigation}> {
         error: any,
         hasLoadedBoxes: boolean,
         boxes: Array<Box>,
+        isMenuOpen: boolean,
+        user: any
     } = {
         error: null,
         hasLoadedBoxes: false,
         boxes: [],
+        isMenuOpen: false,
+        user: null
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+        this.setState({user})
         this.getBoxes();
     }
 
@@ -40,16 +45,42 @@ export class HomeScreen extends React.Component<{navigation}> {
         this.getBoxes();
     }
 
+    toggleMenu() {
+        const newValue = !this.state.isMenuOpen;
+        this.setState({ isMenuOpen: newValue });
+    }
 
     render() {
         const { boxes, hasLoadedBoxes } = this.state
+        const user = this.state.user
 
         return (
-            <SideMenu menu={<CustomMenu/>}>
+            <SideMenu
+                menu={<CustomMenu />}
+                isOpen={this.state.isMenuOpen}
+                bounceBackOnOverdraw={false}
+                onChange={(isOpen: boolean) => this.setState({ isMenuOpen: isOpen })}
+                autoClosing={true}
+            >
             {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
                 <StatusBar barStyle='dark-content' />
             </View> */}
-            <CustomHeader style={styles.headerStyle}></CustomHeader>
+
+            <View style={styles.headerContainer}>
+                <View style={styles.headerStyle}>
+                    <TouchableOpacity
+                        onPress={() => this.toggleMenu()}
+                    >
+                        <Image
+                            style={styles.userImage}
+                            source={{
+                                uri: `https://berrybox-user-pictures.s3.eu-west-1.amazonaws.com/profile-pictures/${user?.settings.picture}`
+                            }}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </View>
+
             <View style={styles.container}>
                 <Text style={styles.titlePage}>Boxes</Text>
                 {hasLoadedBoxes ? (
@@ -75,11 +106,24 @@ export class HomeScreen extends React.Component<{navigation}> {
 }
 
 const styles = StyleSheet.create({
-    headerStyle: {
+    headerContainer: {
+        paddingTop: 20,
+        paddingBottom: 20,
+        paddingLeft: 10,
         backgroundColor: '#262626',
-        height: 40,
+        borderColor: '#404040',
+        borderStyle: 'solid',
+        borderBottomWidth: 1
+    },
+    headerStyle: {
+        height: 30,
         elevation: 0,
         shadowOpacity: 0
+    },
+    userImage: {
+        height: 30,
+        width: 30,
+        borderRadius: 15
     },
     container: {
         flex: 1,
