@@ -1,27 +1,36 @@
-import React, {useState, useEffect} from "react"
-import { View, Text, ActivityIndicator, Image } from "react-native"
+import React, {useState, useEffect, useRef} from "react"
+import { ActivityIndicator, Image } from "react-native"
 import YouTube from 'react-native-youtube'
+import { SyncPacket } from "@teamberry/muscadine";
 
 const Player = props => {
-
+    const _youtubeRef = useRef(null);
     const [isLoading, setLoading] = useState(true)
-    const [video, setVideo] = useState(null)
+    const [queueItem, setQueueItem] = useState(null as SyncPacket['item'])
+    const [isPlayerReady, setPlayerReadiness] = useState(false)
 
     useEffect(() => {
-        props.socket.on('sync', (syncPacket) => {
-            console.log('GET SYNC PACKET: ', syncPacket)
-            setVideo(syncPacket.item.video)
+        props.socket.on('sync', (syncPacket: SyncPacket) => {
+            setQueueItem(syncPacket.item)
         })
         setLoading(false)
-    }, [video])
+    }, [queueItem])
 
     useEffect(() => {
-        console.log('CONNECTING TO SYNC...')
         props.socket.emit('start', {
             boxToken: props.boxToken,
             userToken: '5e715f673640b31cb895238f'
         })
     }, [])
+
+    useEffect(() => {
+        if (queueItem && isPlayerReady) {
+            const exactPosition = Math.floor((Date.now() - Date.parse(queueItem.startTime.toString())) / 1000);
+            const position = exactPosition <= 2 ? 0 : exactPosition;
+
+            _youtubeRef.current.seekTo(position);
+        }
+    }, [queueItem, isPlayerReady])
 
     if (isLoading) {
         return (
@@ -29,26 +38,24 @@ const Player = props => {
         )
     }
 
+    if (queueItem) {
+        return (
+            <YouTube
+                ref={_youtubeRef}
+                apiKey=''
+                play={true}
+                videoId={queueItem.video.link}
+                style={{ alignSelf: 'stretch', height: 200 }}
+                onReady={() => setPlayerReadiness(true)}
+            />
+        )
+    }
+
     return (
-        <View>
-            {video ? (
-                <YouTube
-                    apiKey=''
-                    play={true}
-                    videoId={video.link}
-                    style={{ alignSelf: 'stretch', height: 200 }}
-                />
-                // <Image
-                //     style={{ width: 400, height: 200 }}
-                //     source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
-                // />
-            ): (
-                <Image
-                    style={{ width: 400, height: 200 }}
-                    source={require('./../../../../assets/berrybox-logo-master.png')}
-                />
-            )}
-        </View>
+        <Image
+            style={{ width: 400, height: 200 }}
+            source={require('./../../../../assets/berrybox-logo-master.png')}
+        />
     )
 }
 
