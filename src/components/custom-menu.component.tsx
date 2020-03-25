@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Text, Image, View, StyleSheet, Platform, StatusBar, AsyncStorage } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { Text, Image, View, StyleSheet, Platform, StatusBar, AsyncStorage, Button } from "react-native";
+import AuthContext from "../shared/auth.context";
 
 const CustomMenu = () => {
 
@@ -18,23 +19,37 @@ const CustomMenu = () => {
         bootstrap();
     }, [])
 
+    const { signOut } = useContext(AuthContext);
+
+    const UserSpace = () => {
+        if (!user) {
+            return (
+                <></>
+            )
+        }
+
+        return (
+            <View>
+                <Image
+                    style={styles.userImage}
+                    source={{uri: `https://berrybox-user-pictures.s3.eu-west-1.amazonaws.com/profile-pictures/${user?.settings.picture}`}}
+                />
+                <Text style={styles.userName}>{user?.name}</Text>
+                    <Button
+                        title="Sign out"
+                        onPress={() => signOut()}
+                    />
+            </View>
+        )
+    }
+
     return (
         <>
         {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
                 <StatusBar barStyle='dark-content' />
         </View> */}
         <View style={styles.container}>
-            {user ? (
-                <View>
-                    <Image
-                        style={styles.userImage}
-                        source={{uri: `https://berrybox-user-pictures.s3.eu-west-1.amazonaws.com/profile-pictures/${user?.settings.picture}`}}
-                    />
-                    <Text style={styles.userName}>{user?.name}</Text>
-                </View>
-            ): (
-                <></>
-            )}
+            <UserSpace />
         </View>
         </>
     )

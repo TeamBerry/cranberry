@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet, View, ActivityIndicator, StatusBar, Platform } from 'react-native';
+import React, { useState, useContext } from "react";
+import { StyleSheet, View, ActivityIndicator, StatusBar, Platform, AsyncStorage } from 'react-native';
 import io from "socket.io-client";
 
 import Player from './components/player.component';
@@ -24,6 +24,8 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         }
 
     async componentDidMount() {
+        const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+
         try {
             const box: Box = await (await fetch(`https://araza.berrybox.tv/boxes/${this.boxToken}`)).json()
             this.setState({ box, hasLoadedBox: true })
@@ -41,7 +43,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                         origin: 'Cranberry',
                         type: 'sync',
                         boxToken: box._id,
-                        userToken: '5e715f673640b31cb895238f'
+                        userToken: user._id
                     })
                 }
             })

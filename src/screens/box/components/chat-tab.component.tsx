@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { TextInput, StyleSheet, KeyboardAvoidingView } from "react-native"
+import { TextInput, StyleSheet, KeyboardAvoidingView, AsyncStorage } from "react-native"
 import { Message, FeedbackMessage } from '@teamberry/muscadine'
 
 import ChatMessage from './chat-message.component';
@@ -19,6 +19,16 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
 
     const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage>)
     const [messageInput, setMessageInput] = useState('')
+    const [user, setUser] = useState(null)
+
+    useEffect(() => {
+        const getSession = async () => {
+            const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+            setUser(user);
+        }
+
+        getSession();
+    }, [])
 
     useEffect(() => {
         props.socket.on('chat', (newMessage: Message | FeedbackMessage) => {
@@ -28,7 +38,7 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
 
     const sendMessage = () => {
         const newMessage: Message = new Message({
-            author: '5e715f673640b31cb895238f',
+            author: user._id,
             contents: messageInput,
             source: 'user',
             scope: props.boxToken
