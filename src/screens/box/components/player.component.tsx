@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from "react"
-import { ActivityIndicator, Image } from "react-native"
+import { ActivityIndicator, Image, AsyncStorage } from "react-native"
 import YouTube from 'react-native-youtube'
 import { SyncPacket } from "@teamberry/muscadine";
 
@@ -17,10 +17,15 @@ const Player = props => {
     }, [queueItem])
 
     useEffect(() => {
-        props.socket.emit('start', {
-            boxToken: props.boxToken,
-            userToken: '5e715f673640b31cb895238f'
-        })
+        const getSession = async () => {
+            const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+            props.socket.emit('start', {
+                boxToken: props.boxToken,
+                userToken: user._id
+            })
+        }
+
+        getSession();
     }, [])
 
     useEffect(() => {
