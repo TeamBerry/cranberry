@@ -1,10 +1,11 @@
 import React from "react"
-import { StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl, Image, Platform, StatusBar, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl, Image, Platform, StatusBar } from 'react-native';
 import { Box } from "../models/box.model";
 import BoxCard from "./../components/box-card.component";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CustomMenu from "../components/custom-menu.component";
 import SideMenu from 'react-native-side-menu';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export class HomeScreen extends React.Component<{navigation}> {
     static navigationOptions = {

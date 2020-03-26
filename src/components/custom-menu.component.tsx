@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Text, Image, View, StyleSheet, Platform, StatusBar, AsyncStorage, Button } from "react-native";
+import { Text, Image, View, StyleSheet, Platform, StatusBar, Button } from "react-native";
 import AuthContext from "../shared/auth.context";
+import AsyncStorage from '@react-native-community/async-storage';
 
 const CustomMenu = () => {
 

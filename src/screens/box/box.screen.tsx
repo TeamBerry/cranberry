@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
-import { StyleSheet, View, ActivityIndicator, StatusBar, Platform, AsyncStorage, Text } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, StatusBar, Platform, Text } from 'react-native';
 import io from "socket.io-client";
+import AsyncStorage from '@react-native-community/async-storage';
 
 import Player from './components/player.component';
 import PanelComponent from './components/panel.component';

@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useRef} from "react"
-import { ActivityIndicator, Image, AsyncStorage } from "react-native"
+import { ActivityIndicator, Image } from "react-native"
 import YouTube from 'react-native-youtube'
 import { SyncPacket } from "@teamberry/muscadine";
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Player = props => {
     const _youtubeRef = useRef(null);

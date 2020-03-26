@@ -4,11 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
-import { AsyncStorage, View, Image } from "react-native";
+import { View, Image } from "react-native";
 import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
 import { darkTheme, lightTheme } from './src/shared/themes';
-// import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Stack = createStackNavigator();
 

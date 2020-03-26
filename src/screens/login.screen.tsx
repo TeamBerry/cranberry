@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
-import { Text, Image, StyleSheet, View, Button, KeyboardAvoidingView } from "react-native";
+import { Image, StyleSheet, View, Button, KeyboardAvoidingView } from "react-native";
 import FormTextInput from "../components/form-text-input.component";
 import AuthContext from "../shared/auth.context";
-// import AsyncStorage from '@react-native-community/async-storage';
-
 
 export default function LoginScreen ({navigation}) {
 
