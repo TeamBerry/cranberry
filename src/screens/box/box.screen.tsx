@@ -62,6 +62,10 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                     this.setState({ currentQueueItem: syncPacket.item });
                 })
             this.socketConnection
+                .on('box', (box: Box) => {
+                    this.setState({box})
+                })
+            this.socketConnection
                 .on('denied', () => {
                     console.log('DENIED')
                 })
@@ -92,9 +96,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                             <ActivityIndicator></ActivityIndicator>
                     )}
                 </View>
-                <View style={styles.queueSpace}>
-                    <Queue box={this.state.box} currentVideo={this.state.currentQueueItem}></Queue>
-                </View>
+                <Queue box={this.state.box} currentVideo={this.state.currentQueueItem}></Queue>
                 <View style={styles.panelSpace}>
                     {this.state.socket ? (
                         <PanelComponent boxToken={this.boxToken}></PanelComponent>
@@ -116,12 +118,5 @@ const styles = StyleSheet.create({
     playerSpace: {
         height: 200,
         backgroundColor: '#262626'
-    },
-    queueSpace: {
-        height: 50,
-        backgroundColor: '#404040',
-        color: 'white',
-        paddingLeft: 10,
-        paddingTop: 5,
     }
 });
