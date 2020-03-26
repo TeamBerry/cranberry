@@ -4,6 +4,7 @@ import { SyncPacket } from "@teamberry/muscadine"
 import { Box } from "../../../models/box.model"
 import Collapsible from 'react-native-collapsible'
 import ProfilePicture from './../../../components/profile-picture.component'
+import { Svg, Polygon, G } from 'react-native-svg';
 
 export type Props = {
     box: Box,
@@ -73,20 +74,29 @@ const Queue = ({ box, currentVideo }: Props) => {
 
     return (
         <>
+            <TouchableOpacity
+                onPress={() => setCollapse(!isCollapsed)}
+                activeOpacity={1}
+            >
             <View style={styles.currentSpaceContainer}>
                 <View style={styles.currentSpace}>
                     <View style={styles.currentSpaceTexts}>
                         <BoxName />
                         <CurrentVideo />
                     </View>
-                    <TouchableOpacity
-                        onPress={() => setCollapse(!isCollapsed)}
-                        style={styles.currentSpaceActions}
-                    >
-                        <Text>V</Text>
-                    </TouchableOpacity>
+                    <View style={styles.currentSpaceActions}>
+                        <Svg height="50" width="50">
+                            <G rotation="0" origin="15,20">
+                                <Polygon
+                                    points="24,17 6,17 15,25"
+                                    fill="white"
+                                />
+                            </G>
+                        </Svg>
+                    </View>
                 </View>
             </View>
+                </TouchableOpacity>
             <View style={styles.upcomingSpaceContainer}>
                 <Collapsible collapsed={isCollapsed} style={{height: 445}}>
                     <QueueList />
