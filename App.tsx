@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 const Stack = createStackNavigator();
 
 export default function App({ navigation }) {
+    console.disableYellowBox = true;
     const [isAppReady, setAppReadiness] = useState(false)
 
     const [state, dispatch] = useReducer(
