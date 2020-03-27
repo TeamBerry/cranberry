@@ -56,18 +56,23 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                     }
                 })
                 .on('confirm', () => {
-                    this.setState({ socket: this.socketConnection })
+                    this.setState({ socket: this.socketConnection });
                 })
                 .on('bootstrap', (bootstrapMaterial) => {
                     this.setState({ boxKey: bootstrapMaterial.boxKey });
+                    this.socketConnection.emit('start', {
+                        boxToken: box._id,
+                        userToken: user._id
+                    });
                 })
                 .on('sync', (syncPacket: SyncPacket) => {
                     this.setState({ currentQueueItem: syncPacket.item });
                 })
                 .on('box', (box: Box) => {
-                    this.setState({box})
+                    this.setState({ box });
                 })
                 .on('denied', () => {
+                    this.setState({ error: 'Connection denied', hasLoadedBox: true });
                     console.log('DENIED')
                 })
         } catch (error) {
@@ -88,11 +93,12 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
             <BoxContext.Provider value={this.state.socket}>
                 <View style={styles.playerSpace}>
                     {this.state.socket && this.state.boxKey ? (
-                        <BoxContext.Consumer>
-                            {socket => <Player {...this.props} socket={socket} boxToken={this.boxToken} boxKey={this.state.boxKey}></Player>}
-                        </BoxContext.Consumer>
+                    <Player
+                        boxKey={this.state.boxKey}
+                        currentItem={this.state.currentQueueItem}
+                    />
                     ) : (
-                            <ActivityIndicator></ActivityIndicator>
+                        <ActivityIndicator></ActivityIndicator>
                     )}
                 </View>
                 <Queue box={this.state.box} currentVideo={this.state.currentQueueItem}></Queue>
@@ -103,7 +109,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                             <ActivityIndicator></ActivityIndicator>
                         )}
                 </View>
-                </BoxContext.Provider>
+            </BoxContext.Provider>
             </>
         )
     }
@@ -112,10 +118,10 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 const styles = StyleSheet.create({
     panelSpace: {
         backgroundColor: '#404040',
-        height: '79%'
+        height: 546
     },
     playerSpace: {
-        height: 200,
+        height: 204,
         backgroundColor: '#262626'
     }
 });

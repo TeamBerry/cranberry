@@ -1,42 +1,30 @@
 import React, {useState, useEffect, useRef} from "react"
 import { ActivityIndicator, Image } from "react-native"
 import YouTube from 'react-native-youtube'
-import { SyncPacket } from "@teamberry/muscadine";
-import AsyncStorage from '@react-native-community/async-storage';
+import { QueueItem } from "@teamberry/muscadine";
 
-const Player = props => {
+export type PlayerProps = {
+    boxKey: string,
+    currentItem: QueueItem
+}
+
+const Player = (props: PlayerProps) => {
     const _youtubeRef = useRef(null);
     const [isLoading, setLoading] = useState(true)
-    const [queueItem, setQueueItem] = useState(null as SyncPacket['item'])
     const [isPlayerReady, setPlayerReadiness] = useState(false)
 
     useEffect(() => {
-        props.socket.on('sync', (syncPacket: SyncPacket) => {
-            setQueueItem(syncPacket.item)
-        })
         setLoading(false)
-    }, [queueItem])
+    }, [props.currentItem])
 
     useEffect(() => {
-        const getSession = async () => {
-            const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-            props.socket.emit('start', {
-                boxToken: props.boxToken,
-                userToken: user._id
-            })
-        }
-
-        getSession();
-    }, [])
-
-    useEffect(() => {
-        if (queueItem && isPlayerReady) {
-            const exactPosition = Math.floor((Date.now() - Date.parse(queueItem.startTime.toString())) / 1000);
+        if (props.currentItem && isPlayerReady) {
+            const exactPosition = Math.floor((Date.now() - Date.parse(props.currentItem.startTime.toString())) / 1000);
             const position = exactPosition <= 2 ? 0 : exactPosition;
 
             _youtubeRef.current.seekTo(position);
         }
-    }, [queueItem, isPlayerReady])
+    }, [props.currentItem, isPlayerReady])
 
     if (isLoading) {
         return (
@@ -44,14 +32,14 @@ const Player = props => {
         )
     }
 
-    if (queueItem) {
+    if (props.currentItem) {
         return (
             <YouTube
                 ref={_youtubeRef}
                 apiKey={props.boxKey}
                 play={true}
-                videoId={queueItem.video.link}
-                style={{ alignSelf: 'stretch', height: 200 }}
+                videoId={props.currentItem.video.link}
+                style={{ alignSelf: 'stretch', height: 204 }}
                 onReady={() => setPlayerReadiness(true)}
             />
         )
