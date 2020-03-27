@@ -48,7 +48,7 @@ const Player = props => {
         return (
             <YouTube
                 ref={_youtubeRef}
-                apiKey=''
+                apiKey={props.boxKey}
                 play={true}
                 videoId={queueItem.video.link}
                 style={{ alignSelf: 'stretch', height: 200 }}
