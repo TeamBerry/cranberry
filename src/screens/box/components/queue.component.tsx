@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from "react-native"
+import React, { useState, useRef } from "react"
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, Animated } from "react-native"
 import { SyncPacket } from "@teamberry/muscadine"
 import { Box } from "../../../models/box.model"
 import Collapsible from 'react-native-collapsible'
@@ -32,6 +32,40 @@ const Queue = ({ box, currentVideo }: Props) => {
         }
 
         return (<></>)
+    }
+
+    const rotateAnim = useRef(new Animated.Value(0)).current;
+
+    const rotateOpen = () => {
+        Animated
+            .timing(rotateAnim, {
+                toValue: 1,
+                duration: 500
+            })
+            .start();
+    }
+
+    const rotateClose = () => {
+        Animated
+            .timing(rotateAnim, {
+                toValue: 0,
+                duration: 500
+            })
+            .start();
+    }
+
+    const spin = rotateAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '180deg']
+    })
+
+    const toggleCollapsible = () => {
+        if (!isCollapsed) {
+            rotateClose();
+        } else {
+            rotateOpen();
+        }
+        setCollapse(!isCollapsed);
     }
 
     const QueueList = () => {
@@ -75,7 +109,7 @@ const Queue = ({ box, currentVideo }: Props) => {
     return (
         <>
             <TouchableOpacity
-                onPress={() => setCollapse(!isCollapsed)}
+                onPress={() => toggleCollapsible()}
                 activeOpacity={1}
             >
             <View style={styles.currentSpaceContainer}>
@@ -84,15 +118,17 @@ const Queue = ({ box, currentVideo }: Props) => {
                         <BoxName />
                         <CurrentVideo />
                     </View>
-                    <View style={styles.currentSpaceActions}>
-                        <Svg height="50" width="50">
-                            <G rotation="0" origin="15,20">
+                        <View style={styles.currentSpaceActions}>
+                            <Animated.View
+                                style={{transform: [{rotate: spin}]}}
+                            >
+                            <Svg height="50" width="40">
                                 <Polygon
-                                    points="24,17 6,17 15,25"
+                                    points="30,22 10,22 20,32"
                                     fill="white"
                                 />
-                            </G>
-                        </Svg>
+                            </Svg>
+                        </Animated.View>
                     </View>
                 </View>
             </View>
@@ -112,17 +148,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#404040',
         color: 'white',
         paddingLeft: 10,
-        paddingTop: 5
     },
     currentSpace: {
         flex: 1,
         flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     currentSpaceTexts: {
-        width: '90%',
+        width: 310,
     },
     currentSpaceActions: {
-        width: '10%',
+        width: 40
     },
     boxName: {
         color: '#BBBBBB',
