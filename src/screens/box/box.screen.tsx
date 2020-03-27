@@ -1,14 +1,15 @@
-import React, { useState, useContext } from "react";
-import { StyleSheet, View, ActivityIndicator, StatusBar, Platform, Text } from 'react-native';
+import React from "react";
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import io from "socket.io-client";
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Player from './components/player.component';
-import PanelComponent from './components/panel.component';
 import { Box } from '../../models/box.model';
 import BoxContext from "./box.context";
 import { SyncPacket } from "@teamberry/muscadine";
 import Queue from "./components/queue.component";
+import ChatTab from './components/chat-tab.component';
+import SocketContext from './../box/box.context';
 
 export class BoxScreen extends React.Component<{ route, navigation }> {
     boxToken: string = this.props.route.params.boxToken
@@ -87,9 +88,6 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
     render() {
         return (
             <>
-            {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: 'black'}}>
-                <StatusBar barStyle='dark-content' />
-            </View> */}
             <BoxContext.Provider value={this.state.socket}>
                 <View style={styles.playerSpace}>
                     {this.state.socket && this.state.boxKey ? (
@@ -102,13 +100,13 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                     )}
                 </View>
                 <Queue box={this.state.box} currentVideo={this.state.currentQueueItem}></Queue>
-                <View style={styles.panelSpace}>
-                    {this.state.socket ? (
-                        <PanelComponent boxToken={this.boxToken}></PanelComponent>
-                    ) : (
-                            <ActivityIndicator></ActivityIndicator>
-                        )}
-                </View>
+                {this.state.socket ? (
+                    <SocketContext.Consumer>
+                        {socket => <ChatTab boxToken={this.state.box._id} socket={socket}></ChatTab>}
+                    </SocketContext.Consumer>
+                ) : (
+                    <ActivityIndicator></ActivityIndicator>
+                )}
             </BoxContext.Provider>
             </>
         )
@@ -116,10 +114,6 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
 }
 
 const styles = StyleSheet.create({
-    panelSpace: {
-        backgroundColor: '#404040',
-        height: 546
-    },
     playerSpace: {
         height: 204,
         backgroundColor: '#262626'

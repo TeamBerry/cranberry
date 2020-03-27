@@ -27,6 +27,7 @@ const ChatMessage = ({ message }) => (
 const styles = StyleSheet.create({
     message: {
         paddingVertical: 3,
+        paddingHorizontal: 7
     },
     author: {
         fontFamily: 'Montserrat-SemiBold'

@@ -89,10 +89,11 @@ export class HomeScreen extends React.Component<{navigation}> {
                         data={boxes}
                         refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={this.onRefresh.bind(this)}/>}
                         renderItem={({ item, index, separators }) => (
-                            <TouchableOpacity style={styles.card}
-                                onPress={() => this.props.navigation.navigate('Box', {boxToken: item._id})}>
-                                <BoxCard {...item}
-                                ></BoxCard>
+                            <TouchableOpacity
+                                style={styles.card}
+                                onPress={() => this.props.navigation.navigate('Box', { boxToken: item._id })}
+                            >
+                                <BoxCard {...item} />
                             </TouchableOpacity>
                         )}
                         keyExtractor={(item) => item.name}
