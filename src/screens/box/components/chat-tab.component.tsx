@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { TextInput, StyleSheet, KeyboardAvoidingView, AsyncStorage } from "react-native"
+import { TextInput, StyleSheet, KeyboardAvoidingView } from "react-native"
 import { Message, FeedbackMessage } from '@teamberry/muscadine'
+import AsyncStorage from '@react-native-community/async-storage';
 
 import ChatMessage from './chat-message.component';
 import { ScrollView } from "react-native-gesture-handler";
