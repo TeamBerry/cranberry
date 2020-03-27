@@ -19,12 +19,14 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         hasLoadedBox: boolean,
         box: Box,
         socket: any,
+        boxKey: string,
         currentQueueItem: SyncPacket['item']
     } = {
             error: null,
             hasLoadedBox: false,
             box: null,
             socket: null,
+            boxKey: null,
             currentQueueItem: null
         }
 
@@ -41,31 +43,30 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                 reconnectionDelay: 500,
                 reconnectionAttempts: 10
             });
-            this.socketConnection.on('connect', () => {
-                if (!this.state.socket) {
-                    console.log('Connection attempt')
-                    this.socketConnection.emit('auth', {
-                        origin: 'Cranberry',
-                        type: 'sync',
-                        boxToken: box._id,
-                        userToken: user._id
-                    })
-                }
-            })
-            this.socketConnection
-                .on('confirm', (feedback) => {
-                    console.log('Connected', feedback)
+            this.socketConnection.
+                on('connect', () => {
+                    if (!this.state.socket) {
+                        console.log('Connection attempt')
+                        this.socketConnection.emit('auth', {
+                            origin: 'Cranberry',
+                            type: 'sync',
+                            boxToken: box._id,
+                            userToken: user._id
+                        })
+                    }
+                })
+                .on('confirm', () => {
                     this.setState({ socket: this.socketConnection })
                 })
-            this.socketConnection
+                .on('bootstrap', (bootstrapMaterial) => {
+                    this.setState({ boxKey: bootstrapMaterial.boxKey });
+                })
                 .on('sync', (syncPacket: SyncPacket) => {
                     this.setState({ currentQueueItem: syncPacket.item });
                 })
-            this.socketConnection
                 .on('box', (box: Box) => {
                     this.setState({box})
                 })
-            this.socketConnection
                 .on('denied', () => {
                     console.log('DENIED')
                 })
@@ -79,8 +80,6 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
     }
 
     render() {
-        const { box, hasLoadedBox } = this.state
-
         return (
             <>
             {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: 'black'}}>
@@ -88,9 +87,9 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
             </View> */}
             <BoxContext.Provider value={this.state.socket}>
                 <View style={styles.playerSpace}>
-                    {this.state.socket ? (
+                    {this.state.socket && this.state.boxKey ? (
                         <BoxContext.Consumer>
-                            {socket => <Player {...this.props} socket={socket} boxToken={this.boxToken}></Player>}
+                            {socket => <Player {...this.props} socket={socket} boxToken={this.boxToken} boxKey={this.state.boxKey}></Player>}
                         </BoxContext.Consumer>
                     ) : (
                             <ActivityIndicator></ActivityIndicator>
