@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react"
 import { Image, View, Text, StyleSheet, TextInput, FlatList, ActivityIndicator } from "react-native"
 import axios from "axios"
 import AsyncStorage from '@react-native-community/async-storage';
+import { VideoSubmissionRequest } from "@teamberry/muscadine";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-const SearchTab = () => {
+const SearchTab = (props: {socket: any, boxToken: string}) => {
     const [searchValue, setSearchValue] = useState('')
     const [youtubeSearchResults, setSearchResults] = useState([])
     const [user, setUser] = useState(null)
@@ -47,6 +49,16 @@ const SearchTab = () => {
         setSearched(true)
     }
 
+    const submit = async (link: string) => {
+        const submissionPayload: VideoSubmissionRequest = {
+            link,
+            userToken: user._id,
+            boxToken: props.boxToken
+        }
+
+        props.socket.emit('video', submissionPayload)
+    }
+
     const SearchList = () => {
         if (isSearching) {
             return <ActivityIndicator />
@@ -67,16 +79,20 @@ const SearchTab = () => {
             <Text style={styles.resultsHelp}>Tap to submit</Text>
             <FlatList
                 data={youtubeSearchResults}
-                renderItem={({ item }) => (
-                    <View style={styles.resultItem}>
-                        <Image
-                            style={{ width: 88.89, height: 60 }}
-                            source={{ uri: `https://i.ytimg.com/vi/${item.link}/hqdefault.jpg` }}
-                        />
-                        <View style={{ paddingLeft: 10, width: 200 }}>
-                            <Text style={{color: 'white', fontFamily: 'Monsterrat-Light'}} numberOfLines={2}>{item.name}</Text>
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            onPress={() => submit(item.link)}
+                        >
+                        <View style={styles.resultItem}>
+                            <Image
+                                style={{ width: 88.89, height: 60 }}
+                                source={{ uri: `https://i.ytimg.com/vi/${item.link}/hqdefault.jpg` }}
+                            />
+                            <View style={{ paddingLeft: 10, width: 200 }}>
+                                <Text style={{color: 'white', fontFamily: 'Monsterrat-Light'}} numberOfLines={2}>{item.name}</Text>
+                            </View>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 )}
                 keyExtractor={(item, index) => index.toString()}
                 />

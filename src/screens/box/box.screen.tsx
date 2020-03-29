@@ -91,7 +91,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         return (
             <>
                 <SideMenu
-                    menu={<SearchTab />}
+                    menu={<SearchTab {...{ socket: this.socketConnection, boxToken: this.boxToken }}/>}
                     bounceBackOnOverdraw={false}
                     menuPosition={'right'}
                     openMenuOffset={310}
