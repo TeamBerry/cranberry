@@ -5,7 +5,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import ChatMessage from './chat-message.component';
 import { ScrollView } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const ChatTab = (props: {socket: any, boxToken: string}) => {
 

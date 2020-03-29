@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import io from "socket.io-client";
 import AsyncStorage from '@react-native-community/async-storage';
+import SideMenu from 'react-native-side-menu';
 
 import Player from './components/player.component';
 import { Box } from '../../models/box.model';
@@ -10,6 +11,7 @@ import { SyncPacket } from "@teamberry/muscadine";
 import Queue from "./components/queue.component";
 import ChatTab from './components/chat-tab.component';
 import SocketContext from './../box/box.context';
+import SearchTab from "./components/search-tab.component";
 
 export class BoxScreen extends React.Component<{ route, navigation }> {
     boxToken: string = this.props.route.params.boxToken
@@ -88,7 +90,13 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
     render() {
         return (
             <>
-            <BoxContext.Provider value={this.state.socket}>
+                <SideMenu
+                    menu={<SearchTab />}
+                    bounceBackOnOverdraw={false}
+                    menuPosition={'right'}
+                    openMenuOffset={310}
+                >
+                <BoxContext.Provider value={this.state.socket}>
                 <View style={styles.playerSpace}>
                     {this.state.socket && this.state.boxKey ? (
                     <Player
@@ -107,7 +115,8 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                 ) : (
                     <ActivityIndicator></ActivityIndicator>
                 )}
-            </BoxContext.Provider>
+                    </BoxContext.Provider>
+                </SideMenu>
             </>
         )
     }
