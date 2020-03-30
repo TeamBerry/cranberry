@@ -13,6 +13,8 @@ const Panel = (props: { boxToken: string, socket: any}) => {
         { key: 'second', title: 'Search' }
     ])
 
+    const initialLayout = { width: Dimensions.get('window').width };
+
     const FirstRoute = () => (
         <ChatTab boxToken={props.boxToken} socket={props.socket} />
     )
@@ -46,6 +48,7 @@ const Panel = (props: { boxToken: string, socket: any}) => {
                 second: SecondRoute
             })}
             onIndexChange={setIndex}
+            initialLayout={initialLayout}
         />
     )
 }
