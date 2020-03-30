@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         paddingLeft: 10,
         backgroundColor: '#262626',
-        borderColor: '#404040',
+        borderColor: '#191919',
         borderStyle: 'solid',
         borderBottomWidth: 1
     },
@@ -130,16 +130,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#262626',
-        paddingLeft: 10,
     },
     titlePage: {
         fontFamily: 'Montserrat-SemiBold',
         fontSize: 30,
         marginTop: '1%',
         marginBottom: 10,
-        color: 'white'
+        color: 'white',
+        paddingLeft: 10
     },
     card: {
-        paddingBottom: 10
+        borderBottomWidth: 1,
+        borderColor: '#404040',
+        borderStyle: 'solid',
+        paddingVertical: 10
     }
 });
