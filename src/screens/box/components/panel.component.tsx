@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
@@ -9,19 +9,20 @@ const Panel = (props: { boxToken: string, socket: any}) => {
 
     const [index, setIndex] = useState(0)
     const [routes] = useState([
-        { key: 'first', title: 'Chat' },
-        { key: 'second', title: 'Search' }
+        { key: 'chat', title: 'Chat' },
+        { key: 'search', title: 'Search' }
     ])
 
     const initialLayout = { width: Dimensions.get('window').width };
 
-    const FirstRoute = () => (
-        <ChatTab boxToken={props.boxToken} socket={props.socket} />
-    )
-
-    const SecondRoute = () => (
-        <SearchTab boxToken={props.boxToken} socket={props.socket}/>
-    )
+    const renderScene = ({ route }) => {
+        switch (route.key) {
+            case 'chat':
+                return <ChatTab boxToken={props.boxToken} socket={props.socket} />
+            case 'search':
+                return <SearchTab boxToken={props.boxToken} socket={props.socket}/>
+        }
+    }
 
     const renderTabBar = (props) => {
         return (
@@ -43,10 +44,7 @@ const Panel = (props: { boxToken: string, socket: any}) => {
         <TabView
             navigationState={{ index, routes }}
             renderTabBar={renderTabBar}
-            renderScene={SceneMap({
-                first: FirstRoute,
-                second: SecondRoute
-            })}
+            renderScene={renderScene}
             onIndexChange={setIndex}
             initialLayout={initialLayout}
         />

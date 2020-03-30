@@ -18,9 +18,10 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
             setUser(user);
         }
 
-        getSession();
+        if (user === null) {
+            getSession();
+        }
     }, [])
-
 
     const search = async () => {
         setSearching(true)
