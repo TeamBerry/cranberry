@@ -2,16 +2,14 @@ import React from "react";
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import io from "socket.io-client";
 import AsyncStorage from '@react-native-community/async-storage';
-import SideMenu from 'react-native-side-menu';
 
 import Player from './components/player.component';
 import { Box } from '../../models/box.model';
 import BoxContext from "./box.context";
 import { SyncPacket } from "@teamberry/muscadine";
 import Queue from "./components/queue.component";
-import ChatTab from './components/chat-tab.component';
 import SocketContext from './../box/box.context';
-import SearchTab from "./components/search-tab.component";
+import Panel from "./components/panel.component";
 
 export class BoxScreen extends React.Component<{ route, navigation }> {
     boxToken: string = this.props.route.params.boxToken
@@ -90,12 +88,6 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
     render() {
         return (
             <>
-                <SideMenu
-                    menu={<SearchTab {...{ socket: this.socketConnection, boxToken: this.boxToken }}/>}
-                    bounceBackOnOverdraw={false}
-                    menuPosition={'right'}
-                    openMenuOffset={310}
-                >
                 <BoxContext.Provider value={this.state.socket}>
                 <View style={styles.playerSpace}>
                     {this.state.socket && this.state.boxKey ? (
@@ -110,13 +102,10 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                 <Queue box={this.state.box} currentVideo={this.state.currentQueueItem}></Queue>
                 {this.state.socket ? (
                     <SocketContext.Consumer>
-                        {socket => <ChatTab boxToken={this.state.box._id} socket={socket}></ChatTab>}
+                        { socket => <Panel boxToken={this.state.box._id} socket={socket}/> }
                     </SocketContext.Consumer>
-                ) : (
-                    <ActivityIndicator></ActivityIndicator>
-                )}
-                    </BoxContext.Provider>
-                </SideMenu>
+                ) : (<ActivityIndicator />)}
+                </BoxContext.Provider>
             </>
         )
     }

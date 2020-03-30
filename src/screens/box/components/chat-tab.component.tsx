@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import { TextInput, StyleSheet, KeyboardAvoidingView, Platform, View } from "react-native"
 import { Message, FeedbackMessage } from '@teamberry/muscadine'
 import AsyncStorage from '@react-native-community/async-storage';
