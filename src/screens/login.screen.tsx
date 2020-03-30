@@ -16,10 +16,6 @@ export default function LoginScreen ({navigation}) {
         setPassword(password)
     }
 
-    const goToSignUp = () => {
-        navigation.navigate('Signup')
-    }
-
     const { signIn } = useContext(AuthContext);
 
     return (
@@ -27,7 +23,7 @@ export default function LoginScreen ({navigation}) {
             <View style={styles.headerContainer}>
                 <View style={styles.headerStyle}>
                     <TouchableOpacity
-                        onPress={() => goToSignUp()}
+                        onPress={() => navigation.navigate('SignUp')}
                     >
                         <Text style={styles.loginLink}>New Account</Text>
                     </TouchableOpacity>

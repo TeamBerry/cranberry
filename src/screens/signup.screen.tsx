@@ -20,10 +20,6 @@ const SignupScreen = ({navigation}) => {
         setUsername(username)
     }
 
-    const goToLogin = () => {
-        navigation.navigate('Login')
-    }
-
     const { signUp } = useContext(AuthContext)
 
     return (
@@ -31,7 +27,7 @@ const SignupScreen = ({navigation}) => {
         <View style={styles.headerContainer}>
             <View style={styles.headerStyle}>
                 <TouchableOpacity
-                    onPress={() => goToLogin()}
+                    onPress={() => navigation.navigate('SignIn')}
                 >
                 <Text style={styles.loginLink}>Log in</Text>
                 </TouchableOpacity>
