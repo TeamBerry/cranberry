@@ -52,6 +52,7 @@ export default function App({ navigation }) {
 
             try {
                 userToken = await AsyncStorage.getItem('BBOX-token')
+                axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`
             } catch (e) {
                 console.log('Restoring token failed.')
             }

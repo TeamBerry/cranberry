@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { TextInput, StyleSheet, KeyboardAvoidingView, Platform, View } from "react-native"
+import { TextInput, StyleSheet, KeyboardAvoidingView, View } from "react-native"
 import { Message, FeedbackMessage } from '@teamberry/muscadine'
 import AsyncStorage from '@react-native-community/async-storage';
 
 import ChatMessage from './chat-message.component';
 import { ScrollView } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const ChatTab = (props: {socket: any, boxToken: string}) => {
 
@@ -76,7 +75,7 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#262626',
+        backgroundColor: '#191919',
         justifyContent: 'space-between'
     },
     messageList: {

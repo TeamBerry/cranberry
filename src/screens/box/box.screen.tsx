@@ -8,8 +8,8 @@ import { Box } from '../../models/box.model';
 import BoxContext from "./box.context";
 import { SyncPacket } from "@teamberry/muscadine";
 import Queue from "./components/queue.component";
-import ChatTab from './components/chat-tab.component';
 import SocketContext from './../box/box.context';
+import Panel from "./components/panel.component";
 
 export class BoxScreen extends React.Component<{ route, navigation }> {
     boxToken: string = this.props.route.params.boxToken
@@ -88,7 +88,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
     render() {
         return (
             <>
-            <BoxContext.Provider value={this.state.socket}>
+                <BoxContext.Provider value={this.state.socket}>
                 <View style={styles.playerSpace}>
                     {this.state.socket && this.state.boxKey ? (
                     <Player
@@ -102,12 +102,10 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                 <Queue box={this.state.box} currentVideo={this.state.currentQueueItem}></Queue>
                 {this.state.socket ? (
                     <SocketContext.Consumer>
-                        {socket => <ChatTab boxToken={this.state.box._id} socket={socket}></ChatTab>}
+                        { socket => <Panel boxToken={this.state.box._id} socket={socket}/> }
                     </SocketContext.Consumer>
-                ) : (
-                    <ActivityIndicator></ActivityIndicator>
-                )}
-            </BoxContext.Provider>
+                ) : (<ActivityIndicator />)}
+                </BoxContext.Provider>
             </>
         )
     }
