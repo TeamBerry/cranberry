@@ -102,11 +102,10 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.tabHeader}>Search YouTube</Text>
             <View style={styles.searchSpace}>
                 <TextInput
                     style={styles.chatInput}
-                    placeholder='Search for videos to add...'
+                    placeholder='Search YouTube for videos to add...'
                     placeholderTextColor='#BBB'
                     onChangeText={(text) => setSearchValue(text)}
                     value={searchValue}
@@ -123,15 +122,9 @@ const styles = StyleSheet.create({
         height: '100%',
         backgroundColor: '#191919'
     },
-    tabHeader: {
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 20,
-        fontFamily: 'Montserrat-SemiBold',
-        padding: 20
-    },
     searchSpace: {
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        paddingTop: 10
     },
     chatInput: {
         padding: 10,

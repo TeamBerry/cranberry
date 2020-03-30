@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Dimensions } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 import ChatTab from "./chat-tab.component";
 import SearchTab from "./search-tab.component";
@@ -21,9 +21,26 @@ const Panel = (props: { boxToken: string, socket: any}) => {
         <SearchTab boxToken={props.boxToken} socket={props.socket}/>
     )
 
+    const renderTabBar = (props) => {
+        return (
+            <TabBar
+                {...props}
+                style={{ backgroundColor: '#191919' }}
+                indicatorStyle={{ backgroundColor: '#009AEB' }}
+                pressColor={'#191919'}
+                labelStyle={{
+                    fontFamily: 'Montserrat-Regular',
+                    textTransform: 'capitalize'
+                }}
+                activeColor={'#009AEB'}
+            />
+        )
+    }
+
     return (
         <TabView
             navigationState={{ index, routes }}
+            renderTabBar={renderTabBar}
             renderScene={SceneMap({
                 first: FirstRoute,
                 second: SecondRoute
