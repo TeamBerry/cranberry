@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
-import { Image, StyleSheet, View, Button, KeyboardAvoidingView, Text, TouchableOpacity, ShadowPropTypesIOS } from "react-native";
-import FormTextInput from "../components/form-text-input.component";
-import AuthContext from "../shared/auth.context";
+import React, { useState, useContext } from "react"
+import { Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity } from "react-native"
+import FormTextInput from "../components/form-text-input.component"
+import AuthContext from "../shared/auth.context"
 
-export default function LoginScreen ({navigation}) {
-
+const SignupScreen = ({navigation}) => {
     const [email, setEmail] = useState('')
+    const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
     const onEmailChange = (email: string) => {
@@ -16,23 +16,27 @@ export default function LoginScreen ({navigation}) {
         setPassword(password)
     }
 
-    const goToSignUp = () => {
-        navigation.navigate('Signup')
+    const onUsernameChange = (username: string) => {
+        setUsername(username)
     }
 
-    const { signIn } = useContext(AuthContext);
+    const goToLogin = () => {
+        navigation.navigate('Login')
+    }
+
+    const { signUp } = useContext(AuthContext)
 
     return (
         <>
-            <View style={styles.headerContainer}>
-                <View style={styles.headerStyle}>
-                    <TouchableOpacity
-                        onPress={() => goToSignUp()}
-                    >
-                        <Text style={styles.loginLink}>New Account</Text>
-                    </TouchableOpacity>
-                </View>
+        <View style={styles.headerContainer}>
+            <View style={styles.headerStyle}>
+                <TouchableOpacity
+                    onPress={() => goToLogin()}
+                >
+                <Text style={styles.loginLink}>Log in</Text>
+                </TouchableOpacity>
             </View>
+        </View>
         <KeyboardAvoidingView
             style={styles.container}
             behavior="padding"
@@ -40,7 +44,7 @@ export default function LoginScreen ({navigation}) {
             <Image
                 source={require('./../../assets/berrybox-logo-master.png')}
                 style={styles.image}
-            ></Image>
+            />
             <View style={styles.form}>
                 <FormTextInput
                     value={email}
@@ -49,21 +53,28 @@ export default function LoginScreen ({navigation}) {
                     autoCorrect={false}
                     keyboardType='email-address'
                     returnKeyType='next'
-                ></FormTextInput>
+                />
+                <FormTextInput
+                    value={username}
+                    onChangeText={(username) => onUsernameChange(username)}
+                    placeholder='Username'
+                    autoCorrect={false}
+                    returnKeyType='next'
+                />
                 <FormTextInput
                     value={password}
                     onChangeText={(password) => onPasswordChange(password)}
                     placeholder='Password'
                     secureTextEntry={true}
                     returnKeyType='done'
-                    onSubmitEditing={() => signIn({email, password})}
-                ></FormTextInput>
+                    onSubmitEditing={() => signUp({email, password})}
+                    />
                 <Button
-                    title="Log in"
-                    onPress={() => signIn({email, password})}
+                    title="Sign Up"
+                    onPress={() => signUp({email, password})}
                 />
             </View>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
         </>
     )
 }
@@ -91,7 +102,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         backgroundColor: '#262626',
         paddingTop: 40
     },
@@ -105,3 +116,5 @@ const styles = StyleSheet.create({
         width: 150,
     }
 })
+
+export default SignupScreen

@@ -9,6 +9,7 @@ import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
 import { darkTheme, lightTheme } from './src/shared/themes';
 import AsyncStorage from '@react-native-community/async-storage';
+import SignupScreen from './src/screens/signup.screen';
 
 const Stack = createStackNavigator();
 
@@ -83,6 +84,21 @@ export default function App({ navigation }) {
                     console.log(error)
                 })
             },
+            signUp: async data => {
+                axios.post(`https://araza.berrybox.tv/auth/signup`,
+                    {
+                        mail: data.email,
+                        password: data.password
+                    }
+                ).then(async (response) => {
+                    await AsyncStorage.setItem('BBOX-token', response.data.bearer)
+                    await AsyncStorage.setItem('BBOX-expires_at', JSON.stringify(response.data.expiresIn))
+                    await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject))
+                    dispatch({ type: 'SIGN_IN', token: response.data.bearer })
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
             signOut: async () => {
                 await AsyncStorage.removeItem('BBOX-token')
                 await AsyncStorage.removeItem('BBOX-expires_at')
@@ -130,6 +146,7 @@ export default function App({ navigation }) {
             <NavigationContainer theme={ActiveTheme}>
                 <Stack.Navigator>
                     {state.userToken === null ? (
+                        <>
                         <Stack.Screen
                             name="SignIn"
                             component={LoginScreen}
@@ -138,6 +155,15 @@ export default function App({ navigation }) {
                                 headerShown: false
                             }}
                         />
+                        <Stack.Screen
+                            name="SignUp"
+                            component={SignupScreen}
+                            options={{
+                                animationTypeForReplace: 'pop',
+                                headerShown: false
+                            }}
+                        />
+                        </>
                     ) : (
                         <>
                             <Stack.Screen
