@@ -1,6 +1,7 @@
 import React, { useReducer, useEffect, useMemo, useState } from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Provider as PaperProvider } from 'react-native-paper';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
@@ -10,6 +11,7 @@ import axios from 'axios';
 import { darkTheme, lightTheme } from './src/shared/themes';
 import AsyncStorage from '@react-native-community/async-storage';
 import SignupScreen from './src/screens/signup.screen';
+import CreateBoxScreen from './src/screens/create-box.screen';
 
 const Stack = createStackNavigator();
 
@@ -21,12 +23,14 @@ export default function App({ navigation }) {
         (prevState, action) => {
             switch (action.type) {
                 case 'RESTORE_TOKEN':
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${action.token}`
                     return {
                         ...prevState,
                         userToken: action.token,
                         isLoading: false
                     };
                 case 'SIGN_IN':
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${action.token}`
                     return {
                         ...prevState,
                         isSignout: false,
@@ -53,7 +57,6 @@ export default function App({ navigation }) {
 
             try {
                 userToken = await AsyncStorage.getItem('BBOX-token')
-                axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`
             } catch (e) {
                 console.log('Restoring token failed.')
             }
@@ -118,6 +121,62 @@ export default function App({ navigation }) {
         }
     }
 
+    const AuthFlow = () => (
+        <Stack.Navigator>
+        <Stack.Screen
+            name="SignIn"
+            component={LoginScreen}
+            options={{
+                animationTypeForReplace: 'pop',
+                headerShown: false
+            }}
+        />
+        <Stack.Screen
+            name="SignUp"
+            component={SignupScreen}
+            options={{
+                animationTypeForReplace: 'pop',
+                headerShown: false
+            }}
+        />
+        </Stack.Navigator>
+    )
+
+    const MainFlow = () => (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
+            <Stack.Screen
+                name="Box"
+                options={{
+                    headerShown: false
+                }}
+            >{props => <BoxScreen {...props}></BoxScreen>}</Stack.Screen>
+        </Stack.Navigator>
+    )
+
+    const RootStack = createStackNavigator();
+
+    const RootFlow = () => (
+        <RootStack.Navigator mode="modal">
+            <RootStack.Screen
+                name="Main"
+                component={MainFlow}
+                options={{headerShown: false}}
+            />
+            <RootStack.Screen
+                name="CreateBox"
+                component={CreateBoxScreen}
+                options={{ headerShown: false }}
+            />
+        </RootStack.Navigator>
+    )
+
     if (!isAppReady) {
         return (
             <View style={{flex: 1}}>
@@ -130,48 +189,17 @@ export default function App({ navigation }) {
     }
 
     return (
+        <PaperProvider>
         <AuthContext.Provider value={authContext}>
             <NavigationContainer theme={ActiveTheme}>
-                <Stack.Navigator>
-                    {state.userToken === null ? (
-                        <>
-                        <Stack.Screen
-                            name="SignIn"
-                            component={LoginScreen}
-                            options={{
-                                animationTypeForReplace: 'pop',
-                                headerShown: false
-                            }}
-                        />
-                        <Stack.Screen
-                            name="SignUp"
-                            component={SignupScreen}
-                            options={{
-                                animationTypeForReplace: 'pop',
-                                headerShown: false
-                            }}
-                        />
-                        </>
+                {state.userToken === null ? (
+                        <AuthFlow />
                     ) : (
-                        <>
-                            <Stack.Screen
-                                name="Home"
-                                component={HomeScreen}
-                                options={{
-                                    headerShown: false
-                                }}
-                            />
-                            <Stack.Screen
-                                name="Box"
-                                options={{
-                                    headerShown: false
-                                }}
-                            >{props => <BoxScreen {...props}></BoxScreen>}</Stack.Screen>
-                        </>
+                        <RootFlow />
                     )
                 }
-                </Stack.Navigator>
             </NavigationContainer>
-        </AuthContext.Provider>
+            </AuthContext.Provider>
+        </PaperProvider>
     )
 }

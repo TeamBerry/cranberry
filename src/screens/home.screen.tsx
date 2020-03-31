@@ -6,6 +6,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import CustomMenu from "../components/custom-menu.component";
 import SideMenu from 'react-native-side-menu';
 import AsyncStorage from '@react-native-community/async-storage';
+import { FAB } from "react-native-paper";
 
 export class HomeScreen extends React.Component<{navigation}> {
     static navigationOptions = {
@@ -102,6 +103,13 @@ export class HomeScreen extends React.Component<{navigation}> {
                         <ActivityIndicator />
                     )}
                 </View>
+
+                <FAB
+                    style={styles.fab}
+                    color='white'
+                    icon="plus"
+                    onPress={() => this.props.navigation.push('CreateBox')}
+                />
             </SideMenu>
         )
     }
@@ -144,5 +152,13 @@ const styles = StyleSheet.create({
         borderColor: '#404040',
         borderStyle: 'solid',
         paddingVertical: 10
-    }
+    },
+    fab: {
+        position: 'absolute',
+        marginRight: 16,
+        marginBottom: 30,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#009AEB'
+    },
 });

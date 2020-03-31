@@ -4,6 +4,7 @@ import axios from "axios"
 import AsyncStorage from '@react-native-community/async-storage';
 import { VideoSubmissionRequest } from "@teamberry/muscadine";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { Snackbar } from 'react-native-paper';
 
 const SearchTab = (props: {socket: any, boxToken: string}) => {
     const [searchValue, setSearchValue] = useState('')
@@ -11,6 +12,8 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     const [user, setUser] = useState(null)
     const [hasSearched, setSearched] = useState(false)
     const [isSearching, setSearching] = useState(false)
+    const [error, setError] = useState(false)
+    const [isSubmitted, setSubmitted] = useState(false)
 
     useEffect(() => {
         const getSession = async () => {
@@ -26,6 +29,7 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     const search = async () => {
         setSearching(true)
         setSearched(false)
+        setError(false)
 
         if (searchValue === '') {
             setSearchResults([])
@@ -33,21 +37,26 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
             return
         }
 
-        const youtubeSearchResults = await axios.get(`https://araza.berrybox.tv/search`, {
-            params: { value: searchValue },
-        })
+        try {
 
-        const videos = youtubeSearchResults.data.items.map((responseVideo) => {
-            return {
-                _id: null,
-                name: responseVideo.snippet.title,
-                link: responseVideo.id.videoId
-            }
-        })
+            const youtubeSearchResults = await axios.get(`https://araza.berrybox.tv/search`, {
+                params: { value: searchValue },
+            })
 
-        setSearchResults(videos)
+            const videos = youtubeSearchResults.data.items.map((responseVideo) => {
+                return {
+                    _id: null,
+                    name: responseVideo.snippet.title,
+                    link: responseVideo.id.videoId
+                }
+            })
+
+            setSearchResults(videos)
+            setSearched(true)
+        } catch (error) {
+            setError(true)
+        }
         setSearching(false)
-        setSearched(true)
     }
 
     const submit = async (link: string) => {
@@ -58,6 +67,7 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
         }
 
         props.socket.emit('video', submissionPayload)
+        setSubmitted(true)
     }
 
     const SearchList = () => {
@@ -114,6 +124,34 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
                 ></TextInput>
                 <SearchList />
             </View>
+            <Snackbar
+                    visible={isSubmitted}
+                    duration={1500}
+                    style={{
+                        backgroundColor: '#090909',
+                        borderLeftColor: '#62d77c',
+                        borderLeftWidth: 10,
+                    }}
+                    onDismiss={() => setSubmitted(false)}
+                >
+                    Video submitted successfully!
+            </Snackbar>
+            <Snackbar
+                    visible={error}
+                    duration={5000}
+                    style={{
+                        backgroundColor: '#090909',
+                        borderLeftColor: '#B30F4F',
+                        borderLeftWidth: 10,
+                    }}
+                    onDismiss={() => setError(false)}
+                    action={{
+                        label: 'retry',
+                        onPress: () => search()
+                    }}
+                >
+                    Something wrong happened. Try again?
+                </Snackbar>
         </View>
     )
 }
