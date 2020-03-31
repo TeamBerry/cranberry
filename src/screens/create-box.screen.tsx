@@ -35,7 +35,7 @@ const CreateBoxScreen = ({ navigation }) => {
                 loop: isLoop
             }
         })
-        setBox(box)
+        setBox(box.data)
     }
 
     return (

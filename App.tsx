@@ -23,12 +23,14 @@ export default function App({ navigation }) {
         (prevState, action) => {
             switch (action.type) {
                 case 'RESTORE_TOKEN':
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${action.token}`
                     return {
                         ...prevState,
                         userToken: action.token,
                         isLoading: false
                     };
                 case 'SIGN_IN':
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${action.token}`
                     return {
                         ...prevState,
                         isSignout: false,
@@ -55,7 +57,6 @@ export default function App({ navigation }) {
 
             try {
                 userToken = await AsyncStorage.getItem('BBOX-token')
-                axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`
             } catch (e) {
                 console.log('Restoring token failed.')
             }
