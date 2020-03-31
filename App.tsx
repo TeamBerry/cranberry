@@ -1,6 +1,7 @@
 import React, { useReducer, useEffect, useMemo, useState } from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Provider as PaperProvider } from 'react-native-paper';
 import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
@@ -130,6 +131,7 @@ export default function App({ navigation }) {
     }
 
     return (
+        <PaperProvider>
         <AuthContext.Provider value={authContext}>
             <NavigationContainer theme={ActiveTheme}>
                 <Stack.Navigator>
@@ -172,6 +174,7 @@ export default function App({ navigation }) {
                 }
                 </Stack.Navigator>
             </NavigationContainer>
-        </AuthContext.Provider>
+            </AuthContext.Provider>
+        </PaperProvider>
     )
 }
