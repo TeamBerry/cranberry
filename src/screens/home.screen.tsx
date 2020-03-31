@@ -108,6 +108,7 @@ export class HomeScreen extends React.Component<{navigation}> {
                     style={styles.fab}
                     color='white'
                     icon="plus"
+                    onPress={() => this.props.navigation.push('CreateBox')}
                 />
             </SideMenu>
         )

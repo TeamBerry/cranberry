@@ -11,6 +11,7 @@ import axios from 'axios';
 import { darkTheme, lightTheme } from './src/shared/themes';
 import AsyncStorage from '@react-native-community/async-storage';
 import SignupScreen from './src/screens/signup.screen';
+import CreateBoxScreen from './src/screens/create-box.screen';
 
 const Stack = createStackNavigator();
 
@@ -119,6 +120,62 @@ export default function App({ navigation }) {
         }
     }
 
+    const AuthFlow = () => (
+        <Stack.Navigator>
+        <Stack.Screen
+            name="SignIn"
+            component={LoginScreen}
+            options={{
+                animationTypeForReplace: 'pop',
+                headerShown: false
+            }}
+        />
+        <Stack.Screen
+            name="SignUp"
+            component={SignupScreen}
+            options={{
+                animationTypeForReplace: 'pop',
+                headerShown: false
+            }}
+        />
+        </Stack.Navigator>
+    )
+
+    const MainFlow = () => (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
+            <Stack.Screen
+                name="Box"
+                options={{
+                    headerShown: false
+                }}
+            >{props => <BoxScreen {...props}></BoxScreen>}</Stack.Screen>
+        </Stack.Navigator>
+    )
+
+    const RootStack = createStackNavigator();
+
+    const RootFlow = () => (
+        <RootStack.Navigator mode="modal">
+            <RootStack.Screen
+                name="Main"
+                component={MainFlow}
+                options={{headerShown: false}}
+            />
+            <RootStack.Screen
+                name="CreateBox"
+                component={CreateBoxScreen}
+                options={{ headerShown: false }}
+            />
+        </RootStack.Navigator>
+    )
+
     if (!isAppReady) {
         return (
             <View style={{flex: 1}}>
@@ -134,45 +191,12 @@ export default function App({ navigation }) {
         <PaperProvider>
         <AuthContext.Provider value={authContext}>
             <NavigationContainer theme={ActiveTheme}>
-                <Stack.Navigator>
-                    {state.userToken === null ? (
-                        <>
-                        <Stack.Screen
-                            name="SignIn"
-                            component={LoginScreen}
-                            options={{
-                                animationTypeForReplace: 'pop',
-                                headerShown: false
-                            }}
-                        />
-                        <Stack.Screen
-                            name="SignUp"
-                            component={SignupScreen}
-                            options={{
-                                animationTypeForReplace: 'pop',
-                                headerShown: false
-                            }}
-                        />
-                        </>
+                {state.userToken === null ? (
+                        <AuthFlow />
                     ) : (
-                        <>
-                            <Stack.Screen
-                                name="Home"
-                                component={HomeScreen}
-                                options={{
-                                    headerShown: false
-                                }}
-                            />
-                            <Stack.Screen
-                                name="Box"
-                                options={{
-                                    headerShown: false
-                                }}
-                            >{props => <BoxScreen {...props}></BoxScreen>}</Stack.Screen>
-                        </>
+                        <RootFlow />
                     )
                 }
-                </Stack.Navigator>
             </NavigationContainer>
             </AuthContext.Provider>
         </PaperProvider>
