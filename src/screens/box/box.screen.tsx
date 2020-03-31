@@ -37,9 +37,6 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         try {
             const box: Box = await (await fetch(`https://araza.berrybox.tv/boxes/${this.boxToken}`)).json()
             this.setState({ box, hasLoadedBox: true })
-            if (this.state.socket) {
-                this.socketConnection.disconnect();
-            }
             console.log('Box loaded. Connecting.')
             this.socketConnection = io('https://boquila.berrybox.tv', {
                 transports: ['websocket'],
@@ -85,7 +82,9 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
     }
 
     async componentWillUnmount() {
-        this.socketConnection.disconnect()
+        if (this.socketConnection) {
+            this.socketConnection.disconnect()
+        }
     }
 
     render() {
