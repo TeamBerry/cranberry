@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { TextInput, StyleSheet, KeyboardAvoidingView } from "react-native"
+import { TextInput, StyleSheet, KeyboardAvoidingView, View } from "react-native"
 import { Message, FeedbackMessage } from '@teamberry/muscadine'
 import AsyncStorage from '@react-native-community/async-storage';
 
 import ChatMessage from './chat-message.component';
 import { ScrollView } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const ChatTab = (props: {socket: any, boxToken: string}) => {
 
@@ -49,38 +48,39 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
     }
 
     return (
-        <SafeAreaView style={styles.chatTab}>
-            <KeyboardAvoidingView style={styles.messageList} behavior="padding" enabled>
-                <ScrollView style={styles.messageList}>
-                    {messages.map((message, index) => {
-                        return (
-                            <ChatMessage key={index} message={message}></ChatMessage>
-                        )
-                    })}
-                </ScrollView>
-                <TextInput
-                    style={styles.chatInput}
-                    placeholder='Type to chat...'
-                    placeholderTextColor='white'
-                    onChangeText={(text) => setMessageInput(text)}
-                    value={messageInput}
-                    onSubmitEditing={() => sendMessage()}
-                    ></TextInput>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior='padding'>
+            <ScrollView style={styles.messageList}>
+                {messages.map((message, index) => {
+                    return (
+                        <ChatMessage key={index} message={message}></ChatMessage>
+                    )
+                })}
+            </ScrollView>
+            <View style={{paddingHorizontal: 5}}>
+            <TextInput
+                style={styles.chatInput}
+                placeholder='Type to chat...'
+                placeholderTextColor='#BBB'
+                onChangeText={(text) => setMessageInput(text)}
+                value={messageInput}
+                onSubmitEditing={() => sendMessage()}
+            ></TextInput>
+            </View>
+        </KeyboardAvoidingView>
     )
 }
 
 const styles = StyleSheet.create({
-    chatTab: {
-        height: '90%',
-        paddingTop: 7,
-        flex: 0,
-        backgroundColor: '#262626'
+    container: {
+        flex: 1,
+        backgroundColor: '#191919',
+        justifyContent: 'space-between'
     },
     messageList: {
-        paddingHorizontal: 5,
-        flex: 1,
+        paddingTop: 0,
+        height: 352
     },
     chatInput: {
         padding: 10,
@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderWidth: 1,
         borderRadius: 5,
-        justifyContent: "flex-end",
         color: 'white',
     }
 })

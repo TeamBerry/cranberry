@@ -145,7 +145,7 @@ const Queue = ({ box, currentVideo }: Props) => {
 const styles = StyleSheet.create({
     currentSpaceContainer: {
         height: 50,
-        backgroundColor: '#404040',
+        backgroundColor: '#262626',
         color: 'white',
         paddingLeft: 10,
     },
@@ -170,13 +170,13 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-SemiBold',
     },
     upcomingSpaceContainer: {
-        backgroundColor: '#404040',
+        backgroundColor: '#262626',
     },
     upcomingItem: {
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderBottomWidth: 1,
-        borderColor: '#262626',
+        borderColor: '#191919',
         borderStyle: 'solid',
         flex: 1,
         flexDirection: 'row'

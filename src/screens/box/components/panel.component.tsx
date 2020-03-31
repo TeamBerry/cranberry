@@ -1,27 +1,54 @@
-import React from "react"
-import { Text, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView } from "react-native"
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
-import ChatTab from './chat-tab.component';
-import SocketContext from './../box.context';
+import ChatTab from "./chat-tab.component";
+import SearchTab from "./search-tab.component";
 
-export type Panel = 'chat' | 'queue' | 'users' | 'search'
+const Panel = (props: { boxToken: string, socket: any}) => {
 
-const PanelComponent = props => {
-    let activePanel: Panel = 'chat';
+    const [index, setIndex] = useState(0)
+    const [routes] = useState([
+        { key: 'chat', title: 'Chat' },
+        { key: 'search', title: 'Search' }
+    ])
+
+    const initialLayout = { width: Dimensions.get('window').width };
+
+    const renderScene = ({ route }) => {
+        switch (route.key) {
+            case 'chat':
+                return <ChatTab boxToken={props.boxToken} socket={props.socket} />
+            case 'search':
+                return <SearchTab boxToken={props.boxToken} socket={props.socket}/>
+        }
+    }
+
+    const renderTabBar = (props) => {
+        return (
+            <TabBar
+                {...props}
+                style={{ backgroundColor: '#191919' }}
+                indicatorStyle={{ backgroundColor: '#009AEB' }}
+                pressColor={'#191919'}
+                labelStyle={{
+                    fontFamily: 'Montserrat-Regular',
+                    textTransform: 'capitalize'
+                }}
+                activeColor={'#009AEB'}
+            />
+        )
+    }
 
     return (
-        <View style={{display: 'flex'}}>
-            <SocketContext.Consumer>
-                {socket => <ChatTab boxToken={props.boxToken} socket={socket}></ChatTab>}
-            </SocketContext.Consumer>
-        </View>
+        <TabView
+            navigationState={{ index, routes }}
+            renderTabBar={renderTabBar}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={initialLayout}
+        />
     )
 }
 
-const styles = StyleSheet.create({
-    iconTabs: {
-        height: 35,
-    }
-})
-
-export default PanelComponent
+export default Panel

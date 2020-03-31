@@ -6,6 +6,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import CustomMenu from "../components/custom-menu.component";
 import SideMenu from 'react-native-side-menu';
 import AsyncStorage from '@react-native-community/async-storage';
+import { FAB } from "react-native-paper";
 
 export class HomeScreen extends React.Component<{navigation}> {
     static navigationOptions = {
@@ -89,10 +90,11 @@ export class HomeScreen extends React.Component<{navigation}> {
                         data={boxes}
                         refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={this.onRefresh.bind(this)}/>}
                         renderItem={({ item, index, separators }) => (
-                            <TouchableOpacity style={styles.card}
-                                onPress={() => this.props.navigation.navigate('Box', {boxToken: item._id})}>
-                                <BoxCard {...item}
-                                ></BoxCard>
+                            <TouchableOpacity
+                                style={styles.card}
+                                onPress={() => this.props.navigation.navigate('Box', { boxToken: item._id })}
+                            >
+                                <BoxCard {...item} />
                             </TouchableOpacity>
                         )}
                         keyExtractor={(item) => item.name}
@@ -101,6 +103,13 @@ export class HomeScreen extends React.Component<{navigation}> {
                         <ActivityIndicator />
                     )}
                 </View>
+
+                <FAB
+                    style={styles.fab}
+                    color='white'
+                    icon="plus"
+                    onPress={() => this.props.navigation.push('CreateBox')}
+                />
             </SideMenu>
         )
     }
@@ -112,7 +121,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         paddingLeft: 10,
         backgroundColor: '#262626',
-        borderColor: '#404040',
+        borderColor: '#191919',
         borderStyle: 'solid',
         borderBottomWidth: 1
     },
@@ -129,16 +138,27 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#262626',
-        paddingLeft: 10,
     },
     titlePage: {
         fontFamily: 'Montserrat-SemiBold',
         fontSize: 30,
         marginTop: '1%',
         marginBottom: 10,
-        color: 'white'
+        color: 'white',
+        paddingLeft: 10
     },
     card: {
-        paddingBottom: 10
-    }
+        borderBottomWidth: 1,
+        borderColor: '#404040',
+        borderStyle: 'solid',
+        paddingVertical: 10
+    },
+    fab: {
+        position: 'absolute',
+        marginRight: 16,
+        marginBottom: 30,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#009AEB'
+    },
 });
