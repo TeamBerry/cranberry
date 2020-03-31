@@ -1,23 +1,57 @@
-import React, {useState} from "react";
-import { Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity } from "react-native"
+import React, {useState, useEffect} from "react";
+import { Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity, ActivityIndicator } from "react-native"
 import FormTextInput from "../components/form-text-input.component"
-import { Switch } from "react-native-paper";
+import { Switch, Button as IconButton, Snackbar } from "react-native-paper";
+import axios from 'axios';
+import AsyncStorage from "@react-native-community/async-storage";
 
 const CreateBoxScreen = ({ navigation }) => {
     const [name, setName] = useState('')
     const [isRandom, setRandom] = useState(false)
     const [isLoop, setLoop] = useState(false)
+    const [user, setUser] = useState(null)
+    const [isCreating, setCreating] = useState(false)
+    const [box, setBox] = useState(null)
+
+    useEffect(() => {
+        const getSession = async () => {
+            const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+            setUser(user);
+        }
+
+        getSession();
+    }, [])
+
+    const createBox = async () => {
+        setCreating(true)
+        const box = await axios.post('https://araza.berrybox.tv/boxes', {
+            creator: user._id,
+            name,
+            description: null,
+            lang: 'en',
+            open: true,
+            options: {
+                random: isRandom,
+                loop: isLoop
+            }
+        })
+        setBox(box)
+    }
 
     return (
         <>
             <View style={styles.headerContainer}>
-                <View style={styles.headerStyle}>
-                    <TouchableOpacity
-                        onPress={() => navigation.pop()}
+                <Text style={styles.titlePage}>New box</Text>
+                <TouchableOpacity
+                    onPress={() => navigation.pop()}
+                >
+                    <IconButton
+                        icon="close"
+                        mode="text"
+                        color="white"
                     >
-                    </TouchableOpacity>
-                    <Text style={styles.titlePage}>New box</Text>
-                </View>
+                    </IconButton>
+                </TouchableOpacity>
             </View>
             <KeyboardAvoidingView
                 style={styles.container}
@@ -53,10 +87,27 @@ const CreateBoxScreen = ({ navigation }) => {
                     </View>
                     <Text style={styles.modeHelper}>The system will automatically requeue old videos.</Text>
                     </View>
-                <Button
-                    title="Create Box"
-                    onPress={() => console.log('BOX')}
-                />
+                    {!isCreating ? (
+                        <Button
+                        title="Create Box"
+                        onPress={() => createBox()}
+                    />
+                    ): (
+                        <ActivityIndicator />
+                        )}
+                    <Snackbar
+                        visible={box}
+                        onDismiss={() => navigation.navigate('Box', { boxToken: box._id })}
+                        duration={2000}
+                        style={{
+                            backgroundColor: '#090909',
+                            borderLeftColor: '#62d77c',
+                            borderLeftWidth: 10,
+
+                        }}
+                    >
+                        You created a box! Redirecting...
+                    </Snackbar>
             </View>
             </KeyboardAvoidingView>
         </>
@@ -65,15 +116,12 @@ const CreateBoxScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     headerContainer: {
-        paddingVertical: 20,
+        paddingVertical: 15,
         paddingLeft: 10,
         backgroundColor: '#262626',
-        flexDirection: 'row'
-    },
-    headerStyle: {
-        height: 20,
-        elevation: 0,
-        shadowOpacity: 0
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     titlePage: {
         fontFamily: 'Montserrat-SemiBold',
