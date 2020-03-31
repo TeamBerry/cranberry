@@ -9,6 +9,7 @@ import AuthContext from './src/shared/auth.context';
 import axios from 'axios';
 import { darkTheme, lightTheme } from './src/shared/themes';
 import AsyncStorage from '@react-native-community/async-storage';
+import SignupScreen from './src/screens/signup.screen';
 
 const Stack = createStackNavigator();
 
@@ -83,6 +84,22 @@ export default function App({ navigation }) {
                     console.log(error)
                 })
             },
+            signUp: async data => {
+                axios.post(`https://araza.berrybox.tv/auth/signup`,
+                    {
+                        name: data.username,
+                        mail: data.email,
+                        password: data.password
+                    }
+                ).then(async (response) => {
+                    await AsyncStorage.setItem('BBOX-token', response.data.bearer)
+                    await AsyncStorage.setItem('BBOX-expires_at', JSON.stringify(response.data.expiresIn))
+                    await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject))
+                    dispatch({ type: 'SIGN_IN', token: response.data.bearer })
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
             signOut: async () => {
                 await AsyncStorage.removeItem('BBOX-token')
                 await AsyncStorage.removeItem('BBOX-expires_at')
@@ -92,18 +109,6 @@ export default function App({ navigation }) {
         }),
         []
     );
-
-
-    const _cacheResourcesAsync = async () => {
-        // await Font.loadAsync({
-        //     'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
-        //     'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
-        //     'Montserrat-ExtraBold': require('./assets/fonts/Montserrat-ExtraBold.ttf'),
-        //     'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
-        //     'Montserrat-Light': require('./assets/fonts/Montserrat-Light.ttf'),
-        //     'Montserrat-Thin': require('./assets/fonts/Montserrat-Thin.ttf')
-        // });
-    };
 
     const ActiveTheme = {
         ...DefaultTheme,
@@ -118,7 +123,6 @@ export default function App({ navigation }) {
             <View style={{flex: 1}}>
             <Image
                     source={require('./assets/splash.png')}
-                    onLoadEnd={_cacheResourcesAsync}
                     style={{height: '100%', width: '100%'}}
                 />
             </View>
@@ -130,6 +134,7 @@ export default function App({ navigation }) {
             <NavigationContainer theme={ActiveTheme}>
                 <Stack.Navigator>
                     {state.userToken === null ? (
+                        <>
                         <Stack.Screen
                             name="SignIn"
                             component={LoginScreen}
@@ -138,6 +143,15 @@ export default function App({ navigation }) {
                                 headerShown: false
                             }}
                         />
+                        <Stack.Screen
+                            name="SignUp"
+                            component={SignupScreen}
+                            options={{
+                                animationTypeForReplace: 'pop',
+                                headerShown: false
+                            }}
+                        />
+                        </>
                     ) : (
                         <>
                             <Stack.Screen
