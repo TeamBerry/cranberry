@@ -63,11 +63,11 @@ const SignupScreen = ({navigation}) => {
                     placeholder='Password'
                     secureTextEntry={true}
                     returnKeyType='done'
-                    onSubmitEditing={() => signUp({email, password})}
+                    onSubmitEditing={() => signUp({email, password, username})}
                     />
                 <Button
                     title="Sign Up"
-                    onPress={() => signUp({email, password})}
+                    onPress={() => signUp({email, password, username})}
                 />
             </View>
             </KeyboardAvoidingView>
