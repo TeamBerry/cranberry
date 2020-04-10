@@ -41,8 +41,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
             this.socketConnection = io('https://boquila.berrybox.tv', {
                 transports: ['websocket'],
                 reconnection: true,
-                reconnectionDelay: 1000,
-                reconnectionAttempts: 10
+                reconnectionDelay: 500
             }).on('connect', () => {
                     if (!this.state.socket) {
                         console.log('Connection attempt')
