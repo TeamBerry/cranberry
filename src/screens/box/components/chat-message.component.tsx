@@ -6,10 +6,7 @@ import { FeedbackMessage } from "@teamberry/muscadine"
 const ChatMessage = ({ message }) => {
 
     const SystemMessage = (message: FeedbackMessage) => {
-        console.log(message)
         const type = `${message.feedbackType}Feedback`
-        console.log(type)
-        console.log()
 
         return (
             <Text style={[styles.systemMessage, styles[type]]}>{message.contents}</Text>
