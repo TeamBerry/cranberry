@@ -101,7 +101,7 @@ const CreateBoxScreen = ({ navigation }) => {
                         duration={2000}
                         style={{
                             backgroundColor: '#090909',
-                            borderLeftColor: '#62d77c',
+                            borderLeftColor: '#0CEBC0',
                             borderLeftWidth: 10,
 
                         }}

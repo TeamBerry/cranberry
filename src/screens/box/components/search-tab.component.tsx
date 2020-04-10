@@ -129,7 +129,7 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
                     duration={1500}
                     style={{
                         backgroundColor: '#090909',
-                        borderLeftColor: '#62d77c',
+                        borderLeftColor: '#0CEBC0',
                         borderLeftWidth: 10,
                     }}
                     onDismiss={() => setSubmitted(false)}
