@@ -10,6 +10,7 @@ import { SyncPacket } from "@teamberry/muscadine";
 import Queue from "./components/queue.component";
 import SocketContext from './../box/box.context';
 import Panel from "./components/panel.component";
+import OfflineNotice from "../../components/offline-notice.component";
 
 export class BoxScreen extends React.Component<{ route, navigation }> {
     boxToken: string = this.props.route.params.boxToken
@@ -37,15 +38,11 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         try {
             const box: Box = await (await fetch(`https://araza.berrybox.tv/boxes/${this.boxToken}`)).json()
             this.setState({ box, hasLoadedBox: true })
-            console.log('Box loaded. Connecting.')
             this.socketConnection = io('https://boquila.berrybox.tv', {
                 transports: ['websocket'],
                 reconnection: true,
-                reconnectionDelay: 500,
-                reconnectionAttempts: 10
-            });
-            this.socketConnection.
-                on('connect', () => {
+                reconnectionDelay: 500
+            }).on('connect', () => {
                     if (!this.state.socket) {
                         console.log('Connection attempt')
                         this.socketConnection.emit('auth', {
@@ -55,27 +52,40 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                             userToken: user._id
                         })
                     }
+            })
+            .on('reconnecting', () => {
+                console.log('Reconnection attempt')
+                this.socketConnection.emit('auth', {
+                    origin: 'Cranberry',
+                    type: 'sync',
+                    boxToken: box._id,
+                    userToken: user._id
                 })
-                .on('confirm', () => {
-                    this.setState({ socket: this.socketConnection });
-                })
-                .on('bootstrap', (bootstrapMaterial) => {
-                    this.setState({ boxKey: bootstrapMaterial.boxKey });
-                    this.socketConnection.emit('start', {
-                        boxToken: box._id,
-                        userToken: user._id
-                    });
-                })
-                .on('sync', (syncPacket: SyncPacket) => {
-                    this.setState({ currentQueueItem: syncPacket.item });
-                })
-                .on('box', (box: Box) => {
-                    this.setState({ box });
-                })
-                .on('denied', () => {
-                    this.setState({ error: 'Connection denied', hasLoadedBox: true });
-                    console.log('DENIED')
-                })
+            })
+            .on('confirm', () => {
+                this.setState({ socket: this.socketConnection });
+                console.log('CONNECTED')
+            })
+            .on('bootstrap', (bootstrapMaterial) => {
+                this.setState({ boxKey: bootstrapMaterial.boxKey });
+                this.socketConnection.emit('start', {
+                    boxToken: box._id,
+                    userToken: user._id
+                });
+            })
+            .on('sync', (syncPacket: SyncPacket) => {
+                this.setState({ currentQueueItem: syncPacket.item });
+            })
+            .on('box', (box: Box) => {
+                this.setState({ box });
+            })
+            .on('denied', () => {
+                this.setState({ error: 'Connection denied', hasLoadedBox: true });
+                console.log('DENIED')
+            })
+            .on('disconnect', () => {
+                console.log('DISCONNECTED')
+            })
         } catch (error) {
             this.setState({ error, hasLoadedBox: true })
         }
@@ -91,6 +101,7 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         return (
             <>
                 <BoxContext.Provider value={this.state.socket}>
+                <OfflineNotice />
                 <View style={styles.playerSpace}>
                     {this.state.socket && this.state.boxKey ? (
                     <Player
