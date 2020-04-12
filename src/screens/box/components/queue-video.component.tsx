@@ -5,13 +5,62 @@ import { Box } from "../../../models/box.model"
 import Collapsible from 'react-native-collapsible'
 import ProfilePicture from '../../../components/profile-picture.component'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
+import { RectButton } from 'react-native-gesture-handler'
 
 export type Props = {
     item: QueueItem
 }
 
 const QueueVideo = ({ item }: Props) => {
+    const _swipeRef = useRef(null)
+
+    const renderLeftActions = (progress, dragX) => {
+        const scale = dragX.interpolate({
+            inputRange: [0, 40],
+            outputRange: [0, 1],
+            extrapolate: 'clamp'
+        })
+
+        return (
+            <RectButton
+                style={{ backgroundColor: 'red' }}
+                onPress={closeSwipe}
+            >
+                <Text>LOL</Text>
+            </RectButton>
+        )
+    }
+
+    const renderRightActions = (progress, dragX) => {
+        const scale = dragX.interpolate({
+            inputRange: [-80, 0],
+            outputRange: [1, 0],
+            extrapolate: 'clamp'
+        })
+
+        return (
+            <RectButton
+                style={{ backgroundColor: 'green' }}
+                onPress={closeSwipe}
+            >
+                <Text>LEL</Text>
+            </RectButton>
+        )
+    }
+
+    const closeSwipe = () => {
+        _swipeRef.current.close()
+    }
+
     return (
+        <Swipeable
+            ref={_swipeRef}
+            friction={2}
+            leftThreshold={40}
+            rightThreshold={80}
+            renderLeftActions={renderLeftActions}
+            renderRightActions={renderRightActions}
+        >
         <View style={styles.queueVideo}>
             <Image
                 style={[item.isPreselected ? styles.preselectedVideo : {}, { width: 88.89, height: 60 }]}
@@ -27,7 +76,8 @@ const QueueVideo = ({ item }: Props) => {
                     <Text style={{paddingLeft: 5, color: '#BBBBBB'}}>{item.submitted_by.name}</Text>
                 </View>
             </View>
-        </View>
+            </View>
+        </Swipeable>
     )
 }
 

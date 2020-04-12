@@ -5,6 +5,7 @@ import { Box } from "../../../models/box.model"
 import Collapsible from 'react-native-collapsible'
 import { Svg, Polygon } from 'react-native-svg';
 import QueueVideo from './queue-video.component'
+import Swipeable from "react-native-gesture-handler/Swipeable"
 
 export type Props = {
     box: Box,
