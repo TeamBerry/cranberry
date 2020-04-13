@@ -5,7 +5,6 @@ import { Box } from "../../../models/box.model"
 import Collapsible from 'react-native-collapsible'
 import { Svg, Polygon } from 'react-native-svg';
 import QueueVideo from './queue-video.component'
-import Swipeable from "react-native-gesture-handler/Swipeable"
 
 export type Props = {
     box: Box,
@@ -98,6 +97,7 @@ const Queue = ({ box, currentVideo }: Props) => {
                 renderItem={({ item }) => (
                     <QueueVideo item={item}/>
                 )}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
                 keyExtractor={(item, index) => index.toString()}
             />
         )
@@ -169,6 +169,10 @@ const styles = StyleSheet.create({
     upcomingSpaceContainer: {
         backgroundColor: '#262626',
     },
+    separator: {
+        height: StyleSheet.hairlineWidth,
+        backgroundColor: '#191919'
+    }
 })
 
 export default Queue

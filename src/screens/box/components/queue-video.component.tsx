@@ -1,8 +1,6 @@
-import React, { useState, useRef } from "react"
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, Animated } from "react-native"
-import { SyncPacket, QueueItem } from "@teamberry/muscadine"
-import { Box } from "../../../models/box.model"
-import Collapsible from 'react-native-collapsible'
+import React, { useRef } from "react"
+import { StyleSheet, Text, View, Image } from "react-native"
+import { QueueItem } from "@teamberry/muscadine"
 import ProfilePicture from '../../../components/profile-picture.component'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { RectButton } from 'react-native-gesture-handler'
@@ -16,17 +14,17 @@ const QueueVideo = ({ item }: Props) => {
 
     const renderLeftActions = (progress, dragX) => {
         const scale = dragX.interpolate({
-            inputRange: [0, 40],
+            inputRange: [0, 80],
             outputRange: [0, 1],
             extrapolate: 'clamp'
         })
 
         return (
             <RectButton
-                style={{ backgroundColor: 'red' }}
+                style={styles.leftAction}
                 onPress={closeSwipe}
             >
-                <Text>LOL</Text>
+                <Text>DELETE</Text>
             </RectButton>
         )
     }
@@ -40,10 +38,10 @@ const QueueVideo = ({ item }: Props) => {
 
         return (
             <RectButton
-                style={{ backgroundColor: 'green' }}
+                style={styles.rightAction}
                 onPress={closeSwipe}
             >
-                <Text>LEL</Text>
+                <Text style={{color: 'white'}}>ADD</Text>
             </RectButton>
         )
     }
@@ -56,26 +54,26 @@ const QueueVideo = ({ item }: Props) => {
         <Swipeable
             ref={_swipeRef}
             friction={2}
-            leftThreshold={40}
-            rightThreshold={80}
+            leftThreshold={80}
+            rightThreshold={40}
             renderLeftActions={renderLeftActions}
             renderRightActions={renderRightActions}
         >
-        <View style={styles.queueVideo}>
-            <Image
-                style={[item.isPreselected ? styles.preselectedVideo : {}, { width: 88.89, height: 60 }]}
-                source={{uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg`}}
-            />
-            <View style={{ paddingLeft: 10, width: 240 }}>
-                <Text style={styles.queueVideoName} numberOfLines={2}>
-                    <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'NEXT: ' : null}</Text>
-                    {item.video.name}
-                </Text>
-                <View style={{ paddingLeft: 5, flex: 1, flexDirection: 'row' }}>
-                    <ProfilePicture userId={item.submitted_by._id} size={20}/>
-                    <Text style={{paddingLeft: 5, color: '#BBBBBB'}}>{item.submitted_by.name}</Text>
+            <View style={styles.queueVideo}>
+                <Image
+                    style={[item.isPreselected ? styles.preselectedVideo : {}, { width: 88.89, height: 60 }]}
+                    source={{uri: `https://i.ytimg.com/vi/${item.video.link}/default.jpg`}}
+                    />
+                <View style={{ paddingLeft: 10, width: 240 }}>
+                    <Text style={styles.queueVideoName} numberOfLines={2}>
+                        <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'NEXT: ' : null}</Text>
+                        {item.video.name}
+                    </Text>
+                    <View style={{ paddingLeft: 5, flex: 1, flexDirection: 'row' }}>
+                        <ProfilePicture userId={item.submitted_by._id} size={20}/>
+                        <Text style={{paddingLeft: 5, color: '#BBBBBB'}}>{item.submitted_by.name}</Text>
+                    </View>
                 </View>
-            </View>
             </View>
         </Swipeable>
     )
@@ -85,9 +83,6 @@ const styles = StyleSheet.create({
     queueVideo: {
         paddingHorizontal: 15,
         paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderColor: '#191919',
-        borderStyle: 'solid',
         flex: 1,
         flexDirection: 'row'
     },
@@ -102,7 +97,29 @@ const styles = StyleSheet.create({
     nextVideoIndicator: {
         fontFamily: 'Montserrat-SemiBold',
         color: '#EBBA17'
-    }
+    },
+    leftAction: {
+        backgroundColor: '#B30F4F',
+        width: 80,
+        display: "flex",
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    rightAction: {
+        backgroundColor: '#2D2D2D',
+        width: 80,
+        display: "flex",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    actionIcon: {
+        width: 30,
+        marginHorizontal: 10
+    },
 })
 
-export default QueueVideo
+const areEqual = (prevProps: Props, nextProps: Props) => {
+    return prevProps.item.isPreselected === nextProps.item.isPreselected
+}
+
+export default React.memo(QueueVideo, areEqual)
