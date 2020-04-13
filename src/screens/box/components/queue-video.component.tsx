@@ -13,35 +13,43 @@ const QueueVideo = ({ item }: Props) => {
     const _swipeRef = useRef(null)
 
     const renderLeftActions = (progress, dragX) => {
-        const scale = dragX.interpolate({
-            inputRange: [0, 80],
-            outputRange: [0, 1],
-            extrapolate: 'clamp'
-        })
+        // const scale = dragX.interpolate({
+        //     inputRange: [0, 80],
+        //     outputRange: [0, 1],
+        //     extrapolate: 'clamp'
+        // })
 
         return (
+            <>
             <RectButton
                 style={styles.leftAction}
                 onPress={closeSwipe}
             >
-                <Text>DELETE</Text>
+                <Text style={{color: 'white'}}>DELETE</Text>
             </RectButton>
+            <RectButton
+                style={styles.rightAction}
+                onPress={closeSwipe}
+            >
+                <Text style={{color: 'white'}}>NEXT</Text>
+            </RectButton>
+            </>
         )
     }
 
     const renderRightActions = (progress, dragX) => {
-        const scale = dragX.interpolate({
-            inputRange: [-80, 0],
-            outputRange: [1, 0],
-            extrapolate: 'clamp'
-        })
+        // const scale = dragX.interpolate({
+        //     inputRange: [-80, 0],
+        //     outputRange: [1, 0],
+        //     extrapolate: 'clamp'
+        // })
 
         return (
             <RectButton
                 style={styles.rightAction}
                 onPress={closeSwipe}
             >
-                <Text style={{color: 'white'}}>ADD</Text>
+                <Text style={{color: 'white'}}>FAVORITE</Text>
             </RectButton>
         )
     }
@@ -53,8 +61,8 @@ const QueueVideo = ({ item }: Props) => {
     return (
         <Swipeable
             ref={_swipeRef}
-            friction={2}
-            leftThreshold={80}
+            friction={3}
+            leftThreshold={40}
             rightThreshold={40}
             renderLeftActions={renderLeftActions}
             renderRightActions={renderRightActions}
