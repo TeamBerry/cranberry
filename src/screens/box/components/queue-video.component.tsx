@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React, { useRef, useEffect } from "react"
 import { StyleSheet, Text, View, Image } from "react-native"
 import { QueueItem } from "@teamberry/muscadine"
 import ProfilePicture from '../../../components/profile-picture.component'
@@ -9,8 +9,13 @@ export type Props = {
     item: QueueItem
 }
 
+
 const QueueVideo = ({ item }: Props) => {
     const _swipeRef = useRef(null)
+
+    useEffect(() => {
+        console.log(`COMPONENT ${item._id} HAS RENDERED.`)
+    })
 
     const renderLeftActions = (progress, dragX) => {
         // const scale = dragX.interpolate({
