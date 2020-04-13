@@ -4,6 +4,7 @@ import { QueueItem } from "@teamberry/muscadine"
 import ProfilePicture from '../../../components/profile-picture.component'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { RectButton } from 'react-native-gesture-handler'
+import { Svg, Polygon, Rect } from 'react-native-svg';
 
 export type Props = {
     item: QueueItem
@@ -27,16 +28,25 @@ const QueueVideo = ({ item }: Props) => {
         return (
             <>
             <RectButton
-                style={styles.leftAction}
+                style={[styles.action, styles.leftAction]}
                 onPress={closeSwipe}
             >
-                <Text style={{color: 'white'}}>DELETE</Text>
+                <Text style={{color: 'white'}}>X</Text>
             </RectButton>
             <RectButton
-                style={styles.rightAction}
+                style={[styles.action, styles.rightAction]}
                 onPress={closeSwipe}
             >
-                <Text style={{color: 'white'}}>NEXT</Text>
+                <Svg height="30" width="30" style={{scaleX: 0.7, scaleY: 0.7}}>
+                    <Polygon
+                        points="24,20 9,10 9,30"
+                        fill="white"
+                        />
+                    <Polygon
+                        points="39,20 24,10 24,30"
+                        fill="white"
+                    />
+                    </Svg>
             </RectButton>
             </>
         )
@@ -51,10 +61,18 @@ const QueueVideo = ({ item }: Props) => {
 
         return (
             <RectButton
-                style={styles.rightAction}
+                style={[styles.action, styles.rightAction]}
                 onPress={closeSwipe}
             >
-                <Text style={{color: 'white'}}>FAVORITE</Text>
+                <Svg height="33" width="33" style={{scaleX: 0.8, scaleY: 0.8}}>
+                    <Rect x="4" y="8" width="32" height="2" fill="white" />
+                    <Rect x="4" y="13.5" width="32" height="2" fill="white" />
+                    <Rect x="4" y="19" width="16" height="2" fill="white" />
+                    <Rect x="4" y="24.5" width="16" height="2" fill="white" />
+                    <Rect x="4" y="30" width="16" height="2" fill="white" />
+                    <Rect x="22" y="24.5" width="14" height="2" fill="white" />
+                    <Rect x="28" y="19" width="2" height="14" fill="white" />
+                </Svg>
             </RectButton>
         )
     }
@@ -74,12 +92,17 @@ const QueueVideo = ({ item }: Props) => {
         >
             <View style={styles.queueVideo}>
                 <Image
-                    style={[item.isPreselected ? styles.preselectedVideo : {}, { width: 88.89, height: 60 }]}
+                    style={[
+                        item.isPreselected ? styles.preselectedVideo : {},
+                        item.startTime ? styles.currentVideo : {},
+                        { width: 88.89, height: 60 }
+                    ]}
                     source={{uri: `https://i.ytimg.com/vi/${item.video.link}/default.jpg`}}
                     />
                 <View style={{ paddingLeft: 10, width: 240 }}>
                     <Text style={styles.queueVideoName} numberOfLines={2}>
                         <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'NEXT: ' : null}</Text>
+                        <Text style={styles.currentVideoIndicator}>{item.startTime !== null ? 'PLAYING: ' : null}</Text>
                         {item.video.name}
                     </Text>
                     <View style={{ paddingLeft: 5, flex: 1, flexDirection: 'row' }}>
@@ -97,7 +120,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 10,
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     queueVideoName: {
         fontFamily: 'Montserrat-Regular',
@@ -107,23 +130,33 @@ const styles = StyleSheet.create({
         borderColor: '#EBBA17',
         borderWidth: 2
     },
+    currentVideo: {
+        borderColor: '#009AEB',
+        borderWidth: 2
+    },
+    currentVideoIndicator: {
+        fontFamily: 'Montserrat-SemiBold',
+        color: '#009AEB'
+    },
     nextVideoIndicator: {
         fontFamily: 'Montserrat-SemiBold',
         color: '#EBBA17'
     },
-    leftAction: {
-        backgroundColor: '#B30F4F',
-        width: 80,
-        display: "flex",
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    rightAction: {
-        backgroundColor: '#2D2D2D',
-        width: 80,
+    action: {
+        width: 35,
+        height: 35,
+        borderRadius: 17.5,
         display: "flex",
         alignItems: 'center',
         justifyContent: 'center',
+        alignSelf: 'center',
+        marginHorizontal: 5
+    },
+    leftAction: {
+        backgroundColor: '#B30F4F',
+    },
+    rightAction: {
+        backgroundColor: '#AAA',
     },
     actionIcon: {
         width: 30,

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, useCallback } from "react"
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Animated } from "react-native"
-import { SyncPacket, QueueItem } from "@teamberry/muscadine"
+import React, { useState, useRef } from "react"
+import { StyleSheet, Text, View, TouchableOpacity, Animated } from "react-native"
+import { SyncPacket } from "@teamberry/muscadine"
 import { Box } from "../../../models/box.model"
 import Collapsible from 'react-native-collapsible'
 import { Svg, Polygon } from 'react-native-svg';

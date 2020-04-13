@@ -1,9 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from "react"
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Animated } from "react-native"
-import { SyncPacket, QueueItem } from "@teamberry/muscadine"
+import React, { useState, useEffect } from "react"
+import { StyleSheet, Text, View, FlatList } from "react-native"
+import { QueueItem } from "@teamberry/muscadine"
 import { Box } from "../../../models/box.model"
-import Collapsible from 'react-native-collapsible'
-import { Svg, Polygon } from 'react-native-svg';
 import QueueVideo from './queue-video.component'
 
 export type Props = {
@@ -34,6 +32,12 @@ const QueueList = ({ box }: Props) => {
                 const preselectedVideo = upcomingVideos[preselectedVideoIndex]
                 upcomingVideos.splice(preselectedVideoIndex, 1)
                 upcomingVideos.unshift(preselectedVideo)
+            }
+
+            // Put the current video first
+            const playingvideo = box.playlist.find((item: QueueItem) => item.startTime !== null && item.endTime === null)
+            if (playingvideo) {
+                upcomingVideos.unshift(playingvideo)
             }
 
             setUpcoming(upcomingVideos)
