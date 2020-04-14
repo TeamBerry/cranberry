@@ -6,6 +6,7 @@ import QueueVideo from './queue-video.component'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { RectButton } from 'react-native-gesture-handler'
 import AsyncStorage from "@react-native-community/async-storage"
+import { Button, Dialog, Portal } from 'react-native-paper';
 
 import ForceNextIcon from '../../../../assets/icons/force-next-icon.svg'
 import TrashIcon from '../../../../assets/icons/trash-icon.svg'
@@ -21,6 +22,8 @@ const QueueList = ({ socket, box }: Props) => {
     const [upcomingVideos, setUpcoming] = useState([])
     const [user, setUser] = useState(null)
     const [isAdmin, setAdmin] = useState(false)
+    const [isDeletionDialogShown, showDeletionDialog] = useState(false)
+    const [selectedVideo, selectVideo] = useState(null)
 
     useEffect(() => {
         const getUser = async () => {
@@ -90,7 +93,7 @@ const QueueList = ({ socket, box }: Props) => {
                 <View style={styles.buttonContainer}>
                     <RectButton
                         style={[styles.action, styles.dangerAction, { marginRight: 15 }]}
-                        onPress={() => deleteVideo(video)}
+                        onPress={() => { selectVideo(video); showDeletionDialog(true) }}
                     >
                         <TrashIcon width={20} height={20} fill={"#FFF"} />
                     </RectButton>
@@ -127,6 +130,7 @@ const QueueList = ({ socket, box }: Props) => {
             item: video._id
         }
         socket.emit('cancel', actionRequest)
+        selectVideo(null)
     }
 
     const forceNext = (video: QueueItem) => {
@@ -136,6 +140,7 @@ const QueueList = ({ socket, box }: Props) => {
             item: video._id
         }
         socket.emit('preselect', actionRequest)
+        selectVideo(null)
     }
 
     if (!box) {
@@ -168,7 +173,25 @@ const QueueList = ({ socket, box }: Props) => {
             rightOpenValue={-60}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             keyExtractor={(item, index) => index.toString()}
-        />
+            />
+        <Portal>
+            <Dialog
+                visible={isDeletionDialogShown}
+                onDismiss={() => showDeletionDialog(false)}>
+                    <Dialog.Title>Video deletion</Dialog.Title>
+                    <Dialog.Content>
+                        <Text>Are you sure you want to remove this video from the queue? <Text style={{fontWeight: "800"}}>It will be removed permanently.</Text></Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button
+                            color="#B30F4F"
+                            onPress={() => {
+                            deleteVideo(selectedVideo)
+                            showDeletionDialog(false)
+                        }}>Delete</Button>
+                    </Dialog.Actions>
+            </Dialog>
+        </Portal>
     </>
     )
 }
