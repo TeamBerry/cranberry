@@ -143,6 +143,27 @@ const QueueList = ({ socket, box }: Props) => {
         selectVideo(null)
     }
 
+    const VideoDeletionModal = () => (
+        <Portal>
+            <Dialog
+                visible={isDeletionDialogShown}
+                onDismiss={() => showDeletionDialog(false)}>
+                    <Dialog.Title>Video deletion</Dialog.Title>
+                    <Dialog.Content>
+                        <Text>Are you sure you want to remove this video from the queue? <Text style={{fontWeight: "800"}}>It will be removed permanently.</Text></Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button
+                            color="#B30F4F"
+                            onPress={() => {
+                            deleteVideo(selectedVideo)
+                            showDeletionDialog(false)
+                        }}>Delete</Button>
+                    </Dialog.Actions>
+            </Dialog>
+        </Portal>
+    )
+
     if (!box) {
         return (<></>)
     }
@@ -174,24 +195,7 @@ const QueueList = ({ socket, box }: Props) => {
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             keyExtractor={(item, index) => index.toString()}
             />
-        <Portal>
-            <Dialog
-                visible={isDeletionDialogShown}
-                onDismiss={() => showDeletionDialog(false)}>
-                    <Dialog.Title>Video deletion</Dialog.Title>
-                    <Dialog.Content>
-                        <Text>Are you sure you want to remove this video from the queue? <Text style={{fontWeight: "800"}}>It will be removed permanently.</Text></Text>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button
-                            color="#B30F4F"
-                            onPress={() => {
-                            deleteVideo(selectedVideo)
-                            showDeletionDialog(false)
-                        }}>Delete</Button>
-                    </Dialog.Actions>
-            </Dialog>
-        </Portal>
+        <VideoDeletionModal />
     </>
     )
 }
