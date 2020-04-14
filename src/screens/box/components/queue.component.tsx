@@ -7,11 +7,12 @@ import { Svg, Polygon } from 'react-native-svg';
 import QueueList from './queue-list.component';
 
 export type Props = {
+    socket: any,
     box: Box,
     currentVideo: SyncPacket['item']
 }
 
-const Queue = ({ box, currentVideo }: Props) => {
+const Queue = ({ socket, box, currentVideo }: Props) => {
 
     const [isCollapsed, setCollapse] = useState(true)
 
@@ -97,7 +98,7 @@ const Queue = ({ box, currentVideo }: Props) => {
             </TouchableOpacity>
             <Collapsible collapsed={isCollapsed}
                 style={[styles.upcomingSpaceContainer, { height: 445 }]}>
-                <QueueList box={box}/>
+                <QueueList box={box} socket={socket}/>
             </Collapsible>
         </>
     )

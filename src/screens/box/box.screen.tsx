@@ -112,11 +112,15 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                         <ActivityIndicator></ActivityIndicator>
                     )}
                 </View>
-                <Queue box={this.state.box} currentVideo={this.state.currentQueueItem}></Queue>
-                {this.state.socket ? (
-                    <SocketContext.Consumer>
-                        { socket => <Panel boxToken={this.state.box._id} socket={socket}/> }
-                    </SocketContext.Consumer>
+                    {this.state.socket ? (
+                        <>
+                            <SocketContext.Consumer>
+                                { socket => <Queue box={this.state.box} currentVideo={this.state.currentQueueItem} socket={socket} />}
+                            </SocketContext.Consumer>
+                            <SocketContext.Consumer>
+                                { socket => <Panel boxToken={this.state.box._id} socket={socket}/> }
+                            </SocketContext.Consumer>
+                        </>
                 ) : (<ActivityIndicator />)}
                 </BoxContext.Provider>
             </>
