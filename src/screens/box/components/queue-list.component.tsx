@@ -8,6 +8,11 @@ import { RectButton } from 'react-native-gesture-handler'
 import { Svg, Polygon, Rect } from 'react-native-svg';
 import AsyncStorage from "@react-native-community/async-storage"
 
+import ForceNextIcon from '../../../../assets/icons/force-next-icon.svg'
+import TrashIcon from '../../../../assets/icons/trash-icon.svg'
+import SkipIcon from '../../../../assets/icons/skip-icon.svg'
+import AddToLibraryIcon from '../../../../assets/icons/add-to-library-icon.svg'
+
 export type Props = {
     socket: any,
     box: Box
@@ -75,7 +80,7 @@ const QueueList = ({ socket, box }: Props) => {
                         style={[styles.action, styles.rightAction]}
                         onPress={() => skipVideo(item)}
                     >
-                        <Text style={{color: 'white'}}>SKIP</Text>
+                        <SkipIcon width={20} height={20} fill={"#FFF"} />
                     </RectButton>
                 </View>
             )
@@ -88,22 +93,13 @@ const QueueList = ({ socket, box }: Props) => {
                         style={[styles.action, styles.dangerAction, { marginRight: 15 }]}
                         onPress={() => deleteVideo(item)}
                     >
-                        <Text style={{ color: 'white' }}>X</Text>
+                        <TrashIcon width={20} height={20} fill={"#FFF"} />
                     </RectButton>
                     <RectButton
                         style={[styles.action, styles.rightAction]}
                         onPress={() => forceNext(item)}
                     >
-                        <Svg height="30" width="30" style={{scaleX: 0.7, scaleY: 0.7}}>
-                            <Polygon
-                                points="24,20 9,10 9,30"
-                                fill="white"
-                                />
-                            <Polygon
-                                points="39,20 24,10 24,30"
-                                fill="white"
-                            />
-                        </Svg>
+                        <ForceNextIcon width={20} height={20} fill={"#FFF"} />
                     </RectButton>
                 </View>
             </>
@@ -114,15 +110,7 @@ const QueueList = ({ socket, box }: Props) => {
         return (
             <View style={styles.buttonContainer}>
                 <RectButton style={[styles.action, styles.rightAction]}>
-                    <Svg height="33" width="33" style={{scaleX: 0.8, scaleY: 0.8}}>
-                        <Rect x="4" y="8" width="32" height="2" fill="white" />
-                        <Rect x="4" y="13.5" width="32" height="2" fill="white" />
-                        <Rect x="4" y="19" width="16" height="2" fill="white" />
-                        <Rect x="4" y="24.5" width="16" height="2" fill="white" />
-                        <Rect x="4" y="30" width="16" height="2" fill="white" />
-                        <Rect x="22" y="24.5" width="14" height="2" fill="white" />
-                        <Rect x="28" y="19" width="2" height="14" fill="white" />
-                    </Svg>
+                    <AddToLibraryIcon height={20} width={20} fill={"white"} />
                 </RectButton>
             </View>
         )
