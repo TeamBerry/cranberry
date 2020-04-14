@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { StyleSheet, Text, View, FlatList } from "react-native"
+import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native"
 import { QueueItem, QueueItemActionRequest } from "@teamberry/muscadine"
 import { Box } from "../../../models/box.model"
 import QueueVideo from './queue-video.component'
-import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
+import { SwipeListView } from 'react-native-swipe-list-view'
 import { RectButton } from 'react-native-gesture-handler'
-import { Svg, Polygon, Rect } from 'react-native-svg';
 import AsyncStorage from "@react-native-community/async-storage"
 
 import ForceNextIcon from '../../../../assets/icons/force-next-icon.svg'
@@ -68,17 +67,17 @@ const QueueList = ({ socket, box }: Props) => {
         buildUpcomingVideos()
     }, box?.playlist)
 
-    const BoxButtons = (item: QueueItem) => {
+    const BoxButtons = (video: QueueItem) => {
         if (!isAdmin) {
             return (<></>)
         }
 
-        if (item.startTime !== null) {
+        if (video.startTime !== null) {
             return (
                 <View style={styles.buttonContainer}>
                     <RectButton
                         style={[styles.action, styles.rightAction]}
-                        onPress={() => skipVideo(item)}
+                        onPress={() => skipVideo()}
                     >
                         <SkipIcon width={20} height={20} fill={"#FFF"} />
                     </RectButton>
@@ -91,13 +90,13 @@ const QueueList = ({ socket, box }: Props) => {
                 <View style={styles.buttonContainer}>
                     <RectButton
                         style={[styles.action, styles.dangerAction, { marginRight: 15 }]}
-                        onPress={() => deleteVideo(item)}
+                        onPress={() => deleteVideo(video)}
                     >
                         <TrashIcon width={20} height={20} fill={"#FFF"} />
                     </RectButton>
                     <RectButton
                         style={[styles.action, styles.rightAction]}
-                        onPress={() => forceNext(item)}
+                        onPress={() => forceNext(video)}
                     >
                         <ForceNextIcon width={20} height={20} fill={"#FFF"} />
                     </RectButton>
@@ -106,7 +105,7 @@ const QueueList = ({ socket, box }: Props) => {
         )
     }
 
-    const UserButtons = (item) => {
+    const UserButtons = (video: QueueItem) => {
         return (
             <View style={styles.buttonContainer}>
                 <RectButton style={[styles.action, styles.rightAction]}>
@@ -116,38 +115,26 @@ const QueueList = ({ socket, box }: Props) => {
         )
     }
 
-    const actionButtons = (item) => {
-        return (
-            <>
-                <View style={styles.rowBack}>
-                    <BoxButtons {...item.item} />
-                    <UserButtons {...item.item} />
-                </View>
-            </>
-        )
-    }
-
     // Video actions
-    const skipVideo = (item) => {
+    const skipVideo = () => {
         socket.emit('sync', { order: 'next', boxToken: box._id })
     }
 
-    const deleteVideo = (item) => {
+    const deleteVideo = (video: QueueItem) => {
         const actionRequest: QueueItemActionRequest = {
             boxToken: box._id,
             userToken: user._id,
-            item: item._id
+            item: video._id
         }
         socket.emit('cancel', actionRequest)
     }
 
-    const forceNext = (item: QueueItem) => {
+    const forceNext = (video: QueueItem) => {
         const actionRequest: QueueItemActionRequest = {
             boxToken: box._id,
             userToken: user._id,
-            item: item._id
+            item: video._id
         }
-        console.log(actionRequest)
         socket.emit('preselect', actionRequest)
     }
 
@@ -160,6 +147,7 @@ const QueueList = ({ socket, box }: Props) => {
     }
 
     return (
+        <>
         <SwipeListView
             useFlatList={true}
             data={upcomingVideos}
@@ -168,12 +156,20 @@ const QueueList = ({ socket, box }: Props) => {
                     <QueueVideo item={item} />
                 </View>
             )}
-            renderHiddenItem={actionButtons}
+            renderHiddenItem={(rowData, rowMap) => (
+                <TouchableWithoutFeedback onPress={() => rowMap[rowData.index].closeRow()}>
+                    <View style={styles.rowBack}>
+                        <BoxButtons {...rowData.item} />
+                        <UserButtons {...rowData.item} />
+                    </View>
+                </TouchableWithoutFeedback>
+            )}
             leftOpenValue={isAdmin ? 110 : 0}
             rightOpenValue={-60}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             keyExtractor={(item, index) => index.toString()}
         />
+    </>
     )
 }
 
