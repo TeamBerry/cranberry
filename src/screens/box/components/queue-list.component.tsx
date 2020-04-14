@@ -213,9 +213,10 @@ const QueueList = ({ socket, box }: Props) => {
                     </View>
                 </TouchableWithoutFeedback>
             )}
-                friction={9}
+            friction={9}
             disableRightSwipe={true}
             rightOpenValue={isAdmin ? -160 : -60}
+            stopRightSwipe={isAdmin ? -160 : -60}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             keyExtractor={(item, index) => index.toString()}
         />
