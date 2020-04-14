@@ -70,50 +70,74 @@ const QueueList = ({ socket, box }: Props) => {
         buildUpcomingVideos()
     }, box?.playlist)
 
-    const BoxButtons = (video: QueueItem) => {
+    const SkipButton = (video: QueueItem) => {
+        if (video.startTime === null) {
+            return (<></>)
+        }
+
+        return (
+            <RectButton
+                style={[styles.action, styles.rightAction, { marginRight: 15 }]}
+                onPress={() => skipVideo()}
+            >
+                <SkipIcon width={20} height={20} fill={"#FFF"} />
+            </RectButton>
+        )
+    }
+
+    const DeleteButton = (video: QueueItem) => {
         if (!isAdmin) {
             return (<></>)
         }
 
         if (video.startTime !== null) {
-            return (
-                <View style={styles.buttonContainer}>
-                    <RectButton
-                        style={[styles.action, styles.rightAction]}
-                        onPress={() => skipVideo()}
-                    >
-                        <SkipIcon width={20} height={20} fill={"#FFF"} />
-                    </RectButton>
-                </View>
-            )
+            return (<></>)
         }
 
         return (
-            <>
-                <View style={styles.buttonContainer}>
-                    <RectButton
-                        style={[styles.action, styles.dangerAction, { marginRight: 15 }]}
-                        onPress={() => { selectVideo(video); showDeletionDialog(true) }}
-                    >
-                        <TrashIcon width={20} height={20} fill={"#FFF"} />
-                    </RectButton>
-                    <RectButton
-                        style={[styles.action, styles.rightAction]}
-                        onPress={() => forceNext(video)}
-                    >
-                        <ForceNextIcon width={20} height={20} fill={"#FFF"} />
-                    </RectButton>
-                </View>
-            </>
+            <RectButton
+            style={[styles.action, styles.dangerAction, { marginRight: 15 }]}
+            onPress={() => { selectVideo(video) }}
+        >
+            <TrashIcon width={20} height={20} fill={"#FFF"} />
+        </RectButton>
         )
     }
 
-    const UserButtons = (video: QueueItem) => {
+    const ForceNextButton = (video: QueueItem) => {
+        if (!isAdmin) {
+            return (<></>)
+        }
+
+        if (video.startTime !== null) {
+            return (<></>)
+        }
+
+        return (
+            <RectButton
+            style={[styles.action, styles.rightAction, { marginRight: 15 }]}
+            onPress={() => forceNext(video)}
+        >
+            <ForceNextIcon width={20} height={20} fill={"#FFF"} />
+        </RectButton>
+        )
+    }
+
+    const AddToPlaylistButton = (video: QueueItem) => {
+        return (
+            <RectButton style={[styles.action, styles.rightAction]}>
+                <AddToLibraryIcon height={20} width={20} fill={"white"} />
+            </RectButton>
+        )
+    }
+
+    const ActionButtons = (video: QueueItem) => {
         return (
             <View style={styles.buttonContainer}>
-                <RectButton style={[styles.action, styles.rightAction]}>
-                    <AddToLibraryIcon height={20} width={20} fill={"white"} />
-                </RectButton>
+                <SkipButton {...video} />
+                <DeleteButton {...video} />
+                <ForceNextButton {...video} />
+                <AddToPlaylistButton {...video} />
             </View>
         )
     }
@@ -146,7 +170,7 @@ const QueueList = ({ socket, box }: Props) => {
     const VideoDeletionModal = () => (
         <Portal>
             <Dialog
-                visible={isDeletionDialogShown}
+                visible={false}
                 onDismiss={() => showDeletionDialog(false)}>
                     <Dialog.Title>Video deletion</Dialog.Title>
                     <Dialog.Content>
@@ -185,17 +209,16 @@ const QueueList = ({ socket, box }: Props) => {
             renderHiddenItem={(rowData, rowMap) => (
                 <TouchableWithoutFeedback onPress={() => rowMap[rowData.index].closeRow()}>
                     <View style={styles.rowBack}>
-                        <BoxButtons {...rowData.item} />
-                        <UserButtons {...rowData.item} />
+                        <ActionButtons {...rowData.item} />
                     </View>
                 </TouchableWithoutFeedback>
             )}
-            leftOpenValue={isAdmin ? 110 : 0}
-            rightOpenValue={-60}
+                friction={9}
+            disableRightSwipe={true}
+            rightOpenValue={isAdmin ? -160 : -60}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             keyExtractor={(item, index) => index.toString()}
-            />
-        <VideoDeletionModal />
+        />
     </>
     )
 }
@@ -239,7 +262,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
     }
 })
 
