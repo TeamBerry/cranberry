@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react"
-import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, Text, View, TouchableWithoutFeedback, ScrollView } from "react-native"
 import { QueueItem, QueueItemActionRequest } from "@teamberry/muscadine"
 import { Box } from "../../../models/box.model"
 import QueueVideo from './queue-video.component'
 import { SwipeListView } from 'react-native-swipe-list-view'
-import { RectButton } from 'react-native-gesture-handler'
+import { RectButton, TouchableOpacity } from 'react-native-gesture-handler'
 import AsyncStorage from "@react-native-community/async-storage"
 import { useBackHandler } from '@react-native-community/hooks'
+import axios from "axios"
 
 import ForceNextIcon from '../../../../assets/icons/force-next-icon.svg'
 import TrashIcon from '../../../../assets/icons/trash-icon.svg'
 import SkipIcon from '../../../../assets/icons/skip-icon.svg'
 import AddToLibraryIcon from '../../../../assets/icons/add-to-library-icon.svg'
+import CloseIcon from '../../../../assets/icons/error-icon.svg'
 
 export type Props = {
     socket: any,
@@ -23,6 +25,8 @@ const QueueList = ({ socket, box }: Props) => {
     const [user, setUser] = useState(null)
     const [isAdmin, setAdmin] = useState(false)
     const [selectedVideo, selectVideo] = useState(null)
+    const [isSelectorShown, showPlaylistSelector] = useState(false)
+    const [userPlaylists, setUserPlaylists] = useState([])
 
     useBackHandler(() => {
         if (selectedVideo) {
@@ -39,6 +43,12 @@ const QueueList = ({ socket, box }: Props) => {
             setUser(session)
 
             setAdmin(session._id === box?.creator._id)
+
+            const playlistsRequest = await axios.get(`https://araza.berrybox.tv/users/${session._id}/playlists`)
+            const playlists = playlistsRequest.data.map(playlist => {
+                return {id: playlist._id, name: playlist.name}
+            })
+            setUserPlaylists(playlists)
         }
         getUser()
     }, [])
@@ -73,6 +83,8 @@ const QueueList = ({ socket, box }: Props) => {
             }
 
             setUpcoming(upcomingVideos)
+            selectVideo(null)
+            showPlaylistSelector(false)
         }
 
         buildUpcomingVideos()
@@ -133,7 +145,9 @@ const QueueList = ({ socket, box }: Props) => {
 
     const AddToPlaylistButton = (video: QueueItem) => {
         return (
-            <RectButton style={[styles.action, styles.rightAction]}>
+            <RectButton style={[styles.action, styles.rightAction]}
+                onPress={() => { selectVideo(video); showPlaylistSelector(true)}}
+            >
                 <AddToLibraryIcon height={20} width={20} fill={"white"} />
             </RectButton>
         )
@@ -175,6 +189,42 @@ const QueueList = ({ socket, box }: Props) => {
         selectVideo(null)
     }
 
+    const addVideoToPlaylist = async (playlist) => {
+        await axios.post(`https://araza.berrybox.tv/playlists/${playlist.id}/videos`, { videoId: selectedVideo.video._id })
+
+        selectVideo(null)
+        showPlaylistSelector(false)
+    }
+
+    const PlaylistSelector = () => {
+        if (!isSelectorShown) {
+            return (<></>)
+        }
+
+        return (
+            <View style={{padding: 10}}>
+                <View style={{ borderColor: '#DDD', borderBottomWidth: 1, marginBottom: 5, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontFamily: 'Montserrat-SemiBold', marginBottom: 10, fontSize: 18 }}>Choose a playlist</Text>
+                    <TouchableWithoutFeedback onPress={() => { selectVideo(null); showPlaylistSelector(false) }}>
+                        <CloseIcon width={20} height={20} fill={"#555"} />
+                    </TouchableWithoutFeedback>
+                </View>
+                <ScrollView
+                    nestedScrollEnabled={true}
+                    style={{paddingTop: 10}}
+                >
+                    {userPlaylists.map((playlist, index) => (
+                        <TouchableOpacity
+                            style={{height: 40}}
+                            onPress={() => addVideoToPlaylist(playlist)}>
+                                <Text>{playlist.name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
+        )
+    }
+
     if (!box) {
         return (<></>)
     }
@@ -188,7 +238,7 @@ const QueueList = ({ socket, box }: Props) => {
         <SwipeListView
             data={upcomingVideos}
             renderItem={(item, rowMap) => {
-                if (selectedVideo?._id === item.item._id) {
+                if (selectedVideo?._id === item.item._id && !isSelectorShown) {
                     return (
                         <TouchableWithoutFeedback
                             onPress={() => deleteVideo(selectedVideo)}
@@ -198,6 +248,24 @@ const QueueList = ({ socket, box }: Props) => {
                                 <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold' }}>Tap to confirm deletion.</Text>
                             </View>
                         </TouchableWithoutFeedback>
+                    )
+                }
+
+                if (selectedVideo?._id === item.item._id && isSelectorShown) {
+                    return (
+                        <View style={{borderColor: '#AAA', borderWidth: 2}}>
+                            <TouchableWithoutFeedback
+                                onPress={() => { selectVideo(null); rowMap[item.index].closeRow() }}
+                                onLongPress={() => { selectVideo(null); rowMap[item.index].manuallySwipeRow(-160) }}
+                            >
+                                <View style={styles.rowFront}>
+                                    <QueueVideo {...item} />
+                                </View>
+                            </TouchableWithoutFeedback>
+                            <View style={[{height: 100 + (userPlaylists.length * 30), backgroundColor: '#AAA'}]}>
+                                <PlaylistSelector />
+                            </View>
+                        </View>
                     )
                 }
 
