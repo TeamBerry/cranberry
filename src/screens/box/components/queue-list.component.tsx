@@ -199,7 +199,6 @@ const QueueList = ({ socket, box }: Props) => {
     return (
         <>
         <SwipeListView
-            useFlatList={true}
             data={upcomingVideos}
             renderItem={({ item }) => (
                 <View style={styles.rowFront}>
@@ -217,6 +216,8 @@ const QueueList = ({ socket, box }: Props) => {
             disableRightSwipe={true}
             rightOpenValue={isAdmin ? -160 : -60}
             stopRightSwipe={isAdmin ? -160 : -60}
+            swipeToOpenPercent={20}
+            closeOnRowBeginSwipe={true}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             keyExtractor={(item, index) => index.toString()}
         />
