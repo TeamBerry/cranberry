@@ -200,10 +200,15 @@ const QueueList = ({ socket, box }: Props) => {
         <>
         <SwipeListView
             data={upcomingVideos}
-            renderItem={({ item }) => (
-                <View style={styles.rowFront}>
-                    <QueueVideo item={item} />
-                </View>
+            renderItem={(item, rowMap) => (
+                <TouchableWithoutFeedback
+                    onPress={() => rowMap[item.index].closeRow()}
+                    onLongPress={() => rowMap[item.index].manuallySwipeRow(-160)}
+                >
+                    <View style={styles.rowFront}>
+                        <QueueVideo {...item} />
+                    </View>
+                </TouchableWithoutFeedback>
             )}
             renderHiddenItem={(rowData, rowMap) => (
                 <TouchableWithoutFeedback onPress={() => rowMap[rowData.index].closeRow()}>
