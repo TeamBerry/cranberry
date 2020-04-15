@@ -2,11 +2,12 @@ import React from "react";
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import io from "socket.io-client";
 import AsyncStorage from '@react-native-community/async-storage';
+import { Snackbar } from 'react-native-paper';
 
 import Player from './components/player.component';
 import { Box } from '../../models/box.model';
 import BoxContext from "./box.context";
-import { SyncPacket } from "@teamberry/muscadine";
+import { SyncPacket, Message, FeedbackMessage } from "@teamberry/muscadine";
 import Queue from "./components/queue.component";
 import SocketContext from './../box/box.context';
 import Panel from "./components/panel.component";
@@ -22,14 +23,18 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
         box: Box,
         socket: any,
         boxKey: string,
-        currentQueueItem: SyncPacket['item']
+        currentQueueItem: SyncPacket['item'],
+        isFeedbackVisible: boolean,
+        feedbackMessage: FeedbackMessage
     } = {
             error: null,
             hasLoadedBox: false,
             box: null,
             socket: null,
             boxKey: null,
-            currentQueueItem: null
+            currentQueueItem: null,
+            isFeedbackVisible: false,
+            feedbackMessage: null
         }
 
     async componentDidMount() {
@@ -79,6 +84,17 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
             .on('box', (box: Box) => {
                 this.setState({ box });
             })
+            .on('chat', (message: Message | FeedbackMessage) => {
+                if ('feedbackType' in message) {
+                    console.log('MESSAGE: ', message)
+                    this.setState(
+                        {
+                            isFeedbackVisible: true,
+                            feedbackMessage: message
+                        }
+                    )
+                }
+            })
             .on('denied', () => {
                 this.setState({ error: 'Connection denied', hasLoadedBox: true });
                 console.log('DENIED')
@@ -121,7 +137,14 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
                                 { socket => <Panel boxToken={this.state.box._id} socket={socket}/> }
                             </SocketContext.Consumer>
                         </>
-                ) : (<ActivityIndicator />)}
+                    ) : (<ActivityIndicator />)}
+                    <Snackbar
+                        visible={this.state.isFeedbackVisible}
+                        duration={1000}
+                        onDismiss={() => { this.setState({ isFeedbackVisible: false, feedbackMessage: null }) }}
+                    >
+                        {this.state.feedbackMessage?.contents}
+                    </Snackbar>
                 </BoxContext.Provider>
             </>
         )
@@ -132,5 +155,18 @@ const styles = StyleSheet.create({
     playerSpace: {
         height: 204,
         backgroundColor: '#262626'
+    },
+    snackbar: {
+        backgroundColor: '#090909',
+        borderLeftWidth: 10,
+    },
+    successSnackBar: {
+        borderLeftColor: '#B30F4F',
+    },
+    errorSnackBar: {
+        borderLeftColor: '#B30F4F'
+    },
+    infoSnackBar: {
+        borderLeftColor: '#009AEB'
     }
 });
