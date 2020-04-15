@@ -6,7 +6,7 @@ import QueueVideo from './queue-video.component'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { RectButton } from 'react-native-gesture-handler'
 import AsyncStorage from "@react-native-community/async-storage"
-import { Button, Dialog, Portal } from 'react-native-paper';
+import { useBackHandler } from '@react-native-community/hooks'
 
 import ForceNextIcon from '../../../../assets/icons/force-next-icon.svg'
 import TrashIcon from '../../../../assets/icons/trash-icon.svg'
@@ -22,8 +22,16 @@ const QueueList = ({ socket, box }: Props) => {
     const [upcomingVideos, setUpcoming] = useState([])
     const [user, setUser] = useState(null)
     const [isAdmin, setAdmin] = useState(false)
-    const [isDeletionDialogShown, showDeletionDialog] = useState(false)
     const [selectedVideo, selectVideo] = useState(null)
+
+    useBackHandler(() => {
+        if (selectedVideo) {
+            selectVideo(null)
+            return true
+        }
+
+        return false
+    })
 
     useEffect(() => {
         const getUser = async () => {
@@ -167,27 +175,6 @@ const QueueList = ({ socket, box }: Props) => {
         selectVideo(null)
     }
 
-    const VideoDeletionModal = () => (
-        <Portal>
-            <Dialog
-                visible={false}
-                onDismiss={() => showDeletionDialog(false)}>
-                    <Dialog.Title>Video deletion</Dialog.Title>
-                    <Dialog.Content>
-                        <Text>Are you sure you want to remove this video from the queue? <Text style={{fontWeight: "800"}}>It will be removed permanently.</Text></Text>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button
-                            color="#B30F4F"
-                            onPress={() => {
-                            deleteVideo(selectedVideo)
-                            showDeletionDialog(false)
-                        }}>Delete</Button>
-                    </Dialog.Actions>
-            </Dialog>
-        </Portal>
-    )
-
     if (!box) {
         return (<></>)
     }
@@ -200,18 +187,33 @@ const QueueList = ({ socket, box }: Props) => {
         <>
         <SwipeListView
             data={upcomingVideos}
-            renderItem={(item, rowMap) => (
-                <TouchableWithoutFeedback
-                    onPress={() => rowMap[item.index].closeRow()}
-                    onLongPress={() => rowMap[item.index].manuallySwipeRow(-160)}
-                >
-                    <View style={styles.rowFront}>
-                        <QueueVideo {...item} />
-                    </View>
-                </TouchableWithoutFeedback>
-            )}
+            renderItem={(item, rowMap) => {
+                if (selectedVideo?._id === item.item._id) {
+                    return (
+                        <TouchableWithoutFeedback
+                            onPress={() => deleteVideo(selectedVideo)}
+                        >
+                            <View style={[styles.rowFront, styles.deletionConfirmation]}>
+                                <TrashIcon width={25} height={25} fill={"#FFF"} />
+                                <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold' }}>Tap to confirm deletion.</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    )
+                }
+
+                return (
+                    <TouchableWithoutFeedback
+                        onPress={() => { selectVideo(null); rowMap[item.index].closeRow() }}
+                        onLongPress={() => { selectVideo(null); rowMap[item.index].manuallySwipeRow(-160) }}
+                    >
+                        <View style={styles.rowFront}>
+                            <QueueVideo {...item} />
+                        </View>
+                    </TouchableWithoutFeedback>
+                )
+            }}
             renderHiddenItem={(rowData, rowMap) => (
-                <TouchableWithoutFeedback onPress={() => rowMap[rowData.index].closeRow()}>
+                <TouchableWithoutFeedback onPress={() => { rowMap[rowData.index].closeRow() }}>
                     <View style={styles.rowBack}>
                         <ActionButtons {...rowData.item} />
                     </View>
@@ -270,6 +272,13 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-end',
+    },
+    deletionConfirmation: {
+        height: 80,
+        backgroundColor: '#B30F4F',
+        display: "flex",
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 })
 
