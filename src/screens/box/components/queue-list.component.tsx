@@ -31,6 +31,7 @@ const QueueList = ({ socket, box }: Props) => {
     useBackHandler(() => {
         if (selectedVideo) {
             selectVideo(null)
+            showPlaylistSelector(false)
             return true
         }
 
