@@ -40,7 +40,7 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
         const newMessage: Message = new Message({
             author: user._id,
             contents: messageInput,
-            source: 'user',
+            source: 'human',
             scope: props.boxToken
         })
         props.socket.emit('chat', newMessage)
