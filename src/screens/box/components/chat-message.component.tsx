@@ -1,18 +1,9 @@
 import React from "react"
 import { View, Text, StyleSheet } from "react-native"
 import { Message } from "../../../models/message.model"
-import { FeedbackMessage } from "@teamberry/muscadine"
+import { FeedbackMessage, SystemMessage } from "@teamberry/muscadine"
 
 const ChatMessage = ({ message }) => {
-
-    const SystemMessage = (message: FeedbackMessage) => {
-        const type = `${message.feedbackType}Feedback`
-
-        return (
-            <Text style={[styles.systemMessage, styles[type]]}>{message.contents}</Text>
-        )
-    }
-
     const renderAuthor = (message: Message | FeedbackMessage) => {
         if (message.author) {
             const { _id, name } = message.author as { _id: string, name: string };
@@ -20,14 +11,38 @@ const ChatMessage = ({ message }) => {
         }
     }
 
+    const SystemMessage = (message: SystemMessage | FeedbackMessage) => {
+        const type = `${message.context}SystemContext`
+
+        return (
+            <View style={[styles.message, styles.systemMessage, styles[type]]}>
+                <Text style={{color: '#BBBBBB'}}>{message.contents}</Text>
+            </View>
+        )
+    }
+
+    const FeedbackMessage = (message: FeedbackMessage) => {
+        const type = `${message.context}FeedbackContext`
+
+        return (
+            <View style={[styles.message, styles.feedbackMessage, styles[type]]}>
+                <Text style={{color: '#BBBBBB'}}>{message.contents}</Text>
+                <Text style={styles.feedbackAlert}>Only you can see this message.</Text>
+            </View>
+        )
+    }
+
+    if (message.source === 'system') {
+        return (SystemMessage(message))
+    }
+
+    if (message.source === 'feedback') {
+        return (FeedbackMessage(message))
+    }
 
     return (
-        <View style={styles.message} >
-            {(message.source !== 'system' && message.source !== 'bot') ? (
-                <Text style={styles.userMessage}>{renderAuthor(message)} {message.contents}</Text>
-            ) : (
-                SystemMessage(message)
-            )}
+        <View style={styles.message}>
+            <Text style={styles.userMessage}>{renderAuthor(message)} {message.contents}</Text>
         </View>
     )
 }
@@ -35,34 +50,64 @@ const ChatMessage = ({ message }) => {
 const styles = StyleSheet.create({
     message: {
         paddingVertical: 3,
+        marginVertical: 3
     },
     author: {
         fontFamily: 'Montserrat-SemiBold',
         color: '#BBBBBB'
     },
-    systemMessage: {
-        fontStyle: 'italic',
+    feedbackAlert: {
+        fontSize: 8,
+        color: '#BBBBBB'
+    },
+    feedbackMessage: {
         color: '#BBBBBB',
-        borderLeftWidth: 5,
+        borderLeftWidth: 3,
         borderStyle: 'solid',
         paddingLeft: 9
     },
-    successFeedback: {
+    systemMessage: {
+        color: '#BBBBBB',
+        borderLeftWidth: 3,
+        borderStyle: 'solid',
+        paddingLeft: 9
+    },
+    successSystemContext: {
         borderLeftColor: '#0CEBC0',
     },
-    infoFeedback: {
+    infoSystemContext: {
         borderLeftColor: '#009AEB',
     },
-    errorFeedback: {
+    errorSystemContext: {
         borderLeftColor: '#B30F4F',
     },
-    warningFeedback: {
+    warningSystemContext: {
         borderLeftColor: 'yellow'
+    },
+    berriesSystemContext: {
+        borderLeftColor: '#FF8E52',
+        color: '#FF8E52'
+    },
+    successFeedbackContext: {
+        borderLeftColor: '#0CEBC0',
+        backgroundColor: 'rgba(12, 235, 192, 0.075)'
+    },
+    infoFeedbackContext: {
+        borderLeftColor: '#009AEB',
+        backgroundColor: 'rgba(0, 154, 235, 0.075)'
+    },
+    errorFeedbackContext: {
+        borderLeftColor: '#B30F4F',
+        backgroundColor: 'rgba(235, 23, 42, 0.075)'
+    },
+    warningFeedbackContext: {
+        borderLeftColor: 'yellow',
+        backgroundColor: 'rgba(252, 196, 13, 0.075)'
     },
     userMessage: {
         color: 'white',
         paddingLeft: 4
-    }
+    },
 })
 
 export default ChatMessage

@@ -15,7 +15,7 @@ const BoxCard = (box: Box) => {
             <View>
                 {currentVideo ? (<Image
                     style={{ width: 107, height: 60 }}
-                    source={{ uri: `https://i.ytimg.com/vi/${currentVideo.video.link}/hqdefault.jpg` }}
+                    source={{ uri: `https://i.ytimg.com/vi/${currentVideo.video.link}/default.jpg` }}
                 />) : (<Image
                     style={{ width: 107, height: 60 }}
                     source={{ uri: 'https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/default-picture' }}
