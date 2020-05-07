@@ -1,10 +1,10 @@
 import React, { useState, useRef } from "react"
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, Animated } from "react-native"
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Animated } from "react-native"
 import { SyncPacket, QueueItem } from "@teamberry/muscadine"
 import { Box } from "../../../models/box.model"
 import Collapsible from 'react-native-collapsible'
-import ProfilePicture from './../../../components/profile-picture.component'
-import { Svg, Polygon, G } from 'react-native-svg';
+import { Svg, Polygon } from 'react-native-svg';
+import QueueVideo from './queue-video.component'
 
 export type Props = {
     box: Box,
@@ -91,26 +91,17 @@ const Queue = ({ box, currentVideo }: Props) => {
             upcomingVideos.unshift(preselectedVideo)
         }
 
+        // Put the current video first
+        const playingVideo = box.playlist.find((item: QueueItem) => item.startTime !== null && item.endTime === null)
+        if (playingVideo) {
+            upcomingVideos.unshift(playingVideo)
+        }
+
         return (
             <FlatList
                 data={upcomingVideos}
                 renderItem={({ item }) => (
-                    <View style={styles.upcomingItem}>
-                        <Image
-                            style={[item.isPreselected ? styles.preselectedVideo : {}, { width: 88.89, height: 60 }]}
-                            source={{uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg`}}
-                        />
-                        <View style={{ paddingLeft: 10, width: 240 }}>
-                            <Text style={styles.upcomingItemName} numberOfLines={2}>
-                                <Text style={styles.nextItemName}>{item.isPreselected ? 'NEXT: ' : null}</Text>
-                                {item.video.name}
-                            </Text>
-                            <View style={{ paddingLeft: 5, flex: 1, flexDirection: 'row' }}>
-                                <ProfilePicture userId={item.submitted_by._id} size={20}/>
-                                <Text style={{paddingLeft: 5, color: '#BBBBBB'}}>{item.submitted_by.name}</Text>
-                            </View>
-                        </View>
-                    </View>
+                    <QueueVideo item={item}/>
                 )}
                 keyExtractor={(item, index) => index.toString()}
             />
@@ -172,10 +163,6 @@ const styles = StyleSheet.create({
     currentSpaceActions: {
         width: 40
     },
-    preselectedVideo: {
-        borderColor: '#EBBA17',
-        borderWidth: 2
-    },
     boxName: {
         color: '#BBBBBB',
         fontFamily: 'Montserrat-Regular'
@@ -187,23 +174,6 @@ const styles = StyleSheet.create({
     upcomingSpaceContainer: {
         backgroundColor: '#262626',
     },
-    upcomingItem: {
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderColor: '#191919',
-        borderStyle: 'solid',
-        flex: 1,
-        flexDirection: 'row'
-    },
-    upcomingItemName: {
-        fontFamily: 'Montserrat-Regular',
-        color: 'white',
-    },
-    nextItemName: {
-        fontFamily: 'Montserrat-SemiBold',
-        color: '#EBBA17'
-    }
 })
 
 export default Queue
