@@ -14,12 +14,17 @@ const QueueVideo = ({ item }: Props) => {
     return (
         <View style={styles.queueVideo}>
             <Image
-                style={[item.isPreselected ? styles.preselectedVideo : {}, { width: 88.89, height: 60 }]}
+                style={[
+                    item.isPreselected ? styles.preselectedVideo : {},
+                    item.startTime !== null ? styles.currentVideo : {},
+                    { width: 88.89, height: 60 }
+                ]}
                 source={{uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg`}}
             />
             <View style={{ paddingLeft: 10, width: 240 }}>
                 <Text style={styles.queueVideoName} numberOfLines={2}>
                     <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'NEXT: ' : null}</Text>
+                    <Text style={styles.currentVideoIndicator}>{item.startTime !== null ? 'PLAYING: ' : null}</Text>
                     {item.video.name}
                 </Text>
                 <View style={{ paddingLeft: 5, flex: 1, flexDirection: 'row' }}>
@@ -44,6 +49,14 @@ const styles = StyleSheet.create({
     queueVideoName: {
         fontFamily: 'Montserrat-Regular',
         color: 'white',
+    },
+    currentVideo: {
+        borderColor: '#009AEB',
+        borderWidth: 2
+    },
+    currentVideoIndicator: {
+        fontFamily: 'Montserrat-SemiBold',
+        color: '#009AEB'
     },
     preselectedVideo: {
         borderColor: '#EBBA17',

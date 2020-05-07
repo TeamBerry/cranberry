@@ -91,6 +91,12 @@ const Queue = ({ box, currentVideo }: Props) => {
             upcomingVideos.unshift(preselectedVideo)
         }
 
+        // Put the current video first
+        const playingVideo = box.playlist.find((item: QueueItem) => item.startTime !== null && item.endTime === null)
+        if (playingVideo) {
+            upcomingVideos.unshift(playingVideo)
+        }
+
         return (
             <FlatList
                 data={upcomingVideos}
