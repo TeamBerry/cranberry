@@ -4,8 +4,6 @@ import { Message } from "../../../models/message.model"
 import { FeedbackMessage, SystemMessage } from "@teamberry/muscadine"
 
 const ChatMessage = ({ message }) => {
-    console.log(message);
-
     const renderAuthor = (message: Message | FeedbackMessage) => {
         if (message.author) {
             const { _id, name } = message.author as { _id: string, name: string };
