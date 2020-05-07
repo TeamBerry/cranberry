@@ -38,20 +38,11 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
         }
 
         try {
-
             const youtubeSearchResults = await axios.get(`https://araza.berrybox.tv/search`, {
                 params: { value: searchValue },
             })
 
-            const videos = youtubeSearchResults.data.items.map((responseVideo) => {
-                return {
-                    _id: null,
-                    name: responseVideo.snippet.title,
-                    link: responseVideo.id.videoId
-                }
-            })
-
-            setSearchResults(videos)
+            setSearchResults(youtubeSearchResults.data)
             setSearched(true)
         } catch (error) {
             setError(true)
