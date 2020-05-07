@@ -23,8 +23,8 @@ const QueueVideo = ({ item }: Props) => {
             />
             <View style={{ paddingLeft: 10, width: 240 }}>
                 <Text style={styles.queueVideoName} numberOfLines={2}>
-                    <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'NEXT: ' : null}</Text>
-                    <Text style={styles.currentVideoIndicator}>{item.startTime !== null ? 'PLAYING: ' : null}</Text>
+                    <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
+                    <Text style={styles.currentVideoIndicator}>{item.startTime !== null ? 'Playing: ' : null}</Text>
                     {item.video.name}
                 </Text>
                 <View style={{ paddingLeft: 5, flex: 1, flexDirection: 'row' }}>
