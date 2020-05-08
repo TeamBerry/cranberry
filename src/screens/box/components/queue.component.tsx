@@ -5,12 +5,45 @@ import {
 import { SyncPacket, QueueItem } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
 import { Svg, Polygon } from 'react-native-svg';
-import { Box } from '../../../models/box.model';
+import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
+
+const styles = StyleSheet.create({
+  currentSpaceContainer: {
+    height: 50,
+    backgroundColor: '#262626',
+    color: 'white',
+    paddingLeft: 10,
+  },
+  currentSpace: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  currentSpaceTexts: {
+    width: 310,
+  },
+  currentSpaceActions: {
+    width: 40,
+  },
+  boxName: {
+    color: '#BBBBBB',
+    fontFamily: 'Montserrat-Regular',
+  },
+  currentVideo: {
+    color: 'white',
+    fontFamily: 'Montserrat-SemiBold',
+  },
+  upcomingSpaceContainer: {
+    backgroundColor: '#262626',
+  },
+});
+
 
 export type Props = {
     box: Box,
-    currentVideo: SyncPacket['item']
+    currentVideo: QueueItem
 }
 
 const Queue = ({ box, currentVideo }: Props) => {
@@ -142,37 +175,5 @@ const Queue = ({ box, currentVideo }: Props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  currentSpaceContainer: {
-    height: 50,
-    backgroundColor: '#262626',
-    color: 'white',
-    paddingLeft: 10,
-  },
-  currentSpace: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  currentSpaceTexts: {
-    width: 310,
-  },
-  currentSpaceActions: {
-    width: 40,
-  },
-  boxName: {
-    color: '#BBBBBB',
-    fontFamily: 'Montserrat-Regular',
-  },
-  currentVideo: {
-    color: 'white',
-    fontFamily: 'Montserrat-SemiBold',
-  },
-  upcomingSpaceContainer: {
-    backgroundColor: '#262626',
-  },
-});
 
 export default Queue;

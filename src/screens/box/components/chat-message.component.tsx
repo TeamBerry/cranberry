@@ -70,14 +70,14 @@ const styles = StyleSheet.create({
 });
 
 const ChatMessage = ({ message }: Props) => {
-  const renderAuthor = (message: Message) => {
+  const AuthorRender = (message: Message) => {
     if (message.author) {
       const { _id, name } = message.author as { _id: string, name: string };
       return (<Text style={styles.author}>{name}</Text>);
     }
   };
 
-  const SystemMessage = (message: SystemMessage) => {
+  const SystemMessageRender = (message: SystemMessage) => {
     const type = `${message.context}SystemContext`;
 
     return (
@@ -87,7 +87,7 @@ const ChatMessage = ({ message }: Props) => {
     );
   };
 
-  const FeedbackMessage = (message: FeedbackMessage) => {
+  const FeedbackMessageRender = (message: FeedbackMessage) => {
     const type = `${message.context}FeedbackContext`;
 
     return (
@@ -99,17 +99,17 @@ const ChatMessage = ({ message }: Props) => {
   };
 
   if (message.source === 'system') {
-    return (SystemMessage(message as SystemMessage));
+    return (SystemMessageRender(message as SystemMessage));
   }
 
   if (message.source === 'feedback') {
-    return (FeedbackMessage(message as FeedbackMessage));
+    return (FeedbackMessageRender(message as FeedbackMessage));
   }
 
   return (
     <View style={styles.message}>
       <Text style={styles.userMessage}>
-        {renderAuthor(message as Message)}
+        {AuthorRender(message as Message)}
         {' '}
         {message.contents}
       </Text>

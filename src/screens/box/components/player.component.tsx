@@ -41,6 +41,7 @@ const Player = (props: PlayerProps) => {
         videoId={props.currentItem.video.link}
         style={{ alignSelf: 'stretch', height: 204 }}
         onReady={() => setPlayerReadiness(true)}
+        // eslint-disable-next-line no-console
         onError={(e) => console.log(e)}
       />
     );

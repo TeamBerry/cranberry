@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl, Image, Platform, StatusBar,
+  StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import SideMenu from 'react-native-side-menu';
@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
 import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
-import { Box } from '../models/box.model';
+import Box from '../models/box.model';
 import ProfilePicture from '../components/profile-picture.component';
 
 const styles = StyleSheet.create({
