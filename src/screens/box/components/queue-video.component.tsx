@@ -1,40 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, TouchableOpacity, Image, Animated,
+  StyleSheet, Text, View, Image,
 } from 'react-native';
-import { SyncPacket, QueueItem } from '@teamberry/muscadine';
-import Collapsible from 'react-native-collapsible';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { Box } from '../../../models/box.model';
+import { QueueItem } from '@teamberry/muscadine';
 import ProfilePicture from '../../../components/profile-picture.component';
-
-export type Props = {
-    item: QueueItem
-}
-
-const QueueVideo = ({ item }: Props) => (
-  <View style={styles.queueVideo}>
-    <Image
-      style={[
-        item.isPreselected ? styles.preselectedVideo : {},
-        item.startTime !== null ? styles.currentVideo : {},
-        { width: 88.89, height: 60 },
-      ]}
-      source={{ uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg` }}
-    />
-    <View style={{ paddingLeft: 10, width: 240 }}>
-      <Text style={styles.queueVideoName} numberOfLines={2}>
-        <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
-        <Text style={styles.currentVideoIndicator}>{item.startTime !== null ? 'Playing: ' : null}</Text>
-        {item.video.name}
-      </Text>
-      <View style={{ paddingLeft: 5, flex: 1, flexDirection: 'row' }}>
-        <ProfilePicture userId={item.submitted_by._id} size={20} />
-        <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
-      </View>
-    </View>
-  </View>
-);
 
 const styles = StyleSheet.create({
   queueVideo: {
@@ -67,5 +36,34 @@ const styles = StyleSheet.create({
     color: '#EBBA17',
   },
 });
+
+
+export type Props = {
+    item: QueueItem
+}
+
+const QueueVideo = ({ item }: Props) => (
+  <View style={styles.queueVideo}>
+    <Image
+      style={[
+        item.isPreselected ? styles.preselectedVideo : {},
+        item.startTime !== null ? styles.currentVideo : {},
+        { width: 88.89, height: 60 },
+      ]}
+      source={{ uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg` }}
+    />
+    <View style={{ paddingLeft: 10, width: 240 }}>
+      <Text style={styles.queueVideoName} numberOfLines={2}>
+        <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
+        <Text style={styles.currentVideoIndicator}>{item.startTime !== null ? 'Playing: ' : null}</Text>
+        {item.video.name}
+      </Text>
+      <View style={{ paddingLeft: 5, flex: 1, flexDirection: 'row' }}>
+        <ProfilePicture userId={item.submitted_by._id} size={20} />
+        <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
+      </View>
+    </View>
+  </View>
+);
 
 export default QueueVideo;

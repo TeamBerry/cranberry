@@ -1,11 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity, ActivityIndicator,
+  KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity, ActivityIndicator,
 } from 'react-native';
 import { Switch, Button as IconButton, Snackbar } from 'react-native-paper';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import FormTextInput from '../components/form-text-input.component';
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    paddingVertical: 15,
+    paddingLeft: 10,
+    backgroundColor: '#262626',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  titlePage: {
+    fontFamily: 'Montserrat-SemiBold',
+    fontSize: 30,
+    marginTop: '1%',
+    marginBottom: 10,
+    color: 'white',
+    paddingLeft: 10,
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#262626',
+    paddingTop: 40,
+  },
+  form: {
+    flex: 1,
+    width: 320,
+    paddingBottom: 20,
+  },
+  image: {
+    height: 150,
+    width: 150,
+  },
+  modeContainer: {
+    marginVertical: 20,
+  },
+  modeSpace: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modeTitle: {
+    fontSize: 20,
+    fontFamily: 'Montserrat-SemiBold',
+    color: 'white',
+  },
+  modeHelper: {
+    color: '#BBBBBB',
+  },
+});
 
 const CreateBoxScreen = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -114,54 +163,5 @@ const CreateBoxScreen = ({ navigation }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  headerContainer: {
-    paddingVertical: 15,
-    paddingLeft: 10,
-    backgroundColor: '#262626',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  titlePage: {
-    fontFamily: 'Montserrat-SemiBold',
-    fontSize: 30,
-    marginTop: '1%',
-    marginBottom: 10,
-    color: 'white',
-    paddingLeft: 10,
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#262626',
-    paddingTop: 40,
-  },
-  form: {
-    flex: 1,
-    width: 320,
-    paddingBottom: 20,
-  },
-  image: {
-    height: 150,
-    width: 150,
-  },
-  modeContainer: {
-    marginVertical: 20,
-  },
-  modeSpace: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modeTitle: {
-    fontSize: 20,
-    fontFamily: 'Montserrat-SemiBold',
-    color: 'white',
-  },
-  modeHelper: {
-    color: '#BBBBBB',
-  },
-});
 
 export default CreateBoxScreen;

@@ -2,11 +2,35 @@ import React, { useState, useEffect } from 'react';
 import {
   TextInput, StyleSheet, KeyboardAvoidingView, View,
 } from 'react-native';
-import { Message, FeedbackMessage, SystemMessage } from '@teamberry/muscadine';
 import AsyncStorage from '@react-native-community/async-storage';
-
 import { ScrollView } from 'react-native-gesture-handler';
+
+import { Message, FeedbackMessage, SystemMessage } from '@teamberry/muscadine';
+
 import ChatMessage from './chat-message.component';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#191919',
+    justifyContent: 'space-between',
+  },
+  messageList: {
+    paddingTop: 0,
+    height: 352,
+  },
+  chatInput: {
+    padding: 10,
+    marginBottom: 5,
+    height: 40,
+    backgroundColor: '#303030',
+    borderColor: '#009AEB',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 5,
+    color: 'white',
+  },
+});
 
 const ChatTab = (props: {socket: any, boxToken: string}) => {
   const welcomeMessage: FeedbackMessage = {
@@ -24,8 +48,7 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
 
   useEffect(() => {
     const getSession = async () => {
-      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      setUser(user);
+      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     getSession();
@@ -33,6 +56,7 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
 
   useEffect(() => {
     props.socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
+      // eslint-disable-next-line no-shadow
       setMessages((messages) => [...messages, newMessage]);
     });
   }, []);
@@ -71,28 +95,5 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#191919',
-    justifyContent: 'space-between',
-  },
-  messageList: {
-    paddingTop: 0,
-    height: 352,
-  },
-  chatInput: {
-    padding: 10,
-    marginBottom: 5,
-    height: 40,
-    backgroundColor: '#303030',
-    borderColor: '#009AEB',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 5,
-    color: 'white',
-  },
-});
 
 export default ChatTab;

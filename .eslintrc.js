@@ -23,6 +23,11 @@ module.exports = {
     'react',
     '@typescript-eslint',
   ],
-  rules: {
+    rules: {
+        "react/jsx-filename-extension": 'off',
+        "no-underscore-dangle": "off",
+        // Default no-unused-vars triggers on type imports because of TypeScript
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "error"
   },
 };

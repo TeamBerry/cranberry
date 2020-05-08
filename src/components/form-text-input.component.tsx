@@ -1,14 +1,6 @@
 import React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
-const FormTextInput = (props) => (
-  <TextInput
-    placeholderTextColor="#BBBBBB"
-    style={styles.textInput}
-    {...props}
-  />
-);
-
 const styles = StyleSheet.create({
   textInput: {
     height: 40,
@@ -21,5 +13,13 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+const FormTextInput = (props) => (
+  <TextInput
+    placeholderTextColor="#BBBBBB"
+    style={styles.textInput}
+    {...props}
+  />
+);
 
 export default FormTextInput;

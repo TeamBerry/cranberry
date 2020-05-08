@@ -1,4 +1,4 @@
-export class Box {
+class Box {
     _id: string
 
     creator: {
@@ -25,3 +25,5 @@ export class Box {
         loop: boolean
     }
 }
+
+export default Box;

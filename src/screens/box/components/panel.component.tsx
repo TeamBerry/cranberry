@@ -20,6 +20,8 @@ const Panel = (props: { boxToken: string, socket: any}) => {
         return <ChatTab boxToken={props.boxToken} socket={props.socket} />;
       case 'search':
         return <SearchTab boxToken={props.boxToken} socket={props.socket} />;
+      default:
+        return <></>;
     }
   };
 

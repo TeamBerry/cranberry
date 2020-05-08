@@ -1,55 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { FeedbackMessage, SystemMessage } from '@teamberry/muscadine';
-import { Message } from '../../../models/message.model';
+import { Message, FeedbackMessage, SystemMessage } from '@teamberry/muscadine';
 
-const ChatMessage = ({ message }) => {
-  const renderAuthor = (message: Message | FeedbackMessage) => {
-    if (message.author) {
-      const { _id, name } = message.author as { _id: string, name: string };
-      return (<Text style={styles.author}>{name}</Text>);
-    }
-  };
-
-  const SystemMessage = (message: SystemMessage | FeedbackMessage) => {
-    const type = `${message.context}SystemContext`;
-
-    return (
-      <View style={[styles.message, styles.systemMessage, styles[type]]}>
-        <Text style={{ color: '#BBBBBB' }}>{message.contents}</Text>
-      </View>
-    );
-  };
-
-  const FeedbackMessage = (message: FeedbackMessage) => {
-    const type = `${message.context}FeedbackContext`;
-
-    return (
-      <View style={[styles.message, styles.feedbackMessage, styles[type]]}>
-        <Text style={{ color: '#BBBBBB' }}>{message.contents}</Text>
-        <Text style={styles.feedbackAlert}>Only you can see this message.</Text>
-      </View>
-    );
-  };
-
-  if (message.source === 'system') {
-    return (SystemMessage(message));
-  }
-
-  if (message.source === 'feedback') {
-    return (FeedbackMessage(message));
-  }
-
-  return (
-    <View style={styles.message}>
-      <Text style={styles.userMessage}>
-        {renderAuthor(message)}
-        {' '}
-        {message.contents}
-      </Text>
-    </View>
-  );
-};
+export type Props = {
+    message: Message | FeedbackMessage | SystemMessage
+}
 
 const styles = StyleSheet.create({
   message: {
@@ -113,5 +68,53 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
   },
 });
+
+const ChatMessage = ({ message }: Props) => {
+  const renderAuthor = (message: Message) => {
+    if (message.author) {
+      const { _id, name } = message.author as { _id: string, name: string };
+      return (<Text style={styles.author}>{name}</Text>);
+    }
+  };
+
+  const SystemMessage = (message: SystemMessage) => {
+    const type = `${message.context}SystemContext`;
+
+    return (
+      <View style={[styles.message, styles.systemMessage, styles[type]]}>
+        <Text style={{ color: '#BBBBBB' }}>{message.contents}</Text>
+      </View>
+    );
+  };
+
+  const FeedbackMessage = (message: FeedbackMessage) => {
+    const type = `${message.context}FeedbackContext`;
+
+    return (
+      <View style={[styles.message, styles.feedbackMessage, styles[type]]}>
+        <Text style={{ color: '#BBBBBB' }}>{message.contents}</Text>
+        <Text style={styles.feedbackAlert}>Only you can see this message.</Text>
+      </View>
+    );
+  };
+
+  if (message.source === 'system') {
+    return (SystemMessage(message as SystemMessage));
+  }
+
+  if (message.source === 'feedback') {
+    return (FeedbackMessage(message as FeedbackMessage));
+  }
+
+  return (
+    <View style={styles.message}>
+      <Text style={styles.userMessage}>
+        {renderAuthor(message as Message)}
+        {' '}
+        {message.contents}
+      </Text>
+    </View>
+  );
+};
 
 export default ChatMessage;

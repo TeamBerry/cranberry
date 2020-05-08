@@ -2,6 +2,18 @@ import React, { useState, useEffect } from 'react';
 import NetInfo from '@react-native-community/netinfo';
 import { View, Text, StyleSheet } from 'react-native';
 
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#B30F4F',
+    height: 30,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    color: 'white',
+  },
+});
 
 const OfflineNotice = () => {
   const [isConnected, setConnected] = useState(true);
@@ -20,18 +32,5 @@ const OfflineNotice = () => {
 
   return null;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#B30F4F',
-    height: 30,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: 'white',
-  },
-});
 
 export default OfflineNotice;
