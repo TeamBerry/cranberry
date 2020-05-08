@@ -1,7 +1,8 @@
-import React, {useState, useEffect, useRef} from "react"
-import { ActivityIndicator, Image } from "react-native"
-import YouTube from 'react-native-youtube'
-import { QueueItem } from "@teamberry/muscadine";
+/* eslint-disable react/destructuring-assignment */
+import React, { useState, useEffect, useRef } from 'react';
+import { ActivityIndicator, Image } from 'react-native';
+import YouTube from 'react-native-youtube';
+import { QueueItem } from '@teamberry/muscadine';
 
 export type PlayerProps = {
     boxKey: string,
@@ -9,49 +10,50 @@ export type PlayerProps = {
 }
 
 const Player = (props: PlayerProps) => {
-    const _youtubeRef = useRef(null);
-    const [isLoading, setLoading] = useState(true)
-    const [isPlayerReady, setPlayerReadiness] = useState(false)
+  const _youtubeRef = useRef(null);
+  const [isLoading, setLoading] = useState(true);
+  const [isPlayerReady, setPlayerReadiness] = useState(false);
 
-    useEffect(() => {
-        setLoading(false)
-    }, [props.currentItem])
+  useEffect(() => {
+    setLoading(false);
+  }, [props.currentItem]);
 
-    useEffect(() => {
-        if (props.currentItem && isPlayerReady) {
-            const exactPosition = Math.floor((Date.now() - Date.parse(props.currentItem.startTime.toString())) / 1000);
-            const position = exactPosition <= 2 ? 0 : exactPosition;
+  useEffect(() => {
+    if (props.currentItem && isPlayerReady) {
+      const exactPosition = Math.floor((Date.now() - Date.parse(props.currentItem.startTime.toString())) / 1000);
+      const position = exactPosition <= 2 ? 0 : exactPosition;
 
-            _youtubeRef.current.seekTo(position);
-        }
-    }, [props.currentItem, isPlayerReady])
-
-    if (isLoading) {
-        return (
-            <ActivityIndicator />
-        )
+      _youtubeRef.current.seekTo(position);
     }
+  }, [props.currentItem, isPlayerReady]);
 
-    if (props.currentItem) {
-        return (
-            <YouTube
-                ref={_youtubeRef}
-                apiKey={props.boxKey}
-                play={true}
-                videoId={props.currentItem.video.link}
-                style={{ alignSelf: 'stretch', height: 204 }}
-                onReady={() => setPlayerReadiness(true)}
-                onError={(e) => console.log(e)}
-            />
-        )
-    }
-
+  if (isLoading) {
     return (
-        <Image
-            style={{ width: 400, height: 200 }}
-            source={require('./../../../../assets/berrybox-logo-master.png')}
-        />
-    )
-}
+      <ActivityIndicator />
+    );
+  }
 
-export default Player
+  if (props.currentItem) {
+    return (
+      <YouTube
+        ref={_youtubeRef}
+        apiKey={props.boxKey}
+        play
+        videoId={props.currentItem.video.link}
+        style={{ alignSelf: 'stretch', height: 204 }}
+        onReady={() => setPlayerReadiness(true)}
+        // eslint-disable-next-line no-console
+        onError={(e) => console.log(e)}
+      />
+    );
+  }
+
+  return (
+    <Image
+      style={{ width: 400, height: 200 }}
+      source={require('../../../../assets/berrybox-logo-master.png')}
+    />
+  );
+};
+
+export default Player;
