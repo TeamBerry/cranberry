@@ -8,6 +8,40 @@ import { VideoSubmissionRequest } from '@teamberry/muscadine';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
 
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    backgroundColor: '#191919',
+  },
+  searchSpace: {
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  chatInput: {
+    padding: 10,
+    marginBottom: 5,
+    height: 40,
+    backgroundColor: '#303030',
+    borderColor: '#009AEB',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 5,
+    color: 'white',
+  },
+  resultsHelp: {
+    color: '#BBBBBB',
+    textAlign: 'center',
+    padding: 10,
+    fontFamily: 'Montserrat-Light',
+  },
+  resultItem: {
+    paddingHorizontal: 7,
+    paddingVertical: 10,
+    flex: 1,
+    flexDirection: 'row',
+  },
+});
+
 const SearchTab = (props: {socket: any, boxToken: string}) => {
   const [searchValue, setSearchValue] = useState('');
   const [youtubeSearchResults, setSearchResults] = useState([]);
@@ -148,39 +182,5 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    backgroundColor: '#191919',
-  },
-  searchSpace: {
-    paddingHorizontal: 10,
-    paddingTop: 10,
-  },
-  chatInput: {
-    padding: 10,
-    marginBottom: 5,
-    height: 40,
-    backgroundColor: '#303030',
-    borderColor: '#009AEB',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 5,
-    color: 'white',
-  },
-  resultsHelp: {
-    color: '#BBBBBB',
-    textAlign: 'center',
-    padding: 10,
-    fontFamily: 'Montserrat-Light',
-  },
-  resultItem: {
-    paddingHorizontal: 7,
-    paddingVertical: 10,
-    flex: 1,
-    flexDirection: 'row',
-  },
-});
 
 export default SearchTab;

@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import {
   StyleSheet, Text, View, FlatList, TouchableOpacity, Animated,
 } from 'react-native';
-import { SyncPacket, QueueItem } from '@teamberry/muscadine';
+import { QueueItem } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
 import { Svg, Polygon } from 'react-native-svg';
 import Box from '../../../models/box.model';

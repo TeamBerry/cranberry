@@ -1,3 +1,5 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable no-console */
 import React from 'react';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import io from 'socket.io-client';
@@ -5,27 +7,34 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import { SyncPacket } from '@teamberry/muscadine';
 import Player from './components/player.component';
-import { Box } from '../../models/box.model';
+import Box from '../../models/box.model';
 import BoxContext from './box.context';
 import Queue from './components/queue.component';
 import SocketContext from '../box/box.context';
 import Panel from './components/panel.component';
 import OfflineNotice from '../../components/offline-notice.component';
 
+const styles = StyleSheet.create({
+  playerSpace: {
+    height: 204,
+    backgroundColor: '#262626',
+  },
+});
+
+// eslint-disable-next-line import/prefer-default-export
 export class BoxScreen extends React.Component<{ route, navigation }> {
     boxToken: string = this.props.route.params.boxToken
 
     socketConnection = null
 
+    // eslint-disable-next-line react/state-in-constructor
     state: {
-        error: any,
         hasLoadedBox: boolean,
         box: Box,
         socket: any,
         boxKey: string,
         currentQueueItem: SyncPacket['item']
     } = {
-      error: null,
       hasLoadedBox: false,
       box: null,
       socket: null,
@@ -81,14 +90,14 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
             this.setState({ box });
           })
           .on('denied', () => {
-            this.setState({ error: 'Connection denied', hasLoadedBox: true });
+            this.setState({ hasLoadedBox: true });
             console.log('DENIED');
           })
           .on('disconnect', () => {
             console.log('DISCONNECTED');
           });
       } catch (error) {
-        this.setState({ error, hasLoadedBox: true });
+        this.setState({ hasLoadedBox: true });
       }
     }
 
@@ -101,33 +110,32 @@ export class BoxScreen extends React.Component<{ route, navigation }> {
     render() {
       return (
         <>
-          <BoxContext.Provider value={this.state.socket}>
-            <OfflineNotice />
-            <View style={styles.playerSpace}>
-              {this.state.socket && this.state.boxKey ? (
-                <Player
-                  boxKey={this.state.boxKey}
-                  currentItem={this.state.currentQueueItem}
-                />
-              ) : (
-                <ActivityIndicator />
-              )}
+          { this.state.hasLoadedBox ? (
+            <BoxContext.Provider value={this.state.socket}>
+              <OfflineNotice />
+              <View style={styles.playerSpace}>
+                {this.state.socket && this.state.boxKey ? (
+                  <Player
+                    boxKey={this.state.boxKey}
+                    currentItem={this.state.currentQueueItem}
+                  />
+                ) : (
+                  <ActivityIndicator />
+                )}
+              </View>
+              <Queue box={this.state.box} currentVideo={this.state.currentQueueItem} />
+              {this.state.socket ? (
+                <SocketContext.Consumer>
+                  { (socket) => <Panel boxToken={this.state.box._id} socket={socket} /> }
+                </SocketContext.Consumer>
+              ) : (<ActivityIndicator />)}
+            </BoxContext.Provider>
+          ) : (
+            <View style={{ backgroundColor: '#191919', height: '100%' }}>
+              <ActivityIndicator />
             </View>
-            <Queue box={this.state.box} currentVideo={this.state.currentQueueItem} />
-            {this.state.socket ? (
-              <SocketContext.Consumer>
-                { (socket) => <Panel boxToken={this.state.box._id} socket={socket} /> }
-              </SocketContext.Consumer>
-            ) : (<ActivityIndicator />)}
-          </BoxContext.Provider>
+          )}
         </>
       );
     }
 }
-
-const styles = StyleSheet.create({
-  playerSpace: {
-    height: 204,
-    backgroundColor: '#262626',
-  },
-});
