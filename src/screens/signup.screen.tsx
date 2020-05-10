@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity,
 } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { ActivityIndicator, Snackbar } from 'react-native-paper';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 
@@ -50,6 +51,9 @@ const styles = StyleSheet.create({
 const SignupScreen = ({ navigation }) => {
   const { signUp } = useContext(AuthContext);
 
+  const [isLogging, setLogging] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
   return (
     <>
       <View style={styles.headerContainer}>
@@ -72,24 +76,31 @@ const SignupScreen = ({ navigation }) => {
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={
-            yup.object().shape({
-              email: yup
-                .string()
-                .email('This mail address is invalid')
-                .required('The mail address is required'),
-              username: yup
-                .string()
-                .min(5, 'Your username cannot have less than 5 characters.')
-                .max(20, 'Your username cannot have more than 20 characters.')
-                .required('You must choose an username'),
-              password: yup
-                .string()
-                .min(8, 'Your password cannot have less than 8 symbols.')
-                .required('The password is required'),
-            })
-        }
-                  // TODO: Signup for real lol
-          onSubmit={(values) => console.log(values)} // signUp({ email: values.email, username: values.username, password: values.password })}
+                      yup.object().shape({
+                        email: yup
+                          .string()
+                          .email('This mail address is invalid')
+                          .required('The mail address is required'),
+                        username: yup
+                          .string()
+                          .min(5, 'Your username cannot have less than 5 characters.')
+                          .max(20, 'Your username cannot have more than 20 characters.')
+                          .required('You must choose an username'),
+                        password: yup
+                          .string()
+                          .min(8, 'Your password cannot have less than 8 symbols.')
+                          .required('The password is required'),
+                      })
+                  }
+          onSubmit={async (values) => {
+            setLogging(true);
+            try {
+              await signUp({ email: values.email, username: values.username, password: values.password });
+            } catch (error) {
+              setLogging(false);
+              setErrorMessage('This mail address is already used.');
+            }
+          }}
         >
           {({
             handleChange, setFieldTouched, handleSubmit, values, touched, errors, isValid,
@@ -130,11 +141,27 @@ const SignupScreen = ({ navigation }) => {
                 />
                 {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
               </View>
-              <Button
-                title="Sign Up"
-                disabled={!isValid}
-                onPress={handleSubmit}
-              />
+              {!isLogging ? (
+                <Button
+                  title="Sign Up"
+                  disabled={!isValid}
+                  onPress={handleSubmit}
+                />
+              ) : (
+                <ActivityIndicator />
+              )}
+              <Snackbar
+                visible={errorMessage}
+                onDismiss={() => setErrorMessage(null)}
+                duration={2000}
+                style={{
+                  backgroundColor: '#090909',
+                  borderLeftColor: '#EB172A',
+                  borderLeftWidth: 10,
+                }}
+              >
+                {errorMessage}
+              </Snackbar>
             </View>
           )}
         </Formik>
