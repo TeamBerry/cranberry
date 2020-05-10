@@ -1,7 +1,9 @@
-import React, { useState, useContext } from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useContext } from 'react';
 import {
   Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity,
 } from 'react-native';
+import { Formik } from 'formik';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 
@@ -45,23 +47,37 @@ const styles = StyleSheet.create({
 
 
 const SignupScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const onEmailChange = (email: string) => {
-    setEmail(email);
-  };
-
-  const onPasswordChange = (password: string) => {
-    setPassword(password);
-  };
-
-  const onUsernameChange = (username: string) => {
-    setUsername(username);
-  };
-
   const { signUp } = useContext(AuthContext);
+
+  const validate = (values) => {
+    const errors: {
+            email?: string,
+            username?: string,
+            password?: string
+        } = {};
+
+    if (!values.username) {
+      errors.username = 'Required';
+    } else if (values.username.length < 4) {
+      errors.username = 'Must be 5 characters minimum';
+    } else if (values.username.length > 21) {
+      errors.username = 'Must be 20 characters or less';
+    }
+
+    if (!values.email) {
+      errors.email = 'Required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+      errors.email = 'This mail address is invalid';
+    }
+
+    if (!values.password) {
+      errors.password = 'Required';
+    } else if (values.password.length < 7) {
+      errors.password = 'Must be 8 characters minimum';
+    }
+
+    return errors;
+  };
 
   return (
     <>
@@ -82,35 +98,48 @@ const SignupScreen = ({ navigation }) => {
           source={require('../../assets/berrybox-logo-master.png')}
           style={styles.image}
         />
-        <View style={styles.form}>
-          <FormTextInput
-            value={email}
-            onChangeText={(email) => onEmailChange(email)}
-            placeholder="Email address"
-            autoCorrect={false}
-            keyboardType="email-address"
-            returnKeyType="next"
-          />
-          <FormTextInput
-            value={username}
-            onChangeText={(username) => onUsernameChange(username)}
-            placeholder="Username"
-            autoCorrect={false}
-            returnKeyType="next"
-          />
-          <FormTextInput
-            value={password}
-            onChangeText={(password) => onPasswordChange(password)}
-            placeholder="Password"
-            secureTextEntry
-            returnKeyType="done"
-            onSubmitEditing={() => signUp({ email, password, username })}
-          />
-          <Button
-            title="Sign Up"
-            onPress={() => signUp({ email, password, username })}
-          />
-        </View>
+        <Formik
+          initialValues={{ email: '', username: '', password: '' }}
+          validate={validate}
+          onSubmit={(values) => console.log(values)} // signUp({ email: values.email, username: values.username, password: values.password })}
+        >
+          {({
+            handleChange, handleBlur, handleSubmit, values,
+          }) => (
+            <View style={styles.form}>
+              <FormTextInput
+                value={values.email}
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                placeholder="Email address"
+                autoCorrect={false}
+                keyboardType="email-address"
+                returnKeyType="next"
+              />
+              <FormTextInput
+                value={values.username}
+                onChangeText={handleChange('username')}
+                onBlur={handleBlur('username')}
+                placeholder="Username"
+                autoCorrect={false}
+                returnKeyType="next"
+              />
+              <FormTextInput
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                placeholder="Password"
+                secureTextEntry
+                returnKeyType="done"
+                onSubmitEditing={handleSubmit}
+              />
+              <Button
+                title="Sign Up"
+                onPress={() => handleSubmit}
+              />
+            </View>
+          )}
+        </Formik>
       </KeyboardAvoidingView>
     </>
   );
