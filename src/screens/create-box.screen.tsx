@@ -176,7 +176,7 @@ const CreateBoxScreen = ({ navigation }) => {
                 <Button
                   title="Create Box"
                   disabled={!isValid}
-                  onPress={() => handleSubmit}
+                  onPress={handleSubmit}
                 />
               ) : (
                 <ActivityIndicator />
