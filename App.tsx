@@ -4,7 +4,9 @@ import React, {
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { View, Image } from 'react-native';
+import {
+  View, Image, Text, Linking,
+} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import { HomeScreen } from './src/screens/home.screen';
@@ -21,6 +23,20 @@ export default function App({ navigation }) {
   // eslint-disable-next-line no-console
   console.disableYellowBox = true;
   const [isAppReady, setAppReadiness] = useState(false);
+
+  const [url, setUrl] = useState(null);
+
+  useEffect(() => {
+    const getUrlAsync = async () => {
+      const initialUrl = await Linking.getInitialURL();
+
+      setUrl(initialUrl);
+
+      console.log('INITIAL URL: ', initialUrl);
+    };
+
+    getUrlAsync();
+  }, []);
 
   const [state, dispatch] = useReducer(
     (prevState, action) => {
