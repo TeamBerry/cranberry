@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Image, StyleSheet, View, Button, KeyboardAvoidingView, Text, TouchableOpacity,
 } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { ActivityIndicator, Snackbar } from 'react-native-paper';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 
@@ -49,6 +50,9 @@ const styles = StyleSheet.create({
 export default function LoginScreen({ navigation }) {
   const { signIn } = useContext(AuthContext);
 
+  const [isLogging, setLogging] = useState(false);
+  const [loginError, setError] = useState(false);
+
   return (
     <>
       <View style={styles.headerContainer}>
@@ -81,7 +85,15 @@ export default function LoginScreen({ navigation }) {
                           .required('The password is required'),
                       })
                   }
-          onSubmit={(values) => signIn({ email: values.email, password: values.password })}
+          onSubmit={async (values) => {
+            setLogging(true);
+            try {
+              await signIn({ email: values.email, password: values.password });
+            } catch (error) {
+              setLogging(false);
+              setError(true);
+            }
+          }}
         >
           {({
             handleChange, setFieldTouched, handleSubmit, values, touched, errors, isValid,
@@ -111,11 +123,27 @@ export default function LoginScreen({ navigation }) {
                 />
                 {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
               </View>
-              <Button
-                title="Log in"
-                disabled={!isValid}
-                onPress={handleSubmit}
-              />
+              {!isLogging ? (
+                <Button
+                  title="Log in"
+                  disabled={!isValid}
+                  onPress={handleSubmit}
+                />
+              ) : (
+                <ActivityIndicator />
+              )}
+              <Snackbar
+                visible={loginError}
+                onDismiss={() => setError(false)}
+                duration={2000}
+                style={{
+                  backgroundColor: '#090909',
+                  borderLeftColor: '#EB172A',
+                  borderLeftWidth: 10,
+                }}
+              >
+                Your credentials are invalid. Please try again.
+              </Snackbar>
             </View>
           )}
         </Formik>
