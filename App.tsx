@@ -18,6 +18,7 @@ import CreateBoxScreen from './src/screens/create-box.screen';
 const Stack = createStackNavigator();
 
 export default function App({ navigation }) {
+  // eslint-disable-next-line no-console
   console.disableYellowBox = true;
   const [isAppReady, setAppReadiness] = useState(false);
 
@@ -77,36 +78,36 @@ export default function App({ navigation }) {
 
   const authContext = useMemo(
     () => ({
-      signIn: async (data) => {
-        axios.post('https://araza.berrybox.tv/auth/login',
-          {
-            mail: data.email,
-            password: data.password,
-          }).then(async (response) => {
+      signIn: async (data: { email: string; password: string; }) => {
+        try {
+          const response = await axios.post('https://araza.berrybox.tv/auth/login',
+            {
+              mail: data.email,
+              password: data.password,
+            });
           await AsyncStorage.setItem('BBOX-token', response.data.bearer);
           await AsyncStorage.setItem('BBOX-expires_at', JSON.stringify(response.data.expiresIn));
           await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject));
           dispatch({ type: 'SIGN_IN', token: response.data.bearer });
-        }).catch((error) => {
-          // eslint-disable-next-line no-console
-          console.log(error);
-        });
+        } catch (error) {
+          throw new Error(error.response.data);
+        }
       },
       signUp: async (data) => {
-        axios.post('https://araza.berrybox.tv/auth/signup',
-          {
-            name: data.username,
-            mail: data.email,
-            password: data.password,
-          }).then(async (response) => {
+        try {
+          const response = await axios.post('https://araza.berrybox.tv/auth/signup',
+            {
+              name: data.username,
+              mail: data.email,
+              password: data.password,
+            });
           await AsyncStorage.setItem('BBOX-token', response.data.bearer);
           await AsyncStorage.setItem('BBOX-expires_at', JSON.stringify(response.data.expiresIn));
           await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject));
           dispatch({ type: 'SIGN_IN', token: response.data.bearer });
-        }).catch((error) => {
-          // eslint-disable-next-line no-console
-          console.log(error);
-        });
+        } catch (error) {
+          throw new Error(error.response.data);
+        }
       },
       signOut: async () => {
         await AsyncStorage.removeItem('BBOX-token');
