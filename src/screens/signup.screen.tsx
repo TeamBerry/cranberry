@@ -88,6 +88,7 @@ const SignupScreen = ({ navigation }) => {
                 .required('The password is required'),
             })
         }
+                  // TODO: Signup for real lol
           onSubmit={(values) => console.log(values)} // signUp({ email: values.email, username: values.username, password: values.password })}
         >
           {({
