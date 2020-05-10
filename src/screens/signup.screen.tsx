@@ -133,7 +133,7 @@ const SignupScreen = ({ navigation }) => {
               <Button
                 title="Sign Up"
                 disabled={!isValid}
-                onPress={handleSubmit}
+                onPress={() => handleSubmit}
               />
             </View>
           )}

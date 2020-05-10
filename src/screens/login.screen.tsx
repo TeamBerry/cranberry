@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import {
   Image, StyleSheet, View, Button, KeyboardAvoidingView, Text, TouchableOpacity,
 } from 'react-native';
@@ -47,17 +47,6 @@ const styles = StyleSheet.create({
 
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const onEmailChange = (email: string) => {
-    setEmail(email);
-  };
-
-  const onPasswordChange = (password: string) => {
-    setPassword(password);
-  };
-
   const { signIn } = useContext(AuthContext);
 
   return (
