@@ -90,7 +90,7 @@ export default function App({ navigation }) {
           await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject));
           dispatch({ type: 'SIGN_IN', token: response.data.bearer });
         } catch (error) {
-          throw new Error(error.message);
+          throw new Error(error.response.data);
         }
       },
       signUp: async (data) => {
@@ -106,7 +106,7 @@ export default function App({ navigation }) {
           await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject));
           dispatch({ type: 'SIGN_IN', token: response.data.bearer });
         } catch (error) {
-          throw new Error(error.message);
+          throw new Error(error.response.data);
         }
       },
       signOut: async () => {

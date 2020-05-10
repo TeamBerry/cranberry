@@ -98,7 +98,13 @@ const SignupScreen = ({ navigation }) => {
               await signUp({ email: values.email, username: values.username, password: values.password });
             } catch (error) {
               setLogging(false);
-              setErrorMessage('This mail address is already used.');
+              if (error.message === 'MAIL_ALREADY_EXISTS') {
+                setErrorMessage('This mail address is already used.');
+              } else if (error.message === 'USERNAME_ALREADY_EXISTS') {
+                setErrorMessage('This username is already used.');
+              } else {
+                setErrorMessage('An unknown error occured.');
+              }
             }
           }}
         >
