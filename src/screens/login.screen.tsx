@@ -62,7 +62,7 @@ export default function LoginScreen({ navigation }) {
       </View>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior="padding"
+        behavior="height"
       >
         <Image
           source={require('../../assets/berrybox-logo-master.png')}
