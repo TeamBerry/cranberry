@@ -1,7 +1,10 @@
-import React, { useState, useContext } from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useContext } from 'react';
 import {
   Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity,
 } from 'react-native';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 
@@ -45,22 +48,6 @@ const styles = StyleSheet.create({
 
 
 const SignupScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const onEmailChange = (email: string) => {
-    setEmail(email);
-  };
-
-  const onPasswordChange = (password: string) => {
-    setPassword(password);
-  };
-
-  const onUsernameChange = (username: string) => {
-    setUsername(username);
-  };
-
   const { signUp } = useContext(AuthContext);
 
   return (
@@ -76,41 +63,81 @@ const SignupScreen = ({ navigation }) => {
       </View>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior="padding"
+        behavior="height"
       >
         <Image
           source={require('../../assets/berrybox-logo-master.png')}
           style={styles.image}
         />
-        <View style={styles.form}>
-          <FormTextInput
-            value={email}
-            onChangeText={(email) => onEmailChange(email)}
-            placeholder="Email address"
-            autoCorrect={false}
-            keyboardType="email-address"
-            returnKeyType="next"
-          />
-          <FormTextInput
-            value={username}
-            onChangeText={(username) => onUsernameChange(username)}
-            placeholder="Username"
-            autoCorrect={false}
-            returnKeyType="next"
-          />
-          <FormTextInput
-            value={password}
-            onChangeText={(password) => onPasswordChange(password)}
-            placeholder="Password"
-            secureTextEntry
-            returnKeyType="done"
-            onSubmitEditing={() => signUp({ email, password, username })}
-          />
-          <Button
-            title="Sign Up"
-            onPress={() => signUp({ email, password, username })}
-          />
-        </View>
+        <Formik
+          initialValues={{ email: '', username: '', password: '' }}
+          validationSchema={
+            yup.object().shape({
+              email: yup
+                .string()
+                .email('This mail address is invalid')
+                .required('The mail address is required'),
+              username: yup
+                .string()
+                .min(5, 'Your username cannot have less than 5 characters.')
+                .max(20, 'Your username cannot have more than 20 characters.')
+                .required('You must choose an username'),
+              password: yup
+                .string()
+                .min(8, 'Your password cannot have less than 8 symbols.')
+                .required('The password is required'),
+            })
+        }
+                  // TODO: Signup for real lol
+          onSubmit={(values) => console.log(values)} // signUp({ email: values.email, username: values.username, password: values.password })}
+        >
+          {({
+            handleChange, setFieldTouched, handleSubmit, values, touched, errors, isValid,
+          }) => (
+            <View style={styles.form}>
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  onBlur={() => setFieldTouched('email')}
+                  placeholder="Email address"
+                  autoCorrect={false}
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                />
+                {touched.email && errors.email && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.email}</Text>}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  value={values.username}
+                  onChangeText={handleChange('username')}
+                  onBlur={() => setFieldTouched('username')}
+                  placeholder="Username"
+                  autoCorrect={false}
+                  returnKeyType="next"
+                />
+                {touched.username && errors.username && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.username}</Text>}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  onBlur={() => setFieldTouched('password')}
+                  placeholder="Password"
+                  secureTextEntry
+                  returnKeyType="done"
+                  onSubmitEditing={handleSubmit}
+                />
+                {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
+              </View>
+              <Button
+                title="Sign Up"
+                disabled={!isValid}
+                onPress={handleSubmit}
+              />
+            </View>
+          )}
+        </Formik>
       </KeyboardAvoidingView>
     </>
   );

@@ -1,7 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import {
   Image, StyleSheet, View, Button, KeyboardAvoidingView, Text, TouchableOpacity,
 } from 'react-native';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 
@@ -45,17 +47,6 @@ const styles = StyleSheet.create({
 
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const onEmailChange = (email: string) => {
-    setEmail(email);
-  };
-
-  const onPasswordChange = (password: string) => {
-    setPassword(password);
-  };
-
   const { signIn } = useContext(AuthContext);
 
   return (
@@ -71,34 +62,63 @@ export default function LoginScreen({ navigation }) {
       </View>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior="padding"
+        behavior="height"
       >
         <Image
           source={require('../../assets/berrybox-logo-master.png')}
           style={styles.image}
         />
-        <View style={styles.form}>
-          <FormTextInput
-            value={email}
-            onChangeText={(email) => onEmailChange(email)}
-            placeholder="Email address"
-            autoCorrect={false}
-            keyboardType="email-address"
-            returnKeyType="next"
-          />
-          <FormTextInput
-            value={password}
-            onChangeText={(password) => onPasswordChange(password)}
-            placeholder="Password"
-            secureTextEntry
-            returnKeyType="done"
-            onSubmitEditing={() => signIn({ email, password })}
-          />
-          <Button
-            title="Log in"
-            onPress={() => signIn({ email, password })}
-          />
-        </View>
+        <Formik
+          initialValues={{ email: '', password: '' }}
+          validationSchema={
+                      yup.object().shape({
+                        email: yup
+                          .string()
+                          .email('This mail address is invalid')
+                          .required('The mail address is required'),
+                        password: yup
+                          .string()
+                          .required('The password is required'),
+                      })
+                  }
+          onSubmit={(values) => signIn({ email: values.email, password: values.password })}
+        >
+          {({
+            handleChange, setFieldTouched, handleSubmit, values, touched, errors, isValid,
+          }) => (
+            <View style={styles.form}>
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  onBlur={() => setFieldTouched('email')}
+                  placeholder="Email address"
+                  autoCorrect={false}
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                />
+                {touched.email && errors.email && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.email}</Text>}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  onBlur={() => setFieldTouched('password')}
+                  placeholder="Password"
+                  secureTextEntry
+                  returnKeyType="done"
+                  onSubmitEditing={handleSubmit}
+                />
+                {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
+              </View>
+              <Button
+                title="Log in"
+                disabled={!isValid}
+                onPress={handleSubmit}
+              />
+            </View>
+          )}
+        </Formik>
       </KeyboardAvoidingView>
     </>
   );
