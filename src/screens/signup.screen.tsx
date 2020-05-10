@@ -4,6 +4,7 @@ import {
   Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity,
 } from 'react-native';
 import { Formik } from 'formik';
+import * as yup from 'yup';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 
@@ -49,36 +50,6 @@ const styles = StyleSheet.create({
 const SignupScreen = ({ navigation }) => {
   const { signUp } = useContext(AuthContext);
 
-  const validate = (values) => {
-    const errors: {
-            email?: string,
-            username?: string,
-            password?: string
-        } = {};
-
-    if (!values.username) {
-      errors.username = 'Required';
-    } else if (values.username.length < 4) {
-      errors.username = 'Must be 5 characters minimum';
-    } else if (values.username.length > 21) {
-      errors.username = 'Must be 20 characters or less';
-    }
-
-    if (!values.email) {
-      errors.email = 'Required';
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-      errors.email = 'This mail address is invalid';
-    }
-
-    if (!values.password) {
-      errors.password = 'Required';
-    } else if (values.password.length < 7) {
-      errors.password = 'Must be 8 characters minimum';
-    }
-
-    return errors;
-  };
-
   return (
     <>
       <View style={styles.headerContainer}>
@@ -100,42 +71,68 @@ const SignupScreen = ({ navigation }) => {
         />
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
-          validate={validate}
+          validationSchema={
+            yup.object().shape({
+              email: yup
+                .string()
+                .email('This mail address is invalid')
+                .required('The mail address is required'),
+              username: yup
+                .string()
+                .min(5, 'Your username cannot have less than 5 characters.')
+                .max(20, 'Your username cannot have more than 20 characters.')
+                .required('You must choose an username'),
+              password: yup
+                .string()
+                .min(8, 'Your password cannot have less than 8 symbols.')
+                .required('The password is required'),
+            })
+        }
           onSubmit={(values) => console.log(values)} // signUp({ email: values.email, username: values.username, password: values.password })}
         >
           {({
-            handleChange, handleBlur, handleSubmit, values,
+            handleChange, setFieldTouched, handleSubmit, values, touched, errors, isValid,
           }) => (
             <View style={styles.form}>
-              <FormTextInput
-                value={values.email}
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                placeholder="Email address"
-                autoCorrect={false}
-                keyboardType="email-address"
-                returnKeyType="next"
-              />
-              <FormTextInput
-                value={values.username}
-                onChangeText={handleChange('username')}
-                onBlur={handleBlur('username')}
-                placeholder="Username"
-                autoCorrect={false}
-                returnKeyType="next"
-              />
-              <FormTextInput
-                value={values.password}
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                placeholder="Password"
-                secureTextEntry
-                returnKeyType="done"
-                onSubmitEditing={handleSubmit}
-              />
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  onBlur={() => setFieldTouched('email')}
+                  placeholder="Email address"
+                  autoCorrect={false}
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                />
+                {touched.email && errors.email && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.email}</Text>}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  value={values.username}
+                  onChangeText={handleChange('username')}
+                  onBlur={() => setFieldTouched('username')}
+                  placeholder="Username"
+                  autoCorrect={false}
+                  returnKeyType="next"
+                />
+                {touched.username && errors.username && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.username}</Text>}
+              </View>
+              <View style={{ marginBottom: 20 }}>
+                <FormTextInput
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  onBlur={() => setFieldTouched('password')}
+                  placeholder="Password"
+                  secureTextEntry
+                  returnKeyType="done"
+                  onSubmitEditing={handleSubmit}
+                />
+                {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
+              </View>
               <Button
                 title="Sign Up"
-                onPress={() => handleSubmit}
+                disabled={!isValid}
+                onPress={handleSubmit}
               />
             </View>
           )}
