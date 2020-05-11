@@ -5,7 +5,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import {
-  View, Image, Text, Linking,
+  View, Image, Linking,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -17,7 +17,8 @@ import { lightTheme } from './src/shared/themes';
 import SignupScreen from './src/screens/signup.screen';
 import CreateBoxScreen from './src/screens/create-box.screen';
 
-const Stack = createStackNavigator();
+const AuthStack = createStackNavigator();
+const RootStack = createStackNavigator();
 
 export default function App({ navigation }) {
   // eslint-disable-next-line no-console
@@ -144,8 +145,8 @@ export default function App({ navigation }) {
   };
 
   const AuthFlow = () => (
-    <Stack.Navigator>
-      <Stack.Screen
+    <AuthStack.Navigator>
+      <AuthStack.Screen
         name="SignIn"
         component={LoginScreen}
         options={{
@@ -153,7 +154,7 @@ export default function App({ navigation }) {
           headerShown: false,
         }}
       />
-      <Stack.Screen
+      <AuthStack.Screen
         name="SignUp"
         component={SignupScreen}
         options={{
@@ -161,41 +162,30 @@ export default function App({ navigation }) {
           headerShown: false,
         }}
       />
-    </Stack.Navigator>
+    </AuthStack.Navigator>
   );
 
-  const MainFlow = () => (
-    <Stack.Navigator
+  const RootFlow = () => (
+    <RootStack.Navigator
       screenOptions={{
         cardStyle: { backgroundColor: '#191919' },
       }}
       initialRouteName="Home"
+      mode="modal"
     >
-      <Stack.Screen
+      <RootStack.Screen
         name="Home"
         component={HomeScreen}
         options={{
           headerShown: false,
         }}
       />
-      <Stack.Screen
+      <RootStack.Screen
         name="Box"
         component={BoxScreen}
         options={{
           headerShown: false,
         }}
-      />
-    </Stack.Navigator>
-  );
-
-  const RootStack = createStackNavigator();
-
-  const RootFlow = () => (
-    <RootStack.Navigator mode="modal">
-      <RootStack.Screen
-        name="Main"
-        component={MainFlow}
-        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name="CreateBox"
