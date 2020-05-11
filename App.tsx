@@ -169,6 +169,7 @@ export default function App({ navigation }) {
       screenOptions={{
         cardStyle: { backgroundColor: '#191919' },
       }}
+      initialRouteName="Home"
     >
       <Stack.Screen
         name="Home"
@@ -179,12 +180,11 @@ export default function App({ navigation }) {
       />
       <Stack.Screen
         name="Box"
+        component={BoxScreen}
         options={{
           headerShown: false,
         }}
-      >
-        {(props) => <BoxScreen {...props} />}
-      </Stack.Screen>
+      />
     </Stack.Navigator>
   );
 
