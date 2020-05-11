@@ -20,24 +20,33 @@ import CreateBoxScreen from './src/screens/create-box.screen';
 const AuthStack = createStackNavigator();
 const RootStack = createStackNavigator();
 
-export default function App({ navigation }) {
-  // eslint-disable-next-line no-console
-  console.disableYellowBox = true;
-  const [isAppReady, setAppReadiness] = useState(false);
-
-  const [url, setUrl] = useState(null);
+const useInitialUrl = () => {
+  const [initialBoxToken, setInitialBoxToken] = useState(null);
 
   useEffect(() => {
     const getUrlAsync = async () => {
       const initialUrl = await Linking.getInitialURL();
 
-      setUrl(initialUrl);
-
-      console.log('INITIAL URL: ', initialUrl);
+      if (initialUrl) {
+        if (/box\/(\w{24})/gmi.test(initialUrl)) {
+          const boxToken = /box\/(\w{24})/gmi.exec(initialUrl)[1];
+          setInitialBoxToken(boxToken);
+        }
+      }
     };
 
     getUrlAsync();
   }, []);
+
+  return { initialBoxToken };
+};
+
+export default function App() {
+  // eslint-disable-next-line no-console
+  console.disableYellowBox = true;
+  const [isAppReady, setAppReadiness] = useState(false);
+
+  const { initialBoxToken } = useInitialUrl();
 
   const [state, dispatch] = useReducer(
     (prevState, action) => {
@@ -170,7 +179,7 @@ export default function App({ navigation }) {
       screenOptions={{
         cardStyle: { backgroundColor: '#191919' },
       }}
-      initialRouteName="Home"
+      initialRouteName={initialBoxToken ? 'Box' : 'Home'}
       mode="modal"
     >
       <RootStack.Screen
@@ -183,6 +192,9 @@ export default function App({ navigation }) {
       <RootStack.Screen
         name="Box"
         component={BoxScreen}
+        initialParams={
+                { boxToken: initialBoxToken || null }
+              }
         options={{
           headerShown: false,
         }}
