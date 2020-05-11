@@ -54,7 +54,8 @@
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="http" android:host="www.berrybox.tv" />
+            <data android:scheme="https" android:host="www.berrybox.tv" android:pathPrefix="/" />
+            <data android:scheme="https" android:host="berrybox.tv" android:pathPrefix="/" />
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
