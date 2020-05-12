@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 });
 
 // eslint-disable-next-line import/prefer-default-export
-export class BoxScreen extends React.Component<{ route, navigation }> {
+export class BoxScreen extends React.Component<{ route }> {
     boxToken: string = this.props.route.params.boxToken
 
     socketConnection = null
