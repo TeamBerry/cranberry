@@ -61,5 +61,5 @@
     "typescript": "^3.6.5"
   },
   "private": true,
-  "version": "0.7.4"
+  "version": "0.8.0"
 }
