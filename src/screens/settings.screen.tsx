@@ -1,10 +1,8 @@
-import React from 'react'
+import React from 'react';
 
-const SettingsScreen = () => {
-    return (
-        <>
-        </>
-    )
-}
+const SettingsScreen = () => (
+  <>
+  </>
+);
 
-export default SettingsScreen
+export default SettingsScreen;
