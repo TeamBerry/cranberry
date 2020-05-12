@@ -7,6 +7,7 @@ import Collapsible from 'react-native-collapsible';
 import { Svg, Polygon } from 'react-native-svg';
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
+import ProfilePicture from '../../../components/profile-picture.component';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -20,12 +21,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  currentSpaceTexts: {
-    width: 310,
-  },
-  currentSpaceActions: {
-    width: 40,
   },
   boxName: {
     color: '#BBBBBB',
@@ -148,11 +143,14 @@ const Queue = ({ box, currentVideo }: Props) => {
       >
         <View style={styles.currentSpaceContainer}>
           <View style={styles.currentSpace}>
-            <View style={styles.currentSpaceTexts}>
+            <View style={{ width: 35 }}>
+              <ProfilePicture userId={box.creator._id} size={25} />
+            </View>
+            <View style={{ width: 275 }}>
               <BoxName />
               <CurrentVideo />
             </View>
-            <View style={styles.currentSpaceActions}>
+            <View style={{ width: 40 }}>
               <Animated.View
                 style={{ transform: [{ rotate: spin }] }}
               >
