@@ -83,8 +83,9 @@ const SignupScreen = ({ navigation }) => {
                           .required('The mail address is required'),
                         username: yup
                           .string()
-                          .min(5, 'Your username cannot have less than 5 characters.')
+                          .min(4, 'Your username cannot have less than 4 characters.')
                           .max(20, 'Your username cannot have more than 20 characters.')
+                          .trim()
                           .required('You must choose an username'),
                         password: yup
                           .string()
@@ -95,7 +96,11 @@ const SignupScreen = ({ navigation }) => {
           onSubmit={async (values) => {
             setLogging(true);
             try {
-              await signUp({ email: values.email, username: values.username, password: values.password });
+              await signUp({
+                email: values.email.trim(),
+                username: values.username.trim(),
+                password: values.password,
+              });
             } catch (error) {
               setLogging(false);
               if (error.message === 'MAIL_ALREADY_EXISTS') {
