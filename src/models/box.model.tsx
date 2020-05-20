@@ -20,9 +20,12 @@ class Box {
 
     updatedAt: Date
 
+    users: number
+
     options: {
         random: boolean,
-        loop: boolean
+        loop: boolean,
+        berries: boolean
     }
 }
 
