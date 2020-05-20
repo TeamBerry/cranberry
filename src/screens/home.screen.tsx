@@ -2,7 +2,7 @@ import React from 'react';
 import {
   StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl,
 } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SideMenu from 'react-native-side-menu';
 import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
@@ -137,12 +137,12 @@ export class HomeScreen extends React.Component<{navigation}> {
                 data={boxes}
                 refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={this.onRefresh.bind(this)} />}
                 renderItem={({ item, index, separators }) => (
-                  <TouchableOpacity
+                  <TouchableWithoutFeedback
                     style={styles.card}
                     onPress={() => this.props.navigation.navigate('Box', { boxToken: item._id })}
                   >
                     <BoxCard {...item} />
-                  </TouchableOpacity>
+                  </TouchableWithoutFeedback>
                 )}
                 keyExtractor={(item) => item.name}
               />
