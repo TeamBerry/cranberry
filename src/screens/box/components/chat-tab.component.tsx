@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  TextInput, StyleSheet, KeyboardAvoidingView, View,
+  TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -47,6 +47,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
   const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage | SystemMessage>);
   const [messageInput, setMessageInput] = useState('');
   const [user, setUser] = useState(null);
+  const [isAutoScrollEnabled, setAutoScroll] = useState(true);
 
   useEffect(() => {
     const getSession = async () => {
@@ -60,9 +61,17 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
     props.socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
       // eslint-disable-next-line no-shadow
       setMessages((messages) => [...messages, newMessage]);
-      setTimeout(() => _chatRef.current.scrollToEnd({}), 200);
+      if (isAutoScrollEnabled) {
+        setTimeout(() => _chatRef.current.scrollToEnd({}), 200);
+      }
     });
   }, []);
+
+  // TODO: If the scroll is at bottom, set auto scroll back to true
+  const handleScroll = (nativeScrollEvent: NativeScrollEvent) => {
+    console.log(nativeScrollEvent);
+    setAutoScroll(true);
+  };
 
   const sendMessage = () => {
     const newMessage: Message = new Message({
@@ -80,7 +89,12 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
       style={styles.container}
       behavior="padding"
     >
-      <ScrollView style={styles.messageList} ref={_chatRef}>
+      <ScrollView
+        style={styles.messageList}
+        ref={_chatRef}
+        onScrollBeginDrag={() => setAutoScroll(false)}
+        onScrollEndDrag={(e) => handleScroll(e.nativeEvent)}
+      >
         {messages.map((message, index) => (
           <ChatMessage key={index} message={message} />
         ))}
