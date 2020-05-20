@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   TextInput, StyleSheet, KeyboardAvoidingView, View,
 } from 'react-native';
@@ -32,7 +32,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const ChatTab = (props: {socket: any, boxToken: string}) => {
+const ChatTab = (props: { socket: any, boxToken: string }) => {
+  const _chatRef = useRef(null);
+
   const welcomeMessage: FeedbackMessage = {
     contents: 'Welcome to the box!',
     context: 'success',
@@ -58,6 +60,7 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
     props.socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
       // eslint-disable-next-line no-shadow
       setMessages((messages) => [...messages, newMessage]);
+      setTimeout(() => _chatRef.current.scrollToEnd({}), 200);
     });
   }, []);
 
@@ -77,7 +80,7 @@ const ChatTab = (props: {socket: any, boxToken: string}) => {
       style={styles.container}
       behavior="padding"
     >
-      <ScrollView style={styles.messageList}>
+      <ScrollView style={styles.messageList} ref={_chatRef}>
         {messages.map((message, index) => (
           <ChatMessage key={index} message={message} />
         ))}
