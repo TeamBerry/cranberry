@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
 
 const ChatTab = (props: { socket: any, boxToken: string }) => {
   const _chatRef = useRef(null);
+  const { socket, boxToken } = props;
 
   const welcomeMessage: FeedbackMessage = {
     contents: 'Welcome to the box!',
@@ -55,7 +56,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
     source: 'feedback',
     author: null,
     time: new Date(),
-    scope: props.boxToken,
+    scope: boxToken,
   };
 
   const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage | SystemMessage>);
@@ -79,7 +80,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
     getSession();
 
     // Connect to socket
-    props.socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
+    socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
       // eslint-disable-next-line no-shadow
       setMessages((messages) => [...messages, newMessage]);
 
@@ -110,9 +111,9 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
       author: user._id,
       contents: messageInput,
       source: 'human',
-      scope: props.boxToken,
+      scope: boxToken,
     });
-    props.socket.emit('chat', newMessage);
+    socket.emit('chat', newMessage);
     setMessageInput('');
   };
 
