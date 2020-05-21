@@ -4,9 +4,11 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import { VideoSubmissionRequest } from '@teamberry/muscadine';
+import { VideoSubmissionRequest, QueueItem } from '@teamberry/muscadine';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
+import Box from '../../../models/box.model';
+import durationToString from '../../../shared/duration.pipe';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,6 +42,18 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
+  durationDisplay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    position: 'absolute',
+    top: 54,
+    left: 0,
+    width: '100%',
+    padding: 3,
+  },
+  inQueueIndicator: {
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#0CEBC0',
+  },
 });
 
 const SearchTab = (props: {socket: any, boxToken: string}) => {
@@ -50,6 +64,9 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
   const [isSearching, setSearching] = useState(false);
   const [error, setError] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
+  const [videosInQueue, setQueueIds] = useState([]);
+
+  const { socket, boxToken } = props;
 
   useEffect(() => {
     const getSession = async () => {
@@ -60,6 +77,12 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     if (user === null) {
       getSession();
     }
+
+    socket.on('box', (box: Box) => {
+      const videoIds = box.playlist.map((queueItem: QueueItem) => queueItem.video.link);
+      setQueueIds(videoIds);
+      console.log('QUEUE IDS: ', videoIds);
+    });
   }, []);
 
   const search = async () => {
@@ -90,10 +113,10 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     const submissionPayload: VideoSubmissionRequest = {
       link,
       userToken: user._id,
-      boxToken: props.boxToken,
+      boxToken,
     };
 
-    props.socket.emit('video', submissionPayload);
+    socket.emit('video', submissionPayload);
     setSubmitted(true);
   };
 
@@ -114,24 +137,66 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
 
     return (
       <>
-        <Text style={styles.resultsHelp}>Tap to submit</Text>
         <FlatList
           data={youtubeSearchResults}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => submit(item.link)}
-            >
-              <View style={styles.resultItem}>
-                <Image
-                  style={{ width: 88.89, height: 60 }}
-                  source={{ uri: `https://i.ytimg.com/vi/${item.link}/hqdefault.jpg` }}
-                />
-                <View style={{ paddingLeft: 10, width: 200 }}>
-                  <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={2}>{item.name}</Text>
+          ItemSeparatorComponent={() => <View style={{ backgroundColor: '#3f3f3f', height: 1 }} />}
+          renderItem={(item) => {
+            const video = item.item;
+            if (videosInQueue.indexOf(video.link) === -1) {
+              return (
+                <TouchableOpacity
+                  onPress={() => submit(video.link)}
+                >
+                  <View style={styles.resultItem}>
+                    <View>
+
+                      <Image
+                        style={{ width: 140, height: 78.75 }}
+                        source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
+                      />
+                      <View style={styles.durationDisplay}>
+                        <Text style={{ color: 'white', textAlign: 'center' }}>{durationToString(video.duration)}</Text>
+                      </View>
+                    </View>
+                    <View style={{
+                      paddingLeft: 10,
+                      width: 200,
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                    >
+                      <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={2}>{video.name}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              );
+            }
+            return (
+              <View style={[styles.resultItem, { paddingTop: 2 }]}>
+                <View>
+                  <Image
+                    style={{ width: 140, height: 78.75 }}
+                    source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
+                  />
+                  <View style={styles.durationDisplay}>
+                    <Text style={{ color: 'white', textAlign: 'center' }}>{durationToString(video.duration)}</Text>
+                  </View>
+                </View>
+                <View style={{
+                  paddingLeft: 10,
+                  width: 200,
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+                >
+                  <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={3}>
+                    <Text style={styles.inQueueIndicator}>Already in Queue: </Text>
+                    {video.name}
+                  </Text>
                 </View>
               </View>
-            </TouchableOpacity>
-          )}
+            );
+          }}
           keyExtractor={(item, index) => index.toString()}
         />
       </>
@@ -149,7 +214,9 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
           value={searchValue}
           onSubmitEditing={() => search()}
         />
-        <SearchList />
+        <View style={{ height: '88%' }}>
+          <SearchList />
+        </View>
       </View>
       <Snackbar
         visible={isSubmitted}
