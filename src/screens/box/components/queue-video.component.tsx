@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { QueueItem } from '@teamberry/muscadine';
 import ProfilePicture from '../../../components/profile-picture.component';
+import durationToString from '../../../shared/duration.pipe';
 
 const styles = StyleSheet.create({
   queueVideo: {
@@ -35,6 +36,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     color: '#EBBA17',
   },
+  durationDisplay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    position: 'absolute',
+    top: 38,
+    left: 0,
+    width: '100%',
+    padding: 3,
+  },
 });
 
 
@@ -44,14 +53,19 @@ export type Props = {
 
 const QueueVideo = ({ item }: Props) => (
   <View style={styles.queueVideo}>
-    <Image
-      style={[
-        item.isPreselected ? styles.preselectedVideo : {},
-        item.startTime !== null ? styles.currentVideo : {},
-        { width: 88.89, height: 60 },
-      ]}
-      source={{ uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg` }}
-    />
+    <View>
+      <Image
+        style={[
+          item.isPreselected ? styles.preselectedVideo : {},
+          item.startTime !== null ? styles.currentVideo : {},
+          { width: 88.89, height: 60 },
+        ]}
+        source={{ uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg` }}
+      />
+      <View style={styles.durationDisplay}>
+        <Text style={{ color: 'white', textAlign: 'center', fontSize: 12 }}>{durationToString(item.video.duration)}</Text>
+      </View>
+    </View>
     <View style={{ paddingLeft: 10, width: 240 }}>
       <Text style={styles.queueVideoName} numberOfLines={2}>
         <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
