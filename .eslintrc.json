@@ -34,6 +34,11 @@
         "no-shadow": "off",
         "import/no-unresolved": "off",
         "global-require": "off",
-        "max-len": "warn"
+        "max-len": [
+            "warn",
+            {
+                "code": 140
+            }
+        ]
     }
 }

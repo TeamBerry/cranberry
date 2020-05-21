@@ -47,7 +47,14 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
   const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage | SystemMessage>);
   const [messageInput, setMessageInput] = useState('');
   const [user, setUser] = useState(null);
+
+  // Auto Scroll. Use Effect cannot access the refreshed state of the auto scroll without having listener control
+  // on the chat socket. useRef is the solution, since the hook has access to it.
   const [isAutoScrollEnabled, setAutoScroll] = useState(true);
+  const autoScrollStateRef = useRef(isAutoScrollEnabled);
+  useEffect(() => {
+    autoScrollStateRef.current = isAutoScrollEnabled;
+  }, [isAutoScrollEnabled]);
 
   useEffect(() => {
     const getSession = async () => {
@@ -55,22 +62,24 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
     };
 
     getSession();
-  }, []);
 
-  useEffect(() => {
+    // Connect to socket
     props.socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
       // eslint-disable-next-line no-shadow
       setMessages((messages) => [...messages, newMessage]);
-      if (isAutoScrollEnabled) {
+
+      if (autoScrollStateRef.current) {
         setTimeout(() => _chatRef.current.scrollToEnd({}), 200);
       }
     });
   }, []);
 
-  // TODO: If the scroll is at bottom, set auto scroll back to true
   const handleScroll = (nativeScrollEvent: NativeScrollEvent) => {
-    console.log(nativeScrollEvent);
-    setAutoScroll(true);
+    const scrollPosition = nativeScrollEvent.layoutMeasurement.height
+          + nativeScrollEvent.contentOffset.y;
+    const autoScrollThreshold = nativeScrollEvent.contentSize.height - 20;
+
+    setAutoScroll(scrollPosition >= autoScrollThreshold);
   };
 
   const sendMessage = () => {
