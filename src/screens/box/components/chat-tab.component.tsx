@@ -85,7 +85,9 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
       setMessages((messages) => [...messages, newMessage]);
 
       if (autoScrollStateRef.current) {
-        setTimeout(() => _chatRef.current.scrollToEnd({}), 200);
+        if (_chatRef) {
+          setTimeout(() => _chatRef.current.scrollToEnd({}), 200);
+        }
       } else {
         setNewMessageAlert(true);
       }
@@ -153,7 +155,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
         onScrollEndDrag={(e) => handleScroll(e.nativeEvent)}
       >
         {messages.map((message, index) => (
-          <ChatMessage key={index} message={message} />
+          <ChatMessage key={index.toString()} message={message} />
         ))}
       </ScrollView>
       <ResumeScrollButton />
