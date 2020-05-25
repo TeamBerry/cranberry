@@ -36,12 +36,10 @@ const styles = StyleSheet.create({
 });
 
 
-export type Props = {
+const Queue = ({ box, currentVideo }: {
     box: Box,
     currentVideo: QueueItem
-}
-
-const Queue = ({ box, currentVideo }: Props) => {
+}) => {
   const [isCollapsed, setCollapse] = useState(true);
 
   const BoxName = () => {
