@@ -57,7 +57,7 @@ const QueueVideo = ({ item }: { item: QueueItem }) => (
     >
       <Text style={styles.queueVideoName} numberOfLines={2}>
         <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
-        <Text style={styles.currentVideoIndicator}>{item.startTime !== null ? 'Playing: ' : null}</Text>
+        <Text style={styles.currentVideoIndicator}>{(item.startTime !== null && item.endTime === null) ? 'Playing: ' : null}</Text>
         {item.video.name}
       </Text>
       <View style={{ display: 'flex', flexDirection: 'row' }}>

@@ -5,7 +5,7 @@ import {
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import { VideoSubmissionRequest, QueueItem } from '@teamberry/muscadine';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
 import Box from '../../../models/box.model';
 import DurationIndicator from '../../../components/duration-indicator.component';
@@ -163,18 +163,18 @@ const SearchTab = (props: {socket: any, box: Box}) => {
         ItemSeparatorComponent={() => <View style={{ backgroundColor: '#3f3f3f', height: 1 }} />}
         renderItem={(item) => {
           const video = item.item;
-          const isAlreadyInQueue = videosInQueue.indexOf(video.link) === -1;
+          const isAlreadyInQueue = videosInQueue.indexOf(video.link) !== -1;
           if (!isAlreadyInQueue) {
             return (
-              <TouchableOpacity
+              <TouchableWithoutFeedback
                 onPress={() => submit(video.link)}
               >
-                <SearchVideo video={video} isAlreadyInQueue />
-              </TouchableOpacity>
+                <SearchVideo video={video} isAlreadyInQueue={false} />
+              </TouchableWithoutFeedback>
             );
           }
           return (
-            <SearchVideo video={video} isAlreadyInQueue={false} />
+            <SearchVideo video={video} isAlreadyInQueue />
           );
         }}
         keyExtractor={(item, index) => index.toString()}
