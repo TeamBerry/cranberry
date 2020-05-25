@@ -100,13 +100,21 @@ const Queue = ({ box, currentVideo }: {
       return (<></>);
     }
 
-    const upcomingVideos = box.playlist.filter((item) => item.startTime === null).reverse();
+    let upcomingVideos = [];
+
+    if (!box.options.loop) {
+      upcomingVideos = box.playlist.filter((item) => item.startTime === null);
+    } else {
+      upcomingVideos = box.playlist;
+    }
 
     if (upcomingVideos.length === 0) {
       return (
         <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>The Queue is empty.</Text>
       );
     }
+
+    upcomingVideos.reverse();
 
     // Put the preslected video first
     const preselectedVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.isPreselected);
@@ -117,8 +125,14 @@ const Queue = ({ box, currentVideo }: {
     }
 
     // Put the current video first
-    const playingVideo = box.playlist.find((item: QueueItem) => item.startTime !== null && item.endTime === null);
+    const playingVideo: QueueItem = box.playlist.find((item: QueueItem) => item.startTime !== null && item.endTime === null);
     if (playingVideo) {
+      // If loop, the full queue is displayed, regardless of the state of the videos.
+      // So the current video has to be spliced out before being unshifted.
+      const playingVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.video.link === playingVideo.video.link);
+      if (playingVideoIndex !== -1) {
+        upcomingVideos.splice(playingVideoIndex, 1);
+      }
       upcomingVideos.unshift(playingVideo);
     }
 
