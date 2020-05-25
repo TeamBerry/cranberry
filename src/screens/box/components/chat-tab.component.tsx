@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
 
 const ChatTab = (props: { socket: any, boxToken: string }) => {
   const _chatRef = useRef(null);
+  const { socket, boxToken } = props;
 
   const welcomeMessage: FeedbackMessage = {
     contents: 'Welcome to the box!',
@@ -55,7 +56,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
     source: 'feedback',
     author: null,
     time: new Date(),
-    scope: props.boxToken,
+    scope: boxToken,
   };
 
   const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage | SystemMessage>);
@@ -79,12 +80,14 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
     getSession();
 
     // Connect to socket
-    props.socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
+    socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
       // eslint-disable-next-line no-shadow
       setMessages((messages) => [...messages, newMessage]);
 
       if (autoScrollStateRef.current) {
-        setTimeout(() => _chatRef.current.scrollToEnd({}), 200);
+        if (_chatRef) {
+          setTimeout(() => _chatRef.current.scrollToEnd({}), 200);
+        }
       } else {
         setNewMessageAlert(true);
       }
@@ -110,9 +113,9 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
       author: user._id,
       contents: messageInput,
       source: 'human',
-      scope: props.boxToken,
+      scope: boxToken,
     });
-    props.socket.emit('chat', newMessage);
+    socket.emit('chat', newMessage);
     setMessageInput('');
   };
 
@@ -152,7 +155,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
         onScrollEndDrag={(e) => handleScroll(e.nativeEvent)}
       >
         {messages.map((message, index) => (
-          <ChatMessage key={index} message={message} />
+          <ChatMessage key={index.toString()} message={message} />
         ))}
       </ScrollView>
       <ResumeScrollButton />
