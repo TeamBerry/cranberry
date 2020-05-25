@@ -29,17 +29,17 @@ export class BoxScreen extends React.Component<{ route }> {
 
     // eslint-disable-next-line react/state-in-constructor
     state: {
-        hasLoadedBox: boolean,
         box: Box,
         socket: any,
         boxKey: string,
-        currentQueueItem: SyncPacket['item']
+        currentQueueItem: SyncPacket['item'],
+        isConnected: boolean,
     } = {
-      hasLoadedBox: false,
       box: null,
       socket: null,
       boxKey: null,
       currentQueueItem: null,
+      isConnected: false,
     }
 
     async componentDidMount() {
@@ -47,7 +47,7 @@ export class BoxScreen extends React.Component<{ route }> {
 
       try {
         const box: Box = await (await fetch(`https://araza.berrybox.tv/boxes/${this.boxToken}`)).json();
-        this.setState({ box, hasLoadedBox: true });
+        this.setState({ box });
         this.socketConnection = io('https://boquila.berrybox.tv', {
           transports: ['websocket'],
           reconnection: true,
@@ -73,8 +73,7 @@ export class BoxScreen extends React.Component<{ route }> {
             });
           })
           .on('confirm', () => {
-            this.setState({ socket: this.socketConnection });
-            console.log('CONNECTED');
+            this.setState({ socket: this.socketConnection, isConnected: true });
           })
           .on('bootstrap', (bootstrapMaterial) => {
             this.setState({ boxKey: bootstrapMaterial.boxKey });
@@ -90,14 +89,14 @@ export class BoxScreen extends React.Component<{ route }> {
             this.setState({ box });
           })
           .on('denied', () => {
-            this.setState({ hasLoadedBox: true });
+            // TODO: Error
             console.log('DENIED');
           })
           .on('disconnect', () => {
             console.log('DISCONNECTED');
           });
       } catch (error) {
-        this.setState({ hasLoadedBox: true });
+        // TODO: Error
       }
     }
 
@@ -110,7 +109,7 @@ export class BoxScreen extends React.Component<{ route }> {
     render() {
       return (
         <>
-          { this.state.hasLoadedBox ? (
+          { this.state.isConnected ? (
             <BoxContext.Provider value={this.state.socket}>
               <OfflineNotice />
               <View style={styles.playerSpace}>
@@ -126,7 +125,7 @@ export class BoxScreen extends React.Component<{ route }> {
               <Queue box={this.state.box} currentVideo={this.state.currentQueueItem} />
               {this.state.socket ? (
                 <SocketContext.Consumer>
-                  { (socket) => <Panel boxToken={this.state.box._id} socket={socket} /> }
+                  { (socket) => <Panel box={this.state.box} socket={socket} /> }
                 </SocketContext.Consumer>
               ) : (<ActivityIndicator />)}
             </BoxContext.Provider>

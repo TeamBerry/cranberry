@@ -2,30 +2,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ActivityIndicator, Image } from 'react-native';
 import YouTube from 'react-native-youtube';
-import { QueueItem } from '@teamberry/muscadine';
+import { PlayingItem } from '@teamberry/muscadine';
 
-export type PlayerProps = {
+const Player = ({ boxKey, currentItem }: {
     boxKey: string,
-    currentItem: QueueItem
-}
-
-const Player = (props: PlayerProps) => {
+    currentItem: PlayingItem
+}) => {
   const _youtubeRef = useRef(null);
   const [isLoading, setLoading] = useState(true);
   const [isPlayerReady, setPlayerReadiness] = useState(false);
 
   useEffect(() => {
     setLoading(false);
-  }, [props.currentItem]);
+  }, [currentItem]);
 
   useEffect(() => {
-    if (props.currentItem && isPlayerReady) {
-      const exactPosition = Math.floor((Date.now() - Date.parse(props.currentItem.startTime.toString())) / 1000);
+    if (currentItem && isPlayerReady) {
+      const exactPosition = currentItem.position
+        ? currentItem.position
+        : Math.floor((Date.now() - Date.parse(currentItem.startTime.toString())) / 1000);
       const position = exactPosition <= 2 ? 0 : exactPosition;
 
       _youtubeRef.current.seekTo(position);
     }
-  }, [props.currentItem, isPlayerReady]);
+  }, [currentItem, isPlayerReady]);
 
   if (isLoading) {
     return (
@@ -33,13 +33,13 @@ const Player = (props: PlayerProps) => {
     );
   }
 
-  if (props.currentItem) {
+  if (currentItem) {
     return (
       <YouTube
         ref={_youtubeRef}
-        apiKey={props.boxKey}
+        apiKey={boxKey}
         play
-        videoId={props.currentItem.video.link}
+        videoId={currentItem.video.link}
         style={{ alignSelf: 'stretch', height: 204 }}
         onReady={() => setPlayerReadiness(true)}
         // eslint-disable-next-line no-console
