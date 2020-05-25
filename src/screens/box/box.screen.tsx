@@ -126,7 +126,7 @@ export class BoxScreen extends React.Component<{ route }> {
               <Queue box={this.state.box} currentVideo={this.state.currentQueueItem} />
               {this.state.socket ? (
                 <SocketContext.Consumer>
-                  { (socket) => <Panel boxToken={this.state.box._id} socket={socket} /> }
+                  { (socket) => <Panel box={this.state.box} socket={socket} /> }
                 </SocketContext.Consumer>
               ) : (<ActivityIndicator />)}
             </BoxContext.Provider>

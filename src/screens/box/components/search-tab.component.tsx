@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const SearchTab = (props: {socket: any, boxToken: string}) => {
+const SearchTab = (props: {socket: any, box: Box}) => {
   const [searchValue, setSearchValue] = useState('');
   const [youtubeSearchResults, setSearchResults] = useState([]);
   const [user, setUser] = useState(null);
@@ -62,7 +62,7 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
   const [isSubmitted, setSubmitted] = useState(false);
   const [videosInQueue, setQueueIds] = useState([]);
 
-  const { socket, boxToken } = props;
+  const { socket, box } = props;
 
   useEffect(() => {
     const getSession = async () => {
@@ -73,6 +73,9 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     if (user === null) {
       getSession();
     }
+
+    const videoIds = box.playlist.map((queueItem: QueueItem) => queueItem.video.link);
+    setQueueIds(videoIds);
 
     socket.on('box', (box: Box) => {
       const videoIds = box.playlist.map((queueItem: QueueItem) => queueItem.video.link);
@@ -108,7 +111,7 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     const submissionPayload: VideoSubmissionRequest = {
       link,
       userToken: user._id,
-      boxToken,
+      boxToken: box._id,
     };
 
     socket.emit('video', submissionPayload);

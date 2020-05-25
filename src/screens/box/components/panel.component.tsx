@@ -4,8 +4,9 @@ import { TabView, TabBar } from 'react-native-tab-view';
 
 import ChatTab from './chat-tab.component';
 import SearchTab from './search-tab.component';
+import Box from '../../../models/box.model';
 
-const Panel = (props: { boxToken: string, socket: any}) => {
+const Panel = (props: { box: Box, socket: any}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
@@ -17,9 +18,9 @@ const Panel = (props: { boxToken: string, socket: any}) => {
   const renderScene = ({ route }) => {
     switch (route.key) {
       case 'chat':
-        return <ChatTab boxToken={props.boxToken} socket={props.socket} />;
+        return <ChatTab boxToken={props.box._id} socket={props.socket} />;
       case 'search':
-        return <SearchTab boxToken={props.boxToken} socket={props.socket} />;
+        return <SearchTab box={props.box} socket={props.socket} />;
       default:
         return <></>;
     }
