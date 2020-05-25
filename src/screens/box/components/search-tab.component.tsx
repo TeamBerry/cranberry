@@ -8,7 +8,7 @@ import { VideoSubmissionRequest, QueueItem } from '@teamberry/muscadine';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
 import Box from '../../../models/box.model';
-import durationToString from '../../../shared/duration.pipe';
+import DurationIndicator from '../../../components/duration-indicator.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,17 +42,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
-  durationDisplay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    position: 'absolute',
-    top: 54,
-    left: 0,
-    width: '100%',
-    padding: 3,
-  },
   inQueueIndicator: {
     fontFamily: 'Montserrat-SemiBold',
     color: '#0CEBC0',
+  },
+  inQueueVideo: {
+    borderColor: '#0CEBC0',
+    borderWidth: 2,
   },
 });
 
@@ -81,7 +77,6 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     socket.on('box', (box: Box) => {
       const videoIds = box.playlist.map((queueItem: QueueItem) => queueItem.video.link);
       setQueueIds(videoIds);
-      console.log('QUEUE IDS: ', videoIds);
     });
   }, []);
 
@@ -120,6 +115,30 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     setSubmitted(true);
   };
 
+  const SearchVideo = ({ video, isAlreadyInQueue }) => (
+    <View style={styles.resultItem}>
+      <View>
+        <Image
+          style={[{ width: 140, height: 78.75 }, isAlreadyInQueue ? styles.inQueueVideo : null]}
+          source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
+        />
+        <DurationIndicator duration={video.duration} withBorder={isAlreadyInQueue} />
+      </View>
+      <View style={{
+        paddingLeft: 10,
+        width: 200,
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+      >
+        <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={3}>
+          {isAlreadyInQueue ? (<Text style={styles.inQueueIndicator}>Already in Queue: </Text>) : null}
+          {video.name}
+        </Text>
+      </View>
+    </View>
+  );
+
   const SearchList = () => {
     if (isSearching) {
       return <ActivityIndicator />;
@@ -136,70 +155,27 @@ const SearchTab = (props: {socket: any, boxToken: string}) => {
     }
 
     return (
-      <>
-        <FlatList
-          data={youtubeSearchResults}
-          ItemSeparatorComponent={() => <View style={{ backgroundColor: '#3f3f3f', height: 1 }} />}
-          renderItem={(item) => {
-            const video = item.item;
-            if (videosInQueue.indexOf(video.link) === -1) {
-              return (
-                <TouchableOpacity
-                  onPress={() => submit(video.link)}
-                >
-                  <View style={styles.resultItem}>
-                    <View>
-
-                      <Image
-                        style={{ width: 140, height: 78.75 }}
-                        source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
-                      />
-                      <View style={styles.durationDisplay}>
-                        <Text style={{ color: 'white', textAlign: 'center' }}>{durationToString(video.duration)}</Text>
-                      </View>
-                    </View>
-                    <View style={{
-                      paddingLeft: 10,
-                      width: 200,
-                      display: 'flex',
-                      justifyContent: 'center',
-                    }}
-                    >
-                      <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={2}>{video.name}</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              );
-            }
+      <FlatList
+        data={youtubeSearchResults}
+        ItemSeparatorComponent={() => <View style={{ backgroundColor: '#3f3f3f', height: 1 }} />}
+        renderItem={(item) => {
+          const video = item.item;
+          const isAlreadyInQueue = videosInQueue.indexOf(video.link) === -1;
+          if (!isAlreadyInQueue) {
             return (
-              <View style={[styles.resultItem, { paddingTop: 2 }]}>
-                <View>
-                  <Image
-                    style={{ width: 140, height: 78.75 }}
-                    source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
-                  />
-                  <View style={styles.durationDisplay}>
-                    <Text style={{ color: 'white', textAlign: 'center' }}>{durationToString(video.duration)}</Text>
-                  </View>
-                </View>
-                <View style={{
-                  paddingLeft: 10,
-                  width: 200,
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
-                >
-                  <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={3}>
-                    <Text style={styles.inQueueIndicator}>Already in Queue: </Text>
-                    {video.name}
-                  </Text>
-                </View>
-              </View>
+              <TouchableOpacity
+                onPress={() => submit(video.link)}
+              >
+                <SearchVideo video={video} isAlreadyInQueue />
+              </TouchableOpacity>
             );
-          }}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      </>
+          }
+          return (
+            <SearchVideo video={video} isAlreadyInQueue={false} />
+          );
+        }}
+        keyExtractor={(item, index) => index.toString()}
+      />
     );
   };
 
