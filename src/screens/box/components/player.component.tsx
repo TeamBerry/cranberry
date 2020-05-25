@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ActivityIndicator, Image } from 'react-native';
 import YouTube from 'react-native-youtube';
-import { QueueItem } from '@teamberry/muscadine';
+import { PlayingItem } from '@teamberry/muscadine';
 
 const Player = ({ boxKey, currentItem }: {
     boxKey: string,
-    currentItem: QueueItem
+    currentItem: PlayingItem
 }) => {
   const _youtubeRef = useRef(null);
   const [isLoading, setLoading] = useState(true);
@@ -18,7 +18,9 @@ const Player = ({ boxKey, currentItem }: {
 
   useEffect(() => {
     if (currentItem && isPlayerReady) {
-      const exactPosition = Math.floor((Date.now() - Date.parse(currentItem.startTime.toString())) / 1000);
+      const exactPosition = currentItem.position
+        ? currentItem.position
+        : Math.floor((Date.now() - Date.parse(currentItem.startTime.toString())) / 1000);
       const position = exactPosition <= 2 ? 0 : exactPosition;
 
       _youtubeRef.current.seekTo(position);
