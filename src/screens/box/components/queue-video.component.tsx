@@ -4,15 +4,12 @@ import {
 } from 'react-native';
 import { QueueItem } from '@teamberry/muscadine';
 import ProfilePicture from '../../../components/profile-picture.component';
-import durationToString from '../../../shared/duration.pipe';
+import DurationIndicator from '../../../components/duration-indicator.component';
 
 const styles = StyleSheet.create({
   queueVideo: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 7,
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderColor: '#191919',
-    borderStyle: 'solid',
     flex: 1,
     flexDirection: 'row',
   },
@@ -36,43 +33,34 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     color: '#EBBA17',
   },
-  durationDisplay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    position: 'absolute',
-    top: 38,
-    left: 0,
-    width: '100%',
-    padding: 3,
-  },
 });
 
-
-export type Props = {
-    item: QueueItem
-}
-
-const QueueVideo = ({ item }: Props) => (
+const QueueVideo = ({ item }: { item: QueueItem }) => (
   <View style={styles.queueVideo}>
     <View>
       <Image
         style={[
           item.isPreselected ? styles.preselectedVideo : {},
           item.startTime !== null ? styles.currentVideo : {},
-          { width: 88.89, height: 60 },
+          { width: 140, height: 78.75 },
         ]}
         source={{ uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg` }}
       />
-      <View style={styles.durationDisplay}>
-        <Text style={{ color: 'white', textAlign: 'center', fontSize: 12 }}>{durationToString(item.video.duration)}</Text>
-      </View>
+      <DurationIndicator duration={item.video.duration} withBorder={item.isPreselected || item.startTime !== null} />
     </View>
-    <View style={{ paddingLeft: 10, width: 240 }}>
+    <View style={{
+      paddingLeft: 10,
+      width: 230,
+      display: 'flex',
+      justifyContent: 'center',
+    }}
+    >
       <Text style={styles.queueVideoName} numberOfLines={2}>
         <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
         <Text style={styles.currentVideoIndicator}>{item.startTime !== null ? 'Playing: ' : null}</Text>
         {item.video.name}
       </Text>
-      <View style={{ paddingLeft: 5, flex: 1, flexDirection: 'row' }}>
+      <View style={{ display: 'flex', flexDirection: 'row' }}>
         <ProfilePicture userId={item.submitted_by._id} size={20} />
         <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
       </View>
