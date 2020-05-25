@@ -41,12 +41,12 @@ const QueueVideo = ({ item }: { item: QueueItem }) => (
       <Image
         style={[
           item.isPreselected ? styles.preselectedVideo : {},
-          item.startTime !== null ? styles.currentVideo : {},
+          (item.startTime !== null && item.endTime === null) ? styles.currentVideo : {},
           { width: 140, height: 78.75 },
         ]}
         source={{ uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg` }}
       />
-      <DurationIndicator duration={item.video.duration} withBorder={item.isPreselected || item.startTime !== null} />
+      <DurationIndicator duration={item.video.duration} withBorder={item.isPreselected || (item.startTime !== null && item.endTime === null)} />
     </View>
     <View style={{
       paddingLeft: 10,
