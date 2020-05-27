@@ -74,7 +74,7 @@ const CreateBoxScreen = ({ navigation }) => {
     getSession();
   }, []);
 
-  const createBox = async (boxInputData: { name: string, options: { random: boolean, loop: boolean, berries: boolean}}) => {
+  const createBox = async (boxInputData: { name: string, private: boolean, options: { random: boolean, loop: boolean, berries: boolean}}) => {
     setCreating(true);
     const box = await axios.post('https://araza.berrybox.tv/boxes', {
       creator: user._id,
@@ -82,6 +82,7 @@ const CreateBoxScreen = ({ navigation }) => {
       description: null,
       lang: 'en',
       open: true,
+      private: boxInputData.private,
       options: boxInputData.options,
     });
     setBox(box.data);
@@ -107,13 +108,15 @@ const CreateBoxScreen = ({ navigation }) => {
       >
         <Formik
           initialValues={{
-            name: '', random: false, loop: false, berries: true,
+            name: '', private: false, random: false, loop: false, berries: true,
           }}
           validationSchema={
               yup.object().shape({
                 name: yup
                   .string()
                   .required('The box name is required'),
+                private: yup
+                  .boolean(),
                 random: yup
                   .boolean(),
                 loop: yup
@@ -122,7 +125,7 @@ const CreateBoxScreen = ({ navigation }) => {
                   .boolean(),
               })
             }
-          onSubmit={(values) => createBox({ name: values.name, options: { random: values.random, loop: values.loop, berries: values.berries } })}
+          onSubmit={(values) => createBox({ name: values.name, private: values.private, options: { random: values.random, loop: values.loop, berries: values.berries } })}
         >
           {({
             handleChange, setFieldTouched, setFieldValue, handleSubmit, values, touched, errors, isValid,
@@ -138,6 +141,17 @@ const CreateBoxScreen = ({ navigation }) => {
                   returnKeyType="next"
                 />
                 {touched.name && errors.name && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.name}</Text>}
+              </View>
+              <View style={styles.modeContainer}>
+                <View style={styles.modeSpace}>
+                  <Text style={styles.modeTitle}>Restricted Access</Text>
+                  <Switch
+                    value={values.private}
+                    onValueChange={(value) => setFieldValue('private', value)}
+                    color="#009AEB"
+                  />
+                </View>
+                <Text style={styles.modeHelper}>Your box will not appear in the home page. You will only be able to grant access by sharing its link directly.</Text>
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
