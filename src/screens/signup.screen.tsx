@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const SignupScreen = ({ navigation }) => {
   const { signUp } = useContext(AuthContext);
 

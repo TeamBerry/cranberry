@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const Queue = ({ box, currentVideo }: {
     box: Box,
     currentVideo: QueueItem
@@ -68,6 +67,7 @@ const Queue = ({ box, currentVideo }: {
       .timing(rotateAnim, {
         toValue: 1,
         duration: 500,
+        useNativeDriver: true,
       })
       .start();
   };
@@ -77,6 +77,7 @@ const Queue = ({ box, currentVideo }: {
       .timing(rotateAnim, {
         toValue: 0,
         duration: 500,
+        useNativeDriver: true,
       })
       .start();
   };

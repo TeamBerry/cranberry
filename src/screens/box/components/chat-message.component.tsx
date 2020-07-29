@@ -72,9 +72,10 @@ const styles = StyleSheet.create({
 const ChatMessage = ({ message }: Props) => {
   const AuthorRender = (message: Message) => {
     if (message.author) {
-      const { _id, name } = message.author as { _id: string, name: string };
+      const { name } = message.author as { _id: string, name: string };
       return (<Text style={styles.author}>{name}</Text>);
     }
+    return <></>;
   };
 
   const SystemMessageRender = (message: SystemMessage) => {
