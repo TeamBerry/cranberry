@@ -65,6 +65,7 @@ export class HomeScreen extends React.Component<{navigation}> {
       title: 'Home',
     }
 
+    // eslint-disable-next-line react/state-in-constructor
     state: {
         error: any,
         hasLoadedBoxes: boolean,
@@ -136,7 +137,7 @@ export class HomeScreen extends React.Component<{navigation}> {
               <FlatList
                 data={boxes}
                 refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={this.onRefresh.bind(this)} />}
-                renderItem={({ item, index, separators }) => (
+                renderItem={({ item }) => (
                   <TouchableWithoutFeedback
                     style={styles.card}
                     onPress={() => this.props.navigation.navigate('Box', { boxToken: item._id })}
