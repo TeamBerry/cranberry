@@ -110,7 +110,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
 
   const sendMessage = () => {
     const newMessage: Message = new Message({
-      author: user._id,
+      author: { _id: user._id },
       contents: messageInput,
       source: 'human',
       scope: boxToken,
