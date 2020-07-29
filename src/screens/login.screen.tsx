@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 export default function LoginScreen({ navigation }) {
   const { signIn } = useContext(AuthContext);
 
