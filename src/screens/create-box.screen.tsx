@@ -10,7 +10,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import FormTextInput from '../components/form-text-input.component';
 
-
 const styles = StyleSheet.create({
   headerContainer: {
     paddingVertical: 15,
@@ -60,6 +59,12 @@ const styles = StyleSheet.create({
   },
 });
 
+export type BoxOptions = {
+    random: boolean,
+    loop: boolean,
+    berries: boolean
+}
+
 const CreateBoxScreen = ({ navigation }) => {
   const [user, setUser] = useState(null);
   const [isCreating, setCreating] = useState(false);
@@ -74,7 +79,7 @@ const CreateBoxScreen = ({ navigation }) => {
     getSession();
   }, []);
 
-  const createBox = async (boxInputData: { name: string, private: boolean, options: { random: boolean, loop: boolean, berries: boolean}}) => {
+  const createBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions}) => {
     setCreating(true);
     const box = await axios.post('https://araza.berrybox.tv/boxes', {
       creator: user._id,
@@ -125,7 +130,11 @@ const CreateBoxScreen = ({ navigation }) => {
                   .boolean(),
               })
             }
-          onSubmit={(values) => createBox({ name: values.name, private: values.private, options: { random: values.random, loop: values.loop, berries: values.berries } })}
+          onSubmit={(values) => createBox({
+            name: values.name,
+            private: values.private,
+            options: { random: values.random, loop: values.loop, berries: values.berries },
+          })}
         >
           {({
             handleChange, setFieldTouched, setFieldValue, handleSubmit, values, touched, errors, isValid,
@@ -162,7 +171,9 @@ const CreateBoxScreen = ({ navigation }) => {
                     color="#009AEB"
                   />
                 </View>
-                <Text style={styles.modeHelper}>When a video ends, the next one will be picked randomly from the upcoming pool of videos.</Text>
+                <Text style={styles.modeHelper}>
+                  When a video ends, the next one will be picked randomly from the upcoming pool of videos.
+                </Text>
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
@@ -184,7 +195,10 @@ const CreateBoxScreen = ({ navigation }) => {
                     color="#009AEB"
                   />
                 </View>
-                <Text style={styles.modeHelper}>Your users will be able to collect Berries while they are in your box. They will then be able to spend the berries to skip a video or select the next video to play.</Text>
+                <Text style={styles.modeHelper}>
+                  Your users will be able to collect Berries while they are in your box. They will then be able to spend
+                  the berries to skip a video or select the next video to play.
+                </Text>
               </View>
               {!isCreating ? (
                 <Button

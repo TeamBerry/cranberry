@@ -46,7 +46,12 @@ const QueueVideo = ({ item }: { item: QueueItem }) => (
         ]}
         source={{ uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg` }}
       />
-      <DurationIndicator duration={item.video.duration} withBorder={item.isPreselected || (item.startTime !== null && item.endTime === null)} />
+      <DurationIndicator
+        duration={item.video.duration}
+        withBorder={
+                item.isPreselected || (item.startTime !== null && item.endTime === null)
+            }
+      />
     </View>
     <View style={{
       paddingLeft: 10,
@@ -57,7 +62,9 @@ const QueueVideo = ({ item }: { item: QueueItem }) => (
     >
       <Text style={styles.queueVideoName} numberOfLines={2}>
         <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
-        <Text style={styles.currentVideoIndicator}>{(item.startTime !== null && item.endTime === null) ? 'Playing: ' : null}</Text>
+        <Text style={styles.currentVideoIndicator}>
+          {(item.startTime !== null && item.endTime === null) ? 'Playing: ' : null}
+        </Text>
         {item.video.name}
       </Text>
       <View style={{ display: 'flex', flexDirection: 'row' }}>
