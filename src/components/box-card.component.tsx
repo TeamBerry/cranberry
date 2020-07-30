@@ -116,8 +116,8 @@ const BoxCard = (props: { box: Box }) => {
           {box.options.loop ? (
             <Text style={styles.boxMode}>Loop</Text>
           ) : (<></>)}
-          {!box.options.berries ? (
-            <Text style={styles.boxMode}>No Berries</Text>
+          {box.options.berries ? (
+            <Text style={styles.boxMode}>Berries</Text>
           ) : (<></>)}
           {box.private ? (
             <Text style={styles.boxMode}>Private</Text>
