@@ -5,11 +5,15 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-import { Message, FeedbackMessage, SystemMessage } from '@teamberry/muscadine';
+import {
+  Message, FeedbackMessage, SystemMessage, BerryCount,
+} from '@teamberry/muscadine';
 
 import ChatMessage from './chat-message.component';
 
 import DownIcon from '../../../../assets/icons/down-icon.svg';
+import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
+import Box from '../../../models/box.model';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,6 +35,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     color: 'white',
+    flex: 1,
   },
   scrollButtonContainer: {
     backgroundColor: '#3f3f3f',
@@ -63,6 +68,8 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
   const [messageInput, setMessageInput] = useState('');
   const [user, setUser] = useState(null);
   const [hasNewMessages, setNewMessageAlert] = useState(false);
+  const [berryCount, setBerryCount] = useState(null);
+  const [box, setBox] = useState(null);
 
   // Auto Scroll. Use Effect cannot access the refreshed state of the auto scroll without having listener control
   // on the chat socket. useRef is the solution, since the hook has access to it.
@@ -91,6 +98,14 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
       } else {
         setNewMessageAlert(true);
       }
+    });
+
+    socket.on('berries', (contents: BerryCount) => {
+      setBerryCount(contents.berries);
+    });
+
+    socket.on('box', (box: Box) => {
+      setBox(box);
     });
   }, []);
 
@@ -160,14 +175,25 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
       </ScrollView>
       <ResumeScrollButton />
       <View style={{ paddingHorizontal: 5 }}>
-        <TextInput
-          style={styles.chatInput}
-          placeholder="Type to chat..."
-          placeholderTextColor="#BBB"
-          onChangeText={(text) => setMessageInput(text)}
-          value={messageInput}
-          onSubmitEditing={() => sendMessage()}
-        />
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
+          <TextInput
+            style={styles.chatInput}
+            placeholder="Type to chat..."
+            placeholderTextColor="#BBB"
+            onChangeText={(text) => setMessageInput(text)}
+            value={messageInput}
+            onSubmitEditing={() => sendMessage()}
+          />
+          {box?.options?.berries && box?.creator?._id !== user._id ? (
+            <View style={{
+              flex: 0, flexDirection: 'row', alignItems: 'center', paddingLeft: 5,
+            }}
+            >
+              <BerriesIcon width={20} height={20} />
+              <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', paddingLeft: 2 }}>{berryCount}</Text>
+            </View>
+          ) : (<></>)}
+        </View>
       </View>
     </KeyboardAvoidingView>
   );

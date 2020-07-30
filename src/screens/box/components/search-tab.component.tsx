@@ -4,11 +4,12 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import { VideoSubmissionRequest, QueueItem } from '@teamberry/muscadine';
+import { VideoSubmissionRequest, QueueItem, BerryCount } from '@teamberry/muscadine';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
 import Box from '../../../models/box.model';
 import DurationIndicator from '../../../components/duration-indicator.component';
+import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     color: 'white',
+    flex: 1,
   },
   resultsHelp: {
     color: '#BBBBBB',
@@ -61,6 +63,8 @@ const SearchTab = (props: {socket: any, box: Box}) => {
   const [error, setError] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
   const [videosInQueue, setQueueIds] = useState([]);
+  const [berryCount, setBerryCount] = useState(null);
+  const [boxOptions, setBoxOptions] = useState(null);
 
   const { socket, box } = props;
 
@@ -77,7 +81,13 @@ const SearchTab = (props: {socket: any, box: Box}) => {
     const videoIds = box.playlist.map((queueItem: QueueItem) => queueItem.video.link);
     setQueueIds(videoIds);
 
+    socket.on('berries', (contents: BerryCount) => {
+      console.log('BERRIES OBTAINED: ', contents);
+      setBerryCount(contents.berries);
+    });
+
     socket.on('box', (box: Box) => {
+      setBoxOptions(box.options);
       const videoIds = box.playlist.map((queueItem: QueueItem) => queueItem.video.link);
       setQueueIds(videoIds);
     });
@@ -185,14 +195,25 @@ const SearchTab = (props: {socket: any, box: Box}) => {
   return (
     <View style={styles.container}>
       <View style={styles.searchSpace}>
-        <TextInput
-          style={styles.chatInput}
-          placeholder="Search YouTube for videos to add..."
-          placeholderTextColor="#BBB"
-          onChangeText={(text) => setSearchValue(text)}
-          value={searchValue}
-          onSubmitEditing={() => search()}
-        />
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
+          <TextInput
+            style={styles.chatInput}
+            placeholder="Search YouTube for videos to add..."
+            placeholderTextColor="#BBB"
+            onChangeText={(text) => setSearchValue(text)}
+            value={searchValue}
+            onSubmitEditing={() => search()}
+          />
+          {boxOptions?.berries && box?.creator?._id !== user?._id ? (
+            <View style={{
+              flex: 0, flexDirection: 'row', alignItems: 'center', paddingLeft: 5,
+            }}
+            >
+              <BerriesIcon width={20} height={20} />
+              <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', paddingLeft: 2 }}>{berryCount}</Text>
+            </View>
+                  ) : (<></>)}
+        </View>
         <View style={{ height: '88%' }}>
           <SearchList />
         </View>
