@@ -9,11 +9,9 @@ import * as yup from 'yup';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import FormTextInput from '../components/form-text-input.component';
-import BxChipComponent from '../components/bx-chip.component';
 import RandomIcon from '../../assets/icons/random-icon.svg';
 import ReplayIcon from '../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../assets/icons/coin-enabled-icon.svg';
-import DurationLimitIcon from '../../assets/icons/duration-limit-icon.svg';
 import LockIcon from '../../assets/icons/lock-icon.svg';
 
 const styles = StyleSheet.create({
