@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import { HomeScreen } from './src/screens/home.screen';
 import { BoxScreen } from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
 import AuthContext from './src/shared/auth.context';
 import { lightTheme } from './src/shared/themes';
+import HomeScreen from './src/screens/home.screen';
 import SignupScreen from './src/screens/signup.screen';
 import CreateBoxScreen from './src/screens/create-box.screen';
 
