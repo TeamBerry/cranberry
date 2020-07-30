@@ -7,6 +7,7 @@ import Box from '../models/box.model';
 import ProfilePicture from './profile-picture.component';
 
 import UsersIcon from '../../assets/icons/users-icon.svg';
+import BxChipComponent from './bx-chip.component';
 
 const styles = StyleSheet.create({
   card: {
@@ -48,17 +49,6 @@ const styles = StyleSheet.create({
   boxModes: {
     flex: 1,
     flexDirection: 'row',
-  },
-  boxMode: {
-    backgroundColor: '#979797',
-    color: 'white',
-    borderRadius: 10,
-    width: 80,
-    height: 18,
-    textAlign: 'center',
-    marginRight: 3,
-    marginLeft: 3,
-    fontSize: 12,
   },
   boxUserDisplay: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -108,21 +98,27 @@ const BoxCard = (props: { box: Box }) => {
           <Text style={styles.boxCurrent} numberOfLines={2}>{currentVideo ? currentVideo.video.name : '--'}</Text>
         </View>
       </View>
-      <View style={styles.boxMode}>
-        <View style={styles.boxModes}>
-          {box.options.random ? (
-            <Text style={styles.boxMode}>Random</Text>
-          ) : (<></>)}
-          {box.options.loop ? (
-            <Text style={styles.boxMode}>Loop</Text>
-          ) : (<></>)}
-          {box.options.berries ? (
-            <Text style={styles.boxMode}>Berries</Text>
-          ) : (<></>)}
-          {box.private ? (
-            <Text style={styles.boxMode}>Private</Text>
-          ) : (<></>)}
-        </View>
+      <View style={styles.boxModes}>
+        {box.options.random ? (
+          <View style={{ paddingHorizontal: 2 }}>
+            <BxChipComponent options={{ type: 'random', chipText: 'Random' }} display="full" />
+          </View>
+        ) : (<></>)}
+        {box.options.loop ? (
+          <View style={{ paddingHorizontal: 2 }}>
+            <BxChipComponent options={{ type: 'loop', chipText: 'Loop' }} display="full" />
+          </View>
+        ) : (<></>)}
+        {box.options.berries ? (
+          <View style={{ paddingHorizontal: 2 }}>
+            <BxChipComponent options={{ type: 'coin-enabled', chipText: 'Berries' }} display="full" />
+          </View>
+        ) : (<></>)}
+        {box.private ? (
+          <View style={{ paddingHorizontal: 2 }}>
+            <BxChipComponent options={{ type: 'lock', chipText: 'Private' }} display="full" />
+          </View>
+        ) : (<></>)}
       </View>
     </View>
   );

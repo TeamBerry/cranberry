@@ -9,6 +9,12 @@ import * as yup from 'yup';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import FormTextInput from '../components/form-text-input.component';
+import BxChipComponent from '../components/bx-chip.component';
+import RandomIcon from '../../assets/icons/random-icon.svg';
+import ReplayIcon from '../../assets/icons/replay-icon.svg';
+import BerriesIcon from '../../assets/icons/coin-enabled-icon.svg';
+import DurationLimitIcon from '../../assets/icons/duration-limit-icon.svg';
+import LockIcon from '../../assets/icons/lock-icon.svg';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -48,6 +54,11 @@ const styles = StyleSheet.create({
   modeSpace: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  modeDefinition: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   modeTitle: {
     fontSize: 20,
@@ -153,7 +164,12 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Access Restriction</Text>
+                  <View style={styles.modeDefinition}>
+                    <View style={{ paddingRight: 5 }}>
+                      <LockIcon width={20} height={20} fill="white" />
+                    </View>
+                    <Text style={styles.modeTitle}>Access Restriction</Text>
+                  </View>
                   <Switch
                     value={values.private}
                     onValueChange={(value) => setFieldValue('private', value)}
@@ -164,7 +180,12 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Pick Videos at Random</Text>
+                  <View style={styles.modeDefinition}>
+                    <View style={{ paddingRight: 5 }}>
+                      <RandomIcon width={20} height={20} fill="white" />
+                    </View>
+                    <Text style={styles.modeTitle}>Pick Videos at Random</Text>
+                  </View>
                   <Switch
                     value={values.random}
                     onValueChange={(value) => setFieldValue('random', value)}
@@ -177,7 +198,12 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Loop Queue</Text>
+                  <View style={styles.modeDefinition}>
+                    <View style={{ paddingRight: 5 }}>
+                      <ReplayIcon width={20} height={20} fill="white" />
+                    </View>
+                    <Text style={styles.modeTitle}>Loop Queue</Text>
+                  </View>
                   <Switch
                     value={values.loop}
                     onValueChange={(value) => setFieldValue('loop', value)}
@@ -188,7 +214,12 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Berries System</Text>
+                  <View style={styles.modeDefinition}>
+                    <View style={{ paddingRight: 5 }}>
+                      <BerriesIcon width={20} height={20} fill="white" />
+                    </View>
+                    <Text style={styles.modeTitle}>Berries System</Text>
+                  </View>
                   <Switch
                     value={values.berries}
                     onValueChange={(value) => setFieldValue('berries', value)}
