@@ -6,6 +6,7 @@ import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture
 import SideMenu from 'react-native-side-menu';
 import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
+import axios from 'axios';
 import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
 import Box from '../models/box.model';
@@ -93,8 +94,9 @@ export class HomeScreen extends React.Component<{navigation}> {
 
     async getBoxes() {
       try {
-        const boxes: Array<Box> = await (await fetch('https://araza.berrybox.tv/boxes')).json();
-        this.setState({ boxes, hasLoadedBoxes: true });
+        const boxesRestults = await axios.get('https://araza.berrybox.tv/boxes');
+
+        this.setState({ boxes: boxesRestults.data, hasLoadedBoxes: true });
       } catch (error) {
         this.setState({ error, hasLoadedBoxes: true });
       }
