@@ -153,7 +153,7 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Restricted Access</Text>
+                  <Text style={styles.modeTitle}>Access Restriction</Text>
                   <Switch
                     value={values.private}
                     onValueChange={(value) => setFieldValue('private', value)}
@@ -164,7 +164,7 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Random</Text>
+                  <Text style={styles.modeTitle}>Pick Videos at Random</Text>
                   <Switch
                     value={values.random}
                     onValueChange={(value) => setFieldValue('random', value)}
@@ -177,7 +177,7 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Loop</Text>
+                  <Text style={styles.modeTitle}>Loop Queue</Text>
                   <Switch
                     value={values.loop}
                     onValueChange={(value) => setFieldValue('loop', value)}
@@ -188,7 +188,7 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Berries</Text>
+                  <Text style={styles.modeTitle}>Berries System</Text>
                   <Switch
                     value={values.berries}
                     onValueChange={(value) => setFieldValue('berries', value)}
