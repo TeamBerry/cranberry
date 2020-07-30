@@ -79,7 +79,7 @@ const CreateBoxScreen = ({ navigation }) => {
     getSession();
   }, []);
 
-  const createBox = async (boxInputData: { name: string, options: BoxOptions}) => {
+  const createBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions}) => {
     setCreating(true);
     const box = await axios.post('https://araza.berrybox.tv/boxes', {
       creator: user._id,
@@ -87,6 +87,7 @@ const CreateBoxScreen = ({ navigation }) => {
       description: null,
       lang: 'en',
       open: true,
+      private: boxInputData.private,
       options: boxInputData.options,
     });
     setBox(box.data);
@@ -112,13 +113,15 @@ const CreateBoxScreen = ({ navigation }) => {
       >
         <Formik
           initialValues={{
-            name: '', random: false, loop: false, berries: true,
+            name: '', private: false, random: false, loop: false, berries: true,
           }}
           validationSchema={
               yup.object().shape({
                 name: yup
                   .string()
                   .required('The box name is required'),
+                private: yup
+                  .boolean(),
                 random: yup
                   .boolean(),
                 loop: yup
@@ -129,6 +132,7 @@ const CreateBoxScreen = ({ navigation }) => {
             }
           onSubmit={(values) => createBox({
             name: values.name,
+            private: values.private,
             options: { random: values.random, loop: values.loop, berries: values.berries },
           })}
         >
@@ -149,7 +153,18 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Random</Text>
+                  <Text style={styles.modeTitle}>Access Restriction</Text>
+                  <Switch
+                    value={values.private}
+                    onValueChange={(value) => setFieldValue('private', value)}
+                    color="#009AEB"
+                  />
+                </View>
+                <Text style={styles.modeHelper}>Your box will not appear in the home page. You will only be able to grant access by sharing its link directly.</Text>
+              </View>
+              <View style={styles.modeContainer}>
+                <View style={styles.modeSpace}>
+                  <Text style={styles.modeTitle}>Pick Videos at Random</Text>
                   <Switch
                     value={values.random}
                     onValueChange={(value) => setFieldValue('random', value)}
@@ -162,7 +177,7 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Loop</Text>
+                  <Text style={styles.modeTitle}>Loop Queue</Text>
                   <Switch
                     value={values.loop}
                     onValueChange={(value) => setFieldValue('loop', value)}
@@ -173,7 +188,7 @@ const CreateBoxScreen = ({ navigation }) => {
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
-                  <Text style={styles.modeTitle}>Berries</Text>
+                  <Text style={styles.modeTitle}>Berries System</Text>
                   <Switch
                     value={values.berries}
                     onValueChange={(value) => setFieldValue('berries', value)}

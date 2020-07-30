@@ -16,6 +16,8 @@ class Box {
 
     open: boolean
 
+    private: boolean
+
     createdAt: Date
 
     updatedAt: Date

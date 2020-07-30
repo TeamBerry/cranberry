@@ -118,6 +118,9 @@ const BoxCard = (box: Box) => {
           {!box.options.berries ? (
             <Text style={styles.boxMode}>No Berries</Text>
           ) : (<></>)}
+          {box.private ? (
+            <Text style={styles.boxMode}>Private</Text>
+          ) : (<></>)}
         </View>
       </View>
     </View>

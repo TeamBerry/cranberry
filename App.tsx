@@ -5,7 +5,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import {
-  View, Image, Linking,
+  View, Image, Linking, LogBox,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -42,8 +42,7 @@ const useInitialUrl = () => {
 };
 
 export default function App() {
-  // eslint-disable-next-line no-console
-  console.disableYellowBox = true;
+  LogBox.ignoreAllLogs();
   const [isAppReady, setAppReadiness] = useState(false);
 
   const { initialBoxToken } = useInitialUrl();
