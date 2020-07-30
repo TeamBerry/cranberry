@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl,
 } from 'react-native';
@@ -9,7 +9,6 @@ import { FAB } from 'react-native-paper';
 import axios from 'axios';
 import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
-import Box from '../models/box.model';
 import ProfilePicture from '../components/profile-picture.component';
 
 const styles = StyleSheet.create({
@@ -60,107 +59,96 @@ const styles = StyleSheet.create({
   },
 });
 
-// eslint-disable-next-line import/prefer-default-export
-export class HomeScreen extends React.Component<{navigation}> {
-    static navigationOptions = {
-      title: 'Home',
-    }
+const HomeScreen = ({ navigation }) => {
+  const [error, setError] = useState(null);
+  const [hasLoadedBoxes, setBoxLoading] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [boxes, setBoxes] = useState([]);
 
-    // eslint-disable-next-line react/state-in-constructor
-    state: {
-        error: any,
-        hasLoadedBoxes: boolean,
-        boxes: Array<Box>,
-        isMenuOpen: boolean,
-        user: any
-    } = {
-      error: null,
-      hasLoadedBoxes: false,
-      boxes: [],
-      isMenuOpen: false,
-      user: null,
+  const getBoxes = async () => {
+    try {
+      setError(null);
+      const boxesRestults = await axios.get('https://araza.berrybox.tv/boxes');
+      setBoxes(boxesRestults.data);
+      setBoxLoading(true);
+    } catch (error) {
+      setError(error.message);
+      setBoxLoading(true);
     }
+  };
 
-    async componentDidMount() {
+  useEffect(() => {
+    const bootstrap = async () => {
       const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      this.setState({ user });
-      this.getBoxes();
-    }
+      setUser(user);
+      getBoxes();
+    };
 
-    onRefresh() {
-      this.setState({ hasLoadedBoxes: false, boxes: [] });
-      this.getBoxes();
-    }
+    bootstrap();
+  }, []);
 
-    async getBoxes() {
-      try {
-        const boxesRestults = await axios.get('https://araza.berrybox.tv/boxes');
+  const onRefresh = () => {
+    setBoxLoading(false);
+    setBoxes([]);
+    getBoxes();
+  };
 
-        this.setState({ boxes: boxesRestults.data, hasLoadedBoxes: true });
-      } catch (error) {
-        this.setState({ error, hasLoadedBoxes: true });
-      }
-    }
+  const toggleMenu = () => {
+    setMenuOpen(!isMenuOpen);
+  };
 
-    toggleMenu() {
-      const newValue = !this.state.isMenuOpen;
-      this.setState({ isMenuOpen: newValue });
-    }
-
-    render() {
-      const { boxes, hasLoadedBoxes } = this.state;
-      const { user } = this.state;
-
-      return (
-        <SideMenu
-          menu={<CustomMenu />}
-          isOpen={this.state.isMenuOpen}
-          bounceBackOnOverdraw={false}
-          onChange={(isOpen: boolean) => this.setState({ isMenuOpen: isOpen })}
-          autoClosing
-        >
-          {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
+  return (
+    <SideMenu
+      menu={<CustomMenu />}
+      isOpen={isMenuOpen}
+      bounceBackOnOverdraw={false}
+      onChange={(isOpen: boolean) => setMenuOpen(isOpen)}
+      autoClosing
+    >
+      {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
                 <StatusBar barStyle='dark-content' />
             </View> */}
 
-          <View style={styles.headerContainer}>
-            <View style={styles.headerStyle}>
-              <TouchableOpacity
-                onPress={() => this.toggleMenu()}
+      <View style={styles.headerContainer}>
+        <View style={styles.headerStyle}>
+          <TouchableOpacity
+            onPress={() => toggleMenu()}
+          >
+            <ProfilePicture userId={user ? user._id : null} size={30} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.titlePage}>Boxes</Text>
+        {hasLoadedBoxes ? (
+          <FlatList
+            data={boxes}
+            refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
+            renderItem={({ item }) => (
+              <TouchableWithoutFeedback
+                style={styles.card}
+                onPress={() => navigation.navigate('Box', { boxToken: item._id })}
               >
-                <ProfilePicture userId={user ? user._id : null} size={30} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.container}>
-            <Text style={styles.titlePage}>Boxes</Text>
-            {hasLoadedBoxes ? (
-              <FlatList
-                data={boxes}
-                refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={this.onRefresh.bind(this)} />}
-                renderItem={({ item }) => (
-                  <TouchableWithoutFeedback
-                    style={styles.card}
-                    onPress={() => this.props.navigation.navigate('Box', { boxToken: item._id })}
-                  >
-                    <BoxCard {...item} />
-                  </TouchableWithoutFeedback>
-                )}
-                keyExtractor={(item) => item.name}
-              />
-            ) : (
-              <ActivityIndicator />
+                <BoxCard box={item} />
+              </TouchableWithoutFeedback>
             )}
-          </View>
-
-          <FAB
-            style={styles.fab}
-            color="white"
-            icon="plus"
-            onPress={() => this.props.navigation.push('CreateBox')}
+            keyExtractor={(item) => item.name}
           />
-        </SideMenu>
-      );
-    }
-}
+        ) : (
+          <ActivityIndicator />
+        )}
+      </View>
+
+      <FAB
+        style={styles.fab}
+        color="white"
+        icon="plus"
+        onPress={() => navigation.push('CreateBox')}
+      />
+    </SideMenu>
+  );
+};
+
+export default HomeScreen;

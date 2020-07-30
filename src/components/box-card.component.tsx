@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
 
 const displayCurrentvideo = (box: Box): QueueItem => box.playlist.find((video) => video.startTime !== null && video.endTime === null);
 
-const BoxCard = (box: Box) => {
+const BoxCard = (props: { box: Box }) => {
+  const { box } = props;
   const currentVideo = displayCurrentvideo(box);
 
   return (
