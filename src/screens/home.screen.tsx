@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, ActivityIndicator, FlatList, RefreshControl,
+  StyleSheet, Text, View, FlatList, RefreshControl,
 } from 'react-native';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SideMenu from 'react-native-side-menu';
@@ -10,6 +10,7 @@ import axios from 'axios';
 import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
 import ProfilePicture from '../components/profile-picture.component';
+import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -68,6 +69,7 @@ const HomeScreen = ({ navigation }) => {
 
   const getBoxes = async () => {
     try {
+      setBoxLoading(false);
       setError(null);
       const boxesRestults = await axios.get('https://araza.berrybox.tv/boxes');
       setBoxes(boxesRestults.data);
@@ -89,7 +91,6 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   const onRefresh = () => {
-    setBoxLoading(false);
     setBoxes([]);
     getBoxes();
   };
@@ -137,7 +138,7 @@ const HomeScreen = ({ navigation }) => {
             keyExtractor={(item) => item.name}
           />
         ) : (
-          <ActivityIndicator />
+          <BxLoadingIndicator />
         )}
       </View>
 

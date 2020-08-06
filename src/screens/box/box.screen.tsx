@@ -1,7 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-console */
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -13,6 +13,7 @@ import Queue from './components/queue.component';
 import SocketContext from '../box/box.context';
 import Panel from './components/panel.component';
 import OfflineNotice from '../../components/offline-notice.component';
+import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 
 const styles = StyleSheet.create({
   playerSpace: {
@@ -119,7 +120,7 @@ export class BoxScreen extends React.Component<{ route }> {
                     currentItem={this.state.currentQueueItem}
                   />
                 ) : (
-                  <ActivityIndicator />
+                  <BxLoadingIndicator />
                 )}
               </View>
               <Queue box={this.state.box} currentVideo={this.state.currentQueueItem} />
@@ -127,11 +128,11 @@ export class BoxScreen extends React.Component<{ route }> {
                 <SocketContext.Consumer>
                   { (socket) => <Panel box={this.state.box} socket={socket} /> }
                 </SocketContext.Consumer>
-              ) : (<ActivityIndicator />)}
+              ) : (<BxLoadingIndicator />)}
             </BoxContext.Provider>
           ) : (
             <View style={{ backgroundColor: '#191919', height: '100%' }}>
-              <ActivityIndicator />
+              <BxLoadingIndicator />
             </View>
           )}
         </>

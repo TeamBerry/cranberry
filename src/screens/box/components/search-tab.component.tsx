@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Image, View, Text, StyleSheet, TextInput, FlatList, ActivityIndicator,
+  Image, View, Text, StyleSheet, TextInput, FlatList,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -9,6 +9,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
 import Box from '../../../models/box.model';
 import DurationIndicator from '../../../components/duration-indicator.component';
+import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -144,7 +145,7 @@ const SearchTab = (props: {socket: any, box: Box}) => {
 
   const SearchList = () => {
     if (isSearching) {
-      return <ActivityIndicator />;
+      return <BxLoadingIndicator />;
     }
 
     if (youtubeSearchResults.length === 0) {
