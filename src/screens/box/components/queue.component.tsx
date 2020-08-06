@@ -35,9 +35,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const Queue = ({ box, currentVideo }: {
+const Queue = ({ box, currentVideo, height }: {
     box: Box,
-    currentVideo: QueueItem
+    currentVideo: QueueItem,
+    height: number
 }) => {
   const [isCollapsed, setCollapse] = useState(true);
 
@@ -180,7 +181,10 @@ const Queue = ({ box, currentVideo }: {
         </View>
       </TouchableOpacity>
       <View style={styles.upcomingSpaceContainer}>
-        <Collapsible collapsed={isCollapsed} style={{ height: 445 }}>
+        <Collapsible
+          collapsed={isCollapsed}
+          style={{ height: height - 50 }}
+        >
           <QueueList />
         </Collapsible>
       </View>

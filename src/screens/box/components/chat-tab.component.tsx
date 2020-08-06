@@ -86,7 +86,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
 
       if (autoScrollStateRef.current) {
         if (_chatRef) {
-          setTimeout(() => _chatRef.current.scrollToEnd({}), 200);
+          setTimeout(() => _chatRef.current.scrollToEnd({ animated: true }), 200);
         }
       } else {
         setNewMessageAlert(true);

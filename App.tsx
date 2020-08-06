@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import { BoxScreen } from './src/screens/box/box.screen';
+import BoxScreen from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
 import AuthContext from './src/shared/auth.context';
 import { lightTheme } from './src/shared/themes';
