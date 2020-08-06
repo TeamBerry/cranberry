@@ -1,6 +1,6 @@
 import React, { } from 'react';
 import {
-  StyleSheet, Text, View, Image,
+  StyleSheet, Text, View, Image, useWindowDimensions,
 } from 'react-native';
 import { QueueItem } from '@teamberry/muscadine';
 import ProfilePicture from '../../../components/profile-picture.component';
@@ -35,44 +35,48 @@ const styles = StyleSheet.create({
   },
 });
 
-const QueueVideo = ({ item }: { item: QueueItem }) => (
-  <View style={styles.queueVideo}>
-    <View>
-      <Image
-        style={[
-          item.isPreselected ? styles.preselectedVideo : {},
-          (item.startTime !== null && item.endTime === null) ? styles.currentVideo : {},
-          { width: 140, height: 78.75 },
-        ]}
-        source={{ uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg` }}
-      />
-      <DurationIndicator
-        duration={item.video.duration}
-        withBorder={
-                item.isPreselected || (item.startTime !== null && item.endTime === null)
-            }
-      />
-    </View>
-    <View style={{
-      paddingLeft: 10,
-      width: 210,
-      display: 'flex',
-      justifyContent: 'center',
-    }}
-    >
-      <Text style={styles.queueVideoName} numberOfLines={2}>
-        <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
-        <Text style={styles.currentVideoIndicator}>
-          {(item.startTime !== null && item.endTime === null) ? 'Playing: ' : null}
+const QueueVideo = ({ item }: { item: QueueItem }) => {
+  const window = useWindowDimensions();
+
+  return (
+    <View style={styles.queueVideo}>
+      <View>
+        <Image
+          style={[
+            item.isPreselected ? styles.preselectedVideo : {},
+            (item.startTime !== null && item.endTime === null) ? styles.currentVideo : {},
+            { width: 140, height: 78.75 },
+          ]}
+          source={{ uri: `https://i.ytimg.com/vi/${item.video.link}/hqdefault.jpg` }}
+        />
+        <DurationIndicator
+          duration={item.video.duration}
+          withBorder={
+                        item.isPreselected || (item.startTime !== null && item.endTime === null)
+                    }
+        />
+      </View>
+      <View style={{
+        paddingHorizontal: 10,
+        width: window.width - 140,
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+      >
+        <Text style={styles.queueVideoName} numberOfLines={2}>
+          <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
+          <Text style={styles.currentVideoIndicator}>
+            {(item.startTime !== null && item.endTime === null) ? 'Playing: ' : null}
+          </Text>
+          {item.video.name}
         </Text>
-        {item.video.name}
-      </Text>
-      <View style={{ display: 'flex', flexDirection: 'row' }}>
-        <ProfilePicture userId={item.submitted_by._id} size={20} />
-        <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
+          <ProfilePicture userId={item.submitted_by._id} size={20} />
+          <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
+        </View>
       </View>
     </View>
-  </View>
-);
+  );
+};
 
 export default QueueVideo;
