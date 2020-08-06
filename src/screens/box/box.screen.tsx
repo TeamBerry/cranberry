@@ -1,16 +1,15 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable no-console */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 
 import { SyncPacket } from '@teamberry/muscadine';
 import Player from './components/player.component';
 import Box from '../../models/box.model';
 import BoxContext from './box.context';
 import Queue from './components/queue.component';
-import SocketContext from '../box/box.context';
+import SocketContext from './box.context';
 import Panel from './components/panel.component';
 import OfflineNotice from '../../components/offline-notice.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
@@ -22,120 +21,115 @@ const styles = StyleSheet.create({
   },
 });
 
-// eslint-disable-next-line import/prefer-default-export
-export class BoxScreen extends React.Component<{ route }> {
-    boxToken: string = this.props.route.params.boxToken
+const BoxScreen = ({ route }) => {
+  const { boxToken } = route.params;
 
-    socketConnection = null
+  let socketConnection = null;
 
-    // eslint-disable-next-line react/state-in-constructor
-    state: {
-        box: Box,
-        socket: any,
-        boxKey: string,
-        currentQueueItem: SyncPacket['item'],
-        isConnected: boolean,
-    } = {
-      box: null,
-      socket: null,
-      boxKey: null,
-      currentQueueItem: null,
-      isConnected: false,
-    }
+  const [box, setBox] = useState(null);
+  const [user, setUser] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const [boxKey, setBoxKey] = useState(null);
+  const [currentQueueItem, setCurrentQueueItem] = useState(null);
+  const [isConnected, setConnectionStatus] = useState(null);
 
-    async componentDidMount() {
+  useEffect(() => {
+    const bootstrap = async () => {
       const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+      setUser(user);
 
-      try {
-        const box: Box = await (await fetch(`https://araza.berrybox.tv/boxes/${this.boxToken}`)).json();
-        this.setState({ box });
-        this.socketConnection = io('https://boquila.berrybox.tv', {
-          transports: ['websocket'],
-          reconnection: true,
-          reconnectionDelay: 500,
-        }).on('connect', () => {
-          if (!this.state.socket) {
-            console.log('Connection attempt');
-            this.socketConnection.emit('auth', {
-              origin: 'Cranberry',
-              type: 'sync',
-              boxToken: box._id,
-              userToken: user._id,
-            });
+      const box = await axios.get(`https://araza.berrybox.tv/boxes/${boxToken}`);
+      setBox(box.data);
+    };
+
+    bootstrap();
+  }, []);
+
+  useEffect(() => {
+    if (user && box) {
+      console.log('READY TO CONNECT');
+      socketConnection = io('https://boquila.berrybox.tv', {
+        transports: ['websocket'],
+        reconnection: true,
+        reconnectionDelay: 500,
+        reconnectionAttemps: 10,
+      })
+        .on('connect', () => {
+          if (socket) {
+            setSocket(null);
           }
-        })
-          .on('reconnecting', () => {
-            console.log('Reconnection attempt');
-            this.socketConnection.emit('auth', {
-              origin: 'Cranberry',
-              type: 'sync',
-              boxToken: box._id,
-              userToken: user._id,
-            });
-          })
-          .on('confirm', () => {
-            this.setState({ socket: this.socketConnection, isConnected: true });
-          })
-          .on('bootstrap', (bootstrapMaterial) => {
-            this.setState({ boxKey: bootstrapMaterial.boxKey });
-            this.socketConnection.emit('start', {
-              boxToken: box._id,
-              userToken: user._id,
-            });
-          })
-          .on('sync', (syncPacket: SyncPacket) => {
-            this.setState({ currentQueueItem: syncPacket.item });
-          })
-          .on('box', (box: Box) => {
-            this.setState({ box });
-          })
-          .on('denied', () => {
-            // TODO: Error
-            console.log('DENIED');
-          })
-          .on('disconnect', () => {
-            console.log('DISCONNECTED');
+
+          console.log('Connection attempt');
+          socketConnection.emit('auth', {
+            origin: 'Cranberry', type: 'sync', boxToken: box._id, userToken: user._id,
           });
-      } catch (error) {
-        // TODO: Error
-      }
+        })
+        .on('reconnect_attempt', () => {
+          console.log('Reconnection attempt');
+          socketConnection.emit('auth', {
+            origin: 'Cranberry', type: 'sync', boxToken: box._id, userToken: user._id,
+          });
+        })
+        .on('confirm', () => {
+          setSocket(socketConnection);
+          setConnectionStatus(true);
+        })
+        .on('bootstrap', (bootstrapMaterial) => {
+          setBoxKey(bootstrapMaterial.boxKey);
+          socketConnection.emit('start', {
+            boxToken: box._id, userToken: user._id,
+          });
+        })
+        .on('sync', (syncPacket: SyncPacket) => {
+          setCurrentQueueItem(syncPacket.item);
+        })
+        .on('box', (box: Box) => {
+          setBox(box);
+        })
+        .on('denied', () => {
+          console.log('DENIED');
+        });
     }
 
-    async componentWillUnmount() {
-      if (this.socketConnection) {
-        this.socketConnection.disconnect();
+    return (() => {
+      if (socketConnection) {
+        console.log('DISCONNECTION');
+        socketConnection.disconnect();
       }
-    }
+    });
+  }, [user, box]);
 
-    render() {
-      return (
-        <>
-          { this.state.isConnected ? (
-            <BoxContext.Provider value={this.state.socket}>
-              <OfflineNotice />
-              <View style={styles.playerSpace}>
-                {this.state.socket && this.state.boxKey ? (
-                  <Player
-                    boxKey={this.state.boxKey}
-                    currentItem={this.state.currentQueueItem}
-                  />
-                ) : (
-                  <BxLoadingIndicator />
-                )}
-              </View>
-              <Queue box={this.state.box} currentVideo={this.state.currentQueueItem} />
-              {this.state.socket ? (
-                <SocketContext.Consumer>
-                  { (socket) => <Panel box={this.state.box} socket={socket} /> }
-                </SocketContext.Consumer>
-              ) : (<BxLoadingIndicator />)}
-            </BoxContext.Provider>
-          ) : (
-            <View style={{ backgroundColor: '#191919', height: '100%' }}>
-              <BxLoadingIndicator />
-            </View>
-          )}
-        </>
-      );
-    }
-}
+  if (!isConnected) {
+    return (
+      <View style={{ backgroundColor: '#191919', height: '100%' }}>
+        <BxLoadingIndicator />
+      </View>
+    );
+  }
+
+  return (
+    <BoxContext.Provider value={socket}>
+      <OfflineNotice />
+      <View style={styles.playerSpace}>
+        {socket && boxKey ? (
+          <Player
+            boxKey={boxKey}
+            currentItem={currentQueueItem}
+          />
+        ) : (
+          <BxLoadingIndicator />
+        )}
+      </View>
+      <Queue box={box} currentVideo={currentQueueItem} />
+      {socket ? (
+        <SocketContext.Consumer>
+          { (socket) => <Panel box={box} socket={socket} />}
+        </SocketContext.Consumer>
+      ) : (
+        <BxLoadingIndicator />
+      )}
+    </BoxContext.Provider>
+  );
+};
+
+export default BoxScreen;
