@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
@@ -16,13 +16,13 @@ import BxLoadingIndicator from '../../components/bx-loading-indicator.component'
 
 const styles = StyleSheet.create({
   playerSpace: {
-    height: 204,
     backgroundColor: '#262626',
   },
 });
 
 const BoxScreen = ({ route }) => {
   const { boxToken } = route.params;
+  const window = useWindowDimensions();
 
   let socketConnection = null;
 
@@ -110,7 +110,7 @@ const BoxScreen = ({ route }) => {
   return (
     <BoxContext.Provider value={socket}>
       <OfflineNotice />
-      <View style={styles.playerSpace}>
+      <View style={[styles.playerSpace, { height: window.width * (9 / 16) }]}>
         {socket && boxKey ? (
           <Player
             boxKey={boxKey}

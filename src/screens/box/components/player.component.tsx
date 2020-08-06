@@ -41,7 +41,7 @@ const Player = ({ boxKey, currentItem }: {
         apiKey={boxKey}
         play
         videoId={currentItem.video.link}
-        style={{ alignSelf: 'stretch', height: 204 }}
+        style={{ alignSelf: 'stretch', height: '100%' }}
         onReady={() => setPlayerReadiness(true)}
         // eslint-disable-next-line no-console
         onError={(e) => console.log(e)}
