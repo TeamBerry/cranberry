@@ -23,6 +23,8 @@ const styles = StyleSheet.create({
 const BoxScreen = ({ route }) => {
   const { boxToken } = route.params;
   const window = useWindowDimensions();
+  const playerHeight = window.width * (9 / 16);
+  const remainingHeight = window.height - playerHeight;
 
   let socketConnection = null;
 
@@ -110,7 +112,7 @@ const BoxScreen = ({ route }) => {
   return (
     <BoxContext.Provider value={socket}>
       <OfflineNotice />
-      <View style={[styles.playerSpace, { height: window.width * (9 / 16) }]}>
+      <View style={[styles.playerSpace, { height: playerHeight }]}>
         {socket && boxKey ? (
           <Player
             boxKey={boxKey}
@@ -120,7 +122,7 @@ const BoxScreen = ({ route }) => {
           <BxLoadingIndicator />
         )}
       </View>
-      <Queue box={box} currentVideo={currentQueueItem} />
+      <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} />
       {socket ? (
         <SocketContext.Consumer>
           { (socket) => <Panel box={box} socket={socket} />}
