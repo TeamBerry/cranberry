@@ -70,13 +70,13 @@ const BoxScreen = ({ route }) => {
         })
         .on('confirm', () => {
           setSocket(socketConnection);
-          setConnectionStatus(true);
         })
         .on('bootstrap', (bootstrapMaterial) => {
           setBoxKey(bootstrapMaterial.boxKey);
           socketConnection.emit('start', {
             boxToken, userToken: user._id,
           });
+          setConnectionStatus(true);
         })
         .on('sync', (syncPacket: SyncPacket) => {
           setCurrentQueueItem(syncPacket.item);
