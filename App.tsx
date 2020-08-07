@@ -191,9 +191,7 @@ export default function App() {
       <RootStack.Screen
         name="Box"
         component={BoxScreen}
-        initialParams={
-                { boxToken: initialBoxToken || null }
-              }
+        initialParams={{ boxToken: initialBoxToken || null }}
         options={{
           headerShown: false,
         }}
