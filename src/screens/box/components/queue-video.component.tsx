@@ -1,10 +1,11 @@
-import React, { } from 'react';
+import React from 'react';
 import {
   StyleSheet, Text, View, Image, useWindowDimensions,
 } from 'react-native';
 import { QueueItem } from '@teamberry/muscadine';
 import ProfilePicture from '../../../components/profile-picture.component';
 import DurationIndicator from '../../../components/duration-indicator.component';
+import ActionsIcon from '../../../../assets/icons/actions-icon.svg';
 
 const styles = StyleSheet.create({
   queueVideo: {
@@ -40,7 +41,7 @@ const QueueVideo = ({ item }: { item: QueueItem }) => {
 
   return (
     <View style={styles.queueVideo}>
-      <View>
+      <View style={{ paddingRight: 10 }}>
         <Image
           style={[
             item.isPreselected ? styles.preselectedVideo : {},
@@ -57,8 +58,7 @@ const QueueVideo = ({ item }: { item: QueueItem }) => {
         />
       </View>
       <View style={{
-        paddingHorizontal: 10,
-        width: window.width - 140,
+        width: window.width - 190,
         display: 'flex',
         justifyContent: 'center',
       }}
@@ -74,6 +74,12 @@ const QueueVideo = ({ item }: { item: QueueItem }) => {
           <ProfilePicture userId={item.submitted_by._id} size={20} />
           <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
         </View>
+      </View>
+      <View style={{
+        display: 'flex', alignContent: 'center', justifyContent: 'center', paddingLeft: 10,
+      }}
+      >
+        <ActionsIcon width={20} height={20} fill="white" />
       </View>
     </View>
   );
