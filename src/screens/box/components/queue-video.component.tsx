@@ -36,8 +36,23 @@ const styles = StyleSheet.create({
   },
 });
 
+const playNext = (id: string) => {
+  console.log('PINGING API TO PLAY ITEM NEXT: ', id);
+};
+
+const playNow = (id: string) => {
+  console.log('PINGING API TO PLAY ITEM NOW', id);
+};
+
+const skip = (id: string) => {
+  console.log('PINGING API TO PLAY ITEM NOW', id);
+};
+
+const remove = (id: string) => {
+  console.log('PINGING API TO REMOVE ITEM FROM QUEUE', id);
+};
+
 const QueueVideo = ({ item }: { item: QueueItem }) => {
-  const window = useWindowDimensions();
   const [areActionsVisible, setActionsVisibility] = useState(false);
 
   return (
@@ -85,18 +100,18 @@ const QueueVideo = ({ item }: { item: QueueItem }) => {
           }}
         >
           {(item.startTime !== null && item.endTime === null) ? (
-            <Pressable onPress={() => console.log('SKIP')}>
+            <Pressable onPress={() => skip(item._id)}>
               <BxButtonComponent options={{ type: 'skip', text: 'Skip', textDisplay: 'full' }} />
             </Pressable>
           ) : (
             <>
-              <Pressable onPress={() => console.log('PLAY NEXT')}>
+              <Pressable onPress={() => playNext(item._id)}>
                 <BxButtonComponent options={{ type: 'forceNext', text: 'Play Next', textDisplay: 'full' }} />
               </Pressable>
-              <Pressable onPress={() => console.log('PLAY NOW')}>
+              <Pressable onPress={() => playNow(item._id)}>
                 <BxButtonComponent options={{ type: 'forcePlay', text: 'Play Now', textDisplay: 'full' }} />
               </Pressable>
-              <Pressable onPress={() => console.log('REMOVE')}>
+              <Pressable onPress={() => remove(item._id)}>
                 <BxButtonComponent options={{
                   type: 'cancel', text: 'Remove', textDisplay: 'full', context: 'danger',
                 }}
