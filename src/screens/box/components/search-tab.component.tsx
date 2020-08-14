@@ -111,13 +111,10 @@ const SearchTab = (props: {socket: any, box: Box}) => {
   };
 
   const submit = async (link: string) => {
-    const submissionPayload: VideoSubmissionRequest = {
+    axios.post(`${Config.API_URL}/boxes/${box._id}/queue/video`, {
       link,
-      userToken: user._id,
-      boxToken: box._id,
-    };
-
-    socket.emit('video', submissionPayload);
+      flag: null,
+    });
     setSubmitted(true);
   };
 
