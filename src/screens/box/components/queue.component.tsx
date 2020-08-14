@@ -143,7 +143,7 @@ const Queue = ({ box, currentVideo, height }: {
         data={upcomingVideos}
         ItemSeparatorComponent={() => <View style={{ backgroundColor: '#191919', height: 1 }} />}
         renderItem={({ item }) => (
-          <QueueVideo item={item} />
+          <QueueVideo item={item} boxToken={box._id} />
         )}
         keyExtractor={(item, index) => index.toString()}
       />

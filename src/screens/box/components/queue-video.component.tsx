@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import {
   StyleSheet, Text, View, Image, useWindowDimensions, Pressable,
 } from 'react-native';
+import axios from 'axios';
+
 import { QueueItem } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
 import ProfilePicture from '../../../components/profile-picture.component';
@@ -36,23 +38,23 @@ const styles = StyleSheet.create({
   },
 });
 
-const playNext = (id: string) => {
-  console.log('PINGING API TO PLAY ITEM NEXT: ', id);
-};
+const QueueVideo = ({ item, boxToken }: { item: QueueItem, boxToken: string }) => {
+  const playNext = () => {
+    axios.put(`http://10.0.2.2:3000/boxes/${boxToken}/queue/${item._id}/next`);
+  };
 
-const playNow = (id: string) => {
-  console.log('PINGING API TO PLAY ITEM NOW', id);
-};
+  const playNow = () => {
+    axios.put(`http://10.0.2.2:3000/boxes/${boxToken}/queue/${item._id}/now`);
+  };
 
-const skip = (id: string) => {
-  console.log('PINGING API TO PLAY ITEM NOW', id);
-};
+  const skip = () => {
+    axios.put(`http://10.0.2.2:3000/boxes/${boxToken}/queue/skip`);
+  };
 
-const remove = (id: string) => {
-  console.log('PINGING API TO REMOVE ITEM FROM QUEUE', id);
-};
+  const removeVideo = () => {
+    axios.delete(`http://10.0.2.2:3000/boxes/${boxToken}/queue/${item._id}`);
+  };
 
-const QueueVideo = ({ item }: { item: QueueItem }) => {
   const [areActionsVisible, setActionsVisibility] = useState(false);
 
   return (
@@ -100,18 +102,18 @@ const QueueVideo = ({ item }: { item: QueueItem }) => {
           }}
         >
           {(item.startTime !== null && item.endTime === null) ? (
-            <Pressable onPress={() => skip(item._id)}>
+            <Pressable onPress={() => skip()}>
               <BxButtonComponent options={{ type: 'skip', text: 'Skip', textDisplay: 'full' }} />
             </Pressable>
           ) : (
             <>
-              <Pressable onPress={() => playNext(item._id)}>
+              <Pressable onPress={() => playNext()}>
                 <BxButtonComponent options={{ type: 'forceNext', text: 'Play Next', textDisplay: 'full' }} />
               </Pressable>
-              <Pressable onPress={() => playNow(item._id)}>
+              <Pressable onPress={() => playNow()}>
                 <BxButtonComponent options={{ type: 'forcePlay', text: 'Play Now', textDisplay: 'full' }} />
               </Pressable>
-              <Pressable onPress={() => remove(item._id)}>
+              <Pressable onPress={() => removeVideo()}>
                 <BxButtonComponent options={{
                   type: 'cancel', text: 'Remove', textDisplay: 'full', context: 'danger',
                 }}
