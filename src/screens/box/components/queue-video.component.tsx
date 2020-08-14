@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, Text, View, Image, useWindowDimensions, Pressable,
+  StyleSheet, Text, View, Image, Pressable,
 } from 'react-native';
 import axios from 'axios';
 

@@ -49,7 +49,7 @@ const BoxScreen = ({ route }) => {
 
   useEffect(() => {
     if (user && boxToken) {
-      console.log('READY TO CONNECT');
+      socketConnection = io('http://10.0.2.2:8008', {
       socketConnection = io('https://boquila.berrybox.tv', {
         transports: ['websocket'],
         reconnection: true,
@@ -57,13 +57,11 @@ const BoxScreen = ({ route }) => {
         reconnectionAttemps: 10,
       })
         .on('connect', () => {
-          console.log('Connection attempt');
           socketConnection.emit('auth', {
             origin: 'Cranberry', type: 'sync', boxToken, userToken: user._id,
           });
         })
         .on('reconnect_attempt', () => {
-          console.log('Reconnection attempt');
           socketConnection.emit('auth', {
             origin: 'Cranberry', type: 'sync', boxToken, userToken: user._id,
           });
@@ -91,7 +89,6 @@ const BoxScreen = ({ route }) => {
 
     return (() => {
       if (socketConnection) {
-        console.log('DISCONNECTION');
         socketConnection.disconnect();
       }
     });
