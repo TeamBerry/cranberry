@@ -118,11 +118,13 @@ const BoxScreen = ({ route }) => {
           <BxLoadingIndicator />
         )}
       </View>
-      <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} />
-      {socket ? (
-        <SocketContext.Consumer>
-          { (socket) => <Panel box={box} socket={socket} />}
-        </SocketContext.Consumer>
+      {isConnected && box ? (
+        <>
+          <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} />
+          <SocketContext.Consumer>
+            { (socket) => <Panel box={box} socket={socket} />}
+          </SocketContext.Consumer>
+        </>
       ) : (
         <BxLoadingIndicator />
       )}
