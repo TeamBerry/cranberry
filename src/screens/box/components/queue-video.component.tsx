@@ -3,6 +3,7 @@ import {
   StyleSheet, Text, View, Image, Pressable,
 } from 'react-native';
 import axios from 'axios';
+import Config from 'react-native-config';
 
 import { QueueItem } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
@@ -40,19 +41,19 @@ const styles = StyleSheet.create({
 
 const QueueVideo = ({ item, boxToken }: { item: QueueItem, boxToken: string }) => {
   const playNext = () => {
-    axios.put(`http://10.0.2.2:3000/boxes/${boxToken}/queue/${item._id}/next`);
+    axios.put(`${Config.API_URL}/boxes/${boxToken}/queue/${item._id}/next`);
   };
 
   const playNow = () => {
-    axios.put(`http://10.0.2.2:3000/boxes/${boxToken}/queue/${item._id}/now`);
+    axios.put(`${Config.API_URL}/boxes/${boxToken}/queue/${item._id}/now`);
   };
 
   const skip = () => {
-    axios.put(`http://10.0.2.2:3000/boxes/${boxToken}/queue/skip`);
+    axios.put(`${Config.API_URL}/boxes/${boxToken}/queue/skip`);
   };
 
   const removeVideo = () => {
-    axios.delete(`http://10.0.2.2:3000/boxes/${boxToken}/queue/${item._id}`);
+    axios.delete(`${Config.API_URL}/boxes/${boxToken}/queue/${item._id}`);
   };
 
   const [areActionsVisible, setActionsVisibility] = useState(false);

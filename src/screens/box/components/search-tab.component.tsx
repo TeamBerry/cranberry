@@ -7,6 +7,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { VideoSubmissionRequest, QueueItem } from '@teamberry/muscadine';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
+import Config from 'react-native-config';
+
 import Box from '../../../models/box.model';
 import DurationIndicator from '../../../components/duration-indicator.component';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
@@ -96,7 +98,7 @@ const SearchTab = (props: {socket: any, box: Box}) => {
     }
 
     try {
-      const youtubeSearchResults = await axios.get('https://araza.berrybox.tv/search', {
+      const youtubeSearchResults = await axios.get(`${Config.API_URL}/search`, {
         params: { value: searchValue },
       });
 

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import AsyncStorage from '@react-native-community/async-storage';
+import Config from 'react-native-config';
 
 import FormTextInput from '../components/form-text-input.component';
 import RandomIcon from '../../assets/icons/random-icon.svg';
@@ -91,7 +92,7 @@ const CreateBoxScreen = ({ navigation }) => {
 
   const createBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions}) => {
     setCreating(true);
-    const box = await axios.post('https://araza.berrybox.tv/boxes', {
+    const box = await axios.post(`${Config.API_URL}/boxes`, {
       creator: user._id,
       name: boxInputData.name,
       description: null,

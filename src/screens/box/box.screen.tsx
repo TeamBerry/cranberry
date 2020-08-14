@@ -3,6 +3,7 @@ import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import Config from 'react-native-config';
 
 import { SyncPacket } from '@teamberry/muscadine';
 import Player from './components/player.component';
@@ -40,7 +41,7 @@ const BoxScreen = ({ route }) => {
       const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
       setUser(user);
 
-      const box = await axios.get(`https://araza.berrybox.tv/boxes/${boxToken}`);
+      const box = await axios.get(`${Config.API_URL}/boxes/${boxToken}`);
       setBox(box.data);
     };
 
@@ -49,8 +50,7 @@ const BoxScreen = ({ route }) => {
 
   useEffect(() => {
     if (user && boxToken) {
-      socketConnection = io('http://10.0.2.2:8008', {
-      socketConnection = io('https://boquila.berrybox.tv', {
+      socketConnection = io(Config.SOCKET_URL, {
         transports: ['websocket'],
         reconnection: true,
         reconnectionDelay: 500,
