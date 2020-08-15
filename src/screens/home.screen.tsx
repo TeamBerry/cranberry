@@ -73,8 +73,8 @@ const HomeScreen = ({ navigation }) => {
     try {
       setBoxLoading(false);
       setError(null);
-      const boxesRestults = await axios.get(`${Config.API_URL}/boxes`);
-      setBoxes(boxesRestults.data);
+      const boxesResults = await axios.get(`${Config.API_URL}/boxes`);
+      setBoxes(boxesResults.data);
       setBoxLoading(true);
     } catch (error) {
       setError(error.message);
