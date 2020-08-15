@@ -117,7 +117,7 @@ const SearchTab = (props: {socket: any, box: Box}) => {
   };
 
   const SearchVideo = ({ video, isAlreadyInQueue }) => {
-    const addToQueue = async (flag?: string) => {
+    const addToQueue = async (flag?: VideoSubmissionRequest['flag']) => {
       try {
         await axios.post(`${Config.API_URL}/boxes/${box._id}/queue/video`, {
           link: video.link,
