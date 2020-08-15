@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import {
-  KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity, ActivityIndicator,
+  KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity,
 } from 'react-native';
 import { Switch, Button as IconButton, Snackbar } from 'react-native-paper';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import AsyncStorage from '@react-native-community/async-storage';
+import Config from 'react-native-config';
 
 import FormTextInput from '../components/form-text-input.component';
 import RandomIcon from '../../assets/icons/random-icon.svg';
 import ReplayIcon from '../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../assets/icons/coin-enabled-icon.svg';
 import LockIcon from '../../assets/icons/lock-icon.svg';
+import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -90,7 +92,7 @@ const CreateBoxScreen = ({ navigation }) => {
 
   const createBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions}) => {
     setCreating(true);
-    const box = await axios.post('https://araza.berrybox.tv/boxes', {
+    const box = await axios.post(`${Config.API_URL}/boxes`, {
       creator: user._id,
       name: boxInputData.name,
       description: null,
@@ -236,7 +238,7 @@ const CreateBoxScreen = ({ navigation }) => {
                   onPress={handleSubmit}
                 />
               ) : (
-                <ActivityIndicator />
+                <BxLoadingIndicator />
               )}
               <Snackbar
                 visible={box}

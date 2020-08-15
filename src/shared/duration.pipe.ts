@@ -5,6 +5,10 @@ const durationToString = (value: string) => {
     return duration;
   }
 
+  if (!value.includes('PT')) {
+    return duration;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, years, days, hours, mins, secs] = value.match(/PT(?:(\d+)Y)?(?:(\d+)D)?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
 

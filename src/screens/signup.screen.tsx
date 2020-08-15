@@ -5,9 +5,10 @@ import {
 } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { ActivityIndicator, Snackbar } from 'react-native-paper';
+import { Snackbar } from 'react-native-paper';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
+import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -158,7 +159,7 @@ const SignupScreen = ({ navigation }) => {
                   onPress={handleSubmit}
                 />
               ) : (
-                <ActivityIndicator />
+                <BxLoadingIndicator />
               )}
               <Snackbar
                 visible={errorMessage}

@@ -1,8 +1,9 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { useState, useEffect, useRef } from 'react';
-import { ActivityIndicator, Image } from 'react-native';
+import { Image } from 'react-native';
 import YouTube from 'react-native-youtube';
 import { PlayingItem } from '@teamberry/muscadine';
+import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
 
 const Player = ({ boxKey, currentItem }: {
     boxKey: string,
@@ -29,7 +30,7 @@ const Player = ({ boxKey, currentItem }: {
 
   if (isLoading) {
     return (
-      <ActivityIndicator />
+      <BxLoadingIndicator />
     );
   }
 
@@ -40,7 +41,7 @@ const Player = ({ boxKey, currentItem }: {
         apiKey={boxKey}
         play
         videoId={currentItem.video.link}
-        style={{ alignSelf: 'stretch', height: 204 }}
+        style={{ alignSelf: 'stretch', height: '100%' }}
         onReady={() => setPlayerReadiness(true)}
         // eslint-disable-next-line no-console
         onError={(e) => console.log(e)}
