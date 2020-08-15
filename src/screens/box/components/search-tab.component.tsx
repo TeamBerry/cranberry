@@ -55,9 +55,16 @@ const styles = StyleSheet.create({
   },
 });
 
+export interface Video {
+    _id?: string,
+    name: string,
+    link: string;
+    duration?: string;
+}
+
 const SearchTab = (props: {socket: any, box: Box}) => {
   const [searchValue, setSearchValue] = useState('');
-  const [youtubeSearchResults, setSearchResults] = useState([]);
+  const [youtubeSearchResults, setSearchResults] = useState([] as Array<Video>);
   const [user, setUser] = useState(null);
   const [hasSearched, setSearched] = useState(false);
   const [isSearching, setSearching] = useState(false);
@@ -98,11 +105,11 @@ const SearchTab = (props: {socket: any, box: Box}) => {
     }
 
     try {
-      const youtubeSearchResults = await axios.get(`${Config.API_URL}/search`, {
+      const youtubeSearchRequest = await axios.get(`${Config.API_URL}/search`, {
         params: { value: searchValue },
       });
 
-      setSearchResults(youtubeSearchResults.data);
+      setSearchResults(youtubeSearchRequest.data);
       setSearched(true);
     } catch (error) {
       setError(true);
@@ -118,7 +125,7 @@ const SearchTab = (props: {socket: any, box: Box}) => {
     setSubmitted(true);
   };
 
-  const SearchVideo = ({ video, isAlreadyInQueue }) => (
+  const SearchVideo = ({ video, isAlreadyInQueue }: { video: Video, isAlreadyInQueue: boolean }) => (
     <View style={styles.resultItem}>
       <View>
         <Image
@@ -161,22 +168,9 @@ const SearchTab = (props: {socket: any, box: Box}) => {
       <FlatList
         data={youtubeSearchResults}
         ItemSeparatorComponent={() => <View style={{ backgroundColor: '#3f3f3f', height: 1 }} />}
-        renderItem={(item) => {
-          const video = item.item;
-          const isAlreadyInQueue = videosInQueue.indexOf(video.link) !== -1;
-          if (!isAlreadyInQueue) {
-            return (
-              <TouchableWithoutFeedback
-                onPress={() => submit(video.link)}
-              >
-                <SearchVideo video={video} isAlreadyInQueue={false} />
-              </TouchableWithoutFeedback>
-            );
-          }
-          return (
-            <SearchVideo video={video} isAlreadyInQueue />
-          );
-        }}
+        renderItem={({ item }) => (
+          <SearchVideo video={item} isAlreadyInQueue={videosInQueue.indexOf(item.link) !== -1} />
+        )}
         keyExtractor={(item, index) => index.toString()}
       />
     );
