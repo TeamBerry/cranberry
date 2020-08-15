@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Image, View, Text, StyleSheet, TextInput, FlatList,
+  Image, View, Text, StyleSheet, TextInput, FlatList, Pressable,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import { VideoSubmissionRequest, QueueItem } from '@teamberry/muscadine';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
 import Config from 'react-native-config';
 
 import Box from '../../../models/box.model';
 import DurationIndicator from '../../../components/duration-indicator.component';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
+import BxButtonComponent from '../../../components/bx-button.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,8 +42,7 @@ const styles = StyleSheet.create({
   resultItem: {
     paddingHorizontal: 7,
     paddingVertical: 10,
-    flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   inQueueIndicator: {
     fontFamily: 'Montserrat-SemiBold',
@@ -117,37 +116,60 @@ const SearchTab = (props: {socket: any, box: Box}) => {
     setSearching(false);
   };
 
-  const submit = async (link: string) => {
-    axios.post(`${Config.API_URL}/boxes/${box._id}/queue/video`, {
-      link,
-      flag: null,
-    });
-    setSubmitted(true);
-  };
+  const SearchVideo = ({ video, isAlreadyInQueue }) => {
+    const addToQueue = async (flag?: string) => {
+      try {
+        await axios.post(`${Config.API_URL}/boxes/${box._id}/queue/video`, {
+          link: video.link,
+          flag,
+        } as Partial<VideoSubmissionRequest>);
+      } catch (error) {
+        setError(true);
+      }
+    };
 
-  const SearchVideo = ({ video, isAlreadyInQueue }: { video: Video, isAlreadyInQueue: boolean }) => (
-    <View style={styles.resultItem}>
-      <View>
-        <Image
-          style={[{ width: 140, height: 78.75 }, isAlreadyInQueue ? styles.inQueueVideo : null]}
-          source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
-        />
-        <DurationIndicator duration={video.duration} withBorder={isAlreadyInQueue} />
+    return (
+      <View style={styles.resultItem}>
+        <View style={{ flex: 0, flexDirection: 'row' }}>
+          <View style={{ paddingRight: 10 }}>
+            <Image
+              style={[{ width: 140, height: 78.75 }, isAlreadyInQueue ? styles.inQueueVideo : null]}
+              source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
+            />
+            <DurationIndicator duration={video.duration} withBorder={isAlreadyInQueue} />
+          </View>
+          <View style={{
+            flex: 1,
+            justifyContent: 'center',
+          }}
+          >
+            <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={3}>
+              {isAlreadyInQueue ? (<Text style={styles.inQueueIndicator}>Already in Queue: </Text>) : null}
+              {video.name}
+            </Text>
+          </View>
+        </View>
+        <View style={{
+          display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', padding: 10,
+        }}
+        >
+          {!isAlreadyInQueue ? (
+            <Pressable onPress={() => { addToQueue(); }}>
+              <BxButtonComponent options={{ type: 'play', text: 'Queue', textDisplay: 'full' }} />
+            </Pressable>
+          ) : (
+            <></>
+          )}
+          <Pressable onPress={() => { addToQueue('next'); }}>
+            <BxButtonComponent options={{ type: 'forceNext', text: 'Play Next', textDisplay: 'full' }} />
+          </Pressable>
+          <Pressable onPress={() => { addToQueue('now'); }}>
+            <BxButtonComponent options={{ type: 'forcePlay', text: 'Play Now', textDisplay: 'full' }} />
+          </Pressable>
+        </View>
       </View>
-      <View style={{
-        paddingLeft: 10,
-        width: 200,
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-      >
-        <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={3}>
-          {isAlreadyInQueue ? (<Text style={styles.inQueueIndicator}>Already in Queue: </Text>) : null}
-          {video.name}
-        </Text>
-      </View>
-    </View>
-  );
+    );
+  };
 
   const SearchList = () => {
     if (isSearching) {
