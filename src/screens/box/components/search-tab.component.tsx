@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Image, View, Text, StyleSheet, TextInput, FlatList,
+  Image, View, Text, StyleSheet, TextInput, FlatList, Pressable,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import { VideoSubmissionRequest, QueueItem } from '@teamberry/muscadine';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
+import Config from 'react-native-config';
+
 import Box from '../../../models/box.model';
 import DurationIndicator from '../../../components/duration-indicator.component';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
+import BxButtonComponent from '../../../components/bx-button.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,8 +42,7 @@ const styles = StyleSheet.create({
   resultItem: {
     paddingHorizontal: 7,
     paddingVertical: 10,
-    flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   inQueueIndicator: {
     fontFamily: 'Montserrat-SemiBold',
@@ -53,9 +54,16 @@ const styles = StyleSheet.create({
   },
 });
 
+export interface Video {
+    _id?: string,
+    name: string,
+    link: string;
+    duration?: string;
+}
+
 const SearchTab = (props: {socket: any, box: Box}) => {
   const [searchValue, setSearchValue] = useState('');
-  const [youtubeSearchResults, setSearchResults] = useState([]);
+  const [youtubeSearchResults, setSearchResults] = useState([] as Array<Video>);
   const [user, setUser] = useState(null);
   const [hasSearched, setSearched] = useState(false);
   const [isSearching, setSearching] = useState(false);
@@ -96,11 +104,11 @@ const SearchTab = (props: {socket: any, box: Box}) => {
     }
 
     try {
-      const youtubeSearchResults = await axios.get('https://araza.berrybox.tv/search', {
+      const youtubeSearchRequest = await axios.get(`${Config.API_URL}/search`, {
         params: { value: searchValue },
       });
 
-      setSearchResults(youtubeSearchResults.data);
+      setSearchResults(youtubeSearchRequest.data);
       setSearched(true);
     } catch (error) {
       setError(true);
@@ -108,40 +116,60 @@ const SearchTab = (props: {socket: any, box: Box}) => {
     setSearching(false);
   };
 
-  const submit = async (link: string) => {
-    const submissionPayload: VideoSubmissionRequest = {
-      link,
-      userToken: user._id,
-      boxToken: box._id,
+  const SearchVideo = ({ video, isAlreadyInQueue }) => {
+    const addToQueue = async (flag?: VideoSubmissionRequest['flag']) => {
+      try {
+        await axios.post(`${Config.API_URL}/boxes/${box._id}/queue/video`, {
+          link: video.link,
+          flag,
+        } as Partial<VideoSubmissionRequest>);
+      } catch (error) {
+        setError(true);
+      }
     };
 
-    socket.emit('video', submissionPayload);
-    setSubmitted(true);
+    return (
+      <View style={styles.resultItem}>
+        <View style={{ flex: 0, flexDirection: 'row' }}>
+          <View style={{ paddingRight: 10 }}>
+            <Image
+              style={[{ width: 140, height: 78.75 }, isAlreadyInQueue ? styles.inQueueVideo : null]}
+              source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
+            />
+            <DurationIndicator duration={video.duration} withBorder={isAlreadyInQueue} />
+          </View>
+          <View style={{
+            flex: 1,
+            justifyContent: 'center',
+          }}
+          >
+            <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={3}>
+              {isAlreadyInQueue ? (<Text style={styles.inQueueIndicator}>Already in Queue: </Text>) : null}
+              {video.name}
+            </Text>
+          </View>
+        </View>
+        <View style={{
+          display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', padding: 10,
+        }}
+        >
+          {!isAlreadyInQueue ? (
+            <Pressable onPress={() => { addToQueue(); }}>
+              <BxButtonComponent options={{ type: 'play', text: 'Queue', textDisplay: 'full' }} />
+            </Pressable>
+          ) : (
+            <></>
+          )}
+          <Pressable onPress={() => { addToQueue('next'); }}>
+            <BxButtonComponent options={{ type: 'forceNext', text: 'Play Next', textDisplay: 'full' }} />
+          </Pressable>
+          <Pressable onPress={() => { addToQueue('now'); }}>
+            <BxButtonComponent options={{ type: 'forcePlay', text: 'Play Now', textDisplay: 'full' }} />
+          </Pressable>
+        </View>
+      </View>
+    );
   };
-
-  const SearchVideo = ({ video, isAlreadyInQueue }) => (
-    <View style={styles.resultItem}>
-      <View>
-        <Image
-          style={[{ width: 140, height: 78.75 }, isAlreadyInQueue ? styles.inQueueVideo : null]}
-          source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
-        />
-        <DurationIndicator duration={video.duration} withBorder={isAlreadyInQueue} />
-      </View>
-      <View style={{
-        paddingLeft: 10,
-        width: 200,
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-      >
-        <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={3}>
-          {isAlreadyInQueue ? (<Text style={styles.inQueueIndicator}>Already in Queue: </Text>) : null}
-          {video.name}
-        </Text>
-      </View>
-    </View>
-  );
 
   const SearchList = () => {
     if (isSearching) {
@@ -162,22 +190,9 @@ const SearchTab = (props: {socket: any, box: Box}) => {
       <FlatList
         data={youtubeSearchResults}
         ItemSeparatorComponent={() => <View style={{ backgroundColor: '#3f3f3f', height: 1 }} />}
-        renderItem={(item) => {
-          const video = item.item;
-          const isAlreadyInQueue = videosInQueue.indexOf(video.link) !== -1;
-          if (!isAlreadyInQueue) {
-            return (
-              <TouchableWithoutFeedback
-                onPress={() => submit(video.link)}
-              >
-                <SearchVideo video={video} isAlreadyInQueue={false} />
-              </TouchableWithoutFeedback>
-            );
-          }
-          return (
-            <SearchVideo video={video} isAlreadyInQueue />
-          );
-        }}
+        renderItem={({ item }) => (
+          <SearchVideo video={item} isAlreadyInQueue={videosInQueue.indexOf(item.link) !== -1} />
+        )}
         keyExtractor={(item, index) => index.toString()}
       />
     );

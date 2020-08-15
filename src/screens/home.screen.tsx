@@ -7,6 +7,8 @@ import SideMenu from 'react-native-side-menu';
 import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
 import axios from 'axios';
+import Config from 'react-native-config';
+
 import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
 import ProfilePicture from '../components/profile-picture.component';
@@ -71,8 +73,8 @@ const HomeScreen = ({ navigation }) => {
     try {
       setBoxLoading(false);
       setError(null);
-      const boxesRestults = await axios.get('https://araza.berrybox.tv/boxes');
-      setBoxes(boxesRestults.data);
+      const boxesResults = await axios.get(`${Config.API_URL}/boxes`);
+      setBoxes(boxesResults.data);
       setBoxLoading(true);
     } catch (error) {
       setError(error.message);

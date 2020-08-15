@@ -3,6 +3,7 @@ import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import Config from 'react-native-config';
 
 import { SyncPacket } from '@teamberry/muscadine';
 import Player from './components/player.component';
@@ -40,7 +41,7 @@ const BoxScreen = ({ route }) => {
       const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
       setUser(user);
 
-      const box = await axios.get(`https://araza.berrybox.tv/boxes/${boxToken}`);
+      const box = await axios.get(`${Config.API_URL}/boxes/${boxToken}`);
       setBox(box.data);
     };
 
@@ -49,34 +50,31 @@ const BoxScreen = ({ route }) => {
 
   useEffect(() => {
     if (user && boxToken) {
-      console.log('READY TO CONNECT');
-      socketConnection = io('https://boquila.berrybox.tv', {
+      socketConnection = io(Config.SOCKET_URL, {
         transports: ['websocket'],
         reconnection: true,
         reconnectionDelay: 500,
         reconnectionAttemps: 10,
       })
         .on('connect', () => {
-          console.log('Connection attempt');
           socketConnection.emit('auth', {
             origin: 'Cranberry', type: 'sync', boxToken, userToken: user._id,
           });
         })
         .on('reconnect_attempt', () => {
-          console.log('Reconnection attempt');
           socketConnection.emit('auth', {
             origin: 'Cranberry', type: 'sync', boxToken, userToken: user._id,
           });
         })
         .on('confirm', () => {
           setSocket(socketConnection);
-          setConnectionStatus(true);
         })
         .on('bootstrap', (bootstrapMaterial) => {
           setBoxKey(bootstrapMaterial.boxKey);
           socketConnection.emit('start', {
             boxToken, userToken: user._id,
           });
+          setConnectionStatus(true);
         })
         .on('sync', (syncPacket: SyncPacket) => {
           setCurrentQueueItem(syncPacket.item);
@@ -91,7 +89,6 @@ const BoxScreen = ({ route }) => {
 
     return (() => {
       if (socketConnection) {
-        console.log('DISCONNECTION');
         socketConnection.disconnect();
       }
     });
@@ -118,11 +115,13 @@ const BoxScreen = ({ route }) => {
           <BxLoadingIndicator />
         )}
       </View>
-      <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} />
-      {socket ? (
-        <SocketContext.Consumer>
-          { (socket) => <Panel box={box} socket={socket} />}
-        </SocketContext.Consumer>
+      {isConnected && box ? (
+        <>
+          <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} />
+          <SocketContext.Consumer>
+            { (socket) => <Panel box={box} socket={socket} />}
+          </SocketContext.Consumer>
+        </>
       ) : (
         <BxLoadingIndicator />
       )}
