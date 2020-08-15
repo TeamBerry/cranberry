@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+import PlayIcon from '../../assets/icons/play-icon.svg';
 import PlayNextIcon from '../../assets/icons/force-next-icon.svg';
 import PlayNowIcon from '../../assets/icons/force-play-icon.svg';
 import DeleteIcon from '../../assets/icons/trash-icon.svg';
@@ -63,15 +64,15 @@ export interface ButtonOptions {
 const InsertIcon = ({ type }: { type: ButtonOptions['type'] }) => {
   switch (type) {
     case 'play':
-      break;
+      return <PlayIcon width={20} height={20} fill="white" />;
     case 'replay':
-      break;
+      return <></>;
     case 'cancel':
       return <DeleteIcon width={20} height={20} fill="white" />;
     case 'skip':
       return <SkipIcon width={20} height={20} fill="white" />;
     case 'addToLibrary':
-      break;
+      return <></>;
     case 'forceNext':
       return <PlayNextIcon width={20} height={20} fill="white" />;
     case 'forcePlay':
