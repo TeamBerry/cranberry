@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import Config from 'react-native-config';
 
-import { SyncPacket } from '@teamberry/muscadine';
+import { SyncPacket, BerryCount } from '@teamberry/muscadine';
 import Player from './components/player.component';
 import Box from '../../models/box.model';
 import BoxContext from './box.context';
@@ -34,6 +34,7 @@ const BoxScreen = ({ route }) => {
   const [socket, setSocket] = useState(null);
   const [boxKey, setBoxKey] = useState(null);
   const [currentQueueItem, setCurrentQueueItem] = useState(null);
+  const [berryCount, setBerryCount] = useState(0);
   const [isConnected, setConnectionStatus] = useState(null);
 
   useEffect(() => {
@@ -82,6 +83,9 @@ const BoxScreen = ({ route }) => {
         .on('box', (box: Box) => {
           setBox(box);
         })
+        .on('berries', (berryCount: BerryCount) => {
+          setBerryCount(berryCount.berries);
+        })
         .on('denied', () => {
           console.log('DENIED');
         });
@@ -115,11 +119,11 @@ const BoxScreen = ({ route }) => {
           <BxLoadingIndicator />
         )}
       </View>
-      {isConnected && box ? (
+      {isConnected && box && berryCount ? (
         <>
           <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} />
           <SocketContext.Consumer>
-            { (socket) => <Panel box={box} socket={socket} />}
+            { (socket) => <Panel box={box} socket={socket} berryCount={berryCount} />}
           </SocketContext.Consumer>
         </>
       ) : (

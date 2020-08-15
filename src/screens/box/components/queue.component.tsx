@@ -43,22 +43,22 @@ const Queue = ({ box, currentVideo, height }: {
   const [isCollapsed, setCollapse] = useState(true);
 
   const BoxName = () => {
-    if (box) {
-      return (
-        <Text style={styles.boxName}>{box.name}</Text>
-      );
+    if (!box) {
+      return null;
     }
-    return (<></>);
+    return (
+      <Text style={styles.boxName}>{box.name}</Text>
+    );
   };
 
   const CurrentVideo = () => {
-    if (currentVideo) {
-      return (
-        <Text style={styles.currentVideo} numberOfLines={1}>{currentVideo.video.name}</Text>
-      );
+    if (!currentVideo) {
+      return null;
     }
 
-    return (<></>);
+    return (
+      <Text style={styles.currentVideo} numberOfLines={1}>{currentVideo.video.name}</Text>
+    );
   };
 
   const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -99,7 +99,7 @@ const Queue = ({ box, currentVideo, height }: {
 
   const QueueList = () => {
     if (!box) {
-      return (<></>);
+      return null;
     }
 
     let upcomingVideos = [];

@@ -47,9 +47,7 @@ const CustomMenu = () => {
 
   const UserSpace = () => {
     if (!user) {
-      return (
-        <></>
-      );
+      return null;
     }
 
     return (

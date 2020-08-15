@@ -75,7 +75,7 @@ const ChatMessage = ({ message }: Props) => {
       const { name, color } = message.author as Message['author'];
       return (<Text style={[styles.author, { color }]}>{name}</Text>);
     }
-    return <></>;
+    return null;
   };
 
   const SystemMessageRender = (message: SystemMessage) => {

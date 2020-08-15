@@ -66,19 +66,19 @@ const InsertIcon = ({ type }: { type: ButtonOptions['type'] }) => {
     case 'play':
       return <PlayIcon width={20} height={20} fill="white" />;
     case 'replay':
-      return <></>;
+      return null;
     case 'cancel':
       return <DeleteIcon width={20} height={20} fill="white" />;
     case 'skip':
       return <SkipIcon width={20} height={20} fill="white" />;
     case 'addToLibrary':
-      return <></>;
+      return null;
     case 'forceNext':
       return <PlayNextIcon width={20} height={20} fill="white" />;
     case 'forcePlay':
       return <PlayNowIcon width={20} height={20} fill="white" />;
     default:
-      return <></>;
+      return null;
   }
 };
 
@@ -90,7 +90,7 @@ const BxButtonComponent = ({ options }: { options: Partial<ButtonOptions> }) => 
       <View style={styles.buttonIcon}>
         <InsertIcon type={options.type} />
       </View>
-      {options.textDisplay === 'full' ? (<Text style={styles.buttonText}>{options.text}</Text>) : (<></>)}
+      {options.textDisplay === 'full' ? (<Text style={styles.buttonText}>{options.text}</Text>) : null}
     </View>
   );
 };
