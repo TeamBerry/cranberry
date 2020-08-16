@@ -119,6 +119,11 @@ const BoxCard = (props: { box: Box }) => {
             <BxChipComponent options={{ type: 'lock', chipText: 'Private' }} display="full" />
           </View>
         ) : null}
+        {box.options.videoMaxDurationLimit !== 0 ? (
+          <View style={{ paddingHorizontal: 2 }}>
+            <BxChipComponent options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }} display="full" />
+          </View>
+        ) : null}
       </View>
     </View>
   );

@@ -12,6 +12,7 @@ import ProfilePicture from '../../../components/profile-picture.component';
 import RandomIcon from '../../../../assets/icons/random-icon.svg';
 import ReplayIcon from '../../../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../../../assets/icons/coin-enabled-icon.svg';
+import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-icon.svg';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -199,6 +200,18 @@ const Queue = ({ box, currentVideo, height }: {
               </View>
               <View style={{ paddingRight: 20 }}>
                 <BerriesIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
+              </View>
+              <View style={{ paddingRight: 20 }}>
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
+                  {box.options.videoMaxDurationLimit !== 0 ? (
+                    <Text style={{ color: '#009AEB' }}>
+                      {box.options.videoMaxDurationLimit}
+                      {' '}
+                      mins
+                    </Text>
+                  ) : null}
+                </View>
               </View>
             </View>
           </View>
