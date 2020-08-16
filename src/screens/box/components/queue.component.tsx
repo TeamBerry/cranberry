@@ -191,28 +191,32 @@ const Queue = ({ box, currentVideo, height }: {
           style={{ height: height - 50 }}
         >
           <View style={{ backgroundColor: '#191919', padding: 10 }}>
-            <View style={{ flex: 0, flexDirection: 'row' }}>
-              <View style={{ paddingRight: 20 }}>
-                <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : '#CCCCCC'} />
-              </View>
-              <View style={{ paddingRight: 20 }}>
-                <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : '#CCCCCC'} />
-              </View>
-              <View style={{ paddingRight: 20 }}>
-                <BerriesIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
-              </View>
-              <View style={{ paddingRight: 20 }}>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
-                  {box.options.videoMaxDurationLimit !== 0 ? (
-                    <Text style={{ color: '#009AEB' }}>
-                      {box.options.videoMaxDurationLimit}
-                      {' '}
-                      mins
-                    </Text>
-                  ) : null}
+            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
+              {/* Display icons in "inactive" status for users who can act on them. Don't display icons for user who cannot. */}
+              <View style={{ flex: 0, flexDirection: 'row' }}>
+                <View style={{ paddingRight: 20 }}>
+                  <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : '#CCCCCC'} />
+                </View>
+                <View style={{ paddingRight: 20 }}>
+                  <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : '#CCCCCC'} />
+                </View>
+                <View style={{ paddingRight: 20 }}>
+                  <BerriesIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
+                </View>
+                <View style={{ paddingRight: 20 }}>
+                  <View style={{ flex: 1, flexDirection: 'row' }}>
+                    <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
+                    {box.options.videoMaxDurationLimit !== 0 ? (
+                      <Text style={{ color: '#009AEB' }}>
+                        {box.options.videoMaxDurationLimit}
+                        {' '}
+                        mins
+                      </Text>
+                    ) : null}
+                  </View>
                 </View>
               </View>
+              <View style={{ flex: 0, flexDirection: 'row' }} />
             </View>
           </View>
           <QueueList />
