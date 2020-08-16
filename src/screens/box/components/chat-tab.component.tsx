@@ -12,7 +12,6 @@ import {
 import ChatMessage from './chat-message.component';
 
 import DownIcon from '../../../../assets/icons/down-icon.svg';
-import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 import Box from '../../../models/box.model';
 import BerryCounter from './berry-counter.component';
 
