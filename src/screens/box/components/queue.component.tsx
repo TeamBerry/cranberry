@@ -9,6 +9,10 @@ import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
 
+import RandomIcon from '../../../../assets/icons/random-icon.svg';
+import ReplayIcon from '../../../../assets/icons/replay-icon.svg';
+import BerriesIcon from '../../../../assets/icons/coin-enabled-icon.svg';
+
 const styles = StyleSheet.create({
   currentSpaceContainer: {
     height: 50,
@@ -185,6 +189,19 @@ const Queue = ({ box, currentVideo, height }: {
           collapsed={isCollapsed}
           style={{ height: height - 50 }}
         >
+          <View style={{ backgroundColor: '#191919', padding: 10 }}>
+            <View style={{ flex: 0, flexDirection: 'row' }}>
+              <View style={{ paddingRight: 20 }}>
+                <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : '#CCCCCC'} />
+              </View>
+              <View style={{ paddingRight: 20 }}>
+                <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : '#CCCCCC'} />
+              </View>
+              <View style={{ paddingRight: 20 }}>
+                <BerriesIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
+              </View>
+            </View>
+          </View>
           <QueueList />
         </Collapsible>
       </View>
