@@ -12,12 +12,12 @@ import ProfilePicture from '../../../components/profile-picture.component';
 const styles = StyleSheet.create({
   currentSpaceContainer: {
     height: 50,
-    backgroundColor: '#262626',
+    backgroundColor: '#111111',
     color: 'white',
     paddingLeft: 10,
   },
   currentSpace: {
-    flex: 1,
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -158,10 +158,10 @@ const Queue = ({ box, currentVideo, height }: {
       >
         <View style={styles.currentSpaceContainer}>
           <View style={styles.currentSpace}>
-            <View style={{ width: 35 }}>
+            <View style={{ paddingRight: 10 }}>
               <ProfilePicture userId={box.creator._id} size={25} />
             </View>
-            <View style={{ width: 275 }}>
+            <View style={{ flex: 1 }}>
               <BoxName />
               <CurrentVideo />
             </View>
