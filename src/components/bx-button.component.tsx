@@ -24,6 +24,11 @@ const styles = StyleSheet.create({
   buttonIcon: {
     padding: 1,
   },
+  buttonBerries: {
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    borderColor: '#FF8E52',
+    borderWidth: 1,
+  },
   buttonText: {
     paddingLeft: 5,
     color: 'white',

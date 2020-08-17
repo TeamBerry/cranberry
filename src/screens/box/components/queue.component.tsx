@@ -268,7 +268,7 @@ const Queue = (props: {
         data={queueVideos}
         ItemSeparatorComponent={() => <View style={{ backgroundColor: '#191919', height: 1 }} />}
         renderItem={({ item }) => (
-          <QueueVideo item={item} boxToken={box._id} />
+          <QueueVideo item={item} boxToken={box._id} permissions={permissions} berriesEnabled={box.options.berries} />
         )}
         keyExtractor={(item, index) => index.toString()}
       />

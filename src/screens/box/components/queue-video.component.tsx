@@ -5,7 +5,7 @@ import {
 import axios from 'axios';
 import Config from 'react-native-config';
 
-import { QueueItem } from '@teamberry/muscadine';
+import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
 import ProfilePicture from '../../../components/profile-picture.component';
 import DurationIndicator from '../../../components/duration-indicator.component';
@@ -39,7 +39,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const QueueVideo = ({ item, boxToken }: { item: QueueItem, boxToken: string }) => {
+const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Array<Permission>, berriesEnabled: boolean }) => {
+  const {
+    item, boxToken, permissions, berriesEnabled,
+  } = props;
   const playNext = () => {
     axios.put(`${Config.API_URL}/boxes/${boxToken}/queue/${item._id}/next`);
   };
@@ -103,23 +106,51 @@ const QueueVideo = ({ item, boxToken }: { item: QueueItem, boxToken: string }) =
           }}
         >
           {(item.startTime !== null && item.endTime === null) ? (
-            <Pressable onPress={() => skip()}>
-              <BxButtonComponent options={{ type: 'skip', text: 'Skip', textDisplay: 'full' }} />
-            </Pressable>
+            <>
+              {permissions.includes('skipVideo') || berriesEnabled ? (
+                <Pressable onPress={() => skip()}>
+                  <BxButtonComponent options={{
+                    type: 'skip',
+                    text: permissions.includes('skipVideo') ? 'Skip' : 'Skip (30 Coins)',
+                    textDisplay: 'full',
+                    context: permissions.includes('forcePlay') ? 'primary' : 'berries',
+                  }}
+                  />
+                </Pressable>
+              ) : null}
+            </>
           ) : (
             <>
-              <Pressable onPress={() => playNext()}>
-                <BxButtonComponent options={{ type: 'forceNext', text: 'Play Next', textDisplay: 'full' }} />
-              </Pressable>
-              <Pressable onPress={() => playNow()}>
-                <BxButtonComponent options={{ type: 'forcePlay', text: 'Play Now', textDisplay: 'full' }} />
-              </Pressable>
-              <Pressable onPress={() => removeVideo()}>
-                <BxButtonComponent options={{
-                  type: 'cancel', text: 'Remove', textDisplay: 'full', context: 'danger',
-                }}
-                />
-              </Pressable>
+              {permissions.includes('forceNext') || berriesEnabled ? (
+                <Pressable onPress={() => playNext()}>
+                  <BxButtonComponent options={{
+                    type: 'forceNext',
+                    text: permissions.includes('forceNext') ? 'Play Next' : 'Play Next (10 Coins)',
+                    textDisplay: 'full',
+                    context: permissions.includes('forcePlay') ? 'primary' : 'berries',
+                  }}
+                  />
+                </Pressable>
+              ) : null}
+              {permissions.includes('forcePlay') || berriesEnabled ? (
+                <Pressable onPress={() => playNow()}>
+                  <BxButtonComponent options={{
+                    type: 'forcePlay',
+                    text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now (50 Coins)',
+                    textDisplay: 'full',
+                    context: permissions.includes('forcePlay') ? 'primary' : 'berries',
+                  }}
+                  />
+                </Pressable>
+              ) : null}
+              {permissions.includes('removeVideo') ? (
+                <Pressable onPress={() => removeVideo()}>
+                  <BxButtonComponent options={{
+                    type: 'cancel', text: 'Remove', textDisplay: 'full', context: 'danger',
+                  }}
+                  />
+                </Pressable>
+              ) : null}
             </>
           )}
         </Collapsible>
