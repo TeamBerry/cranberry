@@ -125,7 +125,7 @@ const BoxScreen = ({ route }) => {
       </View>
       {isConnected && box && berryCount && permissions ? (
         <>
-          <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} permissions={permissions} />
+          <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} berryCount={berryCount} permissions={permissions} />
           <SocketContext.Consumer>
             { (socket) => <Panel box={box} socket={socket} berryCount={berryCount} />}
           </SocketContext.Consumer>

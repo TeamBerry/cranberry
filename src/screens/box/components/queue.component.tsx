@@ -16,6 +16,7 @@ import RandomIcon from '../../../../assets/icons/random-icon.svg';
 import ReplayIcon from '../../../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../../../assets/icons/coin-enabled-icon.svg';
 import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-icon.svg';
+import BerryCounter from './berry-counter.component';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -47,10 +48,11 @@ const Queue = (props: {
     box: Box,
     currentVideo: QueueItem,
     height: number,
+    berryCount: number,
     permissions: Array<Permission>
 }) => {
   const {
-    box, currentVideo, height, permissions,
+    box, currentVideo, height, berryCount, permissions,
   } = props;
 
   const _durationInputRef = useRef(null);
@@ -205,7 +207,7 @@ const Queue = (props: {
     }
 
     if (box.options.berries) {
-      return <BerriesIcon width={20} height={20} fill="#009AEB" />;
+      return <BerryCounter count={berryCount} />;
     }
 
     return null;
