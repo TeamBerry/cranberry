@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, TouchableOpacity, Animated, Pressable,
+  StyleSheet, Text, View, FlatList, TouchableOpacity, Animated, Pressable, TextInput,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
@@ -53,9 +53,12 @@ const Queue = (props: {
     box, currentVideo, height, permissions,
   } = props;
 
+  const _durationInputRef = useRef(null);
+
   const [isCollapsed, setCollapse] = useState(true);
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
+  const [isDurationInputVisible, setDurationInputVisibility] = useState(false);
 
   const BoxName = () => {
     if (!box) {
@@ -188,8 +191,10 @@ const Queue = (props: {
         );
       }
       return (
-        <Pressable onPress={() => { patchBox({ videoMaxDurationLimit: 7 }); }}>
-          <DurationRestrictionIcon width={20} height={20} fill="#CCCCCC" />
+        <Pressable onPress={() => { setDurationInputVisibility(!isDurationInputVisible); }}>
+          <View style={{ flex: 0, flexDirection: 'row' }}>
+            <DurationRestrictionIcon width={20} height={20} fill="#CCCCCC" />
+          </View>
         </Pressable>
       );
     }
@@ -315,8 +320,29 @@ const Queue = (props: {
                   <DurationRestrictionIndicator />
                 </View>
               </View>
-              <View style={{ flex: 0, flexDirection: 'row' }} />
             </View>
+            {isDurationInputVisible ? (
+              <View style={{ paddingVertical: 5 }}>
+                <TextInput
+                  ref={_durationInputRef}
+                  keyboardType="numeric"
+                  onSubmitEditing={({ nativeEvent }) => { patchBox({ videoMaxDurationLimit: nativeEvent.text }); }}
+                  onBlur={() => setDurationInputVisibility(false)}
+                  placeholder="Set the duration restriction (in minutes)"
+                  autoFocus
+                  placeholderTextColor="#CCCCCC"
+                  style={{
+                    height: 40,
+                    borderWidth: 1,
+                    borderStyle: 'solid',
+                    borderColor: '#009aeb',
+                    padding: 10,
+                    borderRadius: 5,
+                    color: 'white',
+                  }}
+                />
+              </View>
+            ) : null}
           </View>
           <QueueList />
         </Collapsible>
