@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, TouchableOpacity, Animated,
+  StyleSheet, Text, View, FlatList, TouchableOpacity, Animated, Pressable,
 } from 'react-native';
-import { QueueItem } from '@teamberry/muscadine';
+import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
 import { Svg, Polygon } from 'react-native-svg';
+import axios from 'axios';
+import Config from 'react-native-config';
+import { Snackbar } from 'react-native-paper';
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
@@ -40,12 +43,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const Queue = ({ box, currentVideo, height }: {
+const Queue = (props: {
     box: Box,
     currentVideo: QueueItem,
-    height: number
+    height: number,
+    permissions: Array<Permission>
 }) => {
+  const {
+    box, currentVideo, height, permissions,
+  } = props;
+
   const [isCollapsed, setCollapse] = useState(true);
+  const [error, setError] = useState(false);
+  const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
 
   const BoxName = () => {
     if (!box) {
@@ -100,6 +110,104 @@ const Queue = ({ box, currentVideo, height }: {
       rotateOpen();
     }
     setCollapse(!isCollapsed);
+  };
+
+  const patchBox = async (setting) => {
+    try {
+      await axios.patch(`${Config.API_URL}/boxes/${box._id}`, setting);
+      setUpdateState(true);
+    } catch (error) {
+      setError(true);
+    }
+  };
+
+  const RandomIndicator = () => {
+    if (permissions.includes('editBox')) {
+      return (
+        <Pressable onPress={() => { patchBox({ random: !box.options.random }); }}>
+          <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : '#CCCCCC'} />
+        </Pressable>
+      );
+    }
+
+    if (box.options.random) {
+      return <RandomIcon width={20} height={20} fill="#009AEB" />;
+    }
+
+    return null;
+  };
+
+  const LoopIndicator = () => {
+    if (permissions.includes('editBox')) {
+      return (
+        <Pressable onPress={() => { patchBox({ loop: !box.options.loop }); }}>
+          <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : '#CCCCCC'} />
+        </Pressable>
+      );
+    }
+
+    if (box.options.loop) {
+      return <ReplayIcon width={20} height={20} fill="#009AEB" />;
+    }
+
+    return null;
+  };
+
+  const BerriesIndicator = () => {
+    if (permissions.includes('editBox')) {
+      return (
+        <Pressable onPress={() => { patchBox({ berries: !box.options.berries }); }}>
+          <BerriesIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
+        </Pressable>
+      );
+    }
+
+    if (box.options.berries) {
+      return <BerriesIcon width={20} height={20} fill="#009AEB" />;
+    }
+
+    return null;
+  };
+
+  const DurationRestrictionIndicator = () => {
+    if (permissions.includes('editBox')) {
+      if (box.options.videoMaxDurationLimit !== 0) {
+        return (
+          <Pressable onPress={() => { patchBox({ videoMaxDurationLimit: 0 }); }}>
+            <View style={{ flex: 0, flexDirection: 'row' }}>
+              <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
+              {box.options.videoMaxDurationLimit ? (
+                <Text style={{ color: '#009AEB' }}>
+                  {box.options.videoMaxDurationLimit}
+                  {' '}
+                  mins
+                </Text>
+              ) : null}
+            </View>
+          </Pressable>
+        );
+      }
+      return (
+        <Pressable onPress={() => { patchBox({ videoMaxDurationLimit: 7 }); }}>
+          <DurationRestrictionIcon width={20} height={20} fill="#CCCCCC" />
+        </Pressable>
+      );
+    }
+
+    if (box.options.videoMaxDurationLimit) {
+      return (
+        <View style={{ flex: 0, flexDirection: 'row' }}>
+          <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
+          <Text style={{ color: '#009AEB' }}>
+            {box.options.videoMaxDurationLimit}
+            {' '}
+            mins
+          </Text>
+        </View>
+      );
+    }
+
+    return null;
   };
 
   const QueueList = () => {
@@ -195,25 +303,16 @@ const Queue = ({ box, currentVideo, height }: {
               {/* Display icons in "inactive" status for users who can act on them. Don't display icons for user who cannot. */}
               <View style={{ flex: 0, flexDirection: 'row' }}>
                 <View style={{ paddingRight: 20 }}>
-                  <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : '#CCCCCC'} />
+                  <RandomIndicator />
                 </View>
                 <View style={{ paddingRight: 20 }}>
-                  <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : '#CCCCCC'} />
+                  <LoopIndicator />
                 </View>
                 <View style={{ paddingRight: 20 }}>
-                  <BerriesIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
+                  <BerriesIndicator />
                 </View>
                 <View style={{ paddingRight: 20 }}>
-                  <View style={{ flex: 1, flexDirection: 'row' }}>
-                    <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
-                    {box.options.videoMaxDurationLimit !== 0 ? (
-                      <Text style={{ color: '#009AEB' }}>
-                        {box.options.videoMaxDurationLimit}
-                        {' '}
-                        mins
-                      </Text>
-                    ) : null}
-                  </View>
+                  <DurationRestrictionIndicator />
                 </View>
               </View>
               <View style={{ flex: 0, flexDirection: 'row' }} />
@@ -222,6 +321,30 @@ const Queue = ({ box, currentVideo, height }: {
           <QueueList />
         </Collapsible>
       </View>
+      <Snackbar
+        visible={hasUpdatedSuccessfully}
+        duration={1500}
+        style={{
+          backgroundColor: '#090909',
+          borderLeftColor: '#0CEBC0',
+          borderLeftWidth: 10,
+        }}
+        onDismiss={() => setUpdateState(false)}
+      >
+        Option updated successfully.
+      </Snackbar>
+      <Snackbar
+        visible={error}
+        duration={5000}
+        style={{
+          backgroundColor: '#090909',
+          borderLeftColor: '#B30F4F',
+          borderLeftWidth: 10,
+        }}
+        onDismiss={() => setError(false)}
+      >
+        Something wrong happened. Try again?
+      </Snackbar>
     </>
   );
 };
