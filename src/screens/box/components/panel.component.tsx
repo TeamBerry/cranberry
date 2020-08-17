@@ -2,17 +2,20 @@ import React, { useState } from 'react';
 import { Dimensions } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 
+import { Permission } from '@teamberry/muscadine';
 import ChatTab from './chat-tab.component';
 import SearchTab from './search-tab.component';
 import Box from '../../../models/box.model';
 
-const Panel = (props: { box: Box, socket: any, berryCount: number }) => {
+const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: Array<Permission> }) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
     { key: 'search', title: 'Search' },
   ]);
-  const { box, socket, berryCount } = props;
+  const {
+    box, socket, berryCount, permissions,
+  } = props;
 
   const initialLayout = { width: Dimensions.get('window').width };
 
@@ -21,7 +24,7 @@ const Panel = (props: { box: Box, socket: any, berryCount: number }) => {
       case 'chat':
         return <ChatTab box={box} socket={socket} berryCount={berryCount} />;
       case 'search':
-        return <SearchTab box={box} socket={socket} berryCount={berryCount} />;
+        return <SearchTab box={box} socket={socket} berryCount={berryCount} permissions={permissions} />;
       default:
         return null;
     }

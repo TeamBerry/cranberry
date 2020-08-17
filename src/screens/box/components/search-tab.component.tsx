@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import { VideoSubmissionRequest, QueueItem } from '@teamberry/muscadine';
+import { VideoSubmissionRequest, QueueItem, Permission } from '@teamberry/muscadine';
 import { Snackbar } from 'react-native-paper';
 import Config from 'react-native-config';
 
@@ -63,8 +63,10 @@ export interface Video {
     duration?: string;
 }
 
-const SearchTab = (props: {socket: any, box: Box, berryCount: number}) => {
-  const { socket, box, berryCount } = props;
+const SearchTab = (props: {socket: any, box: Box, berryCount: number, permissions: Array<Permission>}) => {
+  const {
+    socket, box, berryCount, permissions,
+  } = props;
 
   const [searchValue, setSearchValue] = useState('');
   const [youtubeSearchResults, setSearchResults] = useState([] as Array<Video>);
@@ -158,16 +160,45 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number}) => {
         }}
         >
           {!isAlreadyInQueue ? (
-            <Pressable onPress={() => { addToQueue(); }}>
-              <BxButtonComponent options={{ type: 'play', text: 'Queue', textDisplay: 'full' }} />
-            </Pressable>
+            <>
+              {permissions.includes('addVideo') || box.options.berries ? (
+                <Pressable onPress={() => { addToQueue(); }}>
+                  <BxButtonComponent options={{
+                    type: 'play',
+                    text: 'Queue',
+                    textDisplay: 'full',
+                  }}
+                  />
+                </Pressable>
+              ) : null}
+            </>
           ) : null}
-          <Pressable onPress={() => { addToQueue('next'); }}>
-            <BxButtonComponent options={{ type: 'forceNext', text: 'Play Next', textDisplay: 'full' }} />
-          </Pressable>
-          <Pressable onPress={() => { addToQueue('now'); }}>
-            <BxButtonComponent options={{ type: 'forcePlay', text: 'Play Now', textDisplay: 'full' }} />
-          </Pressable>
+          <>
+            {(permissions.includes('forceNext') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
+                || box.options.berries ? (
+                  <Pressable onPress={() => { addToQueue('next'); }}>
+                    <BxButtonComponent options={{
+                      type: 'forceNext',
+                      text: permissions.includes('forceNext') ? 'Play Next' : 'Play Next (10 Berries)',
+                      textDisplay: 'full',
+                      context: permissions.includes('forceNext') ? 'primary' : 'berries',
+                    }}
+                    />
+                  </Pressable>
+              ) : null}
+            {(permissions.includes('forcePlay') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
+                        || box.options.berries ? (
+                          <Pressable onPress={() => { addToQueue('now'); }}>
+                            <BxButtonComponent options={{
+                              type: 'forcePlay',
+                              text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now (50 Berries)',
+                              textDisplay: 'full',
+                              context: permissions.includes('forcePlay') ? 'primary' : 'berries',
+                            }}
+                            />
+                          </Pressable>
+              ) : null}
+          </>
         </View>
       </View>
     );

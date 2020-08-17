@@ -127,7 +127,7 @@ const BoxScreen = ({ route }) => {
         <>
           <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} berryCount={berryCount} permissions={permissions} />
           <SocketContext.Consumer>
-            { (socket) => <Panel box={box} socket={socket} berryCount={berryCount} />}
+            { (socket) => <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />}
           </SocketContext.Consumer>
         </>
       ) : (
