@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet, Text, View, FlatList, TouchableOpacity, Animated, Pressable, TextInput,
 } from 'react-native';
@@ -59,6 +59,45 @@ const Queue = (props: {
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
   const [isDurationInputVisible, setDurationInputVisibility] = useState(false);
+  const [queueVideos, setQueueVideos] = useState([]);
+
+  useEffect((): void => {
+    if (!box) {
+      setQueueVideos([]);
+    }
+
+    let upcomingVideos = [];
+
+    if (!box.options.loop) {
+      upcomingVideos = box.playlist.filter((item) => item.startTime === null);
+    } else {
+      upcomingVideos = box.playlist;
+    }
+
+    upcomingVideos.reverse();
+
+    // Put the preslected video first
+    const preselectedVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.isPreselected);
+    if (preselectedVideoIndex !== -1) {
+      const preselectedVideo = upcomingVideos[preselectedVideoIndex];
+      upcomingVideos.splice(preselectedVideoIndex, 1);
+      upcomingVideos.unshift(preselectedVideo);
+    }
+
+    // Put the current video first
+    const playingVideo: QueueItem = box.playlist.find((item: QueueItem) => item.startTime !== null && item.endTime === null);
+    if (playingVideo) {
+      // If loop, the full queue is displayed, regardless of the state of the videos.
+      // So the current video has to be spliced out before being unshifted.
+      const playingVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.video.link === playingVideo.video.link);
+      if (playingVideoIndex !== -1) {
+        upcomingVideos.splice(playingVideoIndex, 1);
+      }
+      upcomingVideos.unshift(playingVideo);
+    }
+
+    setQueueVideos(upcomingVideos);
+  }, [box.playlist]);
 
   const BoxName = () => {
     if (!box) {
@@ -216,49 +255,15 @@ const Queue = (props: {
   };
 
   const QueueList = () => {
-    if (!box) {
-      return null;
-    }
-
-    let upcomingVideos = [];
-
-    if (!box.options.loop) {
-      upcomingVideos = box.playlist.filter((item) => item.startTime === null);
-    } else {
-      upcomingVideos = box.playlist;
-    }
-
-    if (upcomingVideos.length === 0) {
+    if (!queueVideos || queueVideos.length === 0) {
       return (
         <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>The Queue is empty.</Text>
       );
     }
 
-    upcomingVideos.reverse();
-
-    // Put the preslected video first
-    const preselectedVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.isPreselected);
-    if (preselectedVideoIndex !== -1) {
-      const preselectedVideo = upcomingVideos[preselectedVideoIndex];
-      upcomingVideos.splice(preselectedVideoIndex, 1);
-      upcomingVideos.unshift(preselectedVideo);
-    }
-
-    // Put the current video first
-    const playingVideo: QueueItem = box.playlist.find((item: QueueItem) => item.startTime !== null && item.endTime === null);
-    if (playingVideo) {
-      // If loop, the full queue is displayed, regardless of the state of the videos.
-      // So the current video has to be spliced out before being unshifted.
-      const playingVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.video.link === playingVideo.video.link);
-      if (playingVideoIndex !== -1) {
-        upcomingVideos.splice(playingVideoIndex, 1);
-      }
-      upcomingVideos.unshift(playingVideo);
-    }
-
     return (
       <FlatList
-        data={upcomingVideos}
+        data={queueVideos}
         ItemSeparatorComponent={() => <View style={{ backgroundColor: '#191919', height: 1 }} />}
         renderItem={({ item }) => (
           <QueueVideo item={item} boxToken={box._id} />
