@@ -6,6 +6,7 @@ import PlayNextIcon from '../../assets/icons/force-next-icon.svg';
 import PlayNowIcon from '../../assets/icons/force-play-icon.svg';
 import DeleteIcon from '../../assets/icons/trash-icon.svg';
 import SkipIcon from '../../assets/icons/skip-icon.svg';
+import BerriesIcon from '../../assets/icons/berry-coin-icon.svg';
 
 const styles = StyleSheet.create({
   button: {
@@ -23,6 +24,11 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     padding: 1,
+  },
+  buttonBerries: {
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    borderColor: '#FF8E52',
+    borderWidth: 1,
   },
   buttonText: {
     paddingLeft: 5,
@@ -66,20 +72,37 @@ const InsertIcon = ({ type }: { type: ButtonOptions['type'] }) => {
     case 'play':
       return <PlayIcon width={20} height={20} fill="white" />;
     case 'replay':
-      return <></>;
+      return null;
     case 'cancel':
       return <DeleteIcon width={20} height={20} fill="white" />;
     case 'skip':
       return <SkipIcon width={20} height={20} fill="white" />;
     case 'addToLibrary':
-      return <></>;
+      return null;
     case 'forceNext':
       return <PlayNextIcon width={20} height={20} fill="white" />;
     case 'forcePlay':
       return <PlayNowIcon width={20} height={20} fill="white" />;
     default:
-      return <></>;
+      return null;
   }
+};
+
+const parseText = (text: string) => {
+  if (text.includes('$BC$')) {
+    const parts = /(.*)(\$BC\$)(.*)/gi.exec(text);
+    return (
+      <>
+        <Text style={styles.buttonText}>{parts[1]}</Text>
+        <BerriesIcon width={20} height={20} />
+        <Text style={styles.buttonText}>{parts[3]}</Text>
+      </>
+    );
+  }
+
+  return (
+    <Text style={styles.buttonText}>{text}</Text>
+  );
 };
 
 const BxButtonComponent = ({ options }: { options: Partial<ButtonOptions> }) => {
@@ -90,7 +113,9 @@ const BxButtonComponent = ({ options }: { options: Partial<ButtonOptions> }) => 
       <View style={styles.buttonIcon}>
         <InsertIcon type={options.type} />
       </View>
-      {options.textDisplay === 'full' ? (<Text style={styles.buttonText}>{options.text}</Text>) : (<></>)}
+      {options.textDisplay === 'full' ? (
+        parseText(options.text)
+      ) : null}
     </View>
   );
 };

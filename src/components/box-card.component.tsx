@@ -103,22 +103,27 @@ const BoxCard = (props: { box: Box }) => {
           <View style={{ paddingHorizontal: 2 }}>
             <BxChipComponent options={{ type: 'random', chipText: 'Random' }} display="full" />
           </View>
-        ) : (<></>)}
+        ) : null}
         {box.options.loop ? (
           <View style={{ paddingHorizontal: 2 }}>
             <BxChipComponent options={{ type: 'loop', chipText: 'Loop' }} display="full" />
           </View>
-        ) : (<></>)}
+        ) : null}
         {box.options.berries ? (
           <View style={{ paddingHorizontal: 2 }}>
             <BxChipComponent options={{ type: 'coin-enabled', chipText: 'Berries' }} display="full" />
           </View>
-        ) : (<></>)}
+        ) : null}
         {box.private ? (
           <View style={{ paddingHorizontal: 2 }}>
             <BxChipComponent options={{ type: 'lock', chipText: 'Private' }} display="full" />
           </View>
-        ) : (<></>)}
+        ) : null}
+        {box.options.videoMaxDurationLimit !== 0 ? (
+          <View style={{ paddingHorizontal: 2 }}>
+            <BxChipComponent options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }} display="full" />
+          </View>
+        ) : null}
       </View>
     </View>
   );

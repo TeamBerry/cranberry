@@ -5,11 +5,15 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-import { Message, FeedbackMessage, SystemMessage } from '@teamberry/muscadine';
+import {
+  Message, FeedbackMessage, SystemMessage,
+} from '@teamberry/muscadine';
 
 import ChatMessage from './chat-message.component';
 
 import DownIcon from '../../../../assets/icons/down-icon.svg';
+import Box from '../../../models/box.model';
+import BerryCounter from './berry-counter.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,6 +35,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     color: 'white',
+    flex: 1,
   },
   scrollButtonContainer: {
     backgroundColor: '#3f3f3f',
@@ -46,9 +51,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const ChatTab = (props: { socket: any, boxToken: string }) => {
+const ChatTab = (props: { socket: any, box: Box, berryCount: number }) => {
   const _chatRef = useRef(null);
-  const { socket, boxToken } = props;
+  const { socket, box, berryCount } = props;
 
   const welcomeMessage: FeedbackMessage = {
     contents: 'Welcome to the box!',
@@ -56,7 +61,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
     source: 'feedback',
     author: null,
     time: new Date(),
-    scope: boxToken,
+    scope: box._id,
   };
 
   const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage | SystemMessage>);
@@ -113,7 +118,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
       author: { _id: user._id },
       contents: messageInput,
       source: 'human',
-      scope: boxToken,
+      scope: box._id,
     });
     socket.emit('chat', newMessage);
     setMessageInput('');
@@ -140,7 +145,7 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
       );
     }
 
-    return <></>;
+    return null;
   };
 
   return (
@@ -160,14 +165,21 @@ const ChatTab = (props: { socket: any, boxToken: string }) => {
       </ScrollView>
       <ResumeScrollButton />
       <View style={{ paddingHorizontal: 5 }}>
-        <TextInput
-          style={styles.chatInput}
-          placeholder="Type to chat..."
-          placeholderTextColor="#BBB"
-          onChangeText={(text) => setMessageInput(text)}
-          value={messageInput}
-          onSubmitEditing={() => sendMessage()}
-        />
+        {user ? (
+          <View style={{ display: 'flex', flexDirection: 'row' }}>
+            <TextInput
+              style={styles.chatInput}
+              placeholder="Type to chat..."
+              placeholderTextColor="#BBB"
+              onChangeText={(text) => setMessageInput(text)}
+              value={messageInput}
+              onSubmitEditing={() => sendMessage()}
+            />
+            {user && box?.options?.berries && box?.creator?._id !== user._id ? (
+              <BerryCounter count={berryCount} />
+            ) : null}
+          </View>
+        ) : null}
       </View>
     </KeyboardAvoidingView>
   );

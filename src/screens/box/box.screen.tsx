@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import Config from 'react-native-config';
 
-import { SyncPacket } from '@teamberry/muscadine';
+import { SyncPacket, BerryCount, Permission } from '@teamberry/muscadine';
 import Player from './components/player.component';
 import Box from '../../models/box.model';
 import BoxContext from './box.context';
@@ -34,7 +34,9 @@ const BoxScreen = ({ route }) => {
   const [socket, setSocket] = useState(null);
   const [boxKey, setBoxKey] = useState(null);
   const [currentQueueItem, setCurrentQueueItem] = useState(null);
+  const [berryCount, setBerryCount] = useState(0);
   const [isConnected, setConnectionStatus] = useState(null);
+  const [permissions, setPermissions] = useState([] as Array<Permission>);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -82,6 +84,12 @@ const BoxScreen = ({ route }) => {
         .on('box', (box: Box) => {
           setBox(box);
         })
+        .on('berries', (berryCount: BerryCount) => {
+          setBerryCount(berryCount.berries);
+        })
+        .on('permissions', (permissions: Array<Permission>) => {
+          setPermissions(permissions);
+        })
         .on('denied', () => {
           console.log('DENIED');
         });
@@ -115,11 +123,11 @@ const BoxScreen = ({ route }) => {
           <BxLoadingIndicator />
         )}
       </View>
-      {isConnected && box ? (
+      {isConnected && box && berryCount && permissions ? (
         <>
-          <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} />
+          <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} berryCount={berryCount} permissions={permissions} />
           <SocketContext.Consumer>
-            { (socket) => <Panel box={box} socket={socket} />}
+            { (socket) => <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />}
           </SocketContext.Consumer>
         </>
       ) : (

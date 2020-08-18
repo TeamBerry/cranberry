@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import { VideoSubmissionRequest, QueueItem } from '@teamberry/muscadine';
+import { VideoSubmissionRequest, QueueItem, Permission } from '@teamberry/muscadine';
 import { Snackbar } from 'react-native-paper';
 import Config from 'react-native-config';
 
@@ -12,6 +12,7 @@ import Box from '../../../models/box.model';
 import DurationIndicator from '../../../components/duration-indicator.component';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
 import BxButtonComponent from '../../../components/bx-button.component';
+import BerryCounter from './berry-counter.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     color: 'white',
+    flex: 1,
   },
   resultsHelp: {
     color: '#BBBBBB',
@@ -61,7 +63,11 @@ export interface Video {
     duration?: string;
 }
 
-const SearchTab = (props: {socket: any, box: Box}) => {
+const SearchTab = (props: {socket: any, box: Box, berryCount: number, permissions: Array<Permission>}) => {
+  const {
+    socket, box, berryCount, permissions,
+  } = props;
+
   const [searchValue, setSearchValue] = useState('');
   const [youtubeSearchResults, setSearchResults] = useState([] as Array<Video>);
   const [user, setUser] = useState(null);
@@ -70,8 +76,7 @@ const SearchTab = (props: {socket: any, box: Box}) => {
   const [error, setError] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
   const [videosInQueue, setQueueIds] = useState([]);
-
-  const { socket, box } = props;
+  const [boxOptions, setBoxOptions] = useState(box.options);
 
   useEffect(() => {
     const getSession = async () => {
@@ -87,6 +92,7 @@ const SearchTab = (props: {socket: any, box: Box}) => {
     setQueueIds(videoIds);
 
     socket.on('box', (box: Box) => {
+      setBoxOptions(box.options);
       const videoIds = box.playlist.map((queueItem: QueueItem) => queueItem.video.link);
       setQueueIds(videoIds);
     });
@@ -149,23 +155,53 @@ const SearchTab = (props: {socket: any, box: Box}) => {
             </Text>
           </View>
         </View>
+        {!isAlreadyInQueue ? (
+          <View style={{
+            display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'center', paddingTop: 10,
+          }}
+          >
+            {permissions.includes('addVideo') ? (
+              <Pressable onPress={() => { addToQueue(); }}>
+                <BxButtonComponent options={{
+                  type: 'play',
+                  text: 'Add to Queue',
+                  textDisplay: 'full',
+                }}
+                />
+              </Pressable>
+            ) : null}
+          </View>
+        ) : null}
         <View style={{
-          display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', padding: 10,
+          display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', paddingTop: 10,
         }}
         >
-          {!isAlreadyInQueue ? (
-            <Pressable onPress={() => { addToQueue(); }}>
-              <BxButtonComponent options={{ type: 'play', text: 'Queue', textDisplay: 'full' }} />
-            </Pressable>
-          ) : (
-            <></>
-          )}
-          <Pressable onPress={() => { addToQueue('next'); }}>
-            <BxButtonComponent options={{ type: 'forceNext', text: 'Play Next', textDisplay: 'full' }} />
-          </Pressable>
-          <Pressable onPress={() => { addToQueue('now'); }}>
-            <BxButtonComponent options={{ type: 'forcePlay', text: 'Play Now', textDisplay: 'full' }} />
-          </Pressable>
+          <>
+            {(permissions.includes('forceNext') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
+                || box.options.berries ? (
+                  <Pressable onPress={() => { addToQueue('next'); }}>
+                    <BxButtonComponent options={{
+                      type: 'forceNext',
+                      text: permissions.includes('forceNext') ? 'Play Next' : 'Play Next - 10 $BC$',
+                      textDisplay: 'full',
+                      context: permissions.includes('forceNext') ? 'primary' : 'berries',
+                    }}
+                    />
+                  </Pressable>
+              ) : null}
+            {(permissions.includes('forcePlay') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
+                || box.options.berries ? (
+                  <Pressable onPress={() => { addToQueue('now'); }}>
+                    <BxButtonComponent options={{
+                      type: 'forcePlay',
+                      text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now - 50 $BC$',
+                      textDisplay: 'full',
+                      context: permissions.includes('forcePlay') ? 'primary' : 'berries',
+                    }}
+                    />
+                  </Pressable>
+              ) : null}
+          </>
         </View>
       </View>
     );
@@ -178,7 +214,7 @@ const SearchTab = (props: {socket: any, box: Box}) => {
 
     if (youtubeSearchResults.length === 0) {
       if (!hasSearched) {
-        return <></>;
+        return null;
       }
 
       return (
@@ -201,14 +237,21 @@ const SearchTab = (props: {socket: any, box: Box}) => {
   return (
     <View style={styles.container}>
       <View style={styles.searchSpace}>
-        <TextInput
-          style={styles.chatInput}
-          placeholder="Search YouTube for videos to add..."
-          placeholderTextColor="#BBB"
-          onChangeText={(text) => setSearchValue(text)}
-          value={searchValue}
-          onSubmitEditing={() => search()}
-        />
+        {user ? (
+          <View style={{ display: 'flex', flexDirection: 'row' }}>
+            <TextInput
+              style={styles.chatInput}
+              placeholder="Search YouTube for videos to add..."
+              placeholderTextColor="#BBB"
+              onChangeText={(text) => setSearchValue(text)}
+              value={searchValue}
+              onSubmitEditing={() => search()}
+            />
+            {boxOptions?.berries && box?.creator?._id !== user?._id ? (
+              <BerryCounter count={berryCount} />
+            ) : null}
+          </View>
+        ) : null}
         <View style={{ height: '88%' }}>
           <SearchList />
         </View>

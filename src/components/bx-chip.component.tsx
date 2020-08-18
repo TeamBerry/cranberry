@@ -57,7 +57,7 @@ const InsertIcon = ({ type }: { type: string }) => {
       return <DurationLimitIcon width={10} height={10} fill="white" />;
 
     default:
-      return <></>;
+      return null;
   }
 };
 
@@ -66,7 +66,7 @@ const BxChipComponent = ({ options, display }: { options: ChipOptions, display: 
     <View style={styles.modeIcon}>
       <InsertIcon type={options.type} />
     </View>
-    {display === 'full' ? (<Text style={styles.modeText}>{options.chipText}</Text>) : (<></>)}
+    {display === 'full' ? (<Text style={styles.modeText}>{options.chipText}</Text>) : null}
   </View>
 );
 
