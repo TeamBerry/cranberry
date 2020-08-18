@@ -155,31 +155,34 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
             </Text>
           </View>
         </View>
+        {!isAlreadyInQueue ? (
+          <View style={{
+            display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'center', paddingTop: 10,
+          }}
+          >
+            {permissions.includes('addVideo') ? (
+              <Pressable onPress={() => { addToQueue(); }}>
+                <BxButtonComponent options={{
+                  type: 'play',
+                  text: 'Add to Queue',
+                  textDisplay: 'full',
+                }}
+                />
+              </Pressable>
+            ) : null}
+          </View>
+        ) : null}
         <View style={{
-          display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', padding: 10,
+          display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', paddingTop: 10,
         }}
         >
-          {!isAlreadyInQueue ? (
-            <>
-              {permissions.includes('addVideo') || box.options.berries ? (
-                <Pressable onPress={() => { addToQueue(); }}>
-                  <BxButtonComponent options={{
-                    type: 'play',
-                    text: 'Queue',
-                    textDisplay: 'full',
-                  }}
-                  />
-                </Pressable>
-              ) : null}
-            </>
-          ) : null}
           <>
             {(permissions.includes('forceNext') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
                 || box.options.berries ? (
                   <Pressable onPress={() => { addToQueue('next'); }}>
                     <BxButtonComponent options={{
                       type: 'forceNext',
-                      text: permissions.includes('forceNext') ? 'Play Next' : 'Play Next (10 Berries)',
+                      text: permissions.includes('forceNext') ? 'Play Next' : 'Play Next - 10 $BC$',
                       textDisplay: 'full',
                       context: permissions.includes('forceNext') ? 'primary' : 'berries',
                     }}
@@ -187,16 +190,16 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
                   </Pressable>
               ) : null}
             {(permissions.includes('forcePlay') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
-                        || box.options.berries ? (
-                          <Pressable onPress={() => { addToQueue('now'); }}>
-                            <BxButtonComponent options={{
-                              type: 'forcePlay',
-                              text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now (50 Berries)',
-                              textDisplay: 'full',
-                              context: permissions.includes('forcePlay') ? 'primary' : 'berries',
-                            }}
-                            />
-                          </Pressable>
+                || box.options.berries ? (
+                  <Pressable onPress={() => { addToQueue('now'); }}>
+                    <BxButtonComponent options={{
+                      type: 'forcePlay',
+                      text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now - 50 $BC$',
+                      textDisplay: 'full',
+                      context: permissions.includes('forcePlay') ? 'primary' : 'berries',
+                    }}
+                    />
+                  </Pressable>
               ) : null}
           </>
         </View>

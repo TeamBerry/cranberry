@@ -11,10 +11,12 @@ import ProfilePicture from '../../../components/profile-picture.component';
 import DurationIndicator from '../../../components/duration-indicator.component';
 import BxButtonComponent from '../../../components/bx-button.component';
 
+import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
+
 const styles = StyleSheet.create({
   queueVideo: {
     paddingHorizontal: 7,
-    paddingVertical: 10,
+    paddingVertical: 5,
     flexDirection: 'column',
   },
   queueVideoName: {
@@ -96,6 +98,11 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <ProfilePicture userId={item.submitted_by._id} size={20} />
               <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
+              {item.stateForcedWithBerries ? (
+                <View style={{ paddingLeft: 5 }}>
+                  <BerriesIcon width={20} height={20} />
+                </View>
+              ) : null}
             </View>
           </View>
         </View>
@@ -111,7 +118,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => skip()}>
                   <BxButtonComponent options={{
                     type: 'skip',
-                    text: permissions.includes('skipVideo') ? 'Skip' : 'Skip (30 Coins)',
+                    text: permissions.includes('skipVideo') ? 'Skip' : 'Skip - 30 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                   }}
@@ -125,9 +132,9 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => playNext()}>
                   <BxButtonComponent options={{
                     type: 'forceNext',
-                    text: permissions.includes('forceNext') ? 'Play Next' : 'Play Next (10 Coins)',
+                    text: permissions.includes('forceNext') ? 'Play Next' : 'Play Next - 10 $BC$',
                     textDisplay: 'full',
-                    context: permissions.includes('forcePlay') ? 'primary' : 'berries',
+                    context: permissions.includes('forceNext') ? 'primary' : 'berries',
                   }}
                   />
                 </Pressable>
@@ -136,7 +143,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => playNow()}>
                   <BxButtonComponent options={{
                     type: 'forcePlay',
-                    text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now (50 Coins)',
+                    text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now - 50 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                   }}

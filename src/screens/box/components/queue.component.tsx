@@ -14,7 +14,8 @@ import ProfilePicture from '../../../components/profile-picture.component';
 
 import RandomIcon from '../../../../assets/icons/random-icon.svg';
 import ReplayIcon from '../../../../assets/icons/replay-icon.svg';
-import BerriesIcon from '../../../../assets/icons/coin-enabled-icon.svg';
+import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
+import BerriesEnabledIcon from '../../../../assets/icons/coin-enabled-icon.svg';
 import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-icon.svg';
 import BerryCounter from './berry-counter.component';
 
@@ -116,7 +117,14 @@ const Queue = (props: {
     }
 
     return (
-      <Text style={styles.currentVideo} numberOfLines={1}>{currentVideo.video.name}</Text>
+      <View style={{ flex: 0, flexDirection: 'row' }}>
+        {currentVideo.stateForcedWithBerries ? (
+          <View style={{ paddingRight: 5 }}>
+            <BerriesIcon width={20} height={20} />
+          </View>
+        ) : null}
+        <Text style={styles.currentVideo} numberOfLines={1}>{currentVideo.video.name}</Text>
+      </View>
     );
   };
 
@@ -201,7 +209,7 @@ const Queue = (props: {
     if (permissions.includes('editBox')) {
       return (
         <Pressable onPress={() => { patchBox({ berries: !box.options.berries }); }}>
-          <BerriesIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
+          <BerriesEnabledIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
         </Pressable>
       );
     }

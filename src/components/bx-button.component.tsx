@@ -6,6 +6,7 @@ import PlayNextIcon from '../../assets/icons/force-next-icon.svg';
 import PlayNowIcon from '../../assets/icons/force-play-icon.svg';
 import DeleteIcon from '../../assets/icons/trash-icon.svg';
 import SkipIcon from '../../assets/icons/skip-icon.svg';
+import BerriesIcon from '../../assets/icons/berry-coin-icon.svg';
 
 const styles = StyleSheet.create({
   button: {
@@ -87,6 +88,23 @@ const InsertIcon = ({ type }: { type: ButtonOptions['type'] }) => {
   }
 };
 
+const parseText = (text: string) => {
+  if (text.includes('$BC$')) {
+    const parts = /(.*)(\$BC\$)(.*)/gi.exec(text);
+    return (
+      <>
+        <Text style={styles.buttonText}>{parts[1]}</Text>
+        <BerriesIcon width={20} height={20} />
+        <Text style={styles.buttonText}>{parts[3]}</Text>
+      </>
+    );
+  }
+
+  return (
+    <Text style={styles.buttonText}>{text}</Text>
+  );
+};
+
 const BxButtonComponent = ({ options }: { options: Partial<ButtonOptions> }) => {
   const context = options.context ? `button${options.context.charAt(0).toUpperCase() + options.context.slice(1)}` : 'buttonPrimary';
 
@@ -95,7 +113,9 @@ const BxButtonComponent = ({ options }: { options: Partial<ButtonOptions> }) => 
       <View style={styles.buttonIcon}>
         <InsertIcon type={options.type} />
       </View>
-      {options.textDisplay === 'full' ? (<Text style={styles.buttonText}>{options.text}</Text>) : null}
+      {options.textDisplay === 'full' ? (
+        parseText(options.text)
+      ) : null}
     </View>
   );
 };
