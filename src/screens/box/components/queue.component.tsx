@@ -62,7 +62,7 @@ const Queue = (props: {
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
   const [isDurationInputVisible, setDurationInputVisibility] = useState(false);
-  const [queueVideos, setQueueVideos] = useState([]);
+  const [queueVideos, setQueueVideos] = useState([] as Array<QueueItem>);
 
   useEffect((): void => {
     if (!box) {
@@ -278,7 +278,9 @@ const Queue = (props: {
         renderItem={({ item }) => (
           <QueueVideo item={item} boxToken={box._id} permissions={permissions} berriesEnabled={box.options.berries} />
         )}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => item._id}
+        initialNumToRender={8}
+        windowSize={12}
       />
     );
   };
