@@ -102,15 +102,6 @@ const Queue = (props: {
     setQueueVideos(upcomingVideos);
   }, [box.playlist]);
 
-  const BoxName = () => {
-    if (!box) {
-      return null;
-    }
-    return (
-      <Text style={styles.boxName}>{box.name}</Text>
-    );
-  };
-
   const CurrentVideo = () => {
     if (!currentVideo) {
       return null;
@@ -264,26 +255,19 @@ const Queue = (props: {
     return null;
   };
 
-  const QueueList = () => {
-    if (!queueVideos || queueVideos.length === 0) {
-      return (
-        <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>The Queue is empty.</Text>
-      );
-    }
-
-    return (
-      <FlatList
-        data={queueVideos}
-        ItemSeparatorComponent={() => <View style={{ backgroundColor: '#191919', height: 1 }} />}
-        renderItem={({ item }) => (
-          <QueueVideo item={item} boxToken={box._id} permissions={permissions} berriesEnabled={box.options.berries} />
-        )}
-        keyExtractor={(item, index) => item._id}
-        initialNumToRender={8}
-        windowSize={12}
-      />
-    );
-  };
+  const QueueList = () => (
+    <FlatList
+      data={queueVideos}
+      ItemSeparatorComponent={() => <View style={{ backgroundColor: '#191919', height: 1 }} />}
+      renderItem={({ item }) => (
+        <QueueVideo item={item} boxToken={box._id} permissions={permissions} berriesEnabled={box.options.berries} />
+      )}
+      keyExtractor={(item) => item._id}
+      initialNumToRender={8}
+      windowSize={12}
+      ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>The Queue is empty.</Text>}
+    />
+  );
 
   return (
     <>
@@ -297,7 +281,7 @@ const Queue = (props: {
               <ProfilePicture userId={box.creator._id} size={25} />
             </View>
             <View style={{ flex: 1 }}>
-              <BoxName />
+              <Text style={styles.boxName}>{box.name}</Text>
               <CurrentVideo />
             </View>
             <View style={{ width: 40 }}>
