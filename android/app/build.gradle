@@ -113,6 +113,10 @@ android {
     }
     signingConfigs {
         release {
+            storeFile file(CRANBERRY_UPLOAD_STORE_FILE)
+            storePassword CRANBERRY_UPLOAD_STORE_PASSWORD
+            keyAlias CRANBERRY_UPLOAD_KEY_ALIAS
+            keyPassword CRANBERRY_UPLOAD_KEY_PASSWORD
             if(project.hasProperty('CRANBERRY_UPLOAD_STORE_FILE')) {
                 storeFile file(CRANBERRY_UPLOAD_STORE_FILE)
                 storePassword CRANBERRY_UPLOAD_STORE_PASSWORD
