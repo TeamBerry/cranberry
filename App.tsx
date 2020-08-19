@@ -5,15 +5,17 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import {
-  View, Image, Linking,
+  View, Image, Linking, LogBox,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import { HomeScreen } from './src/screens/home.screen';
-import { BoxScreen } from './src/screens/box/box.screen';
+import Config from 'react-native-config';
+
+import BoxScreen from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
 import AuthContext from './src/shared/auth.context';
 import { lightTheme } from './src/shared/themes';
+import HomeScreen from './src/screens/home.screen';
 import SignupScreen from './src/screens/signup.screen';
 import CreateBoxScreen from './src/screens/create-box.screen';
 
@@ -42,8 +44,7 @@ const useInitialUrl = () => {
 };
 
 export default function App() {
-  // eslint-disable-next-line no-console
-  console.disableYellowBox = true;
+  LogBox.ignoreAllLogs();
   const [isAppReady, setAppReadiness] = useState(false);
 
   const { initialBoxToken } = useInitialUrl();
@@ -106,7 +107,7 @@ export default function App() {
     () => ({
       signIn: async (data: { email: string; password: string; }) => {
         try {
-          const response = await axios.post('https://araza.berrybox.tv/auth/login',
+          const response = await axios.post(`${Config.API_URL}/auth/login`,
             {
               mail: data.email,
               password: data.password,
@@ -121,7 +122,7 @@ export default function App() {
       },
       signUp: async (data) => {
         try {
-          const response = await axios.post('https://araza.berrybox.tv/auth/signup',
+          const response = await axios.post(`${Config.API_URL}/auth/signup`,
             {
               name: data.username,
               mail: data.email,
@@ -192,9 +193,7 @@ export default function App() {
       <RootStack.Screen
         name="Box"
         component={BoxScreen}
-        initialParams={
-                { boxToken: initialBoxToken || null }
-              }
+        initialParams={{ boxToken: initialBoxToken || null }}
         options={{
           headerShown: false,
         }}

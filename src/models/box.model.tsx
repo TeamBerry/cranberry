@@ -1,3 +1,5 @@
+import { ACLConfig, QueueItem } from '@teamberry/muscadine';
+
 class Box {
     _id: string
 
@@ -12,21 +14,26 @@ class Box {
 
     name: string
 
-    playlist: Array<any>
+    playlist: Array<QueueItem>
 
     open: boolean
+
+    private: boolean
 
     createdAt: Date
 
     updatedAt: Date
 
-    users: number
+    users?: number
 
     options: {
         random: boolean,
         loop: boolean,
-        berries: boolean
+        berries: boolean,
+        videoMaxDurationLimit: number
     }
+
+    acl: ACLConfig
 }
 
 export default Box;
