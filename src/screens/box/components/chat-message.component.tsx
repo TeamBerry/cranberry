@@ -111,8 +111,7 @@ const ChatMessage = ({ message }: Props) => {
     <View style={styles.message}>
       <Text style={styles.userMessage}>
         {AuthorRender(message as Message)}
-        {' '}
-        {message.contents}
+        {`: ${message.contents}`}
       </Text>
     </View>
   );
