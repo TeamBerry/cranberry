@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   actionDescription: {
     textAlign: 'center',
     color: 'white',
-    fontSize: 10,
+    fontSize: 11,
   },
 });
 

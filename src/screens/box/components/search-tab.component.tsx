@@ -8,11 +8,13 @@ import { VideoSubmissionRequest, QueueItem, Permission } from '@teamberry/muscad
 import { Snackbar } from 'react-native-paper';
 import Config from 'react-native-config';
 
+import Collapsible from 'react-native-collapsible';
 import Box from '../../../models/box.model';
 import DurationIndicator from '../../../components/duration-indicator.component';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
 import BxButtonComponent from '../../../components/bx-button.component';
 import BerryCounter from './berry-counter.component';
+import BerryHelper from './berry-helper.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -77,6 +79,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
   const [isSubmitted, setSubmitted] = useState(false);
   const [videosInQueue, setQueueIds] = useState([]);
   const [boxOptions, setBoxOptions] = useState(box.options);
+  const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
   useEffect(() => {
     const getSession = async () => {
@@ -156,7 +159,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
           </View>
         </View>
         <View style={{
-          display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'flex-end', paddingTop: 10,
+          display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', paddingTop: 10,
         }}
         >
           <>
@@ -179,7 +182,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
                   <Pressable onPress={() => { addToQueue('next'); }}>
                     <BxButtonComponent options={{
                       type: 'forceNext',
-                      text: 'Play Next',
+                      text: permissions.includes('forceNext') ? 'Play Next' : '20 $BC$',
                       textDisplay: 'full',
                       context: permissions.includes('forceNext') ? 'primary' : 'berries',
                     }}
@@ -191,7 +194,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
                   <Pressable onPress={() => { addToQueue('now'); }}>
                     <BxButtonComponent options={{
                       type: 'forcePlay',
-                      text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now',
+                      text: permissions.includes('forcePlay') ? 'Play Now' : '30 $BC$',
                       textDisplay: 'full',
                       context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                     }}
@@ -233,6 +236,9 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
 
   return (
     <View style={styles.container}>
+      <Collapsible collapsed={!isBerriesHelperShown}>
+        <BerryHelper box={box} permissions={permissions} />
+      </Collapsible>
       <View style={styles.searchSpace}>
         {user ? (
           <View style={{ display: 'flex', flexDirection: 'row' }}>
@@ -245,7 +251,9 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
               onSubmitEditing={() => search()}
             />
             {boxOptions?.berries && box?.creator?._id !== user?._id ? (
-              <BerryCounter count={berryCount} />
+              <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
+                <BerryCounter count={berryCount} />
+              </Pressable>
             ) : null}
           </View>
         ) : null}
