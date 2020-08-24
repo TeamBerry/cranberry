@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 8,
     paddingHorizontal: 16,
+    marginHorizontal: 4,
   },
   buttonPrimary: {
     backgroundColor: 'rgba(0,0,0,0.2)',
