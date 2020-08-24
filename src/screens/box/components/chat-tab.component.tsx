@@ -183,11 +183,9 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
               onSubmitEditing={() => sendMessage()}
             />
             {user && box?.options?.berries && box?.creator?._id !== user._id ? (
-              <View style={{ flex: 0, justifyContent: 'center' }}>
-                <Pressable onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
-                  <BerryCounter count={berryCount} />
-                </Pressable>
-              </View>
+              <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
+                <BerryCounter count={berryCount} />
+              </Pressable>
             ) : null}
           </View>
         ) : null}
