@@ -219,7 +219,7 @@ const Queue = (props: {
     }
 
     if (box.options.berries) {
-      return <BerryCounter count={berryCount} />;
+      return <BerriesEnabledIcon width={20} height={20} fill="#009AEB" />;
     }
 
     return null;
