@@ -109,7 +109,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
         <Collapsible
           collapsed={!areActionsVisible}
           style={{
-            display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', padding: 10,
+            display: 'flex', flexDirection: 'row', alignContent: 'center', paddingVertical: 10,
           }}
         >
           {(item.startTime !== null && item.endTime === null) ? (
@@ -118,7 +118,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => skip()}>
                   <BxButtonComponent options={{
                     type: 'skip',
-                    text: permissions.includes('skipVideo') ? 'Skip' : 'Skip - 30 $BC$',
+                    text: permissions.includes('skipVideo') ? 'Skip' : '10 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                   }}
@@ -132,7 +132,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => playNext()}>
                   <BxButtonComponent options={{
                     type: 'forceNext',
-                    text: permissions.includes('forceNext') ? 'Play Next' : 'Play Next - 10 $BC$',
+                    text: permissions.includes('forceNext') ? 'Play Next' : '20 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forceNext') ? 'primary' : 'berries',
                   }}
@@ -143,7 +143,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => playNow()}>
                   <BxButtonComponent options={{
                     type: 'forcePlay',
-                    text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now - 50 $BC$',
+                    text: permissions.includes('forcePlay') ? 'Play Now' : '30 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                   }}
@@ -153,7 +153,10 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
               {permissions.includes('removeVideo') ? (
                 <Pressable onPress={() => removeVideo()}>
                   <BxButtonComponent options={{
-                    type: 'cancel', text: 'Remove', textDisplay: 'full', context: 'danger',
+                    type: 'cancel',
+                    text: 'Remove',
+                    textDisplay: 'full',
+                    context: 'danger',
                   }}
                   />
                 </Pressable>

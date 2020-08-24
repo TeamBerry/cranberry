@@ -8,6 +8,7 @@ import { Svg, Polygon } from 'react-native-svg';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { Snackbar } from 'react-native-paper';
+import AsyncStorage from '@react-native-community/async-storage';
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
@@ -18,6 +19,7 @@ import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 import BerriesEnabledIcon from '../../../../assets/icons/coin-enabled-icon.svg';
 import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-icon.svg';
 import BerryCounter from './berry-counter.component';
+import BerryHelper from './berry-helper.component';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -63,6 +65,17 @@ const Queue = (props: {
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
   const [isDurationInputVisible, setDurationInputVisibility] = useState(false);
   const [queueVideos, setQueueVideos] = useState([] as Array<QueueItem>);
+  const [user, setUser] = useState(null);
+  const [isBerriesHelperShown, showBerriesHelper] = useState(false);
+
+  useEffect(() => {
+    const bootstrap = async () => {
+      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+      setUser(user);
+    };
+
+    bootstrap();
+  }, []);
 
   useEffect((): void => {
     if (!box) {
@@ -206,7 +219,7 @@ const Queue = (props: {
     }
 
     if (box.options.berries) {
-      return <BerryCounter count={berryCount} />;
+      return <BerriesEnabledIcon width={20} height={20} fill="#009AEB" />;
     }
 
     return null;
@@ -321,6 +334,13 @@ const Queue = (props: {
                   <DurationRestrictionIndicator />
                 </View>
               </View>
+              <View>
+                {user && box?.options?.berries && box?.creator?._id !== user._id ? (
+                  <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
+                    <BerryCounter count={berryCount} />
+                  </Pressable>
+                ) : null}
+              </View>
             </View>
             {isDurationInputVisible ? (
               <View style={{ paddingVertical: 5 }}>
@@ -345,6 +365,9 @@ const Queue = (props: {
               </View>
             ) : null}
           </View>
+          <Collapsible collapsed={!isBerriesHelperShown}>
+            <BerryHelper box={box} permissions={permissions} />
+          </Collapsible>
           <QueueList />
         </Collapsible>
       </View>
