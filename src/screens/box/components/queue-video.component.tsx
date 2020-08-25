@@ -89,6 +89,11 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
           }}
           >
             <Text style={styles.queueVideoName} numberOfLines={2}>
+              {item.stateForcedWithBerries ? (
+                <View>
+                  <BerriesIcon width={16} height={16} />
+                </View>
+              ) : null}
               <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
               <Text style={styles.currentVideoIndicator}>
                 {(item.startTime !== null && item.endTime === null) ? 'Playing: ' : null}
@@ -98,11 +103,6 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <ProfilePicture userId={item.submitted_by._id} size={20} />
               <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
-              {item.stateForcedWithBerries ? (
-                <View style={{ paddingLeft: 5 }}>
-                  <BerriesIcon width={20} height={20} />
-                </View>
-              ) : null}
             </View>
           </View>
         </View>
