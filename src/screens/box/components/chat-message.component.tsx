@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
 });
 
 const ChatMessage = ({ message }: Props) => {
-  console.log(Config.ADMIN_ID);
   const AuthorRender = (message: Message) => {
     if (message.author) {
       const { name, color } = message.author as Message['author'];
