@@ -59,22 +59,22 @@ const BerryHelper = (props: { box: Box, permissions: Array<Permission> }) => {
         You can use these berries to execute special actions indicated by their orange border:
       </Text>
       <View style={styles.actionList}>
-        {!permissions.includes('skipVideo') && box.options.berries ? (
-          <View style={styles.actionContainer}>
-            <View style={styles.action}>
-              <SkipIcon width={20} height={20} fill="white" />
-              <ActionValue value={10} />
-            </View>
-            <Text style={styles.actionDescription}>Skips the current video</Text>
-          </View>
-        ) : null}
         {!permissions.includes('forceNext') && box.options.berries ? (
           <View style={styles.actionContainer}>
             <View style={styles.action}>
               <PlayNextIcon width={20} height={20} fill="white" />
-              <ActionValue value={20} />
+              <ActionValue value={10} />
             </View>
             <Text style={styles.actionDescription}>Plays the selected video after the current one.</Text>
+          </View>
+        ) : null}
+        {!permissions.includes('skipVideo') && box.options.berries ? (
+          <View style={styles.actionContainer}>
+            <View style={styles.action}>
+              <SkipIcon width={20} height={20} fill="white" />
+              <ActionValue value={20} />
+            </View>
+            <Text style={styles.actionDescription}>Skips the current video</Text>
           </View>
         ) : null}
         {!permissions.includes('forcePlay') && box.options.berries ? (
