@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text,
+  TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import {
-  Message, FeedbackMessage, SystemMessage,
+  Message, FeedbackMessage, SystemMessage, Permission,
 } from '@teamberry/muscadine';
 
+import Collapsible from 'react-native-collapsible';
 import ChatMessage from './chat-message.component';
 
 import DownIcon from '../../../../assets/icons/down-icon.svg';
 import Box from '../../../models/box.model';
 import BerryCounter from './berry-counter.component';
+import BerryHelper from './berry-helper.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -51,12 +53,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const ChatTab = (props: { socket: any, box: Box, berryCount: number }) => {
+const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions:Array<Permission> }) => {
   const _chatRef = useRef(null);
-  const { socket, box, berryCount } = props;
+  const {
+    socket, box, berryCount, permissions,
+  } = props;
 
   const welcomeMessage: FeedbackMessage = {
-    contents: 'Welcome to the box!',
+    contents: !box.options.berries
+      ? 'Welcome to the box!'
+      : 'Welcome to the box! Berries are enabled. To see the actions you can unlock, tap on your berry counter next to the chat input.',
     context: 'success',
     source: 'feedback',
     author: null,
@@ -68,6 +74,7 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number }) => {
   const [messageInput, setMessageInput] = useState('');
   const [user, setUser] = useState(null);
   const [hasNewMessages, setNewMessageAlert] = useState(false);
+  const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
   // Auto Scroll. Use Effect cannot access the refreshed state of the auto scroll without having listener control
   // on the chat socket. useRef is the solution, since the hook has access to it.
@@ -176,11 +183,16 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number }) => {
               onSubmitEditing={() => sendMessage()}
             />
             {user && box?.options?.berries && box?.creator?._id !== user._id ? (
-              <BerryCounter count={berryCount} />
+              <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
+                <BerryCounter count={berryCount} />
+              </Pressable>
             ) : null}
           </View>
         ) : null}
       </View>
+      <Collapsible collapsed={!isBerriesHelperShown}>
+        <BerryHelper box={box} permissions={permissions} />
+      </Collapsible>
     </KeyboardAvoidingView>
   );
 };

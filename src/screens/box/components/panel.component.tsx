@@ -22,7 +22,7 @@ const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: 
   const renderScene = ({ route }) => {
     switch (route.key) {
       case 'chat':
-        return <ChatTab box={box} socket={socket} berryCount={berryCount} />;
+        return <ChatTab box={box} socket={socket} berryCount={berryCount} permissions={permissions} />;
       case 'search':
         return <SearchTab box={box} socket={socket} berryCount={berryCount} permissions={permissions} />;
       default:

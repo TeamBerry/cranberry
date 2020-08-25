@@ -89,6 +89,11 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
           }}
           >
             <Text style={styles.queueVideoName} numberOfLines={2}>
+              {item.stateForcedWithBerries ? (
+                <View>
+                  <BerriesIcon width={16} height={16} />
+                </View>
+              ) : null}
               <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
               <Text style={styles.currentVideoIndicator}>
                 {(item.startTime !== null && item.endTime === null) ? 'Playing: ' : null}
@@ -98,18 +103,13 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <ProfilePicture userId={item.submitted_by._id} size={20} />
               <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
-              {item.stateForcedWithBerries ? (
-                <View style={{ paddingLeft: 5 }}>
-                  <BerriesIcon width={20} height={20} />
-                </View>
-              ) : null}
             </View>
           </View>
         </View>
         <Collapsible
           collapsed={!areActionsVisible}
           style={{
-            display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', padding: 10,
+            display: 'flex', flexDirection: 'row', alignContent: 'center', paddingVertical: 10,
           }}
         >
           {(item.startTime !== null && item.endTime === null) ? (
@@ -118,7 +118,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => skip()}>
                   <BxButtonComponent options={{
                     type: 'skip',
-                    text: permissions.includes('skipVideo') ? 'Skip' : 'Skip - 30 $BC$',
+                    text: permissions.includes('skipVideo') ? 'Skip' : '20 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                   }}
@@ -132,7 +132,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => playNext()}>
                   <BxButtonComponent options={{
                     type: 'forceNext',
-                    text: permissions.includes('forceNext') ? 'Play Next' : 'Play Next - 10 $BC$',
+                    text: permissions.includes('forceNext') ? 'Play Next' : '10 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forceNext') ? 'primary' : 'berries',
                   }}
@@ -143,7 +143,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => playNow()}>
                   <BxButtonComponent options={{
                     type: 'forcePlay',
-                    text: permissions.includes('forcePlay') ? 'Play Now' : 'Play Now - 50 $BC$',
+                    text: permissions.includes('forcePlay') ? 'Play Now' : '30 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                   }}
@@ -153,7 +153,10 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
               {permissions.includes('removeVideo') ? (
                 <Pressable onPress={() => removeVideo()}>
                   <BxButtonComponent options={{
-                    type: 'cancel', text: 'Remove', textDisplay: 'full', context: 'danger',
+                    type: 'cancel',
+                    text: 'Remove',
+                    textDisplay: 'full',
+                    context: 'danger',
                   }}
                   />
                 </Pressable>

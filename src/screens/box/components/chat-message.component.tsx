@@ -1,6 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View, Text, StyleSheet, Image,
+} from 'react-native';
 import { Message, FeedbackMessage, SystemMessage } from '@teamberry/muscadine';
+import Config from 'react-native-config';
 
 export type Props = {
     message: Message | FeedbackMessage | SystemMessage
@@ -67,6 +70,11 @@ const styles = StyleSheet.create({
     color: 'white',
     paddingLeft: 4,
   },
+  userBadge: {
+    height: 16,
+    width: 16,
+    paddingTop: 3,
+  },
 });
 
 const ChatMessage = ({ message }: Props) => {
@@ -99,6 +107,37 @@ const ChatMessage = ({ message }: Props) => {
     );
   };
 
+  const ChatBadge = () => {
+    switch (message.author.role) {
+      case 'vip':
+        return (
+          <Image
+            style={{ width: 16, height: 16 }}
+            source={require('../../../../assets/badges/vip-badge.png')}
+          />
+        );
+
+      case 'admin':
+        return (
+          <Image
+            style={{ width: 16, height: 16 }}
+            source={require('../../../../assets/badges/creator-badge.png')}
+          />
+        );
+
+      case 'moderator':
+        return (
+          <Image
+            style={{ width: 16, height: 16 }}
+            source={require('../../../../assets/badges/moderator-badge.png')}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
   if (message.source === 'system') {
     return (SystemMessageRender(message as SystemMessage));
   }
@@ -110,9 +149,15 @@ const ChatMessage = ({ message }: Props) => {
   return (
     <View style={styles.message}>
       <Text style={styles.userMessage}>
+        {message.author._id === Config.ADMIN_ID ? (
+          <Image
+            style={{ width: 16, height: 16 }}
+            source={require('../../../../assets/badges/staff-badge.png')}
+          />
+        ) : null}
+        <ChatBadge />
         {AuthorRender(message as Message)}
-        {' '}
-        {message.contents}
+        {`: ${message.contents}`}
       </Text>
     </View>
   );
