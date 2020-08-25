@@ -118,7 +118,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => skip()}>
                   <BxButtonComponent options={{
                     type: 'skip',
-                    text: permissions.includes('skipVideo') ? 'Skip' : '10 $BC$',
+                    text: permissions.includes('skipVideo') ? 'Skip' : '20 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                   }}
@@ -132,7 +132,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                 <Pressable onPress={() => playNext()}>
                   <BxButtonComponent options={{
                     type: 'forceNext',
-                    text: permissions.includes('forceNext') ? 'Play Next' : '20 $BC$',
+                    text: permissions.includes('forceNext') ? 'Play Next' : '10 $BC$',
                     textDisplay: 'full',
                     context: permissions.includes('forceNext') ? 'primary' : 'berries',
                   }}

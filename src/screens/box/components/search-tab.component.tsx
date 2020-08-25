@@ -182,7 +182,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
                   <Pressable onPress={() => { addToQueue('next'); }}>
                     <BxButtonComponent options={{
                       type: 'forceNext',
-                      text: permissions.includes('forceNext') ? 'Play Next' : '20 $BC$',
+                      text: permissions.includes('forceNext') ? 'Play Next' : '10 $BC$',
                       textDisplay: 'full',
                       context: permissions.includes('forceNext') ? 'primary' : 'berries',
                     }}
