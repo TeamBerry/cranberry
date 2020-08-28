@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  Text, View, StyleSheet, Button,
+  Text, View, StyleSheet, Button, Pressable, Linking,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import AuthContext from '../shared/auth.context';
@@ -10,7 +10,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#404040',
     height: '100%',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 40,
     alignItems: 'center',
   },
   userImage: {
@@ -55,7 +56,9 @@ const CustomMenu = () => {
         <View style={{ alignSelf: 'center' }}>
           <ProfilePicture userId={user._id} size={50} />
         </View>
-        <Text style={styles.userName}>{user.name}</Text>
+        <Text style={styles.userName}>
+          {user.name}
+        </Text>
         <Button
           title="Sign out"
           onPress={() => signOut()}
@@ -67,7 +70,16 @@ const CustomMenu = () => {
   return (
     <>
       <View style={styles.container}>
-        <UserSpace />
+        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+          <View>
+            <UserSpace />
+          </View>
+          <View style={{ paddingVertical: 20 }}>
+            <Pressable onPress={() => Linking.openURL('https://berrybox.tv/privacy')}>
+              <Text style={{ color: 'white', textAlign: 'center' }}>Privacy Policy</Text>
+            </Pressable>
+          </View>
+        </View>
       </View>
     </>
   );

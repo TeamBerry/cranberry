@@ -108,6 +108,7 @@ const HomeScreen = ({ navigation }) => {
       bounceBackOnOverdraw={false}
       onChange={(isOpen: boolean) => setMenuOpen(isOpen)}
       autoClosing
+      disableGestures
     >
       {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
                 <StatusBar barStyle='dark-content' />
