@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler,
+  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable,
 } from 'react-native';
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SideMenu from 'react-native-side-menu';
 import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
@@ -124,11 +123,11 @@ const HomeScreen = ({ navigation }) => {
 
       <View style={styles.headerContainer}>
         <View style={styles.headerStyle}>
-          <TouchableOpacity
+          <Pressable
             onPress={() => toggleMenu()}
           >
             <ProfilePicture userId={user ? user._id : null} size={30} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
 
@@ -144,12 +143,13 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             )}
             renderItem={({ item }) => (
-              <TouchableWithoutFeedback
+              <Pressable
+                android_ripple={{ color: '#4d4d4d' }}
                 style={styles.card}
                 onPress={() => navigation.navigate('Box', { boxToken: item._id })}
               >
                 <BoxCard box={item} />
-              </TouchableWithoutFeedback>
+              </Pressable>
             )}
             keyExtractor={(item) => item.name}
           />
