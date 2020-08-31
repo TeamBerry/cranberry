@@ -123,7 +123,7 @@ const BoxScreen = ({ route }) => {
           <BxLoadingIndicator />
         )}
       </View>
-      {isConnected && box && berryCount && permissions ? (
+      {isConnected && box && berryCount !== null && permissions ? (
         <>
           <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} berryCount={berryCount} permissions={permissions} />
           <SocketContext.Consumer>
@@ -131,7 +131,9 @@ const BoxScreen = ({ route }) => {
           </SocketContext.Consumer>
         </>
       ) : (
-        <BxLoadingIndicator />
+        <>
+          <BxLoadingIndicator />
+        </>
       )}
     </BoxContext.Provider>
   );

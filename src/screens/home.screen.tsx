@@ -63,31 +63,18 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen = ({ navigation }) => {
-  const [error, setError] = useState(null);
   const [hasLoadedBoxes, setBoxLoading] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [boxes, setBoxes] = useState([]);
 
-  BackHandler.addEventListener('hardwareBackPress', () => {
-    // Closing the menu instead of the app when the menu's open
-    if (isMenuOpen) {
-      setMenuOpen(false);
-      return true;
-    }
-
-    return false;
-  });
-
   const getBoxes = async () => {
     try {
       setBoxLoading(false);
-      setError(null);
       const boxesResults = await axios.get(`${Config.API_URL}/boxes`);
       setBoxes(boxesResults.data);
       setBoxLoading(true);
     } catch (error) {
-      setError(error.message);
       setBoxLoading(true);
     }
   };
@@ -101,6 +88,18 @@ const HomeScreen = ({ navigation }) => {
 
     bootstrap();
   }, []);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (isMenuOpen) {
+        setMenuOpen(false);
+        return true;
+      }
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [isMenuOpen]);
 
   const onRefresh = () => {
     setBoxes([]);
@@ -136,25 +135,24 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.container}>
         <Text style={styles.titlePage}>Boxes</Text>
         {hasLoadedBoxes ? (
-          <>
-            {error ? (
-              <Text>An error occurred while loading boxes. Please try again.</Text>
-            ) : (
-              <FlatList
-                data={boxes}
-                refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
-                renderItem={({ item }) => (
-                  <TouchableWithoutFeedback
-                    style={styles.card}
-                    onPress={() => navigation.navigate('Box', { boxToken: item._id })}
-                  >
-                    <BoxCard box={item} />
-                  </TouchableWithoutFeedback>
-                )}
-                keyExtractor={(item) => item.name}
-              />
+          <FlatList
+            data={boxes}
+            refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
+            ListEmptyComponent={(
+              <Text style={{ color: 'white', textAlign: 'center' }}>
+                An error occurred while loading boxes. Please try again.
+              </Text>
             )}
-          </>
+            renderItem={({ item }) => (
+              <TouchableWithoutFeedback
+                style={styles.card}
+                onPress={() => navigation.navigate('Box', { boxToken: item._id })}
+              >
+                <BoxCard box={item} />
+              </TouchableWithoutFeedback>
+            )}
+            keyExtractor={(item) => item.name}
+          />
         ) : (
           <BxLoadingIndicator />
         )}

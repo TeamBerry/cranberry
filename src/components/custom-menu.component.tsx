@@ -54,10 +54,12 @@ const CustomMenu = () => {
     return (
       <View>
         <View style={{
-          flex: 0, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+          flex: 0, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 20,
         }}
         >
-          <ProfilePicture userId={user._id} size={50} />
+          <View style={{ marginRight: 10 }}>
+            <ProfilePicture userId={user._id} size={50} />
+          </View>
           <Text style={styles.userName}>{user.name}</Text>
         </View>
         <Button
