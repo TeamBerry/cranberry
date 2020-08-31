@@ -53,12 +53,13 @@ const CustomMenu = () => {
 
     return (
       <View>
-        <View style={{ alignSelf: 'center' }}>
-          <ProfilePicture userId={user._id} size={50} />
+        <View style={{
+          flex: 0, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+        }}
+        >
+          <ProfilePicture userId={user._id} size={70} />
+          <Text style={styles.userName}>{user.name}</Text>
         </View>
-        <Text style={styles.userName}>
-          {user.name}
-        </Text>
         <Button
           title="Sign out"
           onPress={() => signOut()}
