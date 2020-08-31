@@ -41,6 +41,7 @@ release/
 .gradle
 local.properties
 *.iml
+android/java_*.hprof
 
 # node.js
 #
