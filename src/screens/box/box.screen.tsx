@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
+import {
+  StyleSheet, View, useWindowDimensions, BackHandler,
+} from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
@@ -21,7 +23,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const BoxScreen = ({ route }) => {
+const BoxScreen = ({ route, navigation }) => {
   const { boxToken } = route.params;
   const window = useWindowDimensions();
   const playerHeight = window.width * (9 / 16);
@@ -48,6 +50,15 @@ const BoxScreen = ({ route }) => {
     };
 
     bootstrap();
+  }, []);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      navigation.popToTop();
+      return true;
+    });
+
+    return () => backHandler.remove();
   }, []);
 
   useEffect(() => {
