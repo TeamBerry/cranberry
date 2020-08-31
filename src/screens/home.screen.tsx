@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, RefreshControl,
+  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler,
 } from 'react-native';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SideMenu from 'react-native-side-menu';
@@ -69,6 +69,16 @@ const HomeScreen = ({ navigation }) => {
   const [user, setUser] = useState(null);
   const [boxes, setBoxes] = useState([]);
 
+  BackHandler.addEventListener('hardwareBackPress', () => {
+    // Closing the menu instead of the app when the menu's open
+    if (isMenuOpen) {
+      setMenuOpen(false);
+      return true;
+    }
+
+    return false;
+  });
+
   const getBoxes = async () => {
     try {
       setBoxLoading(false);
@@ -108,7 +118,6 @@ const HomeScreen = ({ navigation }) => {
       bounceBackOnOverdraw={false}
       onChange={(isOpen: boolean) => setMenuOpen(isOpen)}
       autoClosing
-      disableGestures
     >
       {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
                 <StatusBar barStyle='dark-content' />
@@ -127,19 +136,25 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.container}>
         <Text style={styles.titlePage}>Boxes</Text>
         {hasLoadedBoxes ? (
-          <FlatList
-            data={boxes}
-            refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
-            renderItem={({ item }) => (
-              <TouchableWithoutFeedback
-                style={styles.card}
-                onPress={() => navigation.navigate('Box', { boxToken: item._id })}
-              >
-                <BoxCard box={item} />
-              </TouchableWithoutFeedback>
+          <>
+            {error ? (
+              <Text>An error occurred while loading boxes. Please try again.</Text>
+            ) : (
+              <FlatList
+                data={boxes}
+                refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
+                renderItem={({ item }) => (
+                  <TouchableWithoutFeedback
+                    style={styles.card}
+                    onPress={() => navigation.navigate('Box', { boxToken: item._id })}
+                  >
+                    <BoxCard box={item} />
+                  </TouchableWithoutFeedback>
+                )}
+                keyExtractor={(item) => item.name}
+              />
             )}
-            keyExtractor={(item) => item.name}
-          />
+          </>
         ) : (
           <BxLoadingIndicator />
         )}
