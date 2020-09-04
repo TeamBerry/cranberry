@@ -316,7 +316,7 @@ const Queue = (props: {
           <View style={{ width: 35 }}>
             <ProfilePicture userId={box.creator._id} size={25} />
           </View>
-          <View style={{ flexShrink: 1 }}>
+          <View style={{ flex: 1, flexShrink: 1 }}>
             <Text style={styles.boxName}>{box.name}</Text>
             <CurrentVideo />
           </View>
