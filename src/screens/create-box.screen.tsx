@@ -38,10 +38,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#262626',
     paddingTop: 40,
+    paddingHorizontal: 15,
   },
   form: {
     flex: 1,
-    width: 320,
+    width: '100%',
     paddingBottom: 20,
   },
   image: {

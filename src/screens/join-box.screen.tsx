@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  StyleSheet, Text, View, Pressable,
+  Button, KeyboardAvoidingView, StyleSheet, Text, View, Pressable,
 } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { IconButton, Snackbar } from 'react-native-paper';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import axios from 'axios';
+import Config from 'react-native-config';
+
+import FormTextInput from '../components/form-text-input.component';
+import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -26,50 +33,120 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#262626',
     paddingTop: 40,
+    paddingHorizontal: 15,
   },
   form: {
     flex: 1,
-    width: 320,
     paddingBottom: 20,
+    width: '100%',
   },
-  image: {
-    height: 150,
-    width: 150,
-  },
-  modeContainer: {
+  linkHelp: {
     marginVertical: 20,
-  },
-  modeSpace: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modeDefinition: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  modeTitle: {
-    fontSize: 20,
-    fontFamily: 'Montserrat-SemiBold',
-    color: 'white',
-  },
-  modeHelper: {
-    color: '#BBBBBB',
   },
 });
 
-const JoinBoxScreen = ({ navigation }) => (
-  <View style={styles.headerContainer}>
-    <Text style={styles.titlePage}>Join a box</Text>
-    <Pressable
-      onPress={() => navigation.pop()}
-    >
-      <IconButton
-        icon="close"
-        color="white"
-      />
-    </Pressable>
-  </View>
-);
+const JoinBoxScreen = ({ navigation }) => {
+  const [isChecking, setChecking] = useState(false);
+  const [error, setError] = useState(null);
+
+  const checkBox = async (link: string): Promise<boolean> => {
+    setChecking(true);
+    const boxToken = /box\/(\S{24})/gm.exec(link);
+
+    if (!boxToken) {
+      setError('The link is invalid.');
+      setChecking(false);
+      return false;
+    }
+
+    try {
+      await axios.get(`${Config.API_URL}/boxes/${boxToken[1]}`);
+    } catch (error) {
+      setChecking(false);
+      setError('The link does not match any box.');
+      return false;
+    }
+
+    setChecking(false);
+    navigation.navigate('Box', { boxToken: boxToken[1] });
+    return true;
+  };
+
+  return (
+    <>
+      <View style={styles.headerContainer}>
+        <Text style={styles.titlePage}>Join a box</Text>
+        <Pressable
+          onPress={() => navigation.pop()}
+        >
+          <IconButton
+            icon="close"
+            color="white"
+          />
+        </Pressable>
+      </View>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="padding"
+      >
+        <Formik
+          initialValues={{ link: '' }}
+          validationSchema={
+                yup.object().shape({
+                  link: yup
+                    .string()
+                    .required('The link is requried'),
+                })
+            }
+          onSubmit={(values) => checkBox(values.link)}
+        >
+          {({
+            handleChange, setFieldTouched, handleSubmit, values, touched, errors, isValid,
+          }) => (
+            <View style={styles.form}>
+              <View>
+                <FormTextInput
+                  value={values.link}
+                  onChangeText={handleChange('link')}
+                  onBlur={() => setFieldTouched('link')}
+                  placeholder="Invite link"
+                  autoCorrect={false}
+                  returnKeyType="next"
+                  autoFocus
+                />
+                {touched.link && errors.link && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.link}</Text>}
+                <View style={styles.linkHelp}>
+                  <Text style={{ color: '#CCCCCC', fontFamily: 'Montserrat-SemiBold' }}>Invites look like this: </Text>
+                  <Text style={{ color: '#AAAAAA' }}>https://berrybox.tv/box/56ec1865a401ce1079532cae</Text>
+                </View>
+              </View>
+              {!isChecking ? (
+                <Button
+                  title="Join Box"
+                  disabled={!isValid}
+                  onPress={() => handleSubmit()}
+                />
+              ) : (
+                <BxLoadingIndicator />
+              )}
+            </View>
+          )}
+        </Formik>
+      </KeyboardAvoidingView>
+      <Snackbar
+        visible={error}
+        onDismiss={() => setError(null)}
+        duration={2000}
+        style={{
+          backgroundColor: '#090909',
+          borderLeftColor: '#EB172A',
+          borderLeftWidth: 10,
+        }}
+      >
+        {error}
+      </Snackbar>
+    </>
+  );
+};
 
 export default JoinBoxScreen;
