@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   boxOptionHelp: {
-    color: '#CCCCCC',
+    color: '#FFFFFF',
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, TouchableOpacity, Animated, Pressable, TextInput,
+  StyleSheet, Text, View, FlatList, Animated, Pressable, TextInput, Share,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
@@ -18,6 +18,7 @@ import ReplayIcon from '../../../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 import BerriesEnabledIcon from '../../../../assets/icons/coin-enabled-icon.svg';
 import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-icon.svg';
+import SubmitIcon from '../../../../assets/icons/submit-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 
@@ -26,13 +27,23 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#111111',
     color: 'white',
-    paddingLeft: 10,
+    flexDirection: 'row',
+    flex: 0,
   },
   currentSpace: {
-    display: 'flex',
+    paddingLeft: 5,
+    flex: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexShrink: 1,
+  },
+  shareSpace: {
+    flex: 0,
+    paddingHorizontal: 5,
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   boxName: {
     color: '#BBBBBB',
@@ -282,36 +293,48 @@ const Queue = (props: {
     />
   );
 
+  const onShare = async () => {
+    try {
+      await Share.share({
+        title: 'Share an invite to this box',
+        message: `https://berrybox.tv/box/${box._id}`,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
-      <TouchableOpacity
-        onPress={() => toggleCollapsible()}
-        activeOpacity={1}
-      >
-        <View style={styles.currentSpaceContainer}>
-          <View style={styles.currentSpace}>
-            <View style={{ paddingRight: 10 }}>
-              <ProfilePicture userId={box.creator._id} size={25} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.boxName}>{box.name}</Text>
-              <CurrentVideo />
-            </View>
-            <View style={{ width: 40 }}>
-              <Animated.View
-                style={{ transform: [{ rotate: spin }] }}
-              >
-                <Svg height="50" width="40">
-                  <Polygon
-                    points="30,22 10,22 20,32"
-                    fill="white"
-                  />
-                </Svg>
-              </Animated.View>
-            </View>
+      <View style={styles.currentSpaceContainer}>
+        <Pressable
+          onPress={() => toggleCollapsible()}
+          style={styles.currentSpace}
+        >
+          <View style={{ width: 35 }}>
+            <ProfilePicture userId={box.creator._id} size={25} />
           </View>
-        </View>
-      </TouchableOpacity>
+          <View style={{ flexShrink: 1 }}>
+            <Text style={styles.boxName}>{box.name}</Text>
+            <CurrentVideo />
+          </View>
+          <View style={{ width: 40 }}>
+            <Animated.View
+              style={{ transform: [{ rotate: spin }] }}
+            >
+              <Svg height="50" width="40">
+                <Polygon
+                  points="30,22 10,22 20,32"
+                  fill="white"
+                />
+              </Svg>
+            </Animated.View>
+          </View>
+        </Pressable>
+        <Pressable style={styles.shareSpace} onPress={onShare}>
+          <SubmitIcon width={20} height={20} fill="white" />
+        </Pressable>
+      </View>
       <View style={styles.upcomingSpaceContainer}>
         <Collapsible
           collapsed={isCollapsed}
