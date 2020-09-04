@@ -213,7 +213,7 @@ const HomeScreen = ({ navigation }) => {
             <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('JoinBox'); }}>
               <View style={styles.boxOption}>
                 <Text style={styles.boxOptionTitle}>Join a Box</Text>
-                <Text style={styles.boxOptionHelp}>Have an invite link or a QR Code? Then come here!</Text>
+                <Text style={styles.boxOptionHelp}>Have an invite link? Then come here!</Text>
               </View>
             </Pressable>
           </View>
