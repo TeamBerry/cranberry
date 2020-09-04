@@ -299,7 +299,7 @@ const Queue = (props: {
     try {
       await Share.share({
         title: 'Share an invite to this box',
-        message: `https://berrybox.tv/box/${box._id}`,
+        message: `berrybox.tv/box/${box._id}`,
       });
     } catch (error) {
       console.error(error);

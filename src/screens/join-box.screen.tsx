@@ -117,7 +117,7 @@ const JoinBoxScreen = ({ navigation }) => {
                 {touched.link && errors.link && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.link}</Text>}
                 <View style={styles.linkHelp}>
                   <Text style={{ color: '#CCCCCC', fontFamily: 'Montserrat-SemiBold' }}>Invites look like this: </Text>
-                  <Text style={{ color: '#AAAAAA' }}>https://berrybox.tv/box/56ec1865a401ce1079532cae</Text>
+                  <Text style={{ color: '#AAAAAA', fontSize: 13 }}>berrybox.tv/box/56ec1865a401ce1079532cae</Text>
                 </View>
               </View>
               {!isChecking ? (
