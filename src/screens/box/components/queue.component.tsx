@@ -18,7 +18,7 @@ import ReplayIcon from '../../../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 import BerriesEnabledIcon from '../../../../assets/icons/coin-enabled-icon.svg';
 import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-icon.svg';
-import SubmitIcon from '../../../../assets/icons/submit-icon.svg';
+import InviteIcon from '../../../../assets/icons/invite-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 
@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     color: 'white',
     flexDirection: 'row',
     flex: 0,
+    alignItems: 'center',
   },
   currentSpace: {
     paddingLeft: 5,
@@ -40,7 +41,8 @@ const styles = StyleSheet.create({
   },
   shareSpace: {
     flex: 0,
-    paddingHorizontal: 5,
+    paddingLeft: 10,
+    paddingRight: 7,
     flexDirection: 'row',
     alignContent: 'center',
     alignItems: 'center',
@@ -331,9 +333,14 @@ const Queue = (props: {
             </Animated.View>
           </View>
         </Pressable>
-        <Pressable style={styles.shareSpace} onPress={onShare}>
-          <SubmitIcon width={20} height={20} fill="white" />
-        </Pressable>
+        {permissions.includes('inviteUser') ? (
+          <>
+            <View style={{ height: '55%', width: 1, backgroundColor: '#777777' }} />
+            <Pressable style={styles.shareSpace} onPress={onShare}>
+              <InviteIcon width={20} height={20} fill="white" />
+            </Pressable>
+          </>
+        ) : null}
       </View>
       <View style={styles.upcomingSpaceContainer}>
         <Collapsible
