@@ -61,12 +61,12 @@ const JoinBoxScreen = ({ navigation }) => {
 
     try {
       const matchingBox = await axios.get(`${Config.API_URL}/invites/${inviteParseResults[2]}`);
-      navigation.navigate('Box', { boxToken: matchingBox.data._id });
+      navigation.navigate('Box', { boxToken: matchingBox.data.boxToken });
       setChecking(false);
       return true;
     } catch (error) {
       setChecking(false);
-      setError('The link does not match any box.');
+      setError('This invite is invalid. It might have expired.');
       return false;
     }
   };
