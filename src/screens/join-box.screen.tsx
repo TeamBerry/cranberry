@@ -51,25 +51,24 @@ const JoinBoxScreen = ({ navigation }) => {
 
   const checkBox = async (link: string): Promise<boolean> => {
     setChecking(true);
-    const boxToken = /box\/(\S{24})/gm.exec(link);
+    const inviteParseResults = /(i|invite)\/(\S{8})/gm.exec(link);
 
-    if (!boxToken) {
+    if (!inviteParseResults) {
       setError('The link is invalid.');
       setChecking(false);
       return false;
     }
 
     try {
-      await axios.get(`${Config.API_URL}/boxes/${boxToken[1]}`);
+      const matchingBox = await axios.get(`${Config.API_URL}/invites/${inviteParseResults[2]}`);
+      navigation.navigate('Box', { boxToken: matchingBox.data._id });
+      setChecking(false);
+      return true;
     } catch (error) {
       setChecking(false);
       setError('The link does not match any box.');
       return false;
     }
-
-    setChecking(false);
-    navigation.navigate('Box', { boxToken: boxToken[1] });
-    return true;
   };
 
   return (
@@ -117,7 +116,8 @@ const JoinBoxScreen = ({ navigation }) => {
                 {touched.link && errors.link && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.link}</Text>}
                 <View style={styles.linkHelp}>
                   <Text style={{ color: '#CCCCCC', fontFamily: 'Montserrat-SemiBold' }}>Invites look like this: </Text>
-                  <Text style={{ color: '#AAAAAA', fontSize: 13 }}>berrybox.tv/box/56ec1865a401ce1079532cae</Text>
+                  <Text style={{ color: '#AAAAAA' }}>berrybox.tv/invite/Z0dfeDa4</Text>
+                  <Text style={{ color: '#AAAAAA' }}>berrybox.tv/i/Z0dfeDa4</Text>
                 </View>
               </View>
               {!isChecking ? (
