@@ -176,7 +176,10 @@ const CreateBoxScreen = ({ navigation }) => {
                     color="#009AEB"
                   />
                 </View>
-                <Text style={styles.modeHelper}>Your box will not appear in the home page. You will only be able to grant access by sharing its link directly.</Text>
+                <Text style={styles.modeHelper}>
+                  Your box will not appear in the home page.
+                  You will only be able to grant access by sharing its link directly.
+                </Text>
               </View>
               <View style={styles.modeContainer}>
                 <View style={styles.modeSpace}>
