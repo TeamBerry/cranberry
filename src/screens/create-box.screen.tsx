@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity,
 } from 'react-native';
-import { Switch, Button as IconButton, Snackbar } from 'react-native-paper';
+import { Switch, IconButton, Snackbar } from 'react-native-paper';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -38,10 +38,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#262626',
     paddingTop: 40,
+    paddingHorizontal: 15,
   },
   form: {
     flex: 1,
-    width: 320,
+    width: '100%',
     paddingBottom: 20,
   },
   image: {
@@ -113,7 +114,6 @@ const CreateBoxScreen = ({ navigation }) => {
         >
           <IconButton
             icon="close"
-            mode="text"
             color="white"
           />
         </TouchableOpacity>
@@ -235,7 +235,7 @@ const CreateBoxScreen = ({ navigation }) => {
                 <Button
                   title="Create Box"
                   disabled={!isValid}
-                  onPress={handleSubmit}
+                  onPress={() => handleSubmit()}
                 />
               ) : (
                 <BxLoadingIndicator />

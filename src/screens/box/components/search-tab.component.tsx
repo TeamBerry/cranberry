@@ -152,7 +152,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
             justifyContent: 'center',
           }}
           >
-            <Text style={{ color: 'white', fontFamily: 'Monsterrat-Light' }} numberOfLines={3}>
+            <Text style={{ color: 'white', fontFamily: 'Montserrat-Light' }} numberOfLines={3}>
               {isAlreadyInQueue ? (<Text style={styles.inQueueIndicator}>Already in Queue: </Text>) : null}
               {video.name}
             </Text>

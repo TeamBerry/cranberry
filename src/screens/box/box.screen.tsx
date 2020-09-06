@@ -142,9 +142,7 @@ const BoxScreen = ({ route, navigation }) => {
           </SocketContext.Consumer>
         </>
       ) : (
-        <>
-          <BxLoadingIndicator />
-        </>
+        <BxLoadingIndicator />
       )}
     </BoxContext.Provider>
   );
