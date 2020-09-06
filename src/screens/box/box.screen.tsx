@@ -12,7 +12,6 @@ import Player from './components/player.component';
 import Box from '../../models/box.model';
 import BoxContext from './box.context';
 import Queue from './components/queue.component';
-import SocketContext from './box.context';
 import Panel from './components/panel.component';
 import OfflineNotice from '../../components/offline-notice.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
@@ -137,9 +136,7 @@ const BoxScreen = ({ route, navigation }) => {
       {isConnected && box && berryCount !== null && permissions ? (
         <>
           <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} berryCount={berryCount} permissions={permissions} />
-          <SocketContext.Consumer>
-            { (socket) => <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />}
-          </SocketContext.Consumer>
+          <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />
         </>
       ) : (
         <BxLoadingIndicator />
