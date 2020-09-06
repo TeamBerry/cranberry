@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal,
 } from 'react-native';
-import SideMenu from 'react-native-side-menu';
+import SideMenu from 'react-native-side-menu-updated';
 import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
 import axios from 'axios';
@@ -129,10 +129,6 @@ const HomeScreen = ({ navigation }) => {
     getBoxes();
   };
 
-  const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen);
-  };
-
   return (
     <>
       <SideMenu
@@ -149,7 +145,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.headerContainer}>
           <View style={styles.headerStyle}>
             <Pressable
-              onPress={() => toggleMenu()}
+              onPress={() => setMenuOpen(!isMenuOpen)}
             >
               <ProfilePicture userId={user ? user._id : null} size={30} />
             </Pressable>
