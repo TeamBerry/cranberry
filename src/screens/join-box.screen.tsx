@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Button, KeyboardAvoidingView, StyleSheet, Text, View, Pressable,
+  KeyboardAvoidingView, StyleSheet, Text, View, Pressable,
 } from 'react-native';
 import { IconButton, Snackbar } from 'react-native-paper';
 import { Formik } from 'formik';

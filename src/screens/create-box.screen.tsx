@@ -288,7 +288,6 @@ const CreateBoxScreen = ({ navigation }) => {
                     backgroundColor: '#090909',
                     borderLeftColor: '#0CEBC0',
                     borderLeftWidth: 10,
-
                   }}
                 >
                   Your box has been created. Hang tight! We&apos;re redirecting you to it...
