@@ -5,6 +5,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import AuthContext from '../shared/auth.context';
 import ProfilePicture from './profile-picture.component';
+import BxActionComponent from './bx-action.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -62,10 +63,9 @@ const CustomMenu = () => {
           </View>
           <Text style={styles.userName}>{user.name}</Text>
         </View>
-        <Button
-          title="Sign out"
-          onPress={() => signOut()}
-        />
+        <Pressable onPress={() => signOut()}>
+          <BxActionComponent options={{ text: 'Sign out' }} />
+        </Pressable>
       </View>
     );
   };

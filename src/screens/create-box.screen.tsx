@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity,
+  KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity, Pressable,
 } from 'react-native';
 import { Switch, IconButton, Snackbar } from 'react-native-paper';
 import axios from 'axios';
@@ -15,6 +15,7 @@ import ReplayIcon from '../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../assets/icons/coin-enabled-icon.svg';
 import LockIcon from '../../assets/icons/lock-icon.svg';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
+import BxActionComponent from '../components/bx-action.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -235,11 +236,9 @@ const CreateBoxScreen = ({ navigation }) => {
                 </Text>
               </View>
               {!isCreating ? (
-                <Button
-                  title="Create Box"
-                  disabled={!isValid}
-                  onPress={() => handleSubmit()}
-                />
+                <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
+                  <BxActionComponent options={{ text: 'Create Box' }} />
+                </Pressable>
               ) : (
                 <BxLoadingIndicator />
               )}

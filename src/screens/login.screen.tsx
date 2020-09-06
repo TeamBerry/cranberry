@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
-  Image, StyleSheet, View, Button, KeyboardAvoidingView, Text, TouchableOpacity,
+  Image, StyleSheet, View, Button, KeyboardAvoidingView, Text, TouchableOpacity, Pressable,
 } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -8,6 +8,7 @@ import { Snackbar } from 'react-native-paper';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
+import BxActionComponent from '../components/bx-action.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -124,11 +125,9 @@ export default function LoginScreen({ navigation }) {
                 {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
               </View>
               {!isLogging ? (
-                <Button
-                  title="Log in"
-                  disabled={!isValid}
-                  onPress={handleSubmit}
-                />
+                <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
+                  <BxActionComponent options={{ text: 'Log in' }} />
+                </Pressable>
               ) : (
                 <BxLoadingIndicator />
               )}
