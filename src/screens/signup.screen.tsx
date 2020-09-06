@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useContext, useState } from 'react';
 import {
-  Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity,
+  Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity, Pressable,
 } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -9,6 +9,7 @@ import { Snackbar } from 'react-native-paper';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
+import BxActionComponent from '../components/bx-action.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -153,11 +154,9 @@ const SignupScreen = ({ navigation }) => {
                 {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
               </View>
               {!isLogging ? (
-                <Button
-                  title="Sign Up"
-                  disabled={!isValid}
-                  onPress={handleSubmit}
-                />
+                <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
+                  <BxActionComponent options={{ text: 'Sign up' }} />
+                </Pressable>
               ) : (
                 <BxLoadingIndicator />
               )}

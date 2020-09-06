@@ -10,6 +10,7 @@ import Config from 'react-native-config';
 
 import FormTextInput from '../components/form-text-input.component';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
+import BxActionComponent from '../components/bx-action.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -121,11 +122,9 @@ const JoinBoxScreen = ({ navigation }) => {
                 </View>
               </View>
               {!isChecking ? (
-                <Button
-                  title="Join Box"
-                  disabled={!isValid}
-                  onPress={() => handleSubmit()}
-                />
+                <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
+                  <BxActionComponent options={{ text: 'Join Box' }} />
+                </Pressable>
               ) : (
                 <BxLoadingIndicator />
               )}
