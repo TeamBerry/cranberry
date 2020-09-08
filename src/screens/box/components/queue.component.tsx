@@ -305,6 +305,7 @@ const Queue = (props: {
       initialNumToRender={8}
       windowSize={12}
       ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>The Queue is empty.</Text>}
+      ListFooterComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>●</Text>}
     />
   );
 
@@ -395,7 +396,7 @@ const Queue = (props: {
                   onBlur={() => setDurationInputVisibility(false)}
                   placeholder="Set the duration restriction (in minutes)"
                   autoFocus
-                  placeholderTextColor="#CCCCCC"
+                  placeholderTextColor="#BBBBBB"
                   style={{
                     height: 40,
                     borderWidth: 1,
@@ -412,7 +413,7 @@ const Queue = (props: {
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
-          <Text style={{ textAlign: 'center', color: '#CCCCCC', paddingVertical: 5 }}>Tap a video for more info</Text>
+          <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>Tap a video for more info</Text>
           <QueueList />
         </Collapsible>
       </View>
