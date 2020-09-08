@@ -109,7 +109,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
         <Collapsible
           collapsed={!areActionsVisible}
           style={{
-            display: 'flex', flexDirection: 'row', alignContent: 'center', paddingVertical: 10,
+            display: 'flex', flexDirection: 'row', alignContent: 'center', paddingVertical: 10, justifyContent: 'space-around',
           }}
         >
           {(item.startTime !== null && item.endTime === null) ? (
