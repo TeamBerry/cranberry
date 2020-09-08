@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, Image, Pressable,
+  StyleSheet, Text, View, Image, Pressable, BackHandler,
 } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -62,6 +62,18 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
   };
 
   const [areActionsVisible, setActionsVisibility] = useState(false);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (areActionsVisible) {
+        setActionsVisibility(false);
+        return true;
+      }
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [areActionsVisible]);
 
   return (
     <Pressable android_ripple={{ color: '#4d4d4d' }} onPress={() => setActionsVisibility(!areActionsVisible)}>
