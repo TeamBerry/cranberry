@@ -94,7 +94,9 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
     // Connect to socket
     socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
       // eslint-disable-next-line no-shadow
-      setMessages((messages) => [...messages, newMessage]);
+      if (newMessage.source !== 'feedback') {
+        setMessages((messages) => [...messages, newMessage]);
+      }
 
       if (autoScrollStateRef.current) {
         if (_chatRef && _chatRef.current) {
