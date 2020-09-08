@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
   },
   messageList: {
     paddingTop: 0,
-    height: 352,
   },
   chatInput: {
     padding: 10,

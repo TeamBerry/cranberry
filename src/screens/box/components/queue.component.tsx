@@ -399,6 +399,7 @@ const Queue = (props: {
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
+          <Text style={{ textAlign: 'center', color: '#CCCCCC', paddingVertical: 5 }}>Tap a video for more info</Text>
           <QueueList />
         </Collapsible>
       </View>
