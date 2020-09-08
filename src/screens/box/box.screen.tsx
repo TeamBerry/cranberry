@@ -7,7 +7,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import Config from 'react-native-config';
 
-import { SyncPacket, BerryCount, Permission } from '@teamberry/muscadine';
+import {
+  SyncPacket, BerryCount, Permission, FeedbackMessage,
+} from '@teamberry/muscadine';
+import { Snackbar } from 'react-native-paper';
 import Player from './components/player.component';
 import Box from '../../models/box.model';
 import BoxContext from './box.context';
@@ -38,6 +41,7 @@ const BoxScreen = ({ route, navigation }) => {
   const [berryCount, setBerryCount] = useState(0);
   const [isConnected, setConnectionStatus] = useState(null);
   const [permissions, setPermissions] = useState([] as Array<Permission>);
+  const [feedback, setFeedbackMessage] = useState(null as FeedbackMessage);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -94,6 +98,11 @@ const BoxScreen = ({ route, navigation }) => {
         .on('box', (box: Box) => {
           setBox(box);
         })
+        .on('chat', (message: FeedbackMessage) => {
+          if (message.source === 'feedback') {
+            setFeedbackMessage(message);
+          }
+        })
         .on('berries', (berryCount: BerryCount) => {
           setBerryCount(berryCount.berries);
         })
@@ -141,6 +150,30 @@ const BoxScreen = ({ route, navigation }) => {
       ) : (
         <BxLoadingIndicator />
       )}
+      <Snackbar
+        visible={feedback !== null && feedback.context === 'success'}
+        onDismiss={() => setFeedbackMessage(null)}
+        duration={3000}
+        style={{
+          backgroundColor: '#090909',
+          borderLeftColor: '#0CEBC0',
+          borderLeftWidth: 10,
+        }}
+      >
+        {feedback?.contents}
+      </Snackbar>
+      <Snackbar
+        visible={feedback !== null && feedback.context === 'error'}
+        onDismiss={() => setFeedbackMessage(null)}
+        duration={3000}
+        style={{
+          backgroundColor: '#090909',
+          borderLeftColor: '#0CEBC0',
+          borderLeftWidth: 10,
+        }}
+      >
+        {feedback?.contents}
+      </Snackbar>
     </BoxContext.Provider>
   );
 };
