@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, Animated, Pressable, TextInput, Share,
+  StyleSheet, Text, View, FlatList, Animated, Pressable, TextInput, Share, BackHandler,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
@@ -180,6 +180,19 @@ const Queue = (props: {
     }
     setCollapse(!isCollapsed);
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (!isCollapsed) {
+        toggleCollapsible();
+        showBerriesHelper(false);
+        return true;
+      }
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [isCollapsed]);
 
   const patchBox = async (setting) => {
     try {
