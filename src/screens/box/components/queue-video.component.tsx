@@ -32,12 +32,12 @@ const styles = StyleSheet.create({
     color: '#009AEB',
   },
   preselectedVideo: {
-    borderColor: '#EBBA17',
+    borderColor: '#EB8400',
     borderWidth: 2,
   },
   nextVideoIndicator: {
     fontFamily: 'Montserrat-SemiBold',
-    color: '#EBBA17',
+    color: '#EB8400',
   },
 });
 
