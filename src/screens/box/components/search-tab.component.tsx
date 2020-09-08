@@ -76,7 +76,6 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
   const [hasSearched, setSearched] = useState(false);
   const [isSearching, setSearching] = useState(false);
   const [error, setError] = useState(false);
-  const [isSubmitted, setSubmitted] = useState(false);
   const [videosInQueue, setQueueIds] = useState([]);
   const [boxOptions, setBoxOptions] = useState(box.options);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
@@ -262,18 +261,6 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
         </View>
       </View>
       <Snackbar
-        visible={isSubmitted}
-        duration={1500}
-        style={{
-          backgroundColor: '#090909',
-          borderLeftColor: '#0CEBC0',
-          borderLeftWidth: 10,
-        }}
-        onDismiss={() => setSubmitted(false)}
-      >
-        Video submitted successfully!
-      </Snackbar>
-      <Snackbar
         visible={error}
         duration={5000}
         style={{
@@ -287,7 +274,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
           onPress: () => search(),
         }}
       >
-        Something wrong happened. Try again?
+        <Text style={{ color: 'white' }}>Something wrong happened. Try again?</Text>
       </Snackbar>
     </View>
   );

@@ -170,7 +170,7 @@ const SignupScreen = ({ navigation }) => {
                   borderLeftWidth: 10,
                 }}
               >
-                {errorMessage}
+                <Text style={{ color: 'white' }}>{errorMessage}</Text>
               </Snackbar>
             </View>
           )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, useWindowDimensions, BackHandler,
+  StyleSheet, View, useWindowDimensions, BackHandler, Text,
 } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -160,7 +160,7 @@ const BoxScreen = ({ route, navigation }) => {
           borderLeftWidth: 10,
         }}
       >
-        {feedback?.contents}
+        <Text style={{ color: 'white' }}>{feedback?.contents}</Text>
       </Snackbar>
       <Snackbar
         visible={feedback !== null && feedback.context === 'error'}
@@ -172,7 +172,7 @@ const BoxScreen = ({ route, navigation }) => {
           borderLeftWidth: 10,
         }}
       >
-        {feedback?.contents}
+        <Text style={{ color: 'white' }}>{feedback?.contents}</Text>
       </Snackbar>
     </BoxContext.Provider>
   );

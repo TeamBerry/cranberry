@@ -141,7 +141,7 @@ export default function LoginScreen({ navigation }) {
                   borderLeftWidth: 10,
                 }}
               >
-                Your credentials are invalid. Please try again.
+                <Text style={{ color: 'white' }}>Your credentials are invalid. Please try again.</Text>
               </Snackbar>
             </View>
           )}

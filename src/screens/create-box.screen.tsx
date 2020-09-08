@@ -290,7 +290,7 @@ const CreateBoxScreen = ({ navigation }) => {
                     borderLeftWidth: 10,
                   }}
                 >
-                  Your box has been created. Hang tight! We&apos;re redirecting you to it...
+                  <Text style={{ color: 'white' }}>Your box has been created. Hang tight! We&apos;re redirecting you to it...</Text>
                 </Snackbar>
               </View>
             )}

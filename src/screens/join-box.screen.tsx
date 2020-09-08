@@ -142,7 +142,7 @@ const JoinBoxScreen = ({ navigation }) => {
           borderLeftWidth: 10,
         }}
       >
-        {error}
+        <Text style={{ color: 'white' }}>{error}</Text>
       </Snackbar>
     </>
   );

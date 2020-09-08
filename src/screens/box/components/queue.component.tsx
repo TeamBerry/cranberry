@@ -427,7 +427,7 @@ const Queue = (props: {
         }}
         onDismiss={() => setUpdateState(false)}
       >
-        Option updated successfully.
+        <Text style={{ color: 'white' }}>Option updated successfully.</Text>
       </Snackbar>
       <Snackbar
         visible={error}
@@ -439,7 +439,7 @@ const Queue = (props: {
         }}
         onDismiss={() => setError(false)}
       >
-        Something wrong happened. Try again?
+        <Text style={{ color: 'white' }}>Something wrong happened. Please try again.</Text>
       </Snackbar>
     </>
   );
