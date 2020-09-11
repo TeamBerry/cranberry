@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, TouchableOpacity, Animated, Pressable, TextInput,
+  StyleSheet, Text, View, FlatList, Animated, Pressable, TextInput, Share, BackHandler,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
@@ -18,6 +18,7 @@ import ReplayIcon from '../../../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 import BerriesEnabledIcon from '../../../../assets/icons/coin-enabled-icon.svg';
 import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-icon.svg';
+import InviteIcon from '../../../../assets/icons/invite-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 
@@ -26,13 +27,25 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#111111',
     color: 'white',
-    paddingLeft: 10,
+    flexDirection: 'row',
+    flex: 0,
+    alignItems: 'center',
   },
   currentSpace: {
-    display: 'flex',
+    paddingLeft: 5,
+    flex: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexShrink: 1,
+  },
+  shareSpace: {
+    flex: 0,
+    paddingLeft: 10,
+    paddingRight: 7,
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   boxName: {
     color: '#BBBBBB',
@@ -168,6 +181,19 @@ const Queue = (props: {
     setCollapse(!isCollapsed);
   };
 
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (!isCollapsed) {
+        toggleCollapsible();
+        showBerriesHelper(false);
+        return true;
+      }
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [isCollapsed]);
+
   const patchBox = async (setting) => {
     try {
       await axios.patch(`${Config.API_URL}/boxes/${box._id}`, setting);
@@ -279,39 +305,58 @@ const Queue = (props: {
       initialNumToRender={8}
       windowSize={12}
       ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>The Queue is empty.</Text>}
+      ListFooterComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>●</Text>}
     />
   );
 
+  const onShare = async () => {
+    try {
+      const invite = await axios.post(`${Config.API_URL}/boxes/${box._id}/invite`, null);
+      await Share.share({
+        title: 'Share an invite to this box (This invite will expire in 15 minutes)',
+        message: `berrybox.tv/i/${invite.data.link}`,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
-      <TouchableOpacity
-        onPress={() => toggleCollapsible()}
-        activeOpacity={1}
-      >
-        <View style={styles.currentSpaceContainer}>
-          <View style={styles.currentSpace}>
-            <View style={{ paddingRight: 10 }}>
-              <ProfilePicture userId={box.creator._id} size={25} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.boxName}>{box.name}</Text>
-              <CurrentVideo />
-            </View>
-            <View style={{ width: 40 }}>
-              <Animated.View
-                style={{ transform: [{ rotate: spin }] }}
-              >
-                <Svg height="50" width="40">
-                  <Polygon
-                    points="30,22 10,22 20,32"
-                    fill="white"
-                  />
-                </Svg>
-              </Animated.View>
-            </View>
+      <View style={styles.currentSpaceContainer}>
+        <Pressable
+          onPress={() => toggleCollapsible()}
+          style={styles.currentSpace}
+        >
+          <View style={{ width: 35 }}>
+            <ProfilePicture userId={box.creator._id} size={25} />
           </View>
-        </View>
-      </TouchableOpacity>
+          <View style={{ flex: 1, flexShrink: 1 }}>
+            <Text style={styles.boxName}>{box.name}</Text>
+            <CurrentVideo />
+          </View>
+          <View style={{ width: 40 }}>
+            <Animated.View
+              style={{ transform: [{ rotate: spin }] }}
+            >
+              <Svg height="50" width="40">
+                <Polygon
+                  points="30,22 10,22 20,32"
+                  fill="white"
+                />
+              </Svg>
+            </Animated.View>
+          </View>
+        </Pressable>
+        {permissions.includes('inviteUser') ? (
+          <>
+            <View style={{ height: '55%', width: 1, backgroundColor: '#777777' }} />
+            <Pressable style={styles.shareSpace} onPress={onShare}>
+              <InviteIcon width={20} height={20} fill="white" />
+            </Pressable>
+          </>
+        ) : null}
+      </View>
       <View style={styles.upcomingSpaceContainer}>
         <Collapsible
           collapsed={isCollapsed}
@@ -351,7 +396,7 @@ const Queue = (props: {
                   onBlur={() => setDurationInputVisibility(false)}
                   placeholder="Set the duration restriction (in minutes)"
                   autoFocus
-                  placeholderTextColor="#CCCCCC"
+                  placeholderTextColor="#BBBBBB"
                   style={{
                     height: 40,
                     borderWidth: 1,
@@ -368,6 +413,7 @@ const Queue = (props: {
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
+          <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>Tap a video for more info</Text>
           <QueueList />
         </Collapsible>
       </View>
@@ -381,7 +427,7 @@ const Queue = (props: {
         }}
         onDismiss={() => setUpdateState(false)}
       >
-        Option updated successfully.
+        <Text style={{ color: 'white' }}>Option updated successfully.</Text>
       </Snackbar>
       <Snackbar
         visible={error}
@@ -393,7 +439,7 @@ const Queue = (props: {
         }}
         onDismiss={() => setError(false)}
       >
-        Something wrong happened. Try again?
+        <Text style={{ color: 'white' }}>Something wrong happened. Please try again.</Text>
       </Snackbar>
     </>
   );

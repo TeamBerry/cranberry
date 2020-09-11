@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
 
 const BxLoadingIndicator = () => (
   <View style={[styles.container, styles.horizontal]}>
-    <ActivityIndicator size="large" color="#EBBA17" />
+    <ActivityIndicator size="large" color="#EB8400" />
   </View>
 );
 

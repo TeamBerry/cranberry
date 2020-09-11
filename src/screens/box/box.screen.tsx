@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
+import {
+  StyleSheet, View, useWindowDimensions, BackHandler, Text,
+} from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import Config from 'react-native-config';
 
-import { SyncPacket, BerryCount, Permission } from '@teamberry/muscadine';
+import {
+  SyncPacket, BerryCount, Permission, FeedbackMessage,
+} from '@teamberry/muscadine';
+import { Snackbar } from 'react-native-paper';
 import Player from './components/player.component';
 import Box from '../../models/box.model';
 import BoxContext from './box.context';
 import Queue from './components/queue.component';
-import SocketContext from './box.context';
 import Panel from './components/panel.component';
 import OfflineNotice from '../../components/offline-notice.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
@@ -21,7 +25,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const BoxScreen = ({ route }) => {
+const BoxScreen = ({ route, navigation }) => {
   const { boxToken } = route.params;
   const window = useWindowDimensions();
   const playerHeight = window.width * (9 / 16);
@@ -37,6 +41,7 @@ const BoxScreen = ({ route }) => {
   const [berryCount, setBerryCount] = useState(0);
   const [isConnected, setConnectionStatus] = useState(null);
   const [permissions, setPermissions] = useState([] as Array<Permission>);
+  const [feedback, setFeedbackMessage] = useState(null as FeedbackMessage);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -48,6 +53,15 @@ const BoxScreen = ({ route }) => {
     };
 
     bootstrap();
+  }, []);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      navigation.popToTop();
+      return true;
+    });
+
+    return () => backHandler.remove();
   }, []);
 
   useEffect(() => {
@@ -83,6 +97,11 @@ const BoxScreen = ({ route }) => {
         })
         .on('box', (box: Box) => {
           setBox(box);
+        })
+        .on('chat', (message: FeedbackMessage) => {
+          if (message.source === 'feedback') {
+            setFeedbackMessage(message);
+          }
         })
         .on('berries', (berryCount: BerryCount) => {
           setBerryCount(berryCount.berries);
@@ -126,15 +145,35 @@ const BoxScreen = ({ route }) => {
       {isConnected && box && berryCount !== null && permissions ? (
         <>
           <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} berryCount={berryCount} permissions={permissions} />
-          <SocketContext.Consumer>
-            { (socket) => <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />}
-          </SocketContext.Consumer>
+          <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />
         </>
       ) : (
-        <>
-          <BxLoadingIndicator />
-        </>
+        <BxLoadingIndicator />
       )}
+      <Snackbar
+        visible={feedback !== null && feedback.context === 'success'}
+        onDismiss={() => setFeedbackMessage(null)}
+        duration={3000}
+        style={{
+          backgroundColor: '#090909',
+          borderLeftColor: '#0CEBC0',
+          borderLeftWidth: 10,
+        }}
+      >
+        <Text style={{ color: 'white' }}>{feedback?.contents}</Text>
+      </Snackbar>
+      <Snackbar
+        visible={feedback !== null && feedback.context === 'error'}
+        onDismiss={() => setFeedbackMessage(null)}
+        duration={3000}
+        style={{
+          backgroundColor: '#090909',
+          borderLeftColor: '#0CEBC0',
+          borderLeftWidth: 10,
+        }}
+      >
+        <Text style={{ color: 'white' }}>{feedback?.contents}</Text>
+      </Snackbar>
     </BoxContext.Provider>
   );
 };

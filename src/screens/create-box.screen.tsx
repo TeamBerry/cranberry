@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-  KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity,
+  KeyboardAvoidingView, StyleSheet, View, Text, TouchableOpacity, Pressable, ScrollView,
 } from 'react-native';
-import { Switch, Button as IconButton, Snackbar } from 'react-native-paper';
+import { Switch, IconButton, Snackbar } from 'react-native-paper';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -14,7 +14,9 @@ import RandomIcon from '../../assets/icons/random-icon.svg';
 import ReplayIcon from '../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../assets/icons/coin-enabled-icon.svg';
 import LockIcon from '../../assets/icons/lock-icon.svg';
+import DurationRestrictionIcon from '../../assets/icons/duration-limit-icon.svg';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
+import BxActionComponent from '../components/bx-action.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -35,18 +37,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: 'center',
     backgroundColor: '#262626',
-    paddingTop: 40,
   },
   form: {
-    flex: 1,
-    width: 320,
-    paddingBottom: 20,
-  },
-  image: {
-    height: 150,
-    width: 150,
+    paddingBottom: 50,
+    paddingHorizontal: 15,
   },
   modeContainer: {
     marginVertical: 20,
@@ -61,19 +56,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modeTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: 'Montserrat-SemiBold',
-    color: 'white',
+    color: '#DDDDDD',
   },
   modeHelper: {
     color: '#BBBBBB',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    paddingTop: 10,
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#009AEB',
   },
 });
 
 export type BoxOptions = {
     random: boolean,
     loop: boolean,
-    berries: boolean
+    berries: boolean,
+    videoMaxDurationLimit: number
 }
 
 const CreateBoxScreen = ({ navigation }) => {
@@ -107,26 +109,26 @@ const CreateBoxScreen = ({ navigation }) => {
   return (
     <>
       <View style={styles.headerContainer}>
-        <Text style={styles.titlePage}>New box</Text>
+        <Text style={styles.titlePage}>Create a box</Text>
         <TouchableOpacity
           onPress={() => navigation.pop()}
         >
           <IconButton
             icon="close"
-            mode="text"
             color="white"
           />
         </TouchableOpacity>
       </View>
       <KeyboardAvoidingView
         style={styles.container}
-        behavior="padding"
+        behavior="height"
       >
-        <Formik
-          initialValues={{
-            name: '', private: false, random: false, loop: false, berries: true,
-          }}
-          validationSchema={
+        <ScrollView>
+          <Formik
+            initialValues={{
+              name: '', private: false, random: false, loop: false, berries: true, videoMaxDurationLimit: 0,
+            }}
+            validationSchema={
               yup.object().shape({
                 name: yup
                   .string()
@@ -139,123 +141,161 @@ const CreateBoxScreen = ({ navigation }) => {
                   .boolean(),
                 berries: yup
                   .boolean(),
+                videoMaxDurationLimit: yup
+                  .number()
+                  .default(0),
               })
             }
-          onSubmit={(values) => createBox({
-            name: values.name,
-            private: values.private,
-            options: { random: values.random, loop: values.loop, berries: values.berries },
-          })}
-        >
-          {({
-            handleChange, setFieldTouched, setFieldValue, handleSubmit, values, touched, errors, isValid,
-          }) => (
-            <View style={styles.form}>
-              <View>
-                <FormTextInput
-                  value={values.name}
-                  onChangeText={handleChange('name')}
-                  onBlur={() => setFieldTouched('name')}
-                  placeholder="Box Name"
-                  autoCorrect={false}
-                  returnKeyType="next"
-                />
-                {touched.name && errors.name && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.name}</Text>}
-              </View>
-              <View style={styles.modeContainer}>
-                <View style={styles.modeSpace}>
-                  <View style={styles.modeDefinition}>
-                    <View style={{ paddingRight: 5 }}>
-                      <LockIcon width={20} height={20} fill="white" />
-                    </View>
-                    <Text style={styles.modeTitle}>Access Restriction</Text>
-                  </View>
-                  <Switch
-                    value={values.private}
-                    onValueChange={(value) => setFieldValue('private', value)}
-                    color="#009AEB"
+            onSubmit={(values) => createBox({
+              name: values.name,
+              private: values.private,
+              options: {
+                random: values.random, loop: values.loop, berries: values.berries, videoMaxDurationLimit: values.videoMaxDurationLimit,
+              },
+            })}
+          >
+            {({
+              handleChange, setFieldTouched, setFieldValue, handleSubmit, values, touched, errors, isValid,
+            }) => (
+              <View style={styles.form}>
+                <Text style={styles.sectionTitle}>Information</Text>
+                <View style={styles.modeContainer}>
+                  <Text style={styles.modeTitle}>Box Name</Text>
+                  <FormTextInput
+                    value={values.name}
+                    onChangeText={handleChange('name')}
+                    onBlur={() => setFieldTouched('name')}
+                    placeholder="Box Name"
+                    autoCorrect={false}
+                    returnKeyType="next"
                   />
+                  {touched.name && errors.name && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.name}</Text>}
                 </View>
-                <Text style={styles.modeHelper}>Your box will not appear in the home page. You will only be able to grant access by sharing its link directly.</Text>
-              </View>
-              <View style={styles.modeContainer}>
-                <View style={styles.modeSpace}>
-                  <View style={styles.modeDefinition}>
-                    <View style={{ paddingRight: 5 }}>
-                      <RandomIcon width={20} height={20} fill="white" />
+                <View style={styles.modeContainer}>
+                  <View style={styles.modeSpace}>
+                    <View style={styles.modeDefinition}>
+                      <View style={{ paddingRight: 5 }}>
+                        <LockIcon width={20} height={20} fill="white" />
+                      </View>
+                      <Text style={styles.modeTitle}>Access Restriction</Text>
                     </View>
-                    <Text style={styles.modeTitle}>Pick Videos at Random</Text>
+                    <Switch
+                      value={values.private}
+                      onValueChange={(value) => setFieldValue('private', value)}
+                      color="#009AEB"
+                    />
                   </View>
-                  <Switch
-                    value={values.random}
-                    onValueChange={(value) => setFieldValue('random', value)}
-                    color="#009AEB"
-                  />
+                  <Text style={styles.modeHelper}>
+                    Your box will not appear publicly. You may grant access by inviting users directly.
+                  </Text>
                 </View>
-                <Text style={styles.modeHelper}>
-                  When a video ends, the next one will be picked randomly from the upcoming pool of videos.
-                </Text>
-              </View>
-              <View style={styles.modeContainer}>
-                <View style={styles.modeSpace}>
-                  <View style={styles.modeDefinition}>
-                    <View style={{ paddingRight: 5 }}>
-                      <ReplayIcon width={20} height={20} fill="white" />
-                    </View>
-                    <Text style={styles.modeTitle}>Loop Queue</Text>
-                  </View>
-                  <Switch
-                    value={values.loop}
-                    onValueChange={(value) => setFieldValue('loop', value)}
-                    color="#009AEB"
-                  />
-                </View>
-                <Text style={styles.modeHelper}>The system will automatically requeue old videos.</Text>
-              </View>
-              <View style={styles.modeContainer}>
-                <View style={styles.modeSpace}>
-                  <View style={styles.modeDefinition}>
-                    <View style={{ paddingRight: 5 }}>
-                      <BerriesIcon width={20} height={20} fill="white" />
-                    </View>
-                    <Text style={styles.modeTitle}>Berries System</Text>
-                  </View>
-                  <Switch
-                    value={values.berries}
-                    onValueChange={(value) => setFieldValue('berries', value)}
-                    color="#009AEB"
-                  />
-                </View>
-                <Text style={styles.modeHelper}>
-                  Your users will be able to collect Berries while they are in your box. They will then be able to spend
-                  the berries to skip a video or select the next video to play.
-                </Text>
-              </View>
-              {!isCreating ? (
-                <Button
-                  title="Create Box"
-                  disabled={!isValid}
-                  onPress={handleSubmit}
-                />
-              ) : (
-                <BxLoadingIndicator />
-              )}
-              <Snackbar
-                visible={box}
-                onDismiss={() => navigation.navigate('Box', { boxToken: box._id })}
-                duration={2000}
-                style={{
-                  backgroundColor: '#090909',
-                  borderLeftColor: '#0CEBC0',
-                  borderLeftWidth: 10,
-
+                <View style={{
+                  borderBottomColor: '#777777',
+                  borderBottomWidth: 1,
                 }}
-              >
-                Your box has been created. Hang tight! We&apos;re redirecting you to it...
-              </Snackbar>
-            </View>
-          )}
-        </Formik>
+                />
+                <Text style={styles.sectionTitle}>Settings</Text>
+                <View style={styles.modeContainer}>
+                  <View style={styles.modeSpace}>
+                    <View style={styles.modeDefinition}>
+                      <View style={{ paddingRight: 5 }}>
+                        <RandomIcon width={20} height={20} fill="white" />
+                      </View>
+                      <Text style={styles.modeTitle}>Pick Videos at Random</Text>
+                    </View>
+                    <Switch
+                      value={values.random}
+                      onValueChange={(value) => setFieldValue('random', value)}
+                      color="#009AEB"
+                    />
+                  </View>
+                  <Text style={styles.modeHelper}>
+                    Videos will be played randomly from the queue.
+                  </Text>
+                </View>
+                <View style={styles.modeContainer}>
+                  <View style={styles.modeSpace}>
+                    <View style={styles.modeDefinition}>
+                      <View style={{ paddingRight: 5 }}>
+                        <ReplayIcon width={20} height={20} fill="white" />
+                      </View>
+                      <Text style={styles.modeTitle}>Loop Queue</Text>
+                    </View>
+                    <Switch
+                      value={values.loop}
+                      onValueChange={(value) => setFieldValue('loop', value)}
+                      color="#009AEB"
+                    />
+                  </View>
+                  <Text style={styles.modeHelper}>Played videos will be automatically requeued.</Text>
+                </View>
+                <View style={styles.modeContainer}>
+                  <View style={styles.modeSpace}>
+                    <View style={styles.modeDefinition}>
+                      <View style={{ paddingRight: 5 }}>
+                        <BerriesIcon width={20} height={20} fill="white" />
+                      </View>
+                      <Text style={styles.modeTitle}>Berries System</Text>
+                    </View>
+                    <Switch
+                      value={values.berries}
+                      onValueChange={(value) => setFieldValue('berries', value)}
+                      color="#009AEB"
+                    />
+                  </View>
+                  <Text style={styles.modeHelper}>
+                    Your users will be able to collect Berries while they are in your box. They will then be able to spend
+                    the berries to skip a video or select the next video to play.
+                  </Text>
+                </View>
+                <View style={styles.modeContainer}>
+                  <View style={styles.modeSpace}>
+                    <View style={styles.modeDefinition}>
+                      <View style={{ paddingRight: 5 }}>
+                        <DurationRestrictionIcon width={20} height={20} fill="white" />
+                      </View>
+                      <Text style={styles.modeTitle}>Duration Restriction</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.modeHelper}>
+                    Videos that exceed the set limit (in minutes) will not be accepted into the queue. Specifying 0 or
+                    nothing will disable this restriction.
+                  </Text>
+                  <View style={{ paddingVertical: 5 }}>
+                    <FormTextInput
+                      value={values.videoMaxDurationLimit}
+                      onChangeText={handleChange('videoMaxDurationLimit')}
+                      onBlur={() => setFieldTouched('videoMaxDurationLimit')}
+                      placeholder="Set the duration restriction (in minutes)"
+                      autoCorrect={false}
+                      returnKeyType="next"
+                      keyboardType="numeric"
+                    />
+                  </View>
+                </View>
+                {!isCreating ? (
+                  <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
+                    <BxActionComponent options={{ text: 'Create Box' }} />
+                  </Pressable>
+                ) : (
+                  <BxLoadingIndicator />
+                )}
+                <Snackbar
+                  visible={box}
+                  onDismiss={() => navigation.navigate('Box', { boxToken: box._id })}
+                  duration={2000}
+                  style={{
+                    backgroundColor: '#090909',
+                    borderLeftColor: '#0CEBC0',
+                    borderLeftWidth: 10,
+                  }}
+                >
+                  <Text style={{ color: 'white' }}>Your box has been created. Hang tight! We&apos;re redirecting you to it...</Text>
+                </Snackbar>
+              </View>
+            )}
+          </Formik>
+        </ScrollView>
       </KeyboardAvoidingView>
     </>
   );

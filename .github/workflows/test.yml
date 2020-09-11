@@ -1,0 +1,29 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+      - "master"
+
+jobs:
+  build:
+    name: Lint
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Authenticate to Team Berry's GitHub Registry
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.REGISTRY_KEY }}" >> ~/.npmrc
+      - name: Install Dependencies
+        run: npm install
+      - name: Lint check
+        run: npm run lint:check

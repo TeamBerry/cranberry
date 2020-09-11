@@ -17,6 +17,7 @@ const FormTextInput = (props) => (
   <TextInput
     placeholderTextColor="#BBBBBB"
     style={styles.textInput}
+    // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}
   />
 );

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable,
+  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal,
 } from 'react-native';
-import SideMenu from 'react-native-side-menu';
+import SideMenu from 'react-native-side-menu-updated';
 import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
 import axios from 'axios';
@@ -59,11 +59,30 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: '#009AEB',
   },
+  boxOption: {
+    height: 80,
+    backgroundColor: '#009AEB',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    margin: 10,
+    flex: 0,
+    justifyContent: 'space-around',
+  },
+  boxOptionTitle: {
+    fontSize: 18,
+    fontFamily: 'Montserrat-SemiBold',
+    color: 'white',
+  },
+  boxOptionHelp: {
+    color: '#FFFFFF',
+  },
 });
 
 const HomeScreen = ({ navigation }) => {
   const [hasLoadedBoxes, setBoxLoading] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [boxes, setBoxes] = useState([]);
 
@@ -90,6 +109,11 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (isBoxMenuOpen) {
+        setBoxMenuOpen(false);
+        return true;
+      }
+
       if (isMenuOpen) {
         setMenuOpen(false);
         return true;
@@ -105,66 +129,93 @@ const HomeScreen = ({ navigation }) => {
     getBoxes();
   };
 
-  const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen);
-  };
-
   return (
-    <SideMenu
-      menu={<CustomMenu />}
-      isOpen={isMenuOpen}
-      bounceBackOnOverdraw={false}
-      onChange={(isOpen: boolean) => setMenuOpen(isOpen)}
-      autoClosing
-    >
-      {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
+    <>
+      <SideMenu
+        menu={<CustomMenu />}
+        isOpen={isMenuOpen}
+        bounceBackOnOverdraw={false}
+        onChange={(isOpen: boolean) => setMenuOpen(isOpen)}
+        autoClosing
+      >
+        {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
                 <StatusBar barStyle='dark-content' />
             </View> */}
 
-      <View style={styles.headerContainer}>
-        <View style={styles.headerStyle}>
-          <Pressable
-            onPress={() => toggleMenu()}
-          >
-            <ProfilePicture userId={user ? user._id : null} size={30} />
-          </Pressable>
+        <View style={styles.headerContainer}>
+          <View style={styles.headerStyle}>
+            <Pressable
+              onPress={() => setMenuOpen(!isMenuOpen)}
+            >
+              <ProfilePicture userId={user ? user._id : null} size={30} />
+            </Pressable>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.container}>
-        <Text style={styles.titlePage}>Boxes</Text>
-        {hasLoadedBoxes ? (
-          <FlatList
-            data={boxes}
-            refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
-            ListEmptyComponent={(
-              <Text style={{ color: 'white', textAlign: 'center' }}>
-                An error occurred while loading boxes. Please try again.
-              </Text>
+        <View style={styles.container}>
+          <Text style={styles.titlePage}>Boxes</Text>
+          {hasLoadedBoxes ? (
+            <FlatList
+              data={boxes}
+              refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
+              ListEmptyComponent={(
+                <Text style={{ color: 'white', textAlign: 'center' }}>
+                  An error occurred while loading boxes. Please try again.
+                </Text>
             )}
-            renderItem={({ item }) => (
-              <Pressable
-                android_ripple={{ color: '#4d4d4d' }}
-                style={styles.card}
-                onPress={() => navigation.navigate('Box', { boxToken: item._id })}
-              >
-                <BoxCard box={item} />
-              </Pressable>
-            )}
-            keyExtractor={(item) => item.name}
-          />
-        ) : (
-          <BxLoadingIndicator />
-        )}
-      </View>
+              renderItem={({ item }) => (
+                <Pressable
+                  android_ripple={{ color: '#4d4d4d' }}
+                  style={styles.card}
+                  onPress={() => navigation.navigate('Box', { boxToken: item._id })}
+                >
+                  <BoxCard box={item} />
+                </Pressable>
+              )}
+              keyExtractor={(item) => item.name}
+            />
+          ) : (
+            <BxLoadingIndicator />
+          )}
+        </View>
 
-      <FAB
-        style={styles.fab}
-        color="white"
-        icon="plus"
-        onPress={() => navigation.push('CreateBox')}
-      />
-    </SideMenu>
+        <FAB
+          style={styles.fab}
+          color="white"
+          icon="plus"
+        // onPress={() => navigation.push('CreateBox')}
+          onPress={() => setBoxMenuOpen(!isBoxMenuOpen)}
+        />
+      </SideMenu>
+      <View>
+        <Modal
+          animationType="slide"
+          transparent
+          visible={isBoxMenuOpen}
+          onRequestClose={() => {
+            setBoxMenuOpen(false);
+          }}
+        >
+          <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)' }}>
+            <Pressable onPress={() => setBoxMenuOpen(false)}>
+              <View style={{ width: '100%', height: '100%' }} />
+            </Pressable>
+            <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('CreateBox'); }}>
+              <View style={styles.boxOption}>
+                <Text style={styles.boxOptionTitle}>Create a Box</Text>
+                <Text style={styles.boxOptionHelp}>Invite your friends and let the music play!</Text>
+              </View>
+            </Pressable>
+            <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('JoinBox'); }}>
+              <View style={styles.boxOption}>
+                <Text style={styles.boxOptionTitle}>Join a Box</Text>
+                <Text style={styles.boxOptionHelp}>Have an invite link? Then come here!</Text>
+              </View>
+            </Pressable>
+          </View>
+        </Modal>
+      </View>
+    </>
   );
 };
 

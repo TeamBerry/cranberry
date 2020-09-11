@@ -44,7 +44,7 @@ export interface ButtonOptions {
      * @type {('play' | 'replay' | 'cancel' | 'skip')}
      * @memberof ButtonOptions
      */
-    type: 'play' | 'replay' | 'cancel' | 'skip' | 'addToLibrary' | 'forceNext' | 'forcePlay',
+    type?: 'play' | 'replay' | 'cancel' | 'skip' | 'addToLibrary' | 'forceNext' | 'forcePlay',
     /**
      * Context of the button. Will affect its display
      *
@@ -111,9 +111,11 @@ const BxButtonComponent = ({ options }: { options: Partial<ButtonOptions> }) => 
 
   return (
     <View style={[styles.button, styles[context]]}>
-      <View style={styles.buttonIcon}>
-        <InsertIcon type={options.type} />
-      </View>
+      {options.type ? (
+        <View style={styles.buttonIcon}>
+          <InsertIcon type={options.type} />
+        </View>
+      ) : null}
       {options.textDisplay === 'full' ? (
         parseText(options.text)
       ) : null}

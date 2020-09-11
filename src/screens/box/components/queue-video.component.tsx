@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, Image, Pressable,
+  StyleSheet, Text, View, Image, Pressable, BackHandler,
 } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -32,12 +32,12 @@ const styles = StyleSheet.create({
     color: '#009AEB',
   },
   preselectedVideo: {
-    borderColor: '#EBBA17',
+    borderColor: '#EB8400',
     borderWidth: 2,
   },
   nextVideoIndicator: {
     fontFamily: 'Montserrat-SemiBold',
-    color: '#EBBA17',
+    color: '#EB8400',
   },
 });
 
@@ -62,6 +62,18 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
   };
 
   const [areActionsVisible, setActionsVisibility] = useState(false);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (areActionsVisible) {
+        setActionsVisibility(false);
+        return true;
+      }
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [areActionsVisible]);
 
   return (
     <Pressable android_ripple={{ color: '#4d4d4d' }} onPress={() => setActionsVisibility(!areActionsVisible)}>
@@ -109,7 +121,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
         <Collapsible
           collapsed={!areActionsVisible}
           style={{
-            display: 'flex', flexDirection: 'row', alignContent: 'center', paddingVertical: 10,
+            display: 'flex', flexDirection: 'row', alignContent: 'center', paddingVertical: 10, justifyContent: 'space-around',
           }}
         >
           {(item.startTime !== null && item.endTime === null) ? (

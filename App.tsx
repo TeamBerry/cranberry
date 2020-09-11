@@ -18,6 +18,7 @@ import { lightTheme } from './src/shared/themes';
 import HomeScreen from './src/screens/home.screen';
 import SignupScreen from './src/screens/signup.screen';
 import CreateBoxScreen from './src/screens/create-box.screen';
+import JoinBoxScreen from './src/screens/join-box.screen';
 
 const AuthStack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -201,6 +202,11 @@ export default function App() {
       <RootStack.Screen
         name="CreateBox"
         component={CreateBoxScreen}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen
+        name="JoinBox"
+        component={JoinBoxScreen}
         options={{ headerShown: false }}
       />
     </RootStack.Navigator>
