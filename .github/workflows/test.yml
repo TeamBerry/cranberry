@@ -25,5 +25,5 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.REGISTRY_KEY }}" >> ~/.npmrc
       - name: Install Dependencies
         run: npm install
-      - name: Link check
+      - name: Lint check
         run: npm run lint:check
