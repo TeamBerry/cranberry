@@ -87,23 +87,25 @@ const SignupScreen = ({ navigation }) => {
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={
-                      yup.object().shape({
-                        email: yup
-                          .string()
-                          .email('This mail address is invalid')
-                          .required('The mail address is required'),
-                        username: yup
-                          .string()
-                          .min(4, 'Your username cannot have less than 4 characters.')
-                          .max(20, 'Your username cannot have more than 20 characters.')
-                          .trim()
-                          .required('You must choose an username'),
-                        password: yup
-                          .string()
-                          .min(8, 'Your password cannot have less than 8 symbols.')
-                          .required('The password is required'),
-                      })
-                  }
+            yup.object().shape({
+              email: yup
+                .string()
+                .email('This mail address is invalid')
+                .required('The mail address is required'),
+              username: yup
+                .string()
+                .strict(false)
+                .min(4, 'Your username cannot have less than 4 characters.')
+                .max(20, 'Your username cannot have more than 20 characters.')
+                .test('no-spaces', 'Your username cannot have spaces', (value: string) => !/\s/g.test(value))
+                .trim()
+                .required('You must choose an username'),
+              password: yup
+                .string()
+                .min(8, 'Your password cannot have less than 8 symbols.')
+                .required('The password is required'),
+            })
+          }
           onSubmit={async (values) => {
             setLogging(true);
             try {
