@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   image: {
-    height: 150,
-    width: 150,
+    height: 100,
+    width: 100,
   },
 });
 
@@ -73,6 +73,16 @@ export default function LoginScreen({ navigation }) {
           source={require('../../assets/berrybox-logo-master.png')}
           style={styles.image}
         />
+        <Text style={{
+          fontSize: 16,
+          color: 'white',
+          fontFamily: 'Montserrat',
+          textAlign: 'left',
+          padding: 20,
+        }}
+        >
+          Welcome back!
+        </Text>
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={
@@ -123,6 +133,14 @@ export default function LoginScreen({ navigation }) {
                   onSubmitEditing={handleSubmit}
                 />
                 {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
+                <View style={{ padding: 5, display: 'flex', flexDirection: 'row' }}>
+                  <Text style={{ color: '#CCCCCC', marginRight: 2 }}>
+                    New to Berrybox?
+                  </Text>
+                  <Pressable onPress={() => navigation.navigate('SignUp')}>
+                    <Text style={{ color: '#009AEB', fontWeight: '700' }}>Sign Up</Text>
+                  </Pressable>
+                </View>
               </View>
               {!isLogging ? (
                 <Pressable onPress={() => handleSubmit()} disabled={!isValid}>

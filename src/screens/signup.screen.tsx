@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useContext, useState } from 'react';
 import {
-  Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity, Pressable,
+  Image, KeyboardAvoidingView, StyleSheet, View, Button, Text, TouchableOpacity, Pressable, Linking,
 } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   image: {
-    height: 150,
-    width: 150,
+    height: 100,
+    width: 100,
   },
 });
 
@@ -74,6 +74,16 @@ const SignupScreen = ({ navigation }) => {
           source={require('../../assets/berrybox-logo-master.png')}
           style={styles.image}
         />
+        <Text style={{
+          fontSize: 16,
+          color: 'white',
+          fontFamily: 'Montserrat',
+          textAlign: 'left',
+          padding: 20,
+        }}
+        >
+          Create your account
+        </Text>
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={
@@ -135,7 +145,7 @@ const SignupScreen = ({ navigation }) => {
                   value={values.username}
                   onChangeText={handleChange('username')}
                   onBlur={() => setFieldTouched('username')}
-                  placeholder="Username"
+                  placeholder="Username (4-20 characters, no spaces.)"
                   autoCorrect={false}
                   returnKeyType="next"
                 />
@@ -146,12 +156,34 @@ const SignupScreen = ({ navigation }) => {
                   value={values.password}
                   onChangeText={handleChange('password')}
                   onBlur={() => setFieldTouched('password')}
-                  placeholder="Password"
+                  placeholder="Password (min. 8 characters)"
                   secureTextEntry
                   returnKeyType="done"
                   onSubmitEditing={handleSubmit}
                 />
                 {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
+                <View style={{ padding: 5, display: 'flex', flexDirection: 'row' }}>
+                  <Text style={{ color: '#CCCCCC', marginRight: 2 }}>
+                    Already a member?
+                  </Text>
+                  <Pressable onPress={() => navigation.navigate('SignIn')}>
+                    <Text style={{ color: '#009AEB', fontWeight: '700' }}>Log In</Text>
+                  </Pressable>
+                </View>
+              </View>
+              <View style={{
+                padding: 5, display: 'flex', flexDirection: 'row', alignItems: 'center',
+              }}
+              >
+                <Text style={{
+                  textAlign: 'left', color: '#BBBBBB', fontSize: 10,
+                }}
+                >
+                  By continuing, you agree to our
+                </Text>
+                <Pressable onPress={() => Linking.openURL('https://berrybox.tv/privacy')}>
+                  <Text style={{ color: '#009AEB', fontSize: 10, marginLeft: 2 }}>Privacy Policy</Text>
+                </Pressable>
               </View>
               {!isLogging ? (
                 <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
