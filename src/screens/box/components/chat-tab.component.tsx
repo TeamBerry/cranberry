@@ -122,6 +122,10 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
   };
 
   const sendMessage = () => {
+    if (messageInput === '') {
+      return;
+    }
+
     const newMessage: Message = new Message({
       author: { _id: user._id },
       contents: messageInput,
