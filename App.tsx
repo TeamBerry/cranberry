@@ -50,14 +50,51 @@ export default function App() {
 
   const { initialBoxToken } = useInitialUrl();
 
+  const createAnonymousToken = () => {
+    let session = {};
+    const values = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let authToken = '';
+
+    // eslint-disable-next-line no-plusplus
+    for (let i = 20; i > 0; --i) {
+      authToken += values[Math.round(Math.random() * (values.length - 1))];
+    }
+
+    session = {
+      _id: `user-${authToken}`,
+      name: null,
+      mail: null,
+      settings: {
+        theme: 'dark',
+        picture: null,
+        color: '#DF62A9',
+        isColorblind: false,
+      },
+    };
+
+    return session;
+  };
+
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
         case 'RESTORE_TOKEN':
-          axios.defaults.headers.common.Authorization = `Bearer ${action.token}`;
+          console.log('RESTORING TOKEN: ', action);
+          // eslint-disable-next-line no-case-declarations
+          let userToken = null;
+
+          if (action.token) {
+            userToken = action.token;
+            axios.defaults.headers.common.Authorization = `Bearer ${action.token}`;
+          } else {
+            userToken = createAnonymousToken();
+          }
+
+          console.log('TOKEN: ', userToken);
+
           return {
             ...prevState,
-            userToken: action.token,
+            userToken,
             isLoading: false,
           };
         case 'SIGN_IN':
