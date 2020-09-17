@@ -62,7 +62,7 @@ const SignupScreen = ({ navigation }) => {
       <View style={styles.headerContainer}>
         <View style={styles.headerStyle}>
           <Pressable
-            onPress={() => navigation.pop()}
+            onPress={() => navigation.navigate('Home')}
           >
             <Text style={styles.loginLink}>BACK</Text>
           </Pressable>
