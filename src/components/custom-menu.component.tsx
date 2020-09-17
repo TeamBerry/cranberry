@@ -3,9 +3,12 @@ import {
   Text, View, StyleSheet, Pressable, Linking,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import AuthContext from '../shared/auth.context';
 import ProfilePicture from './profile-picture.component';
 import BxActionComponent from './bx-action.component';
+
+import UsersIcon from '../../assets/icons/users-icon.svg';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,6 +33,7 @@ const styles = StyleSheet.create({
 });
 
 const CustomMenu = () => {
+  const navigation = useNavigation();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -49,7 +53,23 @@ const CustomMenu = () => {
 
   const UserSpace = () => {
     if (!user) {
-      return null;
+      return (
+        <View>
+          <View style={{
+            flex: 0, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 20,
+          }}
+          >
+            <UsersIcon width={40} height={40} fill="white" />
+            <Text style={{ textAlign: 'center', color: 'white' }}>
+              Sign up or login to create your own boxes,
+              chat with users and more!
+            </Text>
+          </View>
+          <Pressable onPress={() => navigation.push('SignIn')}>
+            <BxActionComponent options={{ text: 'Log in' }} />
+          </Pressable>
+        </View>
+      );
     }
 
     return (

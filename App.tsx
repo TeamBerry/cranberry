@@ -229,6 +229,22 @@ export default function App() {
         }}
       />
       <RootStack.Screen
+        name="SignIn"
+        component={LoginScreen}
+        options={{
+          animationTypeForReplace: 'pop',
+          headerShown: false,
+        }}
+      />
+      <RootStack.Screen
+        name="SignUp"
+        component={SignupScreen}
+        options={{
+          animationTypeForReplace: 'pop',
+          headerShown: false,
+        }}
+      />
+      <RootStack.Screen
         name="Box"
         component={BoxScreen}
         initialParams={{ boxToken: initialBoxToken || null }}
@@ -264,11 +280,7 @@ export default function App() {
     <PaperProvider>
       <AuthContext.Provider value={authContext}>
         <NavigationContainer theme={ActiveTheme}>
-          {state.userToken === null ? (
-            <AuthFlow />
-          ) : (
-            <RootFlow />
-          )}
+          <RootFlow />
         </NavigationContainer>
       </AuthContext.Provider>
     </PaperProvider>
