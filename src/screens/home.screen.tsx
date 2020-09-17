@@ -148,7 +148,7 @@ const HomeScreen = ({ navigation }) => {
             <Pressable
               onPress={() => setMenuOpen(!isMenuOpen)}
             >
-              {user ? (
+              {user && user.mail ? (
                 <ProfilePicture userId={user ? user._id : null} size={30} />
               ) : (
                 <UsersIcon width={30} height={30} fill="white" />

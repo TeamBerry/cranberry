@@ -248,7 +248,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
         <BerryHelper box={box} permissions={permissions} />
       </Collapsible>
       <View style={styles.searchSpace}>
-        {user ? (
+        {user && user.mail ? (
           <>
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <TextInput
@@ -268,11 +268,18 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
             {searchCooldown ? (
               <CountdownIndicator time={5000} text="Next search available in a few seconds." />
             ) : null}
+            <View style={{ height: '88%' }}>
+              <SearchList />
+            </View>
           </>
-        ) : null}
-        <View style={{ height: '88%' }}>
-          <SearchList />
-        </View>
+        ) : (
+          <View style={{ display: 'flex', height: 90, justifyContent: 'center' }}>
+            <Text style={{ color: 'white', textAlign: 'center' }}>
+              Create an account or log in to search for videos
+              and add them to the queue.
+            </Text>
+          </View>
+        )}
       </View>
       <Snackbar
         visible={error}

@@ -50,18 +50,18 @@ export default function App() {
 
   const { initialBoxToken } = useInitialUrl();
 
-  const createAnonymousToken = () => {
+  const createAnonymousToken = async () => {
     let session = {};
     const values = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let authToken = '';
+    let anonymousToken = '';
 
     // eslint-disable-next-line no-plusplus
     for (let i = 20; i > 0; --i) {
-      authToken += values[Math.round(Math.random() * (values.length - 1))];
+      anonymousToken += values[Math.round(Math.random() * (values.length - 1))];
     }
 
     session = {
-      _id: `user-${authToken}`,
+      _id: `user-${anonymousToken}`,
       name: null,
       mail: null,
       settings: {
@@ -72,6 +72,8 @@ export default function App() {
       },
     };
 
+    await AsyncStorage.setItem('BBOX-user', JSON.stringify(session));
+
     return session;
   };
 
@@ -80,21 +82,16 @@ export default function App() {
       switch (action.type) {
         case 'RESTORE_TOKEN':
           console.log('RESTORING TOKEN: ', action);
-          // eslint-disable-next-line no-case-declarations
-          let userToken = null;
 
           if (action.token) {
-            userToken = action.token;
             axios.defaults.headers.common.Authorization = `Bearer ${action.token}`;
           } else {
-            userToken = createAnonymousToken();
+            createAnonymousToken();
           }
-
-          console.log('TOKEN: ', userToken);
 
           return {
             ...prevState,
-            userToken,
+            userToken: action.token,
             isLoading: false,
           };
         case 'SIGN_IN':
