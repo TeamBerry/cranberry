@@ -105,6 +105,7 @@ export default function App() {
             userToken: action.token,
           };
         case 'SIGN_OUT':
+          delete axios.defaults.headers.common.Authorization;
           return {
             ...prevState,
             isSignout: true,
