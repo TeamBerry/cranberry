@@ -380,7 +380,7 @@ const Queue = (props: {
                 </View>
               </View>
               <View>
-                {user && box?.options?.berries && box?.creator?._id !== user._id ? (
+                {user && user.mail && box?.options?.berries && box?.creator?._id !== user._id ? (
                   <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
                     <BerryCounter count={berryCount} />
                   </Pressable>
