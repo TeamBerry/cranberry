@@ -19,12 +19,14 @@ const styles = StyleSheet.create({
     borderColor: '#191919',
     borderStyle: 'solid',
     borderBottomWidth: 1,
-    flexDirection: 'row-reverse',
   },
   headerStyle: {
     height: 20,
     elevation: 0,
     shadowOpacity: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
   },
   loginLink: {
     textTransform: 'uppercase',
@@ -59,11 +61,16 @@ const SignupScreen = ({ navigation }) => {
     <>
       <View style={styles.headerContainer}>
         <View style={styles.headerStyle}>
-          <TouchableOpacity
+          <Pressable
+            onPress={() => navigation.pop()}
+          >
+            <Text style={styles.loginLink}>BACK</Text>
+          </Pressable>
+          <Pressable
             onPress={() => navigation.navigate('SignIn')}
           >
             <Text style={styles.loginLink}>Log in</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
       <KeyboardAvoidingView

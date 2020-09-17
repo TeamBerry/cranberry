@@ -18,12 +18,14 @@ const styles = StyleSheet.create({
     borderColor: '#191919',
     borderStyle: 'solid',
     borderBottomWidth: 1,
-    flexDirection: 'row-reverse',
   },
   headerStyle: {
     height: 20,
     elevation: 0,
     shadowOpacity: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
   },
   loginLink: {
     textTransform: 'uppercase',
@@ -58,11 +60,16 @@ export default function LoginScreen({ navigation }) {
     <>
       <View style={styles.headerContainer}>
         <View style={styles.headerStyle}>
-          <TouchableOpacity
+          <Pressable
+            onPress={() => navigation.navigate('Home')}
+          >
+            <Text style={styles.loginLink}>BACK</Text>
+          </Pressable>
+          <Pressable
             onPress={() => navigation.navigate('SignUp')}
           >
             <Text style={styles.loginLink}>New Account</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
       <KeyboardAvoidingView
@@ -100,6 +107,7 @@ export default function LoginScreen({ navigation }) {
             setLogging(true);
             try {
               await signIn({ email: values.email, password: values.password });
+              navigation.pop();
             } catch (error) {
               setLogging(false);
               setError(true);
