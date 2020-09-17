@@ -90,12 +90,12 @@ export default function App() {
 
       try {
         userToken = await AsyncStorage.getItem('BBOX-token');
+        dispatch({ type: 'RESTORE_TOKEN', token: userToken });
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log('Restoring token failed.');
       }
 
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
       setTimeout(() => {
         setAppReadiness(true);
       }, 2000);
