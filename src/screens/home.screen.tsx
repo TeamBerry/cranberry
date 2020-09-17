@@ -99,9 +99,9 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     const bootstrap = async () => {
+      getBoxes();
       const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
       setUser(user);
-      getBoxes();
     };
 
     bootstrap();
