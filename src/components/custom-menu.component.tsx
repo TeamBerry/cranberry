@@ -65,7 +65,7 @@ const CustomMenu = () => {
               chat with users and more!
             </Text>
           </View>
-          <Pressable onPress={() => navigation.push('SignIn')}>
+          <Pressable onPress={() => navigation.navigate('SignIn')}>
             <BxActionComponent options={{ text: 'Log in' }} />
           </Pressable>
         </View>
