@@ -108,7 +108,6 @@ export default function LoginScreen({ navigation }) {
             setLogging(true);
             try {
               await signIn({ email: values.email, password: values.password });
-              navigation.pop();
             } catch (error) {
               setLogging(false);
               setError(true);
