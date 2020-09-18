@@ -79,7 +79,6 @@ export default function App() {
     (prevState, action) => {
       switch (action.type) {
         case 'RESTORE_TOKEN':
-          console.log('RESTORING TOKEN: ', action);
 
           if (action.token) {
             axios.defaults.headers.common.Authorization = `Bearer ${action.token}`;
