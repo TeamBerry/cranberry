@@ -86,6 +86,7 @@ export default function App() {
           if (action.token) {
             axios.defaults.headers.common.Authorization = `Bearer ${action.token}`;
           } else {
+            delete axios.defaults.headers.common.Authorization;
             createAnonymousToken();
           }
 
@@ -103,6 +104,7 @@ export default function App() {
           };
         case 'SIGN_OUT':
           delete axios.defaults.headers.common.Authorization;
+          createAnonymousToken();
           return {
             ...prevState,
             isSignout: true,
