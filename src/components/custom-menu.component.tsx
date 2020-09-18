@@ -97,7 +97,14 @@ const CustomMenu = () => {
           <View>
             <UserSpace />
           </View>
-          <View style={{ paddingVertical: 20 }}>
+          <View style={{
+            paddingVertical: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center',
+          }}
+          >
+            <Pressable onPress={() => Linking.openURL('https://twitter.com/search/?q=%23BerryboxApp')}>
+              <Text style={{ color: 'white', textAlign: 'center' }}>Feedback</Text>
+            </Pressable>
+            <View style={{ height: '70%', width: 1, backgroundColor: '#777777' }} />
             <Pressable onPress={() => Linking.openURL('https://berrybox.tv/privacy')}>
               <Text style={{ color: 'white', textAlign: 'center' }}>Privacy Policy</Text>
             </Pressable>
