@@ -45,11 +45,11 @@ const BoxScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     const bootstrap = async () => {
-      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      setUser(user);
-
       const box = await axios.get(`${Config.API_URL}/boxes/${boxToken}`);
       setBox(box.data);
+
+      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+      setUser(user);
     };
 
     bootstrap();

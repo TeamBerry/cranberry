@@ -11,20 +11,23 @@ import AuthContext from '../shared/auth.context';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import BxActionComponent from '../components/bx-action.component';
 
+import BackIcon from '../../assets/icons/back-icon.svg';
+
 const styles = StyleSheet.create({
   headerContainer: {
     paddingVertical: 20,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
     backgroundColor: '#262626',
     borderColor: '#191919',
     borderStyle: 'solid',
     borderBottomWidth: 1,
-    flexDirection: 'row-reverse',
   },
   headerStyle: {
     height: 20,
     elevation: 0,
     shadowOpacity: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   loginLink: {
     textTransform: 'uppercase',
@@ -59,11 +62,16 @@ const SignupScreen = ({ navigation }) => {
     <>
       <View style={styles.headerContainer}>
         <View style={styles.headerStyle}>
-          <TouchableOpacity
+          <Pressable
+            onPress={() => navigation.navigate('Home')}
+          >
+            <BackIcon width={20} height={20} fill="white" />
+          </Pressable>
+          <Pressable
             onPress={() => navigation.navigate('SignIn')}
           >
             <Text style={styles.loginLink}>Log in</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
       <KeyboardAvoidingView
