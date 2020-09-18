@@ -52,7 +52,7 @@ const CustomMenu = () => {
   const { signOut } = useContext(AuthContext);
 
   const UserSpace = () => {
-    if (!user.mail) {
+    if (!user?.mail) {
       return (
         <View>
           <View style={{

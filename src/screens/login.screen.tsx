@@ -10,10 +10,12 @@ import AuthContext from '../shared/auth.context';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import BxActionComponent from '../components/bx-action.component';
 
+import BackIcon from '../../assets/icons/back-icon.svg';
+
 const styles = StyleSheet.create({
   headerContainer: {
     paddingVertical: 20,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
     backgroundColor: '#262626',
     borderColor: '#191919',
     borderStyle: 'solid',
@@ -25,7 +27,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
   },
   loginLink: {
     textTransform: 'uppercase',
@@ -63,7 +64,7 @@ export default function LoginScreen({ navigation }) {
           <Pressable
             onPress={() => navigation.navigate('Home')}
           >
-            <Text style={styles.loginLink}>BACK</Text>
+            <BackIcon width={20} height={20} fill="white" />
           </Pressable>
           <Pressable
             onPress={() => navigation.navigate('SignUp')}
