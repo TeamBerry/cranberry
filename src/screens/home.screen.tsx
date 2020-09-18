@@ -205,12 +205,14 @@ const HomeScreen = ({ navigation }) => {
             <Pressable onPress={() => setBoxMenuOpen(false)}>
               <View style={{ width: '100%', height: '100%' }} />
             </Pressable>
-            <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('CreateBox'); }}>
-              <View style={styles.boxOption}>
-                <Text style={styles.boxOptionTitle}>Create a Box</Text>
-                <Text style={styles.boxOptionHelp}>Invite your friends and let the music play!</Text>
-              </View>
-            </Pressable>
+            {user && user.mail ? (
+              <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('CreateBox'); }}>
+                <View style={styles.boxOption}>
+                  <Text style={styles.boxOptionTitle}>Create a Box</Text>
+                  <Text style={styles.boxOptionHelp}>Invite your friends and let the music play!</Text>
+                </View>
+              </Pressable>
+            ) : null}
             <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('JoinBox'); }}>
               <View style={styles.boxOption}>
                 <Text style={styles.boxOptionTitle}>Join a Box</Text>
