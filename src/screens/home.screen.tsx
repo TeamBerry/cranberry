@@ -12,7 +12,7 @@ import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
 import ProfilePicture from '../components/profile-picture.component';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
-import UsersIcon from '../../assets/icons/users-icon.svg';
+import UserIcon from '../../assets/icons/user-icon.svg';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -151,7 +151,7 @@ const HomeScreen = ({ navigation }) => {
               {user && user.mail ? (
                 <ProfilePicture userId={user ? user._id : null} size={30} />
               ) : (
-                <UsersIcon width={30} height={30} fill="white" />
+                <UserIcon width={30} height={30} fill="white" />
               )}
             </Pressable>
           </View>

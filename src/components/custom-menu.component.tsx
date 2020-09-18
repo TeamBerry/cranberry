@@ -8,7 +8,7 @@ import AuthContext from '../shared/auth.context';
 import ProfilePicture from './profile-picture.component';
 import BxActionComponent from './bx-action.component';
 
-import UsersIcon from '../../assets/icons/users-icon.svg';
+import UserIcon from '../../assets/icons/user-icon.svg';
 
 const styles = StyleSheet.create({
   container: {
@@ -59,7 +59,7 @@ const CustomMenu = () => {
             flex: 0, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 20,
           }}
           >
-            <UsersIcon width={40} height={40} fill="white" />
+            <UserIcon width={40} height={40} fill="white" />
             <Text style={{ textAlign: 'center', color: 'white' }}>
               Sign up or login to create your own boxes,
               chat with users and more!
