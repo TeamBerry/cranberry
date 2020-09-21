@@ -14,13 +14,11 @@ import Config from 'react-native-config';
 import BoxScreen from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
 import AuthContext from './src/shared/auth.context';
-import { lightTheme } from './src/shared/themes';
 import HomeScreen from './src/screens/home.screen';
 import SignupScreen from './src/screens/signup.screen';
 import CreateBoxScreen from './src/screens/create-box.screen';
 import JoinBoxScreen from './src/screens/join-box.screen';
 
-const AuthStack = createStackNavigator();
 const RootStack = createStackNavigator();
 
 const useInitialUrl = () => {
@@ -50,11 +48,45 @@ export default function App() {
 
   const { initialBoxToken } = useInitialUrl();
 
+  const createAnonymousToken = async () => {
+    let session = {};
+    const values = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let anonymousToken = '';
+
+    // eslint-disable-next-line no-plusplus
+    for (let i = 20; i > 0; --i) {
+      anonymousToken += values[Math.round(Math.random() * (values.length - 1))];
+    }
+
+    session = {
+      _id: `user-${anonymousToken}`,
+      name: null,
+      mail: null,
+      settings: {
+        theme: 'dark',
+        picture: null,
+        color: '#DF62A9',
+        isColorblind: false,
+      },
+    };
+
+    await AsyncStorage.setItem('BBOX-user', JSON.stringify(session));
+
+    return session;
+  };
+
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
         case 'RESTORE_TOKEN':
-          axios.defaults.headers.common.Authorization = `Bearer ${action.token}`;
+
+          if (action.token) {
+            axios.defaults.headers.common.Authorization = `Bearer ${action.token}`;
+          } else {
+            delete axios.defaults.headers.common.Authorization;
+            createAnonymousToken();
+          }
+
           return {
             ...prevState,
             userToken: action.token,
@@ -68,6 +100,8 @@ export default function App() {
             userToken: action.token,
           };
         case 'SIGN_OUT':
+          delete axios.defaults.headers.common.Authorization;
+          createAnonymousToken();
           return {
             ...prevState,
             isSignout: true,
@@ -90,12 +124,12 @@ export default function App() {
 
       try {
         userToken = await AsyncStorage.getItem('BBOX-token');
+        dispatch({ type: 'RESTORE_TOKEN', token: userToken });
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log('Restoring token failed.');
       }
 
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
       setTimeout(() => {
         setAppReadiness(true);
       }, 2000);
@@ -151,30 +185,8 @@ export default function App() {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      ...lightTheme.colors,
     },
   };
-
-  const AuthFlow = () => (
-    <AuthStack.Navigator>
-      <AuthStack.Screen
-        name="SignIn"
-        component={LoginScreen}
-        options={{
-          animationTypeForReplace: 'pop',
-          headerShown: false,
-        }}
-      />
-      <AuthStack.Screen
-        name="SignUp"
-        component={SignupScreen}
-        options={{
-          animationTypeForReplace: 'pop',
-          headerShown: false,
-        }}
-      />
-    </AuthStack.Navigator>
-  );
 
   const RootFlow = () => (
     <RootStack.Navigator
@@ -191,6 +203,26 @@ export default function App() {
           headerShown: false,
         }}
       />
+      { state.userToken == null ? (
+        <>
+          <RootStack.Screen
+            name="SignIn"
+            component={LoginScreen}
+            options={{
+              animationTypeForReplace: 'pop',
+              headerShown: false,
+            }}
+          />
+          <RootStack.Screen
+            name="SignUp"
+            component={SignupScreen}
+            options={{
+              animationTypeForReplace: 'pop',
+              headerShown: false,
+            }}
+          />
+        </>
+      ) : null}
       <RootStack.Screen
         name="Box"
         component={BoxScreen}
@@ -227,11 +259,7 @@ export default function App() {
     <PaperProvider>
       <AuthContext.Provider value={authContext}>
         <NavigationContainer theme={ActiveTheme}>
-          {state.userToken === null ? (
-            <AuthFlow />
-          ) : (
-            <RootFlow />
-          )}
+          <RootFlow />
         </NavigationContainer>
       </AuthContext.Provider>
     </PaperProvider>

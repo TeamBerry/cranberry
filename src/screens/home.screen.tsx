@@ -12,6 +12,7 @@ import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
 import ProfilePicture from '../components/profile-picture.component';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
+import UserIcon from '../../assets/icons/user-icon.svg';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -99,9 +100,9 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     const bootstrap = async () => {
+      getBoxes();
       const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
       setUser(user);
-      getBoxes();
     };
 
     bootstrap();
@@ -147,7 +148,11 @@ const HomeScreen = ({ navigation }) => {
             <Pressable
               onPress={() => setMenuOpen(!isMenuOpen)}
             >
-              <ProfilePicture userId={user ? user._id : null} size={30} />
+              {user && user.mail ? (
+                <ProfilePicture userId={user ? user._id : null} size={30} />
+              ) : (
+                <UserIcon width={30} height={30} fill="white" />
+              )}
             </Pressable>
           </View>
         </View>
@@ -200,12 +205,14 @@ const HomeScreen = ({ navigation }) => {
             <Pressable onPress={() => setBoxMenuOpen(false)}>
               <View style={{ width: '100%', height: '100%' }} />
             </Pressable>
-            <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('CreateBox'); }}>
-              <View style={styles.boxOption}>
-                <Text style={styles.boxOptionTitle}>Create a Box</Text>
-                <Text style={styles.boxOptionHelp}>Invite your friends and let the music play!</Text>
-              </View>
-            </Pressable>
+            {user && user.mail ? (
+              <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('CreateBox'); }}>
+                <View style={styles.boxOption}>
+                  <Text style={styles.boxOptionTitle}>Create a Box</Text>
+                  <Text style={styles.boxOptionHelp}>Invite your friends and let the music play!</Text>
+                </View>
+              </Pressable>
+            ) : null}
             <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('JoinBox'); }}>
               <View style={styles.boxOption}>
                 <Text style={styles.boxOptionTitle}>Join a Box</Text>

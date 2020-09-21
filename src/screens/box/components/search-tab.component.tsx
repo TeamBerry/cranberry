@@ -15,6 +15,7 @@ import BxLoadingIndicator from '../../../components/bx-loading-indicator.compone
 import BxButtonComponent from '../../../components/bx-button.component';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
+import CountdownIndicator from '../../../components/countdown-indicator.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -75,6 +76,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
   const [user, setUser] = useState(null);
   const [hasSearched, setSearched] = useState(false);
   const [isSearching, setSearching] = useState(false);
+  const [searchCooldown, setSearchCooldown] = useState(false);
   const [error, setError] = useState(false);
   const [videosInQueue, setQueueIds] = useState([]);
   const [boxOptions, setBoxOptions] = useState(box.options);
@@ -101,9 +103,9 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
   }, []);
 
   const search = async () => {
-    setSearching(true);
-    setSearched(false);
-    setError(false);
+    if (searchCooldown) {
+      return;
+    }
 
     if (searchValue === '') {
       setSearchResults([]);
@@ -112,16 +114,23 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
     }
 
     try {
+      setSearching(true);
+      setSearched(false);
+      setError(false);
+      setSearchCooldown(true);
       const youtubeSearchRequest = await axios.get(`${Config.API_URL}/search`, {
         params: { value: searchValue },
       });
 
       setSearchResults(youtubeSearchRequest.data);
       setSearched(true);
+      setSearching(false);
+      setTimeout(() => setSearchCooldown(false), 5000);
     } catch (error) {
+      setSearching(false);
+      setSearchCooldown(false);
       setError(true);
     }
-    setSearching(false);
   };
 
   const SearchVideo = ({ video, isAlreadyInQueue }) => {
@@ -239,26 +248,38 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
         <BerryHelper box={box} permissions={permissions} />
       </Collapsible>
       <View style={styles.searchSpace}>
-        {user ? (
-          <View style={{ display: 'flex', flexDirection: 'row' }}>
-            <TextInput
-              style={styles.chatInput}
-              placeholder="Search YouTube for videos to add..."
-              placeholderTextColor="#BBB"
-              onChangeText={(text) => setSearchValue(text)}
-              value={searchValue}
-              onSubmitEditing={() => search()}
-            />
-            {boxOptions?.berries && box?.creator?._id !== user?._id ? (
-              <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
-                <BerryCounter count={berryCount} />
-              </Pressable>
+        {user && user.mail ? (
+          <>
+            <View style={{ display: 'flex', flexDirection: 'row' }}>
+              <TextInput
+                style={styles.chatInput}
+                placeholder="Search YouTube for videos to add..."
+                placeholderTextColor="#BBB"
+                onChangeText={(text) => setSearchValue(text)}
+                value={searchValue}
+                onSubmitEditing={() => search()}
+              />
+              {boxOptions?.berries && box?.creator?._id !== user?._id ? (
+                <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
+                  <BerryCounter count={berryCount} />
+                </Pressable>
+              ) : null}
+            </View>
+            {searchCooldown ? (
+              <CountdownIndicator time={5000} text="Next search available in a few seconds." />
             ) : null}
+            <View style={{ height: '88%' }}>
+              <SearchList />
+            </View>
+          </>
+        ) : (
+          <View style={{ display: 'flex', height: 90, justifyContent: 'center' }}>
+            <Text style={{ color: 'white', textAlign: 'center' }}>
+              Create an account or log in to search for videos
+              and add them to the queue.
+            </Text>
           </View>
-        ) : null}
-        <View style={{ height: '88%' }}>
-          <SearchList />
-        </View>
+        )}
       </View>
       <Snackbar
         visible={error}

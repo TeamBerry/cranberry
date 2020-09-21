@@ -3,9 +3,12 @@ import {
   Text, View, StyleSheet, Pressable, Linking,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import AuthContext from '../shared/auth.context';
 import ProfilePicture from './profile-picture.component';
 import BxActionComponent from './bx-action.component';
+
+import UserIcon from '../../assets/icons/user-icon.svg';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,6 +33,7 @@ const styles = StyleSheet.create({
 });
 
 const CustomMenu = () => {
+  const navigation = useNavigation();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -48,8 +52,24 @@ const CustomMenu = () => {
   const { signOut } = useContext(AuthContext);
 
   const UserSpace = () => {
-    if (!user) {
-      return null;
+    if (!user?.mail) {
+      return (
+        <View>
+          <View style={{
+            flex: 0, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 20,
+          }}
+          >
+            <UserIcon width={40} height={40} fill="white" />
+            <Text style={{ textAlign: 'center', color: 'white' }}>
+              Sign up or login to create your own boxes,
+              chat with users and more!
+            </Text>
+          </View>
+          <Pressable onPress={() => navigation.navigate('SignIn')}>
+            <BxActionComponent options={{ text: 'Log in' }} />
+          </Pressable>
+        </View>
+      );
     }
 
     return (
@@ -77,7 +97,14 @@ const CustomMenu = () => {
           <View>
             <UserSpace />
           </View>
-          <View style={{ paddingVertical: 20 }}>
+          <View style={{
+            paddingVertical: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center',
+          }}
+          >
+            <Pressable onPress={() => Linking.openURL('https://twitter.com/search/?q=%23BerryboxApp')}>
+              <Text style={{ color: 'white', textAlign: 'center' }}>Feedback</Text>
+            </Pressable>
+            <View style={{ height: '70%', width: 1, backgroundColor: '#777777' }} />
             <Pressable onPress={() => Linking.openURL('https://berrybox.tv/privacy')}>
               <Text style={{ color: 'white', textAlign: 'center' }}>Privacy Policy</Text>
             </Pressable>

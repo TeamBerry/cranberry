@@ -122,6 +122,10 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
   };
 
   const sendMessage = () => {
+    if (messageInput === '') {
+      return;
+    }
+
     const newMessage: Message = new Message({
       author: { _id: user._id },
       contents: messageInput,
@@ -173,7 +177,7 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
       </ScrollView>
       <ResumeScrollButton />
       <View style={{ paddingHorizontal: 5 }}>
-        {user ? (
+        {user && user.mail ? (
           <View style={{ display: 'flex', flexDirection: 'row' }}>
             <TextInput
               style={styles.chatInput}
@@ -189,7 +193,11 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
               </Pressable>
             ) : null}
           </View>
-        ) : null}
+        ) : (
+          <View style={{ display: 'flex', height: 30 }}>
+            <Text style={{ color: 'white', textAlign: 'center' }}>Create an account or log in to chat with everyone!</Text>
+          </View>
+        )}
       </View>
       <Collapsible collapsed={!isBerriesHelperShown}>
         <BerryHelper box={box} permissions={permissions} />

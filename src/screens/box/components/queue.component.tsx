@@ -299,7 +299,7 @@ const Queue = (props: {
       data={queueVideos}
       ItemSeparatorComponent={() => <View style={{ backgroundColor: '#191919', height: 1 }} />}
       renderItem={({ item }) => (
-        <QueueVideo item={item} boxToken={box._id} permissions={permissions} berriesEnabled={box.options.berries} />
+        <QueueVideo item={item} boxToken={box._id} permissions={permissions} berriesEnabled={user && user.mail && box.options.berries} />
       )}
       keyExtractor={(item) => item._id}
       initialNumToRender={8}
@@ -380,7 +380,7 @@ const Queue = (props: {
                 </View>
               </View>
               <View>
-                {user && box?.options?.berries && box?.creator?._id !== user._id ? (
+                {user && user.mail && box?.options?.berries && box?.creator?._id !== user._id ? (
                   <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
                     <BerryCounter count={berryCount} />
                   </Pressable>
@@ -413,7 +413,9 @@ const Queue = (props: {
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
-          <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>Tap a video for more info</Text>
+          {user && user.mail ? (
+            <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>Tap a video for more info</Text>
+          ) : null}
           <QueueList />
         </Collapsible>
       </View>
