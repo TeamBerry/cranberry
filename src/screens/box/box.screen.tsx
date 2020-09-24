@@ -6,7 +6,6 @@ import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import Config from 'react-native-config';
-import { useTranslation } from 'react-i18next';
 
 import {
   SyncPacket, BerryCount, Permission, FeedbackMessage,
@@ -31,7 +30,6 @@ const BoxScreen = ({ route, navigation }) => {
   const window = useWindowDimensions();
   const playerHeight = window.width * (9 / 16);
   const remainingHeight = window.height - playerHeight;
-  const { t } = useTranslation();
 
   let socketConnection = null;
 
