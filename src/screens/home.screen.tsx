@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal,
 } from 'react-native';
@@ -80,6 +80,7 @@ const HomeScreen = ({ navigation }) => {
   const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [boxes, setBoxes] = useState([]);
+  const _boxListRef = useRef(null);
 
   const getBoxes = async () => {
     try {
@@ -124,6 +125,12 @@ const HomeScreen = ({ navigation }) => {
     getBoxes();
   };
 
+  const scrollToTop = () => {
+    if (_boxListRef && _boxListRef.current) {
+      _boxListRef.current.scrollToIndex({ index: 0, animated: true });
+    }
+  };
+
   return (
     <>
       <SideMenu
@@ -152,9 +159,12 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.container}>
-          <Text style={styles.titlePage}>Boxes</Text>
+          <Pressable onPress={() => scrollToTop()}>
+            <Text style={styles.titlePage}>Boxes</Text>
+          </Pressable>
           {hasLoadedBoxes ? (
             <FlatList
+              ref={_boxListRef}
               data={boxes}
               refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
               ListEmptyComponent={(
