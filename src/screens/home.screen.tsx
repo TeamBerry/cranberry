@@ -46,12 +46,6 @@ const styles = StyleSheet.create({
     color: 'white',
     paddingLeft: 10,
   },
-  card: {
-    borderBottomWidth: 1,
-    borderColor: '#404040',
-    borderStyle: 'solid',
-    paddingVertical: 10,
-  },
   fab: {
     position: 'absolute',
     marginRight: 16,
@@ -169,14 +163,9 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
             )}
               renderItem={({ item }) => (
-                <Pressable
-                  android_ripple={{ color: '#4d4d4d' }}
-                  style={styles.card}
-                  onPress={() => navigation.navigate('Box', { boxToken: item._id })}
-                >
-                  <BoxCard box={item} />
-                </Pressable>
+                <BoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
               )}
+              ItemSeparatorComponent={() => <View style={{ backgroundColor: '#404040', height: 1 }} />}
               keyExtractor={(item) => item.name}
             />
           ) : (
@@ -188,7 +177,6 @@ const HomeScreen = ({ navigation }) => {
           style={styles.fab}
           color="white"
           icon="plus"
-        // onPress={() => navigation.push('CreateBox')}
           onPress={() => setBoxMenuOpen(!isBoxMenuOpen)}
         />
       </SideMenu>

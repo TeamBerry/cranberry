@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Text, View, Image, StyleSheet,
+  Text, View, Image, StyleSheet, ScrollView, Pressable,
 } from 'react-native';
 import { QueueItem } from '@teamberry/muscadine';
 import Box from '../models/box.model';
@@ -11,17 +11,15 @@ import BxChipComponent from './bx-chip.component';
 
 const styles = StyleSheet.create({
   card: {
-    height: 120,
+    height: 130,
     flex: 1,
     flexDirection: 'column',
-    paddingLeft: 10,
   },
   boxMainInfo: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    height: 90,
-    marginBottom: 10,
+    padding: 10,
   },
   boxFeatures: {
     height: 30,
@@ -35,7 +33,7 @@ const styles = StyleSheet.create({
   boxTitle: {
     color: 'white',
     fontFamily: 'Montserrat-SemiBold',
-    fontSize: 18,
+    fontSize: 16,
   },
   boxCreator: {
     height: 12,
@@ -65,13 +63,13 @@ const styles = StyleSheet.create({
 
 const displayCurrentvideo = (box: Box): QueueItem => box.playlist.find((video) => video.startTime !== null && video.endTime === null);
 
-const BoxCard = (props: { box: Box }) => {
-  const { box } = props;
+const BoxCard = (props: { box: Box, onPress: () => void }) => {
+  const { box, onPress } = props;
   const currentVideo = displayCurrentvideo(box);
 
   return (
     <View style={styles.card}>
-      <View style={styles.boxMainInfo}>
+      <Pressable style={styles.boxMainInfo} android_ripple={{ color: '#4d4d4d' }} onPress={onPress}>
         <View>
           {currentVideo ? (
             <Image
@@ -97,8 +95,11 @@ const BoxCard = (props: { box: Box }) => {
           </View>
           <Text style={styles.boxCurrent} numberOfLines={2}>{currentVideo ? currentVideo.video.name : '--'}</Text>
         </View>
-      </View>
-      <View style={styles.boxModes}>
+      </Pressable>
+      <ScrollView
+        horizontal
+        contentContainerStyle={{ paddingHorizontal: 10 }}
+      >
         {box.options.random ? (
           <View style={{ paddingHorizontal: 2 }}>
             <BxChipComponent options={{ type: 'random', chipText: 'Random' }} display="full" />
@@ -124,7 +125,7 @@ const BoxCard = (props: { box: Box }) => {
             <BxChipComponent options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }} display="full" />
           </View>
         ) : null}
-      </View>
+      </ScrollView>
     </View>
   );
 };
