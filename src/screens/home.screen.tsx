@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
 import axios from 'axios';
 import Config from 'react-native-config';
+import { useTranslation } from 'react-i18next';
 
 import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
@@ -81,6 +82,8 @@ const HomeScreen = ({ navigation }) => {
   const [user, setUser] = useState(null);
   const [boxes, setBoxes] = useState([]);
   const _boxListRef = useRef(null);
+
+  const { t, i18n } = useTranslation();
 
   const getBoxes = async () => {
     try {
@@ -160,7 +163,7 @@ const HomeScreen = ({ navigation }) => {
 
         <View style={styles.container}>
           <Pressable onPress={() => scrollToTop()}>
-            <Text style={styles.titlePage}>Boxes</Text>
+            <Text style={styles.titlePage}>{t('boxes')}</Text>
           </Pressable>
           {hasLoadedBoxes ? (
             <FlatList
