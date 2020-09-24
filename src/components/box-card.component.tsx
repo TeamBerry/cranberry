@@ -3,6 +3,7 @@ import {
   Text, View, Image, StyleSheet, ScrollView, Pressable,
 } from 'react-native';
 import { QueueItem } from '@teamberry/muscadine';
+import { useTranslation } from 'react-i18next';
 import Box from '../models/box.model';
 import ProfilePicture from './profile-picture.component';
 
@@ -67,6 +68,8 @@ const BoxCard = (props: { box: Box, onPress: () => void }) => {
   const { box, onPress } = props;
   const currentVideo = displayCurrentvideo(box);
 
+  const { t } = useTranslation();
+
   return (
     <View style={styles.card}>
       <Pressable style={styles.boxMainInfo} android_ripple={{ color: '#4d4d4d' }} onPress={onPress}>
@@ -102,22 +105,22 @@ const BoxCard = (props: { box: Box, onPress: () => void }) => {
       >
         {box.options.random ? (
           <View style={{ paddingHorizontal: 2 }}>
-            <BxChipComponent options={{ type: 'random', chipText: 'Random' }} display="full" />
+            <BxChipComponent options={{ type: 'random', chipText: t('random') }} display="full" />
           </View>
         ) : null}
         {box.options.loop ? (
           <View style={{ paddingHorizontal: 2 }}>
-            <BxChipComponent options={{ type: 'loop', chipText: 'Loop' }} display="full" />
+            <BxChipComponent options={{ type: 'loop', chipText: t('loop') }} display="full" />
           </View>
         ) : null}
         {box.options.berries ? (
           <View style={{ paddingHorizontal: 2 }}>
-            <BxChipComponent options={{ type: 'coin-enabled', chipText: 'Berries' }} display="full" />
+            <BxChipComponent options={{ type: 'coin-enabled', chipText: t('berries') }} display="full" />
           </View>
         ) : null}
         {box.private ? (
           <View style={{ paddingHorizontal: 2 }}>
-            <BxChipComponent options={{ type: 'lock', chipText: 'Private' }} display="full" />
+            <BxChipComponent options={{ type: 'lock', chipText: t('private') }} display="full" />
           </View>
         ) : null}
         {box.options.videoMaxDurationLimit !== 0 ? (

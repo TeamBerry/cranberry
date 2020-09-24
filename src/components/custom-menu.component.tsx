@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import AuthContext from '../shared/auth.context';
 import ProfilePicture from './profile-picture.component';
 import BxActionComponent from './bx-action.component';
@@ -36,6 +37,8 @@ const CustomMenu = () => {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     const bootstrap = async () => {
       try {
@@ -61,12 +64,11 @@ const CustomMenu = () => {
           >
             <UserIcon width={40} height={40} fill="white" />
             <Text style={{ textAlign: 'center', color: 'white' }}>
-              Sign up or login to create your own boxes,
-              chat with users and more!
+              {t('signupCTA')}
             </Text>
           </View>
           <Pressable onPress={() => navigation.navigate('SignIn')}>
-            <BxActionComponent options={{ text: 'Log in' }} />
+            <BxActionComponent options={{ text: t('login') }} />
           </Pressable>
         </View>
       );
@@ -84,7 +86,7 @@ const CustomMenu = () => {
           <Text style={styles.userName}>{user.name}</Text>
         </View>
         <Pressable onPress={() => signOut()}>
-          <BxActionComponent options={{ text: 'Sign out' }} />
+          <BxActionComponent options={{ text: t('logout') }} />
         </Pressable>
       </View>
     );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Dimensions } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
+import { useTranslation } from 'react-i18next';
 
 import { Permission } from '@teamberry/muscadine';
 import ChatTab from './chat-tab.component';
@@ -8,10 +9,11 @@ import SearchTab from './search-tab.component';
 import Box from '../../../models/box.model';
 
 const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: Array<Permission> }) => {
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
-    { key: 'search', title: 'Search' },
+    { key: 'search', title: t('search') },
   ]);
   const {
     box, socket, berryCount, permissions,

@@ -7,6 +7,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import Config from 'react-native-config';
+import { useTranslation } from 'react-i18next';
 
 import FormTextInput from '../components/form-text-input.component';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
@@ -50,6 +51,8 @@ const JoinBoxScreen = ({ navigation }) => {
   const [isChecking, setChecking] = useState(false);
   const [error, setError] = useState(null);
 
+  const { t } = useTranslation();
+
   const checkBox = async (link: string): Promise<boolean> => {
     setChecking(true);
     const inviteParseResults = /(i|invite)\/(\S{8})/gm.exec(link);
@@ -75,7 +78,7 @@ const JoinBoxScreen = ({ navigation }) => {
   return (
     <>
       <View style={styles.headerContainer}>
-        <Text style={styles.titlePage}>Join a box</Text>
+        <Text style={styles.titlePage}>{t('joinBox')}</Text>
         <Pressable
           onPress={() => navigation.pop()}
         >
@@ -109,21 +112,21 @@ const JoinBoxScreen = ({ navigation }) => {
                   value={values.link}
                   onChangeText={handleChange('link')}
                   onBlur={() => setFieldTouched('link')}
-                  placeholder="Invite link"
+                  placeholder={t('inviteLink')}
                   autoCorrect={false}
                   returnKeyType="next"
                   autoFocus
                 />
                 {touched.link && errors.link && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.link}</Text>}
                 <View style={styles.linkHelp}>
-                  <Text style={{ color: '#BBBBBB', fontFamily: 'Montserrat-SemiBold' }}>Invites look like this: </Text>
+                  <Text style={{ color: '#BBBBBB', fontFamily: 'Montserrat-SemiBold' }}>{t('inviteHelp')}</Text>
                   <Text style={{ color: '#AAAAAA' }}>berrybox.tv/invite/Z0dfeDa4</Text>
                   <Text style={{ color: '#AAAAAA' }}>berrybox.tv/i/Z0dfeDa4</Text>
                 </View>
               </View>
               {!isChecking ? (
                 <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
-                  <BxActionComponent options={{ text: 'Join Box' }} />
+                  <BxActionComponent options={{ text: t('joinBox') }} />
                 </Pressable>
               ) : (
                 <BxLoadingIndicator />

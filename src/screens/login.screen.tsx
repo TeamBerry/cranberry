@@ -5,6 +5,7 @@ import {
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Snackbar } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
@@ -53,6 +54,7 @@ const styles = StyleSheet.create({
 
 export default function LoginScreen({ navigation }) {
   const { signIn } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const [isLogging, setLogging] = useState(false);
   const [loginError, setError] = useState(false);
@@ -69,7 +71,7 @@ export default function LoginScreen({ navigation }) {
           <Pressable
             onPress={() => navigation.navigate('SignUp')}
           >
-            <Text style={styles.loginLink}>New Account</Text>
+            <Text style={styles.loginLink}>{t('signup')}</Text>
           </Pressable>
         </View>
       </View>
@@ -89,7 +91,7 @@ export default function LoginScreen({ navigation }) {
           padding: 20,
         }}
         >
-          Welcome back!
+          {t('welcomeBack')}
         </Text>
         <Formik
           initialValues={{ email: '', password: '' }}
@@ -123,7 +125,7 @@ export default function LoginScreen({ navigation }) {
                   value={values.email}
                   onChangeText={handleChange('email')}
                   onBlur={() => setFieldTouched('email')}
-                  placeholder="Email address"
+                  placeholder={t('emailAddress')}
                   autoCorrect={false}
                   keyboardType="email-address"
                   returnKeyType="next"
@@ -135,7 +137,7 @@ export default function LoginScreen({ navigation }) {
                   value={values.password}
                   onChangeText={handleChange('password')}
                   onBlur={() => setFieldTouched('password')}
-                  placeholder="Password"
+                  placeholder={t('password')}
                   secureTextEntry
                   returnKeyType="done"
                   onSubmitEditing={handleSubmit}
@@ -143,16 +145,16 @@ export default function LoginScreen({ navigation }) {
                 {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
                 <View style={{ padding: 5, display: 'flex', flexDirection: 'row' }}>
                   <Text style={{ color: '#CCCCCC', marginRight: 2 }}>
-                    New to Berrybox?
+                    {t('newToBerrybox')}
                   </Text>
                   <Pressable onPress={() => navigation.navigate('SignUp')}>
-                    <Text style={{ color: '#009AEB', fontWeight: '700' }}>Sign Up</Text>
+                    <Text style={{ color: '#009AEB', fontWeight: '700' }}>{t('signup')}</Text>
                   </Pressable>
                 </View>
               </View>
               {!isLogging ? (
                 <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
-                  <BxActionComponent options={{ text: 'Log in' }} />
+                  <BxActionComponent options={{ text: t('login') }} />
                 </Pressable>
               ) : (
                 <BxLoadingIndicator />

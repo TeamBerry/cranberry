@@ -8,6 +8,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import AsyncStorage from '@react-native-community/async-storage';
 import Config from 'react-native-config';
+import { useTranslation } from 'react-i18next';
 
 import FormTextInput from '../components/form-text-input.component';
 import RandomIcon from '../../assets/icons/random-icon.svg';
@@ -82,6 +83,7 @@ const CreateBoxScreen = ({ navigation }) => {
   const [user, setUser] = useState(null);
   const [isCreating, setCreating] = useState(false);
   const [box, setBox] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const getSession = async () => {
@@ -109,7 +111,7 @@ const CreateBoxScreen = ({ navigation }) => {
   return (
     <>
       <View style={styles.headerContainer}>
-        <Text style={styles.titlePage}>Create a box</Text>
+        <Text style={styles.titlePage}>{t('createBox')}</Text>
         <TouchableOpacity
           onPress={() => navigation.pop()}
         >
@@ -158,14 +160,14 @@ const CreateBoxScreen = ({ navigation }) => {
               handleChange, setFieldTouched, setFieldValue, handleSubmit, values, touched, errors, isValid,
             }) => (
               <View style={styles.form}>
-                <Text style={styles.sectionTitle}>Information</Text>
+                <Text style={styles.sectionTitle}>{t('information')}</Text>
                 <View style={styles.modeContainer}>
-                  <Text style={styles.modeTitle}>Box Name</Text>
+                  <Text style={styles.modeTitle}>{t('boxName')}</Text>
                   <FormTextInput
                     value={values.name}
                     onChangeText={handleChange('name')}
                     onBlur={() => setFieldTouched('name')}
-                    placeholder="Box Name"
+                    placeholder={t('boxName')}
                     autoCorrect={false}
                     returnKeyType="next"
                   />
@@ -177,7 +179,7 @@ const CreateBoxScreen = ({ navigation }) => {
                       <View style={{ paddingRight: 5 }}>
                         <LockIcon width={20} height={20} fill="white" />
                       </View>
-                      <Text style={styles.modeTitle}>Access Restriction</Text>
+                      <Text style={styles.modeTitle}>{t('private')}</Text>
                     </View>
                     <Switch
                       value={values.private}
@@ -186,7 +188,7 @@ const CreateBoxScreen = ({ navigation }) => {
                     />
                   </View>
                   <Text style={styles.modeHelper}>
-                    Your box will not appear publicly. You may grant access by inviting users directly.
+                    {t('privateHelp')}
                   </Text>
                 </View>
                 <View style={{
@@ -194,14 +196,14 @@ const CreateBoxScreen = ({ navigation }) => {
                   borderBottomWidth: 1,
                 }}
                 />
-                <Text style={styles.sectionTitle}>Settings</Text>
+                <Text style={styles.sectionTitle}>{t('settings')}</Text>
                 <View style={styles.modeContainer}>
                   <View style={styles.modeSpace}>
                     <View style={styles.modeDefinition}>
                       <View style={{ paddingRight: 5 }}>
                         <RandomIcon width={20} height={20} fill="white" />
                       </View>
-                      <Text style={styles.modeTitle}>Pick Videos at Random</Text>
+                      <Text style={styles.modeTitle}>{t('random')}</Text>
                     </View>
                     <Switch
                       value={values.random}
@@ -210,7 +212,7 @@ const CreateBoxScreen = ({ navigation }) => {
                     />
                   </View>
                   <Text style={styles.modeHelper}>
-                    Videos will be played randomly from the queue.
+                    {t('randomHelp')}
                   </Text>
                 </View>
                 <View style={styles.modeContainer}>
@@ -219,7 +221,7 @@ const CreateBoxScreen = ({ navigation }) => {
                       <View style={{ paddingRight: 5 }}>
                         <ReplayIcon width={20} height={20} fill="white" />
                       </View>
-                      <Text style={styles.modeTitle}>Loop Queue</Text>
+                      <Text style={styles.modeTitle}>{t('loop')}</Text>
                     </View>
                     <Switch
                       value={values.loop}
@@ -227,7 +229,7 @@ const CreateBoxScreen = ({ navigation }) => {
                       color="#009AEB"
                     />
                   </View>
-                  <Text style={styles.modeHelper}>Played videos will be automatically requeued.</Text>
+                  <Text style={styles.modeHelper}>{t('loopHelp')}</Text>
                 </View>
                 <View style={styles.modeContainer}>
                   <View style={styles.modeSpace}>
@@ -235,7 +237,7 @@ const CreateBoxScreen = ({ navigation }) => {
                       <View style={{ paddingRight: 5 }}>
                         <BerriesIcon width={20} height={20} fill="white" />
                       </View>
-                      <Text style={styles.modeTitle}>Berries System</Text>
+                      <Text style={styles.modeTitle}>{t('berries')}</Text>
                     </View>
                     <Switch
                       value={values.berries}
@@ -244,8 +246,7 @@ const CreateBoxScreen = ({ navigation }) => {
                     />
                   </View>
                   <Text style={styles.modeHelper}>
-                    Your users will be able to collect Berries while they are in your box. They will then be able to spend
-                    the berries to skip a video or select the next video to play.
+                    {t('berriesHelp')}
                   </Text>
                 </View>
                 <View style={styles.modeContainer}>
@@ -254,19 +255,18 @@ const CreateBoxScreen = ({ navigation }) => {
                       <View style={{ paddingRight: 5 }}>
                         <DurationRestrictionIcon width={20} height={20} fill="white" />
                       </View>
-                      <Text style={styles.modeTitle}>Duration Restriction</Text>
+                      <Text style={styles.modeTitle}>{t('durationRestriction')}</Text>
                     </View>
                   </View>
                   <Text style={styles.modeHelper}>
-                    Videos that exceed the set limit (in minutes) will not be accepted into the queue. Specifying 0 or
-                    nothing will disable this restriction.
+                    {t('durationRestrictionHelp')}
                   </Text>
                   <View style={{ paddingVertical: 5 }}>
                     <FormTextInput
                       value={values.videoMaxDurationLimit}
                       onChangeText={handleChange('videoMaxDurationLimit')}
                       onBlur={() => setFieldTouched('videoMaxDurationLimit')}
-                      placeholder="Set the duration restriction (in minutes)"
+                      placeholder={t('durationRestriction')}
                       autoCorrect={false}
                       returnKeyType="next"
                       keyboardType="numeric"
@@ -275,7 +275,7 @@ const CreateBoxScreen = ({ navigation }) => {
                 </View>
                 {!isCreating ? (
                   <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
-                    <BxActionComponent options={{ text: 'Create Box' }} />
+                    <BxActionComponent options={{ text: t('createBox') }} />
                   </Pressable>
                 ) : (
                   <BxLoadingIndicator />

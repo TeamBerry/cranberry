@@ -83,7 +83,7 @@ const HomeScreen = ({ navigation }) => {
   const [boxes, setBoxes] = useState([]);
   const _boxListRef = useRef(null);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const getBoxes = async () => {
     try {
@@ -209,15 +209,15 @@ const HomeScreen = ({ navigation }) => {
             {user && user.mail ? (
               <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('CreateBox'); }}>
                 <View style={styles.boxOption}>
-                  <Text style={styles.boxOptionTitle}>Create a Box</Text>
-                  <Text style={styles.boxOptionHelp}>Invite your friends and let the music play!</Text>
+                  <Text style={styles.boxOptionTitle}>{t('createBox')}</Text>
+                  <Text style={styles.boxOptionHelp}>{t('createBoxHelp')}</Text>
                 </View>
               </Pressable>
             ) : null}
             <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('JoinBox'); }}>
               <View style={styles.boxOption}>
-                <Text style={styles.boxOptionTitle}>Join a Box</Text>
-                <Text style={styles.boxOptionHelp}>Have an invite link? Then come here!</Text>
+                <Text style={styles.boxOptionTitle}>{t('joinBox')}</Text>
+                <Text style={styles.boxOptionHelp}>{t('joinBoxHelp')}</Text>
               </View>
             </Pressable>
           </View>

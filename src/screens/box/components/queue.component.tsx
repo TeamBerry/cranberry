@@ -9,6 +9,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import { Snackbar } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
+import { useTranslation } from 'react-i18next';
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
@@ -72,6 +73,7 @@ const Queue = (props: {
   } = props;
 
   const _durationInputRef = useRef(null);
+  const { t } = useTranslation();
 
   const [isCollapsed, setCollapse] = useState(true);
   const [error, setError] = useState(false);
@@ -304,7 +306,7 @@ const Queue = (props: {
       keyExtractor={(item) => item._id}
       initialNumToRender={8}
       windowSize={12}
-      ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>The Queue is empty.</Text>}
+      ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>{t('queueEmpty')}</Text>}
       ListFooterComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>●</Text>}
     />
   );
@@ -414,7 +416,7 @@ const Queue = (props: {
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
           {user && user.mail ? (
-            <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>Tap a video for more info</Text>
+            <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>{t('queueHelp')}</Text>
           ) : null}
           <QueueList />
         </Collapsible>

@@ -6,6 +6,7 @@ import {
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Snackbar } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 import FormTextInput from '../components/form-text-input.component';
 import AuthContext from '../shared/auth.context';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
 
 const SignupScreen = ({ navigation }) => {
   const { signUp } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   const [isLogging, setLogging] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -70,7 +72,7 @@ const SignupScreen = ({ navigation }) => {
           <Pressable
             onPress={() => navigation.navigate('SignIn')}
           >
-            <Text style={styles.loginLink}>Log in</Text>
+            <Text style={styles.loginLink}>{t('login')}</Text>
           </Pressable>
         </View>
       </View>
@@ -90,7 +92,7 @@ const SignupScreen = ({ navigation }) => {
           padding: 20,
         }}
         >
-          Create your account
+          {t('createAccount')}
         </Text>
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
@@ -143,7 +145,7 @@ const SignupScreen = ({ navigation }) => {
                   value={values.email}
                   onChangeText={handleChange('email')}
                   onBlur={() => setFieldTouched('email')}
-                  placeholder="Email address"
+                  placeholder={t('emailAddress')}
                   autoCorrect={false}
                   keyboardType="email-address"
                   returnKeyType="next"
@@ -155,7 +157,7 @@ const SignupScreen = ({ navigation }) => {
                   value={values.username}
                   onChangeText={handleChange('username')}
                   onBlur={() => setFieldTouched('username')}
-                  placeholder="Username (4-20 characters, no spaces.)"
+                  placeholder={`${t('username')} (4-20 characters, no spaces.)`}
                   autoCorrect={false}
                   returnKeyType="next"
                 />
@@ -166,7 +168,7 @@ const SignupScreen = ({ navigation }) => {
                   value={values.password}
                   onChangeText={handleChange('password')}
                   onBlur={() => setFieldTouched('password')}
-                  placeholder="Password (min. 8 characters)"
+                  placeholder={`${t('password')} (min. 8 characters)`}
                   secureTextEntry
                   returnKeyType="done"
                   onSubmitEditing={handleSubmit}
@@ -177,7 +179,7 @@ const SignupScreen = ({ navigation }) => {
                     Already a member?
                   </Text>
                   <Pressable onPress={() => navigation.navigate('SignIn')}>
-                    <Text style={{ color: '#009AEB', fontWeight: '700' }}>Log In</Text>
+                    <Text style={{ color: '#009AEB', fontWeight: '700' }}>{t('login')}</Text>
                   </Pressable>
                 </View>
               </View>
@@ -197,7 +199,7 @@ const SignupScreen = ({ navigation }) => {
               </View>
               {!isLogging ? (
                 <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
-                  <BxActionComponent options={{ text: 'Sign up' }} />
+                  <BxActionComponent options={{ text: t('signup') }} />
                 </Pressable>
               ) : (
                 <BxLoadingIndicator />
