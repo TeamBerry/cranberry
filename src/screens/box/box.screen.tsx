@@ -57,7 +57,7 @@ const BoxScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      navigation.popToTop();
+      navigation.navigate('Home');
       return true;
     });
 
