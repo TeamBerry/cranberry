@@ -314,7 +314,7 @@ const Queue = (props: {
       const invite = await axios.post(`${Config.API_URL}/boxes/${box._id}/invite`, null);
       await Share.share({
         title: 'Share an invite to this box (This invite will expire in 15 minutes)',
-        message: `berrybox.tv/i/${invite.data.link}`,
+        message: `https://berrybox.tv/i/${invite.data.link}`,
       });
     } catch (error) {
       console.error(error);
