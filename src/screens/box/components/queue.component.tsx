@@ -9,6 +9,9 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import { Snackbar } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
@@ -21,6 +24,7 @@ import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-ico
 import InviteIcon from '../../../../assets/icons/invite-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
+import FormTextInput from '../../../components/form-text-input.component';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -389,24 +393,53 @@ const Queue = (props: {
             </View>
             {isDurationInputVisible ? (
               <View style={{ paddingVertical: 5 }}>
-                <TextInput
-                  ref={_durationInputRef}
-                  keyboardType="numeric"
-                  onSubmitEditing={({ nativeEvent }) => { patchBox({ videoMaxDurationLimit: nativeEvent.text }); }}
-                  onBlur={() => setDurationInputVisibility(false)}
-                  placeholder="Set the duration restriction (in minutes)"
-                  autoFocus
-                  placeholderTextColor="#BBBBBB"
-                  style={{
-                    height: 40,
-                    borderWidth: 1,
-                    borderStyle: 'solid',
-                    borderColor: '#009aeb',
-                    padding: 10,
-                    borderRadius: 5,
-                    color: 'white',
+                <Formik
+                  initialValues={{
+                    videoMaxDurationLimit: box.options.videoMaxDurationLimit,
                   }}
-                />
+                  validationSchema={
+                    yup.object().shape({
+                      videoMaxDurationLimit: yup
+                        .number()
+                        .positive('The duration cannot be negative.')
+                        .integer()
+                        .typeError('You must specify a number.'),
+                    })
+                    }
+                  onSubmit={(values) => {
+                    patchBox({ videoMaxDurationLimit: values.videoMaxDurationLimit });
+                    setDurationInputVisibility(false);
+                  }}
+                >
+                  {({
+                    handleChange, handleSubmit, values, touched, errors,
+                  }) => (
+                    <View>
+                      <FormTextInput
+                        ref={_durationInputRef}
+                        value={values.videoMaxDurationLimit}
+                        keyboardType="numeric"
+                        onChangeText={handleChange('videoMaxDurationLimit')}
+                        onSubmitEditing={() => handleSubmit()}
+                        onBlur={() => handleSubmit()}
+                        placeholder="Set the duration restriction (in minutes)"
+                        autoFocus
+                        placeholderTextColor="#BBBBBB"
+                        style={{
+                          height: 40,
+                          borderWidth: 1,
+                          borderStyle: 'solid',
+                          borderColor: '#009aeb',
+                          padding: 10,
+                          borderRadius: 5,
+                          color: 'white',
+                        }}
+                      />
+                      {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit
+                        && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
+                    </View>
+                  )}
+                </Formik>
               </View>
             ) : null}
           </View>
