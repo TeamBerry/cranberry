@@ -75,8 +75,6 @@ const Queue = (props: {
     box, currentVideo, height, berryCount, permissions,
   } = props;
 
-  const _durationInputRef = useRef(null);
-
   const [isCollapsed, setCollapse] = useState(true);
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
@@ -416,7 +414,6 @@ const Queue = (props: {
                   }) => (
                     <View>
                       <FormTextInput
-                        ref={_durationInputRef}
                         value={values.videoMaxDurationLimit}
                         keyboardType="numeric"
                         onChangeText={handleChange('videoMaxDurationLimit')}
