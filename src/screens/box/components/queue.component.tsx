@@ -446,7 +446,7 @@ const Queue = (props: {
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
-          {user && user.mail ? (
+          {user && user.mail && box.playlist.length >= 0 ? (
             <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>Tap a video for more info</Text>
           ) : null}
           <QueueList />
