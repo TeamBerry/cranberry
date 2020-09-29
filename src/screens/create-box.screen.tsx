@@ -143,6 +143,9 @@ const CreateBoxScreen = ({ navigation }) => {
                   .boolean(),
                 videoMaxDurationLimit: yup
                   .number()
+                  .positive('The duration cannot be negative.')
+                  .integer()
+                  .typeError('You must specify a number.')
                   .default(0),
               })
             }
@@ -271,6 +274,7 @@ const CreateBoxScreen = ({ navigation }) => {
                       returnKeyType="next"
                       keyboardType="numeric"
                     />
+                    {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
                   </View>
                 </View>
                 {!isCreating ? (
