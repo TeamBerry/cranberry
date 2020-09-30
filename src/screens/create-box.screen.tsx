@@ -128,7 +128,7 @@ const CreateBoxScreen = ({ navigation }) => {
         <ScrollView>
           <Formik
             initialValues={{
-              name: '', private: false, random: false, loop: false, berries: true, videoMaxDurationLimit: 0,
+              name: '', private: false, random: false, loop: false, berries: true, videoMaxDurationLimit: '0',
             }}
             validationSchema={
               yup.object().shape({
@@ -145,6 +145,9 @@ const CreateBoxScreen = ({ navigation }) => {
                   .boolean(),
                 videoMaxDurationLimit: yup
                   .number()
+                  .positive('The duration cannot be negative.')
+                  .integer()
+                  .typeError('You must specify a number.')
                   .default(0),
               })
             }
@@ -152,7 +155,10 @@ const CreateBoxScreen = ({ navigation }) => {
               name: values.name,
               private: values.private,
               options: {
-                random: values.random, loop: values.loop, berries: values.berries, videoMaxDurationLimit: values.videoMaxDurationLimit,
+                random: values.random,
+                loop: values.loop,
+                berries: values.berries,
+                videoMaxDurationLimit: parseInt(values.videoMaxDurationLimit, 10),
               },
             })}
           >
@@ -271,6 +277,7 @@ const CreateBoxScreen = ({ navigation }) => {
                       returnKeyType="next"
                       keyboardType="numeric"
                     />
+                    {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
                   </View>
                 </View>
                 {!isCreating ? (
