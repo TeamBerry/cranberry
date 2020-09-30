@@ -7,6 +7,7 @@ import Config from 'react-native-config';
 import BackIcon from '../../assets/icons/back-icon.svg';
 import BxActionComponent from '../components/bx-action.component';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
+import BrokenLinkIcon from '../../assets/icons/broken-link-icon.svg';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -21,6 +22,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -32,23 +34,22 @@ const ParseLinkScreen = ({ route, navigation }) => {
   useEffect(() => {
     const parseUrl = async () => {
       if (initialUrl) {
-        console.log('INITIAL URL GOT: ', initialUrl);
-        if (/(box|i)\/(\w{24}|\w{8})/gmi.test(initialUrl)) {
-          const parseResults = /(box|i)\/(\w{24}|\w{8})/gmi.exec(initialUrl);
+        if (/(box)\/(\w{24})|(i|invite)\/(\w{8})/gmi.test(initialUrl)) {
+          try {
+            const parseResults = /(box)\/(\w{24})|(i|invite)\/(\w{8})/gmi.exec(initialUrl);
 
-          const scope = parseResults[1];
-          const token = parseResults[2];
+            const scope = parseResults[1] ?? parseResults[3];
+            const token = parseResults[2] ?? parseResults[4];
 
-          if (scope === 'i' || scope === 'invite') {
-            try {
+            if (scope === 'i' || scope === 'invite') {
               const matchingBox = await axios.get(`${Config.API_URL}/invites/${token}`);
               navigation.navigate('Box', { boxToken: matchingBox.data.boxToken });
-            } catch (error) {
-              setInvalidLinkError(true);
+            } else {
+              // TODO: Prevent access if the box is private and the user never accessed it
+              navigation.navigate('Box', { boxToken: token });
             }
-          } else {
-            // TODO: Prevent access if the box is private and the user never accessed it
-            navigation.navigate('Box', { boxToken: token });
+          } catch (error) {
+            setInvalidLinkError(true);
           }
         }
       }
@@ -78,7 +79,10 @@ const ParseLinkScreen = ({ route, navigation }) => {
       </View>
       <View style={styles.container}>
         {invalidLinkError ? (
-          <Text style={{ fontSize: 20, color: 'white', textAlign: 'center' }}>The link is invalid or has expired.</Text>
+          <>
+            <BrokenLinkIcon width={150} height={150} fill="white" />
+            <Text style={{ fontSize: 20, color: 'white', textAlign: 'center' }}>The link is invalid or has expired.</Text>
+          </>
         ) : (
           <>
             <BxLoadingIndicator />

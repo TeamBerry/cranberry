@@ -29,7 +29,7 @@ const useInitialUrl = () => {
     const getUrlAsync = async () => {
       const initialUrl = await Linking.getInitialURL();
 
-      if (initialUrl && /(box|i)\/(\w{24}|\w{8})/gmi.test(initialUrl)) {
+      if (initialUrl && /(box)\/(\w{24})|(i|invite)\/(\w{8})/gmi.test(initialUrl)) {
         setInviteLink(initialUrl);
       }
     };
