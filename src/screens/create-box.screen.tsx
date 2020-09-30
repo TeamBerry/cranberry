@@ -126,7 +126,7 @@ const CreateBoxScreen = ({ navigation }) => {
         <ScrollView>
           <Formik
             initialValues={{
-              name: '', private: false, random: false, loop: false, berries: true, videoMaxDurationLimit: 0,
+              name: '', private: false, random: false, loop: false, berries: true, videoMaxDurationLimit: '0',
             }}
             validationSchema={
               yup.object().shape({
@@ -153,7 +153,10 @@ const CreateBoxScreen = ({ navigation }) => {
               name: values.name,
               private: values.private,
               options: {
-                random: values.random, loop: values.loop, berries: values.berries, videoMaxDurationLimit: values.videoMaxDurationLimit,
+                random: values.random,
+                loop: values.loop,
+                berries: values.berries,
+                videoMaxDurationLimit: parseInt(values.videoMaxDurationLimit, 10),
               },
             })}
           >

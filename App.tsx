@@ -18,35 +18,33 @@ import HomeScreen from './src/screens/home.screen';
 import SignupScreen from './src/screens/signup.screen';
 import CreateBoxScreen from './src/screens/create-box.screen';
 import JoinBoxScreen from './src/screens/join-box.screen';
+import ParseLinkScreen from './src/screens/parse-link.screen';
 
 const RootStack = createStackNavigator();
 
 const useInitialUrl = () => {
-  const [initialBoxToken, setInitialBoxToken] = useState(null);
+  const [inviteLink, setInviteLink] = useState(null as string);
 
   useEffect(() => {
     const getUrlAsync = async () => {
       const initialUrl = await Linking.getInitialURL();
 
-      if (initialUrl) {
-        if (/box\/(\w{24})/gmi.test(initialUrl)) {
-          const boxToken = /box\/(\w{24})/gmi.exec(initialUrl)[1];
-          setInitialBoxToken(boxToken);
-        }
+      if (initialUrl && /(box)\/(\w{24})|(i|invite)\/(\w{8})/gmi.test(initialUrl)) {
+        setInviteLink(initialUrl);
       }
     };
 
     getUrlAsync();
   }, []);
 
-  return { initialBoxToken };
+  return { inviteLink };
 };
 
 export default function App() {
   LogBox.ignoreAllLogs();
   const [isAppReady, setAppReadiness] = useState(false);
 
-  const { initialBoxToken } = useInitialUrl();
+  const { inviteLink } = useInitialUrl();
 
   const createAnonymousToken = async () => {
     let session = {};
@@ -193,12 +191,20 @@ export default function App() {
       screenOptions={{
         cardStyle: { backgroundColor: '#191919' },
       }}
-      initialRouteName={initialBoxToken ? 'Box' : 'Home'}
+      initialRouteName={inviteLink ? 'ParseLink' : 'Home'}
       mode="modal"
     >
       <RootStack.Screen
         name="Home"
         component={HomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <RootStack.Screen
+        name="ParseLink"
+        component={ParseLinkScreen}
+        initialParams={{ initialUrl: inviteLink || null }}
         options={{
           headerShown: false,
         }}
@@ -226,7 +232,6 @@ export default function App() {
       <RootStack.Screen
         name="Box"
         component={BoxScreen}
-        initialParams={{ boxToken: initialBoxToken || null }}
         options={{
           headerShown: false,
         }}

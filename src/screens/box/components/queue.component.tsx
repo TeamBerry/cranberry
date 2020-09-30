@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, Animated, Pressable, TextInput, Share, BackHandler,
+  StyleSheet, Text, View, FlatList, Animated, Pressable, Share, BackHandler,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
@@ -74,8 +74,6 @@ const Queue = (props: {
   const {
     box, currentVideo, height, berryCount, permissions,
   } = props;
-
-  const _durationInputRef = useRef(null);
 
   const [isCollapsed, setCollapse] = useState(true);
   const [error, setError] = useState(false);
@@ -318,7 +316,7 @@ const Queue = (props: {
       const invite = await axios.post(`${Config.API_URL}/boxes/${box._id}/invite`, null);
       await Share.share({
         title: 'Share an invite to this box (This invite will expire in 15 minutes)',
-        message: `berrybox.tv/i/${invite.data.link}`,
+        message: `https://berrybox.tv/i/${invite.data.link}`,
       });
     } catch (error) {
       console.error(error);
@@ -395,7 +393,7 @@ const Queue = (props: {
               <View style={{ paddingVertical: 5 }}>
                 <Formik
                   initialValues={{
-                    videoMaxDurationLimit: box.options.videoMaxDurationLimit,
+                    videoMaxDurationLimit: box.options.videoMaxDurationLimit.toString(),
                   }}
                   validationSchema={
                     yup.object().shape({
@@ -407,7 +405,7 @@ const Queue = (props: {
                     })
                     }
                   onSubmit={(values) => {
-                    patchBox({ videoMaxDurationLimit: values.videoMaxDurationLimit });
+                    patchBox({ videoMaxDurationLimit: parseInt(values.videoMaxDurationLimit, 10) });
                     setDurationInputVisibility(false);
                   }}
                 >
@@ -416,7 +414,6 @@ const Queue = (props: {
                   }) => (
                     <View>
                       <FormTextInput
-                        ref={_durationInputRef}
                         value={values.videoMaxDurationLimit}
                         keyboardType="numeric"
                         onChangeText={handleChange('videoMaxDurationLimit')}
