@@ -393,7 +393,7 @@ const Queue = (props: {
               <View style={{ paddingVertical: 5 }}>
                 <Formik
                   initialValues={{
-                    videoMaxDurationLimit: box.options.videoMaxDurationLimit,
+                    videoMaxDurationLimit: box.options.videoMaxDurationLimit.toString(),
                   }}
                   validationSchema={
                     yup.object().shape({
@@ -405,7 +405,7 @@ const Queue = (props: {
                     })
                     }
                   onSubmit={(values) => {
-                    patchBox({ videoMaxDurationLimit: values.videoMaxDurationLimit });
+                    patchBox({ videoMaxDurationLimit: parseInt(values.videoMaxDurationLimit, 10) });
                     setDurationInputVisibility(false);
                   }}
                 >
