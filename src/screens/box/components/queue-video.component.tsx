@@ -57,16 +57,22 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
     axios.put(`${Config.API_URL}/boxes/${boxToken}/queue/skip`);
   };
 
-  const removeVideo = () => {
-    axios.delete(`${Config.API_URL}/boxes/${boxToken}/queue/${item._id}`);
-  };
-
   const [areActionsVisible, setActionsVisibility] = useState(false);
+  const [deletionConfirmationShown, showDeletionConfirmation] = useState(false);
+
+  const removeVideo = () => {
+    if (!deletionConfirmationShown) {
+      showDeletionConfirmation(true);
+    } else {
+      axios.delete(`${Config.API_URL}/boxes/${boxToken}/queue/${item._id}`);
+    }
+  };
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       if (areActionsVisible) {
         setActionsVisibility(false);
+        showDeletionConfirmation(false);
         return true;
       }
       return false;
@@ -76,8 +82,13 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
   }, [areActionsVisible]);
 
   return (
-    <Pressable android_ripple={{ color: '#4d4d4d' }} onPress={() => setActionsVisibility(!areActionsVisible)}>
-      <View style={styles.queueVideo}>
+    <Pressable
+      android_ripple={{ color: '#4d4d4d' }}
+      onPress={() => {
+        setActionsVisibility(!areActionsVisible); showDeletionConfirmation(false);
+      }}
+    >
+      <View style={[styles.queueVideo, deletionConfirmationShown ? { backgroundColor: 'rgba(235,23,42,0.2)' } : {}]}>
         <View style={{ flex: 0, flexDirection: 'row' }}>
           <View style={{ paddingRight: 10 }}>
             <Image
@@ -140,38 +151,55 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
             </>
           ) : (
             <>
-              {permissions.includes('forceNext') || berriesEnabled ? (
-                <Pressable onPress={() => playNext()}>
-                  <BxButtonComponent options={{
-                    type: 'forceNext',
-                    text: permissions.includes('forceNext') ? 'Play Next' : '10 $BC$',
-                    textDisplay: 'full',
-                    context: permissions.includes('forceNext') ? 'primary' : 'berries',
-                  }}
-                  />
-                </Pressable>
-              ) : null}
-              {permissions.includes('forcePlay') || berriesEnabled ? (
-                <Pressable onPress={() => playNow()}>
-                  <BxButtonComponent options={{
-                    type: 'forcePlay',
-                    text: permissions.includes('forcePlay') ? 'Play Now' : '30 $BC$',
-                    textDisplay: 'full',
-                    context: permissions.includes('forcePlay') ? 'primary' : 'berries',
-                  }}
-                  />
-                </Pressable>
+              {!deletionConfirmationShown ? (
+                <>
+                  {permissions.includes('forceNext') || berriesEnabled ? (
+                    <Pressable onPress={() => playNext()}>
+                      <BxButtonComponent options={{
+                        type: 'forceNext',
+                        text: permissions.includes('forceNext') ? 'Play Next' : '10 $BC$',
+                        textDisplay: 'full',
+                        context: permissions.includes('forceNext') ? 'primary' : 'berries',
+                      }}
+                      />
+                    </Pressable>
+                  ) : null}
+                  {permissions.includes('forcePlay') || berriesEnabled ? (
+                    <Pressable onPress={() => playNow()}>
+                      <BxButtonComponent options={{
+                        type: 'forcePlay',
+                        text: permissions.includes('forcePlay') ? 'Play Now' : '30 $BC$',
+                        textDisplay: 'full',
+                        context: permissions.includes('forcePlay') ? 'primary' : 'berries',
+                      }}
+                      />
+                    </Pressable>
+                  ) : null}
+                </>
               ) : null}
               {permissions.includes('removeVideo') ? (
-                <Pressable onPress={() => removeVideo()}>
-                  <BxButtonComponent options={{
-                    type: 'cancel',
-                    text: 'Remove',
-                    textDisplay: 'full',
-                    context: 'danger',
-                  }}
-                  />
-                </Pressable>
+                <>
+                  {deletionConfirmationShown ? (
+                    <Pressable onPress={() => showDeletionConfirmation(false)}>
+                      <BxButtonComponent options={{
+                        type: 'play',
+                        text: 'Cancel deletion',
+                        textDisplay: 'full',
+                        context: 'primary',
+                      }}
+                      />
+                    </Pressable>
+                  ) : null}
+                  <Pressable onPress={() => removeVideo()}>
+                    <BxButtonComponent options={{
+                      type: 'cancel',
+                      text: deletionConfirmationShown ? 'Tap again to confirm' : 'Remove',
+                      textDisplay: 'full',
+                      context: 'danger',
+                    }}
+                    />
+                  </Pressable>
+                </>
               ) : null}
             </>
           )}
