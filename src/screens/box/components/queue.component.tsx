@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, Animated, Pressable, TextInput, Share, BackHandler,
+  StyleSheet, Text, View, FlatList, Animated, Pressable, Share, BackHandler,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
@@ -9,6 +9,9 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import { Snackbar } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
@@ -21,6 +24,7 @@ import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-ico
 import InviteIcon from '../../../../assets/icons/invite-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
+import FormTextInput from '../../../components/form-text-input.component';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -70,8 +74,6 @@ const Queue = (props: {
   const {
     box, currentVideo, height, berryCount, permissions,
   } = props;
-
-  const _durationInputRef = useRef(null);
 
   const [isCollapsed, setCollapse] = useState(true);
   const [error, setError] = useState(false);
@@ -314,7 +316,7 @@ const Queue = (props: {
       const invite = await axios.post(`${Config.API_URL}/boxes/${box._id}/invite`, null);
       await Share.share({
         title: 'Share an invite to this box (This invite will expire in 15 minutes)',
-        message: `berrybox.tv/i/${invite.data.link}`,
+        message: `https://berrybox.tv/i/${invite.data.link}`,
       });
     } catch (error) {
       console.error(error);
@@ -389,31 +391,59 @@ const Queue = (props: {
             </View>
             {isDurationInputVisible ? (
               <View style={{ paddingVertical: 5 }}>
-                <TextInput
-                  ref={_durationInputRef}
-                  keyboardType="numeric"
-                  onSubmitEditing={({ nativeEvent }) => { patchBox({ videoMaxDurationLimit: nativeEvent.text }); }}
-                  onBlur={() => setDurationInputVisibility(false)}
-                  placeholder="Set the duration restriction (in minutes)"
-                  autoFocus
-                  placeholderTextColor="#BBBBBB"
-                  style={{
-                    height: 40,
-                    borderWidth: 1,
-                    borderStyle: 'solid',
-                    borderColor: '#009aeb',
-                    padding: 10,
-                    borderRadius: 5,
-                    color: 'white',
+                <Formik
+                  initialValues={{
+                    videoMaxDurationLimit: box.options.videoMaxDurationLimit.toString(),
                   }}
-                />
+                  validationSchema={
+                    yup.object().shape({
+                      videoMaxDurationLimit: yup
+                        .number()
+                        .positive('The duration cannot be negative.')
+                        .integer()
+                        .typeError('You must specify a number.'),
+                    })
+                    }
+                  onSubmit={(values) => {
+                    patchBox({ videoMaxDurationLimit: parseInt(values.videoMaxDurationLimit, 10) });
+                    setDurationInputVisibility(false);
+                  }}
+                >
+                  {({
+                    handleChange, handleSubmit, values, touched, errors,
+                  }) => (
+                    <View>
+                      <FormTextInput
+                        value={values.videoMaxDurationLimit}
+                        keyboardType="numeric"
+                        onChangeText={handleChange('videoMaxDurationLimit')}
+                        onSubmitEditing={() => handleSubmit()}
+                        onBlur={() => handleSubmit()}
+                        placeholder="Set the duration restriction (in minutes)"
+                        autoFocus
+                        placeholderTextColor="#BBBBBB"
+                        style={{
+                          height: 40,
+                          borderWidth: 1,
+                          borderStyle: 'solid',
+                          borderColor: '#009aeb',
+                          padding: 10,
+                          borderRadius: 5,
+                          color: 'white',
+                        }}
+                      />
+                      {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit
+                        && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
+                    </View>
+                  )}
+                </Formik>
               </View>
             ) : null}
           </View>
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
-          {user && user.mail ? (
+          {user && user.mail && box.playlist.length >= 0 ? (
             <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>Tap a video for more info</Text>
           ) : null}
           <QueueList />

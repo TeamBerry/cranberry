@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal,
 } from 'react-native';
@@ -46,12 +46,6 @@ const styles = StyleSheet.create({
     color: 'white',
     paddingLeft: 10,
   },
-  card: {
-    borderBottomWidth: 1,
-    borderColor: '#404040',
-    borderStyle: 'solid',
-    paddingVertical: 10,
-  },
   fab: {
     position: 'absolute',
     marginRight: 16,
@@ -86,6 +80,7 @@ const HomeScreen = ({ navigation }) => {
   const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [boxes, setBoxes] = useState([]);
+  const _boxListRef = useRef(null);
 
   const getBoxes = async () => {
     try {
@@ -130,6 +125,12 @@ const HomeScreen = ({ navigation }) => {
     getBoxes();
   };
 
+  const scrollToTop = () => {
+    if (_boxListRef && _boxListRef.current) {
+      _boxListRef.current.scrollToIndex({ index: 0, animated: true });
+    }
+  };
+
   return (
     <>
       <SideMenu
@@ -158,9 +159,12 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.container}>
-          <Text style={styles.titlePage}>Boxes</Text>
+          <Pressable onPress={() => scrollToTop()}>
+            <Text style={styles.titlePage}>Boxes</Text>
+          </Pressable>
           {hasLoadedBoxes ? (
             <FlatList
+              ref={_boxListRef}
               data={boxes}
               refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
               ListEmptyComponent={(
@@ -169,14 +173,9 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
             )}
               renderItem={({ item }) => (
-                <Pressable
-                  android_ripple={{ color: '#4d4d4d' }}
-                  style={styles.card}
-                  onPress={() => navigation.navigate('Box', { boxToken: item._id })}
-                >
-                  <BoxCard box={item} />
-                </Pressable>
+                <BoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
               )}
+              ItemSeparatorComponent={() => <View style={{ backgroundColor: '#404040', height: 1 }} />}
               keyExtractor={(item) => item.name}
             />
           ) : (
@@ -188,7 +187,6 @@ const HomeScreen = ({ navigation }) => {
           style={styles.fab}
           color="white"
           icon="plus"
-        // onPress={() => navigation.push('CreateBox')}
           onPress={() => setBoxMenuOpen(!isBoxMenuOpen)}
         />
       </SideMenu>
