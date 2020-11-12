@@ -32,9 +32,9 @@ const DurationLine = (props: { current: number, videoDuration: string }) => {
     const durationWidthUnit = 100 / duration;
 
     displayTimeout = setInterval(() => {
-      current += 0.5;
+      current += 1;
       setWidth(current * durationWidthUnit);
-    }, 500);
+    }, 1000);
 
     return () => clearInterval(displayTimeout);
   }, [current, videoDuration]);
