@@ -6,6 +6,7 @@ import { QueueItem } from '@teamberry/muscadine';
 import Box from '../models/box.model';
 import ProfilePicture from './profile-picture.component';
 import BxChipComponent from './bx-chip.component';
+import UsersIcon from '../../assets/icons/users-icon.svg';
 
 const styles = StyleSheet.create({
   card: {
@@ -38,6 +39,17 @@ const styles = StyleSheet.create({
     color: '#e6e6e6',
     fontFamily: 'Montserrat-Regular',
   },
+  boxUserDisplay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    borderRadius: 5,
+    position: 'absolute',
+    top: 5,
+    left: 5,
+    padding: 3,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 const displayCurrentvideo = (box: Box): QueueItem => box.playlist.find((video) => video.startTime !== null && video.endTime === null);
@@ -61,6 +73,10 @@ const FeaturedBoxCard = (props: { box: Box, onPress: () => void }) => {
               source={{ uri: 'https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/default-picture' }}
             />
           )}
+          <View style={styles.boxUserDisplay}>
+            <UsersIcon width={16} height={16} fill="white" />
+            <Text style={{ color: 'white' }}>{box.users || 0}</Text>
+          </View>
         </View>
         <View style={styles.boxMainInfo}>
           <View style={{ flexDirection: 'row' }}>
