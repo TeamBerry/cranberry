@@ -22,6 +22,8 @@ const Player = ({ boxKey, currentItem, height }: {
 
   useEffect(() => {
     if (currentItem && isPlayerReady) {
+      // Acts as a reset if the same video is played twice
+      setVideoPosition(-1);
       const exactPosition = currentItem.position
         ? currentItem.position
         : Math.floor((Date.now() - Date.parse(currentItem.startTime.toString())) / 1000);
