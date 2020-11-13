@@ -16,6 +16,7 @@ import BxButtonComponent from '../../../components/bx-button.component';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import CountdownIndicator from '../../../components/countdown-indicator.component';
+import { useTheme } from '../../../shared/theme.context';
 
 const styles = StyleSheet.create({
   container: {
@@ -70,6 +71,8 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
   const {
     socket, box, berryCount, permissions,
   } = props;
+
+  const { colors } = useTheme();
 
   const [searchValue, setSearchValue] = useState('');
   const [youtubeSearchResults, setSearchResults] = useState([] as Array<Video>);
@@ -243,7 +246,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
       <Collapsible collapsed={!isBerriesHelperShown}>
         <BerryHelper box={box} permissions={permissions} />
       </Collapsible>
@@ -252,9 +255,9 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
           <>
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <TextInput
-                style={styles.chatInput}
+                style={[styles.chatInput, { backgroundColor: colors.backgroundChatColor }]}
                 placeholder="Search YouTube for videos to add..."
-                placeholderTextColor="#BBB"
+                placeholderTextColor={colors.textSystemColor}
                 onChangeText={(text) => setSearchValue(text)}
                 value={searchValue}
                 onSubmitEditing={() => search()}
@@ -274,7 +277,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
           </>
         ) : (
           <View style={{ display: 'flex', height: 90, justifyContent: 'center' }}>
-            <Text style={{ color: 'white', textAlign: 'center' }}>
+            <Text style={{ color: colors.textColor, textAlign: 'center' }}>
               Create an account or log in to search for videos
               and add them to the queue.
             </Text>

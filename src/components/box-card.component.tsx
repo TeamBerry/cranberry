@@ -8,6 +8,7 @@ import ProfilePicture from './profile-picture.component';
 
 import UsersIcon from '../../assets/icons/users-icon.svg';
 import BxChipComponent from './bx-chip.component';
+import { useTheme } from '../shared/theme.context';
 
 const styles = StyleSheet.create({
   card: {
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   boxTitle: {
-    color: 'white',
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 16,
   },
@@ -66,6 +66,7 @@ const displayCurrentvideo = (box: Box): QueueItem => box.playlist.find((video) =
 const BoxCard = (props: { box: Box, onPress: () => void }) => {
   const { box, onPress } = props;
   const currentVideo = displayCurrentvideo(box);
+  const { colors } = useTheme();
 
   return (
     <View style={styles.card}>
@@ -88,12 +89,17 @@ const BoxCard = (props: { box: Box, onPress: () => void }) => {
           </View>
         </View>
         <View style={styles.boxInfo}>
-          <Text style={styles.boxTitle} numberOfLines={1}>{box.name}</Text>
+          <Text style={[styles.boxTitle, { color: colors.textColor }]} numberOfLines={1}>{box.name}</Text>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
             <ProfilePicture userId={box.creator._id} size={15} />
-            <Text style={{ color: '#BBBBBB', paddingLeft: 4 }}>{box.creator.name}</Text>
+            <Text style={{ color: colors.textSystemColor, paddingLeft: 4 }}>{box.creator.name}</Text>
           </View>
-          <Text style={styles.boxCurrent} numberOfLines={2}>{currentVideo ? currentVideo.video.name : '--'}</Text>
+          <Text
+            style={[styles.boxCurrent, { color: colors.textSecondaryColor }]}
+            numberOfLines={2}
+          >
+            {currentVideo ? currentVideo.video.name : '--'}
+          </Text>
         </View>
       </Pressable>
       <ScrollView

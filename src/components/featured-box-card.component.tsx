@@ -7,6 +7,7 @@ import Box from '../models/box.model';
 import ProfilePicture from './profile-picture.component';
 import BxChipComponent from './bx-chip.component';
 import UsersIcon from '../../assets/icons/users-icon.svg';
+import { useTheme } from '../shared/theme.context';
 
 const styles = StyleSheet.create({
   card: {
@@ -17,7 +18,6 @@ const styles = StyleSheet.create({
   boxContents: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#3f3f3f',
     borderBottomColor: '#EB8400',
     borderBottomWidth: 5,
   },
@@ -31,12 +31,10 @@ const styles = StyleSheet.create({
     width: 200,
   },
   boxTitle: {
-    color: 'white',
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 16,
   },
   boxCurrent: {
-    color: '#e6e6e6',
     fontFamily: 'Montserrat-Regular',
   },
   boxUserDisplay: {
@@ -57,10 +55,15 @@ const displayCurrentvideo = (box: Box): QueueItem => box.playlist.find((video) =
 const FeaturedBoxCard = (props: { box: Box, onPress: () => void }) => {
   const { box, onPress } = props;
   const currentVideo = displayCurrentvideo(box);
+  const { colors } = useTheme();
 
   return (
     <View style={styles.card}>
-      <Pressable style={styles.boxContents} android_ripple={{ color: '#4d4d4d' }} onPress={onPress}>
+      <Pressable
+        style={[styles.boxContents, { backgroundColor: colors.backgroundSecondaryColor }]}
+        android_ripple={{ color: '#4d4d4d' }}
+        onPress={onPress}
+      >
         <View style={{ paddingBottom: 5 }}>
           {currentVideo ? (
             <Image
@@ -82,11 +85,16 @@ const FeaturedBoxCard = (props: { box: Box, onPress: () => void }) => {
           <View style={{ flexDirection: 'row' }}>
             <ProfilePicture userId={box.creator._id} size={45} />
             <View>
-              <Text style={styles.boxTitle} numberOfLines={2}>{box.name}</Text>
-              <Text style={{ color: '#BBBBBB', fontSize: 12 }}>{box.creator.name}</Text>
+              <Text style={[styles.boxTitle, { color: colors.textColor }]} numberOfLines={2}>{box.name}</Text>
+              <Text style={{ color: colors.textSystemColor, fontSize: 12 }}>{box.creator.name}</Text>
             </View>
           </View>
-          <Text style={styles.boxCurrent} numberOfLines={2}>{currentVideo ? currentVideo.video.name : '--'}</Text>
+          <Text
+            style={[styles.boxCurrent, { color: colors.textSecondaryColor }]}
+            numberOfLines={2}
+          >
+            {currentVideo ? currentVideo.video.name : '--'}
+          </Text>
           <View style={{ flexDirection: 'row' }}>
             {box.options.random ? (
               <View style={{ paddingHorizontal: 2 }}>
@@ -105,7 +113,10 @@ const FeaturedBoxCard = (props: { box: Box, onPress: () => void }) => {
             ) : null}
             {box.options.videoMaxDurationLimit !== 0 ? (
               <View style={{ paddingHorizontal: 2 }}>
-                <BxChipComponent options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }} display="full" />
+                <BxChipComponent
+                  options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }}
+                  display="full"
+                />
               </View>
             ) : null}
           </View>

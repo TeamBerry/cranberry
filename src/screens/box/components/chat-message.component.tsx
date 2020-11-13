@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { Message, FeedbackMessage, SystemMessage } from '@teamberry/muscadine';
 import Config from 'react-native-config';
+import { useTheme } from '../../../shared/theme.context';
 
 export type Props = {
     message: Message | FeedbackMessage | SystemMessage
@@ -20,16 +21,13 @@ const styles = StyleSheet.create({
   },
   feedbackAlert: {
     fontSize: 8,
-    color: '#BBBBBB',
   },
   feedbackMessage: {
-    color: '#BBBBBB',
     borderLeftWidth: 3,
     borderStyle: 'solid',
     paddingLeft: 9,
   },
   systemMessage: {
-    color: '#BBBBBB',
     borderLeftWidth: 3,
     borderStyle: 'solid',
     paddingLeft: 9,
@@ -67,7 +65,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(252, 196, 13, 0.075)',
   },
   userMessage: {
-    color: 'white',
     paddingLeft: 4,
   },
   userBadge: {
@@ -78,6 +75,8 @@ const styles = StyleSheet.create({
 });
 
 const ChatMessage = ({ message }: Props) => {
+  const { colors } = useTheme();
+
   const AuthorRender = (message: Message) => {
     if (message.author) {
       const { name, color } = message.author as Message['author'];
@@ -90,8 +89,8 @@ const ChatMessage = ({ message }: Props) => {
     const type = `${message.context}SystemContext`;
 
     return (
-      <View style={[styles.message, styles.systemMessage, styles[type]]}>
-        <Text style={{ color: '#BBBBBB' }}>{message.contents}</Text>
+      <View style={[styles.message, styles.systemMessage, styles[type], { color: colors.textSystemColor }]}>
+        <Text style={{ color: colors.textSystemColor }}>{message.contents}</Text>
       </View>
     );
   };
@@ -100,9 +99,9 @@ const ChatMessage = ({ message }: Props) => {
     const type = `${message.context}FeedbackContext`;
 
     return (
-      <View style={[styles.message, styles.feedbackMessage, styles[type]]}>
-        <Text style={{ color: '#BBBBBB' }}>{message.contents}</Text>
-        <Text style={styles.feedbackAlert}>Only you can see this message.</Text>
+      <View style={[styles.message, styles.feedbackMessage, styles[type], { color: colors.textSystemColor }]}>
+        <Text style={{ color: colors.textSystemColor }}>{message.contents}</Text>
+        <Text style={[styles.feedbackAlert, { color: colors.textSystemColor }]}>Only you can see this message.</Text>
       </View>
     );
   };
@@ -148,7 +147,7 @@ const ChatMessage = ({ message }: Props) => {
 
   return (
     <View style={styles.message}>
-      <Text style={styles.userMessage}>
+      <Text style={[styles.userMessage, { color: colors.textColor }]}>
         {message.author._id === Config.ADMIN_ID ? (
           <Image
             style={{ width: 16, height: 16 }}

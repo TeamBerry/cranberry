@@ -15,13 +15,13 @@ import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import UserIcon from '../../assets/icons/user-icon.svg';
 import Box from '../models/box.model';
 import FeaturedBoxCard from '../components/featured-box-card.component';
+import { useTheme } from '../shared/theme.context';
 
 const styles = StyleSheet.create({
   headerContainer: {
     paddingTop: 20,
     paddingBottom: 20,
     paddingLeft: 10,
-    backgroundColor: '#262626',
     borderColor: '#191919',
     borderStyle: 'solid',
     borderBottomWidth: 1,
@@ -38,13 +38,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#262626',
   },
   titlePage: {
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 30,
     marginTop: '1%',
-    color: 'white',
     paddingLeft: 10,
   },
   fab: {
@@ -90,6 +88,7 @@ const HomeScreen = ({ navigation }) => {
   const [boxes, setBoxes] = useState([] as Array<Box>);
   const [featuredBoxes, setFeaturedBoxes] = useState([] as Array<Box>);
   const _boxListRef = useRef(null);
+  const { colors } = useTheme();
 
   const getBoxes = async () => {
     try {
@@ -155,7 +154,7 @@ const HomeScreen = ({ navigation }) => {
                 <StatusBar barStyle='dark-content' />
             </View> */}
 
-        <View style={styles.headerContainer}>
+        <View style={[styles.headerContainer, { backgroundColor: colors.background }]}>
           <View style={styles.headerStyle}>
             <Pressable
               onPress={() => setMenuOpen(!isMenuOpen)}
@@ -169,9 +168,9 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
           <Pressable onPress={() => scrollToTop()}>
-            <Text style={styles.titlePage}>Boxes</Text>
+            <Text style={[styles.titlePage, { color: colors.textColor }]}>Boxes</Text>
           </Pressable>
           {hasLoadedBoxes ? (
             <>
@@ -186,8 +185,8 @@ const HomeScreen = ({ navigation }) => {
                 >
                   <View style={styles.boxesSection}>
                     <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
-                      <Text style={{ color: 'white' }}>Top Boxes</Text>
-                      <Text style={{ color: '#CCCCCC', fontSize: 11 }}>Featured boxes picked by our staff</Text>
+                      <Text style={{ color: colors.textColor }}>Top Boxes</Text>
+                      <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>Featured boxes picked by our staff</Text>
                     </View>
                     <FlatList
                       data={featuredBoxes}
@@ -201,8 +200,8 @@ const HomeScreen = ({ navigation }) => {
                   <View style={styles.sectionSeparator} />
                   <View style={styles.boxesSection}>
                     <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
-                      <Text style={{ color: 'white' }}>Communities</Text>
-                      <Text style={{ color: '#CCCCCC', fontSize: 11 }}>Find a box for your needs</Text>
+                      <Text style={{ color: colors.textColor }}>Communities</Text>
+                      <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>Find a box for your needs</Text>
                     </View>
                     <FlatList
                       data={boxes}
