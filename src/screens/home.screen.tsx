@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 30,
     marginTop: '1%',
-    marginBottom: 10,
     color: 'white',
     paddingLeft: 10,
   },
@@ -139,7 +138,7 @@ const HomeScreen = ({ navigation }) => {
 
   const scrollToTop = () => {
     if (_boxListRef && _boxListRef.current) {
-      _boxListRef.current.scrollToIndex({ index: 0, animated: true });
+      _boxListRef.current.scrollTo({ x: 0, y: 0, animated: true });
     }
   };
 
@@ -176,42 +175,46 @@ const HomeScreen = ({ navigation }) => {
           </Pressable>
           {hasLoadedBoxes ? (
             <>
-              <ScrollView>
-                <View style={styles.boxesSection}>
-                  <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
-                    <Text style={{ color: 'white' }}>Top Boxes</Text>
-                    <Text style={{ color: '#CCCCCC', fontSize: 11 }}>Featured boxes picked by our staff</Text>
+              {boxes.length === 0 && featuredBoxes.length === 0 ? (
+                <Text style={{ color: 'white', textAlign: 'center' }}>
+                  An error occurred while loading boxes. Please try again.
+                </Text>
+              ) : (
+                <ScrollView
+                  ref={_boxListRef}
+                  refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
+                >
+                  <View style={styles.boxesSection}>
+                    <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
+                      <Text style={{ color: 'white' }}>Top Boxes</Text>
+                      <Text style={{ color: '#CCCCCC', fontSize: 11 }}>Featured boxes picked by our staff</Text>
+                    </View>
+                    <FlatList
+                      data={featuredBoxes}
+                      renderItem={({ item }) => (
+                        <FeaturedBoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
+                      )}
+                      horizontal
+                      keyExtractor={(item) => item.name}
+                    />
                   </View>
-                  <FlatList
-                    data={featuredBoxes}
-                    renderItem={({ item }) => (
-                      <FeaturedBoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
-                    )}
-                    horizontal
-                  />
-                </View>
-                <View style={styles.sectionSeparator} />
-                <View style={styles.boxesSection}>
-                  <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
-                    <Text style={{ color: 'white' }}>Communities</Text>
-                    <Text style={{ color: '#CCCCCC', fontSize: 11 }}>Find a box for your needs</Text>
+                  <View style={styles.sectionSeparator} />
+                  <View style={styles.boxesSection}>
+                    <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
+                      <Text style={{ color: 'white' }}>Communities</Text>
+                      <Text style={{ color: '#CCCCCC', fontSize: 11 }}>Find a box for your needs</Text>
+                    </View>
+                    <FlatList
+                      data={boxes}
+                      renderItem={({ item }) => (
+                        <BoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
+                      )}
+                      ItemSeparatorComponent={() => <View style={{ backgroundColor: '#404040', height: 1 }} />}
+                      keyExtractor={(item) => item.name}
+                    />
                   </View>
-                  <FlatList
-                    data={boxes}
-                    refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
-                    ListEmptyComponent={(
-                      <Text style={{ color: 'white', textAlign: 'center' }}>
-                        An error occurred while loading boxes. Please try again.
-                      </Text>
-                    )}
-                    renderItem={({ item }) => (
-                      <BoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
-                    )}
-                    ItemSeparatorComponent={() => <View style={{ backgroundColor: '#404040', height: 1 }} />}
-                    keyExtractor={(item) => item.name}
-                  />
-                </View>
-              </ScrollView>
+                </ScrollView>
+              )}
             </>
           ) : (
             <BxLoadingIndicator />
