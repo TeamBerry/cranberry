@@ -137,6 +137,7 @@ const BoxScreen = ({ route, navigation }) => {
           <Player
             boxKey={boxKey}
             currentItem={currentQueueItem}
+            height={playerHeight}
           />
         ) : (
           <BxLoadingIndicator />

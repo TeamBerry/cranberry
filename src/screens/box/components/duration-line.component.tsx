@@ -40,7 +40,7 @@ const DurationLine = (props: { current: number, videoDuration: string }) => {
   }, [current, videoDuration]);
 
   return (
-    <View style={{ width: `${width}%`, height: 2, backgroundColor: '#009AEB' }} />
+    <View style={{ width: `${width}%`, height: 2, backgroundColor: 'rgba(0,154,235,0.6)' }} />
   );
 };
 

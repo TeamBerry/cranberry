@@ -6,9 +6,10 @@ import { PlayingItem } from '@teamberry/muscadine';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
 import DurationLine from './duration-line.component';
 
-const Player = ({ boxKey, currentItem }: {
+const Player = ({ boxKey, currentItem, height }: {
     boxKey: string,
-    currentItem: PlayingItem
+    currentItem: PlayingItem,
+    height: number
 }) => {
   const _youtubeRef = useRef(null);
   const [isLoading, setLoading] = useState(true);
@@ -46,12 +47,12 @@ const Player = ({ boxKey, currentItem }: {
           apiKey={boxKey}
           play
           videoId={currentItem.video.link}
-          style={{ alignSelf: 'stretch', height: '99%' }}
+          style={{ alignSelf: 'stretch', height: height - 2 }}
           onReady={() => setPlayerReadiness(true)}
         // eslint-disable-next-line no-console
           onError={(e) => console.log(e)}
         />
-        <View style={{ height: 2, width: '100%' }}>
+        <View style={{ height: 2, width: '100%', backgroundColor: '#444444' }}>
           <DurationLine current={videoPosition} videoDuration={currentItem.video.duration} />
         </View>
       </View>
