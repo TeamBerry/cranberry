@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal,
+  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal, ScrollView,
 } from 'react-native';
 import SideMenu from 'react-native-side-menu-updated';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -13,6 +13,8 @@ import BoxCard from '../components/box-card.component';
 import ProfilePicture from '../components/profile-picture.component';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import UserIcon from '../../assets/icons/user-icon.svg';
+import Box from '../models/box.model';
+import FeaturedBoxCard from '../components/featured-box-card.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -72,6 +74,13 @@ const styles = StyleSheet.create({
   boxOptionHelp: {
     color: '#FFFFFF',
   },
+  boxesSection: {
+    marginVertical: 5,
+  },
+  sectionSeparator: {
+    backgroundColor: '#404040',
+    height: 2,
+  },
 });
 
 const HomeScreen = ({ navigation }) => {
@@ -79,14 +88,17 @@ const HomeScreen = ({ navigation }) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [boxes, setBoxes] = useState([]);
+  const [boxes, setBoxes] = useState([] as Array<Box>);
+  const [featuredBoxes, setFeaturedBoxes] = useState([] as Array<Box>);
   const _boxListRef = useRef(null);
 
   const getBoxes = async () => {
     try {
       setBoxLoading(false);
       const boxesResults = await axios.get(`${Config.API_URL}/boxes`);
-      setBoxes(boxesResults.data);
+
+      setFeaturedBoxes(boxesResults.data.filter((box: Box) => box.featured));
+      setBoxes(boxesResults.data.filter((box: Box) => !box.featured));
       setBoxLoading(true);
     } catch (error) {
       setBoxLoading(true);
@@ -163,21 +175,44 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.titlePage}>Boxes</Text>
           </Pressable>
           {hasLoadedBoxes ? (
-            <FlatList
-              ref={_boxListRef}
-              data={boxes}
-              refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
-              ListEmptyComponent={(
-                <Text style={{ color: 'white', textAlign: 'center' }}>
-                  An error occurred while loading boxes. Please try again.
-                </Text>
-            )}
-              renderItem={({ item }) => (
-                <BoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
-              )}
-              ItemSeparatorComponent={() => <View style={{ backgroundColor: '#404040', height: 1 }} />}
-              keyExtractor={(item) => item.name}
-            />
+            <>
+              <ScrollView>
+                <View style={styles.boxesSection}>
+                  <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
+                    <Text style={{ color: 'white' }}>Top Boxes</Text>
+                    <Text style={{ color: '#CCCCCC', fontSize: 11 }}>Featured boxes picked by our staff</Text>
+                  </View>
+                  <FlatList
+                    data={featuredBoxes}
+                    renderItem={({ item }) => (
+                      <FeaturedBoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
+                    )}
+                    horizontal
+                  />
+                </View>
+                <View style={styles.sectionSeparator} />
+                <View style={styles.boxesSection}>
+                  <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
+                    <Text style={{ color: 'white' }}>Communities</Text>
+                    <Text style={{ color: '#CCCCCC', fontSize: 11 }}>Find a box for your needs</Text>
+                  </View>
+                  <FlatList
+                    data={boxes}
+                    refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
+                    ListEmptyComponent={(
+                      <Text style={{ color: 'white', textAlign: 'center' }}>
+                        An error occurred while loading boxes. Please try again.
+                      </Text>
+                    )}
+                    renderItem={({ item }) => (
+                      <BoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
+                    )}
+                    ItemSeparatorComponent={() => <View style={{ backgroundColor: '#404040', height: 1 }} />}
+                    keyExtractor={(item) => item.name}
+                  />
+                </View>
+              </ScrollView>
+            </>
           ) : (
             <BxLoadingIndicator />
           )}
