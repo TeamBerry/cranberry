@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 const BoxScreen = ({ route, navigation }) => {
   const { boxToken } = route.params;
   const window = useWindowDimensions();
-  const playerHeight = window.width * (9 / 16);
+  const playerHeight = window.width * (9 / 16) + 10;
   const remainingHeight = window.height - playerHeight;
 
   let socketConnection = null;
