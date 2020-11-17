@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, useWindowDimensions, BackHandler, Text,
+  View, useWindowDimensions, BackHandler, Text,
 } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
