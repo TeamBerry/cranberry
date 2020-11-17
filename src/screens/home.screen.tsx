@@ -19,8 +19,8 @@ import { useTheme } from '../shared/theme.context';
 
 const styles = StyleSheet.create({
   headerContainer: {
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
     paddingLeft: 10,
     borderStyle: 'solid',
     borderBottomWidth: 1,
@@ -167,9 +167,6 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-          <Pressable onPress={() => scrollToTop()}>
-            <Text style={[styles.titlePage, { color: colors.textColor }]}>Boxes</Text>
-          </Pressable>
           {hasLoadedBoxes ? (
             <>
               {boxes.length === 0 && featuredBoxes.length === 0 ? (
@@ -181,6 +178,7 @@ const HomeScreen = ({ navigation }) => {
                   ref={_boxListRef}
                   refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
                 >
+                  <Text style={[styles.titlePage, { color: colors.textColor }]}>Boxes</Text>
                   <View style={styles.boxesSection}>
                     <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
                       <Text style={{ color: colors.textColor }}>Top Boxes</Text>
