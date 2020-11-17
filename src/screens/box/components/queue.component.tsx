@@ -329,7 +329,7 @@ const Queue = (props: {
             <ProfilePicture userId={box.creator._id} size={25} />
           </View>
           <View style={{ flex: 1, flexShrink: 1 }}>
-            <Text style={[styles.boxName, { color: colors.textSystemColor }]}>{box.name}</Text>
+            <Text style={[styles.boxName, { color: colors.textSystemColor }]} numberOfLines={1}>{box.name}</Text>
             <CurrentVideo />
           </View>
           <View style={{ width: 40 }}>
@@ -349,7 +349,7 @@ const Queue = (props: {
           <>
             <View style={{ height: '55%', width: 1, backgroundColor: '#777777' }} />
             <Pressable style={styles.shareSpace} onPress={onShare}>
-              <InviteIcon width={20} height={20} fill={colors.textColor} />
+              <InviteIcon width={20} height={20} fill="#009AEB" />
             </Pressable>
           </>
         ) : null}
