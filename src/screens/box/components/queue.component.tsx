@@ -25,12 +25,11 @@ import InviteIcon from '../../../../assets/icons/invite-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import FormTextInput from '../../../components/form-text-input.component';
+import { useTheme } from '../../../shared/theme.context';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
     height: 50,
-    backgroundColor: '#111111',
-    color: 'white',
     flexDirection: 'row',
     flex: 0,
     alignItems: 'center',
@@ -52,15 +51,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   boxName: {
-    color: '#BBBBBB',
     fontFamily: 'Montserrat-Regular',
   },
   currentVideo: {
-    color: 'white',
     fontFamily: 'Montserrat-SemiBold',
-  },
-  upcomingSpaceContainer: {
-    backgroundColor: '#262626',
   },
 });
 
@@ -74,12 +68,13 @@ const Queue = (props: {
   const {
     box, currentVideo, height, berryCount, permissions,
   } = props;
+  const { colors } = useTheme();
 
   const [isCollapsed, setCollapse] = useState(true);
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
   const [isDurationInputVisible, setDurationInputVisibility] = useState(false);
-  const [queueVideos, setQueueVideos] = useState([] as Array<QueueItem>);
+  const [queueVideos, setQueueVideos] = useState<Array<QueueItem>>([]);
   const [user, setUser] = useState(null);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
@@ -142,7 +137,7 @@ const Queue = (props: {
             <BerriesIcon width={20} height={20} />
           </View>
         ) : null}
-        <Text style={styles.currentVideo} numberOfLines={1}>{currentVideo.video.name}</Text>
+        <Text style={[styles.currentVideo, { color: colors.textColor }]} numberOfLines={1}>{currentVideo.video.name}</Text>
       </View>
     );
   };
@@ -209,7 +204,7 @@ const Queue = (props: {
     if (permissions.includes('editBox')) {
       return (
         <Pressable onPress={() => { patchBox({ random: !box.options.random }); }}>
-          <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : '#CCCCCC'} />
+          <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : colors.inactiveColor} />
         </Pressable>
       );
     }
@@ -225,7 +220,7 @@ const Queue = (props: {
     if (permissions.includes('editBox')) {
       return (
         <Pressable onPress={() => { patchBox({ loop: !box.options.loop }); }}>
-          <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : '#CCCCCC'} />
+          <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : colors.inactiveColor} />
         </Pressable>
       );
     }
@@ -241,7 +236,7 @@ const Queue = (props: {
     if (permissions.includes('editBox')) {
       return (
         <Pressable onPress={() => { patchBox({ berries: !box.options.berries }); }}>
-          <BerriesEnabledIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
+          <BerriesEnabledIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : colors.inactiveColor} />
         </Pressable>
       );
     }
@@ -259,7 +254,7 @@ const Queue = (props: {
         return (
           <Pressable onPress={() => { patchBox({ videoMaxDurationLimit: 0 }); }}>
             <View style={{ flex: 0, flexDirection: 'row' }}>
-              <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
+              <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : colors.inactiveColor} />
               {box.options.videoMaxDurationLimit ? (
                 <Text style={{ color: '#009AEB' }}>
                   {box.options.videoMaxDurationLimit}
@@ -274,7 +269,7 @@ const Queue = (props: {
       return (
         <Pressable onPress={() => { setDurationInputVisibility(!isDurationInputVisible); }}>
           <View style={{ flex: 0, flexDirection: 'row' }}>
-            <DurationRestrictionIcon width={20} height={20} fill="#CCCCCC" />
+            <DurationRestrictionIcon width={20} height={20} fill={colors.inactiveColor} />
           </View>
         </Pressable>
       );
@@ -283,7 +278,7 @@ const Queue = (props: {
     if (box.options.videoMaxDurationLimit) {
       return (
         <View style={{ flex: 0, flexDirection: 'row' }}>
-          <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
+          <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : colors.inactiveColor} />
           <Text style={{ color: '#009AEB' }}>
             {box.options.videoMaxDurationLimit}
             {' '}
@@ -299,15 +294,15 @@ const Queue = (props: {
   const QueueList = () => (
     <FlatList
       data={queueVideos}
-      ItemSeparatorComponent={() => <View style={{ backgroundColor: '#191919', height: 1 }} />}
+      ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: 1 }} />}
       renderItem={({ item }) => (
         <QueueVideo item={item} boxToken={box._id} permissions={permissions} berriesEnabled={user && user.mail && box.options.berries} />
       )}
       keyExtractor={(item) => item._id}
       initialNumToRender={8}
       windowSize={12}
-      ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>The Queue is empty.</Text>}
-      ListFooterComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>●</Text>}
+      ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>The Queue is empty.</Text>}
+      ListFooterComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>●</Text>}
     />
   );
 
@@ -325,7 +320,7 @@ const Queue = (props: {
 
   return (
     <>
-      <View style={styles.currentSpaceContainer}>
+      <View style={[styles.currentSpaceContainer, { backgroundColor: colors.backgroundAlternateColor }]}>
         <Pressable
           onPress={() => toggleCollapsible()}
           style={styles.currentSpace}
@@ -334,7 +329,7 @@ const Queue = (props: {
             <ProfilePicture userId={box.creator._id} size={25} />
           </View>
           <View style={{ flex: 1, flexShrink: 1 }}>
-            <Text style={styles.boxName}>{box.name}</Text>
+            <Text style={[styles.boxName, { color: colors.textSystemColor }]}>{box.name}</Text>
             <CurrentVideo />
           </View>
           <View style={{ width: 40 }}>
@@ -344,7 +339,7 @@ const Queue = (props: {
               <Svg height="50" width="40">
                 <Polygon
                   points="30,22 10,22 20,32"
-                  fill="white"
+                  fill={colors.textColor}
                 />
               </Svg>
             </Animated.View>
@@ -354,17 +349,17 @@ const Queue = (props: {
           <>
             <View style={{ height: '55%', width: 1, backgroundColor: '#777777' }} />
             <Pressable style={styles.shareSpace} onPress={onShare}>
-              <InviteIcon width={20} height={20} fill="white" />
+              <InviteIcon width={20} height={20} fill={colors.textColor} />
             </Pressable>
           </>
         ) : null}
       </View>
-      <View style={styles.upcomingSpaceContainer}>
+      <View style={{ backgroundColor: colors.background }}>
         <Collapsible
           collapsed={isCollapsed}
           style={{ height: height - 50 }}
         >
-          <View style={{ backgroundColor: '#191919', padding: 10 }}>
+          <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, padding: 10 }}>
             <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
               {/* Display icons in "inactive" status for users who can act on them. Don't display icons for user who cannot. */}
               <View style={{ flex: 0, flexDirection: 'row' }}>
@@ -421,7 +416,7 @@ const Queue = (props: {
                         onBlur={() => handleSubmit()}
                         placeholder="Set the duration restriction (in minutes)"
                         autoFocus
-                        placeholderTextColor="#BBBBBB"
+                        placeholderTextColor={colors.textSystemColor}
                         style={{
                           height: 40,
                           borderWidth: 1,
@@ -429,7 +424,7 @@ const Queue = (props: {
                           borderColor: '#009aeb',
                           padding: 10,
                           borderRadius: 5,
-                          color: 'white',
+                          color: colors.textColor,
                         }}
                       />
                       {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit
@@ -443,8 +438,8 @@ const Queue = (props: {
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
-          {user && user.mail && box.playlist.length >= 0 ? (
-            <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>Tap a video for more info</Text>
+          {user && user.mail && box.playlist.length > 0 ? (
+            <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
           ) : null}
           <QueueList />
         </Collapsible>

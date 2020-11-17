@@ -9,10 +9,10 @@ import ProfilePicture from './profile-picture.component';
 import BxActionComponent from './bx-action.component';
 
 import UserIcon from '../../assets/icons/user-icon.svg';
+import { useTheme } from '../shared/theme.context';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#404040',
     height: '100%',
     paddingHorizontal: 20,
     paddingTop: 40,
@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
   userName: {
     paddingTop: 10,
     fontSize: 20,
-    color: 'white',
     fontFamily: 'Montserrat-SemiBold',
   },
 });
@@ -50,6 +49,7 @@ const CustomMenu = () => {
   }, []);
 
   const { signOut } = useContext(AuthContext);
+  const { colors } = useTheme();
 
   const UserSpace = () => {
     if (!user?.mail) {
@@ -59,8 +59,8 @@ const CustomMenu = () => {
             flex: 0, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 20,
           }}
           >
-            <UserIcon width={40} height={40} fill="white" />
-            <Text style={{ textAlign: 'center', color: 'white' }}>
+            <UserIcon width={40} height={40} fill={colors.textColor} />
+            <Text style={{ textAlign: 'center', color: colors.textColor }}>
               Sign up or login to create your own boxes,
               chat with users and more!
             </Text>
@@ -81,7 +81,7 @@ const CustomMenu = () => {
           <View style={{ marginRight: 10 }}>
             <ProfilePicture userId={user._id} size={50} />
           </View>
-          <Text style={styles.userName}>{user.name}</Text>
+          <Text style={[styles.userName, { color: colors.textColor }]}>{user.name}</Text>
         </View>
         <Pressable onPress={() => signOut()}>
           <BxActionComponent options={{ text: 'Sign out' }} />
@@ -92,7 +92,7 @@ const CustomMenu = () => {
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundSecondaryColor }]}>
         <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
           <View>
             <UserSpace />
@@ -102,11 +102,11 @@ const CustomMenu = () => {
           }}
           >
             <Pressable onPress={() => Linking.openURL('https://twitter.com/search/?q=%23BerryboxApp')}>
-              <Text style={{ color: 'white', textAlign: 'center' }}>Feedback</Text>
+              <Text style={{ color: colors.textColor, textAlign: 'center' }}>Feedback</Text>
             </Pressable>
             <View style={{ height: '70%', width: 1, backgroundColor: '#777777' }} />
             <Pressable onPress={() => Linking.openURL('https://berrybox.tv/privacy')}>
-              <Text style={{ color: 'white', textAlign: 'center' }}>Privacy Policy</Text>
+              <Text style={{ color: colors.textColor, textAlign: 'center' }}>Privacy Policy</Text>
             </Pressable>
           </View>
         </View>

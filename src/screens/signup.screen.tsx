@@ -12,12 +12,12 @@ import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import BxActionComponent from '../components/bx-action.component';
 
 import BackIcon from '../../assets/icons/back-icon.svg';
+import { useTheme } from '../shared/theme.context';
 
 const styles = StyleSheet.create({
   headerContainer: {
     paddingVertical: 20,
     paddingHorizontal: 10,
-    backgroundColor: '#262626',
     borderColor: '#191919',
     borderStyle: 'solid',
     borderBottomWidth: 1,
@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#262626',
     paddingTop: 40,
   },
   form: {
@@ -54,18 +53,19 @@ const styles = StyleSheet.create({
 
 const SignupScreen = ({ navigation }) => {
   const { signUp } = useContext(AuthContext);
+  const { colors } = useTheme();
 
   const [isLogging, setLogging] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   return (
     <>
-      <View style={styles.headerContainer}>
+      <View style={[styles.headerContainer, { backgroundColor: colors.background }]}>
         <View style={styles.headerStyle}>
           <Pressable
             onPress={() => navigation.navigate('Home')}
           >
-            <BackIcon width={20} height={20} fill="white" />
+            <BackIcon width={20} height={20} fill={colors.textColor} />
           </Pressable>
           <Pressable
             onPress={() => navigation.navigate('SignIn')}
@@ -75,7 +75,7 @@ const SignupScreen = ({ navigation }) => {
         </View>
       </View>
       <KeyboardAvoidingView
-        style={styles.container}
+        style={[styles.container, { backgroundColor: colors.background }]}
         behavior="height"
       >
         <Image
@@ -84,7 +84,7 @@ const SignupScreen = ({ navigation }) => {
         />
         <Text style={{
           fontSize: 16,
-          color: 'white',
+          color: colors.textColor,
           fontFamily: 'Montserrat',
           textAlign: 'left',
           padding: 20,
@@ -173,7 +173,7 @@ const SignupScreen = ({ navigation }) => {
                 />
                 {touched.password && errors.password && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.password}</Text>}
                 <View style={{ padding: 5, display: 'flex', flexDirection: 'row' }}>
-                  <Text style={{ color: '#CCCCCC', marginRight: 2 }}>
+                  <Text style={{ color: colors.textSystemColor, marginRight: 2 }}>
                     Already a member?
                   </Text>
                   <Pressable onPress={() => navigation.navigate('SignIn')}>
@@ -186,7 +186,7 @@ const SignupScreen = ({ navigation }) => {
               }}
               >
                 <Text style={{
-                  textAlign: 'left', color: '#BBBBBB', fontSize: 10,
+                  textAlign: 'left', color: colors.inactiveColor, fontSize: 10,
                 }}
                 >
                   By continuing, you agree to our
