@@ -80,7 +80,7 @@ const BoxCard = (props: { box: Box, onPress: () => void }) => {
           ) : (
             <Image
               style={{ width: 140, height: 78.75 }}
-              source={{ uri: 'https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/default-picture' }}
+              source={require('../../assets/berrybox-logo-master.png')}
             />
           )}
           <View style={styles.boxUserDisplay}>

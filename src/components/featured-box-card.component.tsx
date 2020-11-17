@@ -73,7 +73,7 @@ const FeaturedBoxCard = (props: { box: Box, onPress: () => void }) => {
           ) : (
             <Image
               style={{ width: 230, height: 129.375 }}
-              source={{ uri: 'https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/default-picture' }}
+              source={require('../../assets/berrybox-logo-master.png')}
             />
           )}
           <View style={styles.boxUserDisplay}>
