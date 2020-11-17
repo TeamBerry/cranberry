@@ -20,6 +20,8 @@ export const lightColors = {
   textSystemColor: '#444444',
   // States
   inactiveColor: '#8F8F8F',
+  // Separators
+  videoSeparator: '#D9D9D9',
 };
 
 export const darkColors = {
@@ -38,6 +40,8 @@ export const darkColors = {
   textSystemColor: '#BBBBBB',
   // States
   inactiveColor: '#CCCCCC',
+  // Separators
+  videoSeparator: '#3F3F3F',
 };
 
 export type Colors = typeof lightColors;

@@ -38,12 +38,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flex: 1,
   },
-  resultsHelp: {
-    color: '#BBBBBB',
-    textAlign: 'center',
-    padding: 10,
-    fontFamily: 'Montserrat-Light',
-  },
   resultItem: {
     paddingHorizontal: 7,
     paddingVertical: 10,
@@ -162,7 +156,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
             justifyContent: 'center',
           }}
           >
-            <Text style={{ color: 'white', fontFamily: 'Montserrat-Light' }} numberOfLines={3}>
+            <Text style={{ color: colors.textColor, fontFamily: 'Montserrat-Light' }} numberOfLines={3}>
               {isAlreadyInQueue ? (<Text style={styles.inQueueIndicator}>Already in Queue: </Text>) : null}
               {video.name}
             </Text>
@@ -235,7 +229,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
     return (
       <FlatList
         data={youtubeSearchResults}
-        ItemSeparatorComponent={() => <View style={{ backgroundColor: '#3f3f3f', height: 1 }} />}
+        ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.videoSeparator, height: 1 }} />}
         renderItem={({ item }) => (
           <SearchVideo video={item} isAlreadyInQueue={videosInQueue.indexOf(item.link) !== -1} />
         )}
