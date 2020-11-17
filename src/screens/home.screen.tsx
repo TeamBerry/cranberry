@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     paddingLeft: 10,
-    borderColor: '#191919',
     borderStyle: 'solid',
     borderBottomWidth: 1,
   },
@@ -75,7 +74,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   sectionSeparator: {
-    backgroundColor: '#404040',
     height: 2,
   },
 });
@@ -154,7 +152,7 @@ const HomeScreen = ({ navigation }) => {
                 <StatusBar barStyle='dark-content' />
             </View> */}
 
-        <View style={[styles.headerContainer, { backgroundColor: colors.background }]}>
+        <View style={[styles.headerContainer, { backgroundColor: colors.background, borderColor: colors.backgroundSecondaryAlternateColor }]}>
           <View style={styles.headerStyle}>
             <Pressable
               onPress={() => setMenuOpen(!isMenuOpen)}
@@ -162,7 +160,7 @@ const HomeScreen = ({ navigation }) => {
               {user && user.mail ? (
                 <ProfilePicture userId={user ? user._id : null} size={30} />
               ) : (
-                <UserIcon width={30} height={30} fill="white" />
+                <UserIcon width={30} height={30} fill={colors.textColor} />
               )}
             </Pressable>
           </View>
@@ -175,7 +173,7 @@ const HomeScreen = ({ navigation }) => {
           {hasLoadedBoxes ? (
             <>
               {boxes.length === 0 && featuredBoxes.length === 0 ? (
-                <Text style={{ color: 'white', textAlign: 'center' }}>
+                <Text style={{ color: colors.textColor, textAlign: 'center' }}>
                   An error occurred while loading boxes. Please try again.
                 </Text>
               ) : (
@@ -197,7 +195,7 @@ const HomeScreen = ({ navigation }) => {
                       keyExtractor={(item) => item.name}
                     />
                   </View>
-                  <View style={styles.sectionSeparator} />
+                  <View style={[styles.sectionSeparator, { backgroundColor: colors.backgroundSecondaryAlternateColor }]} />
                   <View style={styles.boxesSection}>
                     <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
                       <Text style={{ color: colors.textColor }}>Communities</Text>
@@ -208,7 +206,7 @@ const HomeScreen = ({ navigation }) => {
                       renderItem={({ item }) => (
                         <BoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
                       )}
-                      ItemSeparatorComponent={() => <View style={{ backgroundColor: '#404040', height: 1 }} />}
+                      ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryColor, height: 1 }} />}
                       keyExtractor={(item) => item.name}
                     />
                   </View>

@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 5,
-    color: 'white',
     flex: 1,
   },
   resultsHelp: {
@@ -255,7 +254,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
           <>
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <TextInput
-                style={[styles.chatInput, { backgroundColor: colors.backgroundChatColor }]}
+                style={[styles.chatInput, { backgroundColor: colors.backgroundChatColor, color: colors.textColor }]}
                 placeholder="Search YouTube for videos to add..."
                 placeholderTextColor={colors.textSystemColor}
                 onChangeText={(text) => setSearchValue(text)}

@@ -204,7 +204,7 @@ const Queue = (props: {
     if (permissions.includes('editBox')) {
       return (
         <Pressable onPress={() => { patchBox({ random: !box.options.random }); }}>
-          <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : '#CCCCCC'} />
+          <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : colors.inactiveColor} />
         </Pressable>
       );
     }
@@ -220,7 +220,7 @@ const Queue = (props: {
     if (permissions.includes('editBox')) {
       return (
         <Pressable onPress={() => { patchBox({ loop: !box.options.loop }); }}>
-          <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : '#CCCCCC'} />
+          <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : colors.inactiveColor} />
         </Pressable>
       );
     }
@@ -236,7 +236,7 @@ const Queue = (props: {
     if (permissions.includes('editBox')) {
       return (
         <Pressable onPress={() => { patchBox({ berries: !box.options.berries }); }}>
-          <BerriesEnabledIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : '#CCCCCC'} />
+          <BerriesEnabledIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : colors.inactiveColor} />
         </Pressable>
       );
     }
@@ -254,7 +254,7 @@ const Queue = (props: {
         return (
           <Pressable onPress={() => { patchBox({ videoMaxDurationLimit: 0 }); }}>
             <View style={{ flex: 0, flexDirection: 'row' }}>
-              <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
+              <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : colors.inactiveColor} />
               {box.options.videoMaxDurationLimit ? (
                 <Text style={{ color: '#009AEB' }}>
                   {box.options.videoMaxDurationLimit}
@@ -269,7 +269,7 @@ const Queue = (props: {
       return (
         <Pressable onPress={() => { setDurationInputVisibility(!isDurationInputVisible); }}>
           <View style={{ flex: 0, flexDirection: 'row' }}>
-            <DurationRestrictionIcon width={20} height={20} fill="#CCCCCC" />
+            <DurationRestrictionIcon width={20} height={20} fill={colors.inactiveColor} />
           </View>
         </Pressable>
       );
@@ -278,7 +278,7 @@ const Queue = (props: {
     if (box.options.videoMaxDurationLimit) {
       return (
         <View style={{ flex: 0, flexDirection: 'row' }}>
-          <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : '#CCCCCC'} />
+          <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : colors.inactiveColor} />
           <Text style={{ color: '#009AEB' }}>
             {box.options.videoMaxDurationLimit}
             {' '}
@@ -301,8 +301,8 @@ const Queue = (props: {
       keyExtractor={(item) => item._id}
       initialNumToRender={8}
       windowSize={12}
-      ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>The Queue is empty.</Text>}
-      ListFooterComponent={() => <Text style={{ textAlign: 'center', color: '#BBB', marginHorizontal: 20 }}>●</Text>}
+      ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>The Queue is empty.</Text>}
+      ListFooterComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>●</Text>}
     />
   );
 
@@ -339,7 +339,7 @@ const Queue = (props: {
               <Svg height="50" width="40">
                 <Polygon
                   points="30,22 10,22 20,32"
-                  fill="white"
+                  fill={colors.textColor}
                 />
               </Svg>
             </Animated.View>
@@ -424,7 +424,7 @@ const Queue = (props: {
                           borderColor: '#009aeb',
                           padding: 10,
                           borderRadius: 5,
-                          color: 'white',
+                          color: colors.textColor,
                         }}
                       />
                       {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit
@@ -438,7 +438,7 @@ const Queue = (props: {
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
-          {user && user.mail && box.playlist.length >= 0 ? (
+          {user && user.mail && box.playlist.length > 0 ? (
             <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
           ) : null}
           <QueueList />

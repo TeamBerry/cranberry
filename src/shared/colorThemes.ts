@@ -8,7 +8,7 @@ export const lightColors = {
   ...commonColors,
   inputMainColor: '#D0D0D0',
   // Background
-  background: 'white',
+  background: '#F0F0F0',
   backgroundSecondaryColor: '#D9D9D9',
   backgroundAlternateColor: '#E0E0E0',
   backgroundSecondaryAlternateColor: '#E9E9E9',

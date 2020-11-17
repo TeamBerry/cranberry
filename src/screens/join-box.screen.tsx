@@ -11,12 +11,12 @@ import Config from 'react-native-config';
 import FormTextInput from '../components/form-text-input.component';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import BxActionComponent from '../components/bx-action.component';
+import { useTheme } from '../shared/theme.context';
 
 const styles = StyleSheet.create({
   headerContainer: {
     paddingVertical: 15,
     paddingLeft: 10,
-    backgroundColor: '#262626',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#262626',
     paddingTop: 40,
     paddingHorizontal: 15,
   },
@@ -49,6 +48,7 @@ const styles = StyleSheet.create({
 const JoinBoxScreen = ({ navigation }) => {
   const [isChecking, setChecking] = useState(false);
   const [error, setError] = useState(null);
+  const { colors } = useTheme();
 
   const checkBox = async (link: string): Promise<boolean> => {
     setChecking(true);
@@ -74,19 +74,19 @@ const JoinBoxScreen = ({ navigation }) => {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <Text style={styles.titlePage}>Join a box</Text>
+      <View style={[styles.headerContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.titlePage, { color: colors.textColor }]}>Join a box</Text>
         <Pressable
           onPress={() => navigation.pop()}
         >
           <IconButton
             icon="close"
-            color="white"
+            color={colors.textColor}
           />
         </Pressable>
       </View>
       <KeyboardAvoidingView
-        style={styles.container}
+        style={[styles.container, { backgroundColor: colors.background }]}
         behavior="padding"
       >
         <Formik
@@ -116,9 +116,9 @@ const JoinBoxScreen = ({ navigation }) => {
                 />
                 {touched.link && errors.link && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.link}</Text>}
                 <View style={styles.linkHelp}>
-                  <Text style={{ color: '#BBBBBB', fontFamily: 'Montserrat-SemiBold' }}>Invites look like this: </Text>
-                  <Text style={{ color: '#AAAAAA' }}>https://berrybox.tv/invite/Z0dfeDa4</Text>
-                  <Text style={{ color: '#AAAAAA' }}>https://berrybox.tv/i/Z0dfeDa4</Text>
+                  <Text style={{ color: colors.textSecondaryColor, fontFamily: 'Montserrat-SemiBold' }}>Invites look like this: </Text>
+                  <Text style={{ color: colors.inactiveColor }}>https://berrybox.tv/invite/Z0dfeDa4</Text>
+                  <Text style={{ color: colors.inactiveColor }}>https://berrybox.tv/i/Z0dfeDa4</Text>
                 </View>
               </View>
               {!isChecking ? (

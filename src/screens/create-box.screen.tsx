@@ -17,12 +17,12 @@ import LockIcon from '../../assets/icons/lock-icon.svg';
 import DurationRestrictionIcon from '../../assets/icons/duration-limit-icon.svg';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import BxActionComponent from '../components/bx-action.component';
+import { useTheme } from '../shared/theme.context';
 
 const styles = StyleSheet.create({
   headerContainer: {
     paddingVertical: 15,
     paddingLeft: 10,
-    backgroundColor: '#262626',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -32,12 +32,10 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: '1%',
     marginBottom: 10,
-    color: 'white',
     paddingLeft: 10,
   },
   container: {
     flex: 1,
-    backgroundColor: '#262626',
   },
   form: {
     paddingBottom: 50,
@@ -58,10 +56,6 @@ const styles = StyleSheet.create({
   modeTitle: {
     fontSize: 16,
     fontFamily: 'Montserrat-SemiBold',
-    color: '#DDDDDD',
-  },
-  modeHelper: {
-    color: '#BBBBBB',
   },
   sectionTitle: {
     fontSize: 20,
@@ -82,6 +76,7 @@ const CreateBoxScreen = ({ navigation }) => {
   const [user, setUser] = useState(null);
   const [isCreating, setCreating] = useState(false);
   const [box, setBox] = useState(null);
+  const { colors } = useTheme();
 
   useEffect(() => {
     const getSession = async () => {
@@ -108,19 +103,19 @@ const CreateBoxScreen = ({ navigation }) => {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <Text style={styles.titlePage}>Create a box</Text>
+      <View style={[styles.headerContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.titlePage, { color: colors.textColor }]}>Create a box</Text>
         <TouchableOpacity
           onPress={() => navigation.pop()}
         >
           <IconButton
             icon="close"
-            color="white"
+            color={colors.textColor}
           />
         </TouchableOpacity>
       </View>
       <KeyboardAvoidingView
-        style={styles.container}
+        style={[styles.container, { backgroundColor: colors.background }]}
         behavior="height"
       >
         <ScrollView>
@@ -166,7 +161,7 @@ const CreateBoxScreen = ({ navigation }) => {
               <View style={styles.form}>
                 <Text style={styles.sectionTitle}>Information</Text>
                 <View style={styles.modeContainer}>
-                  <Text style={styles.modeTitle}>Box Name</Text>
+                  <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Box Name</Text>
                   <FormTextInput
                     value={values.name}
                     onChangeText={handleChange('name')}
@@ -181,9 +176,9 @@ const CreateBoxScreen = ({ navigation }) => {
                   <View style={styles.modeSpace}>
                     <View style={styles.modeDefinition}>
                       <View style={{ paddingRight: 5 }}>
-                        <LockIcon width={20} height={20} fill="white" />
+                        <LockIcon width={20} height={20} fill={colors.textColor} />
                       </View>
-                      <Text style={styles.modeTitle}>Access Restriction</Text>
+                      <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Access Restriction</Text>
                     </View>
                     <Switch
                       value={values.private}
@@ -191,7 +186,7 @@ const CreateBoxScreen = ({ navigation }) => {
                       color="#009AEB"
                     />
                   </View>
-                  <Text style={styles.modeHelper}>
+                  <Text style={{ color: colors.textSystemColor }}>
                     Your box will not appear publicly. You may grant access by inviting users directly.
                   </Text>
                 </View>
@@ -205,9 +200,9 @@ const CreateBoxScreen = ({ navigation }) => {
                   <View style={styles.modeSpace}>
                     <View style={styles.modeDefinition}>
                       <View style={{ paddingRight: 5 }}>
-                        <RandomIcon width={20} height={20} fill="white" />
+                        <RandomIcon width={20} height={20} fill={colors.textColor} />
                       </View>
-                      <Text style={styles.modeTitle}>Pick Videos at Random</Text>
+                      <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Pick Videos at Random</Text>
                     </View>
                     <Switch
                       value={values.random}
@@ -215,7 +210,7 @@ const CreateBoxScreen = ({ navigation }) => {
                       color="#009AEB"
                     />
                   </View>
-                  <Text style={styles.modeHelper}>
+                  <Text style={{ color: colors.textSystemColor }}>
                     Videos will be played randomly from the queue.
                   </Text>
                 </View>
@@ -223,9 +218,9 @@ const CreateBoxScreen = ({ navigation }) => {
                   <View style={styles.modeSpace}>
                     <View style={styles.modeDefinition}>
                       <View style={{ paddingRight: 5 }}>
-                        <ReplayIcon width={20} height={20} fill="white" />
+                        <ReplayIcon width={20} height={20} fill={colors.textColor} />
                       </View>
-                      <Text style={styles.modeTitle}>Loop Queue</Text>
+                      <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Loop Queue</Text>
                     </View>
                     <Switch
                       value={values.loop}
@@ -233,15 +228,15 @@ const CreateBoxScreen = ({ navigation }) => {
                       color="#009AEB"
                     />
                   </View>
-                  <Text style={styles.modeHelper}>Played videos will be automatically requeued.</Text>
+                  <Text style={{ color: colors.textSystemColor }}>Played videos will be automatically requeued.</Text>
                 </View>
                 <View style={styles.modeContainer}>
                   <View style={styles.modeSpace}>
                     <View style={styles.modeDefinition}>
                       <View style={{ paddingRight: 5 }}>
-                        <BerriesIcon width={20} height={20} fill="white" />
+                        <BerriesIcon width={20} height={20} fill={colors.textColor} />
                       </View>
-                      <Text style={styles.modeTitle}>Berries System</Text>
+                      <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Berries System</Text>
                     </View>
                     <Switch
                       value={values.berries}
@@ -249,7 +244,7 @@ const CreateBoxScreen = ({ navigation }) => {
                       color="#009AEB"
                     />
                   </View>
-                  <Text style={styles.modeHelper}>
+                  <Text style={{ color: colors.textSystemColor }}>
                     Your users will be able to collect Berries while they are in your box. They will then be able to spend
                     the berries to skip a video or select the next video to play.
                   </Text>
@@ -258,12 +253,12 @@ const CreateBoxScreen = ({ navigation }) => {
                   <View style={styles.modeSpace}>
                     <View style={styles.modeDefinition}>
                       <View style={{ paddingRight: 5 }}>
-                        <DurationRestrictionIcon width={20} height={20} fill="white" />
+                        <DurationRestrictionIcon width={20} height={20} fill={colors.textColor} />
                       </View>
-                      <Text style={styles.modeTitle}>Duration Restriction</Text>
+                      <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Duration Restriction</Text>
                     </View>
                   </View>
-                  <Text style={styles.modeHelper}>
+                  <Text style={{ color: colors.textSystemColor }}>
                     Videos that exceed the set limit (in minutes) will not be accepted into the queue. Specifying 0 or
                     nothing will disable this restriction.
                   </Text>
