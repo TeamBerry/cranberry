@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   },
   boxMainInfo: {
     height: 130,
+    width: 240,
     paddingHorizontal: 5,
     paddingBottom: 10,
     justifyContent: 'space-between',
@@ -82,11 +83,13 @@ const FeaturedBoxCard = (props: { box: Box, onPress: () => void }) => {
           </View>
         </View>
         <View style={styles.boxMainInfo}>
-          <View style={{ flexDirection: 'row' }}>
-            <ProfilePicture userId={box.creator._id} size={45} />
-            <View>
+          <View style={{ display: 'flex', flexDirection: 'row' }}>
+            <View style={{ paddingRight: 5 }}>
+              <ProfilePicture userId={box.creator._id} size={35} />
+            </View>
+            <View style={{ width: 185 }}>
               <Text style={[styles.boxTitle, { color: colors.textColor }]} numberOfLines={2}>{box.name}</Text>
-              <Text style={{ color: colors.textSystemColor, fontSize: 12 }}>{box.creator.name}</Text>
+              <Text style={{ color: colors.textSystemColor, fontSize: 12 }} numberOfLines={1}>{box.creator.name}</Text>
             </View>
           </View>
           <Text
