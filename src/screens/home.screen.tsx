@@ -201,14 +201,14 @@ const HomeScreen = ({ navigation }) => {
                       <Text style={{ color: colors.textColor }}>Communities</Text>
                       <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>Find a box for your needs</Text>
                     </View>
-                    <FlatList
-                      data={boxes}
-                      renderItem={({ item }) => (
-                        <BoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
-                      )}
-                      ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryColor, height: 1 }} />}
-                      keyExtractor={(item) => item.name}
-                    />
+                    {boxes.map((box, index) => (
+                      <>
+                        <BoxCard box={box} onPress={() => navigation.navigate('Box', { boxToken: box._id })} />
+                        {index < boxes.length - 1 ? (
+                          <View style={{ height: 1, backgroundColor: colors.backgroundSecondaryColor }} />
+                        ) : null}
+                      </>
+                    ))}
                   </View>
                 </ScrollView>
               )}
