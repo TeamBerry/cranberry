@@ -7,6 +7,7 @@ import PlayNextIcon from '../../../../assets/icons/force-next-icon.svg';
 import PlayNowIcon from '../../../../assets/icons/force-play-icon.svg';
 import SkipIcon from '../../../../assets/icons/skip-icon.svg';
 import Box from '../../../models/box.model';
+import { useTheme } from '../../../shared/theme.context';
 
 const styles = StyleSheet.create({
   actionList: {
@@ -21,7 +22,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   action: {
-    backgroundColor: '#262626',
     width: 80,
     borderRadius: 5,
     height: 80,
@@ -33,57 +33,60 @@ const styles = StyleSheet.create({
   },
   actionDescription: {
     textAlign: 'center',
-    color: 'white',
     fontSize: 11,
   },
 });
 
-const ActionValue = ({ value }) => (
-  <View style={{
-    flex: 0, flexDirection: 'row', alignItems: 'center',
-  }}
-  >
-    <BerriesIcon width={20} height={20} />
-    <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', paddingLeft: 2 }}>{value}</Text>
-  </View>
-);
+const ActionValue = ({ value }) => {
+  const { colors } = useTheme();
+  return (
+    <View style={{
+      flex: 0, flexDirection: 'row', alignItems: 'center',
+    }}
+    >
+      <BerriesIcon width={20} height={20} />
+      <Text style={{ color: colors.textColor, fontFamily: 'Montserrat-SemiBold', paddingLeft: 2 }}>{value}</Text>
+    </View>
+  );
+};
 
 const BerryHelper = (props: { box: Box, permissions: Array<Permission> }) => {
   const { box, permissions } = props;
+  const { colors } = useTheme();
 
   return (
-    <View style={{ backgroundColor: '#131313', padding: 5 }}>
-      <Text style={{ color: 'white', fontSize: 14, fontFamily: 'Montserrat-SemiBold' }}>Berries</Text>
-      <Text style={{ color: '#BBBBBB' }}>
+    <View style={{ backgroundColor: colors.backgroundAlternateColor, padding: 5 }}>
+      <Text style={{ color: colors.textColor, fontSize: 14, fontFamily: 'Montserrat-SemiBold' }}>Berries</Text>
+      <Text style={{ color: colors.textSystemColor }}>
         You will collect berries as you participate in the community of this box.
         You can use these berries to execute special actions indicated by their orange border:
       </Text>
       <View style={styles.actionList}>
         {!permissions.includes('forceNext') && box.options.berries ? (
           <View style={styles.actionContainer}>
-            <View style={styles.action}>
-              <PlayNextIcon width={20} height={20} fill="white" />
+            <View style={[styles.action, { backgroundColor: colors.background }]}>
+              <PlayNextIcon width={20} height={20} fill={colors.textColor} />
               <ActionValue value={10} />
             </View>
-            <Text style={styles.actionDescription}>Plays the selected video after the current one.</Text>
+            <Text style={[styles.actionDescription, { color: colors.textColor }]}>Plays the selected video after the current one.</Text>
           </View>
         ) : null}
         {!permissions.includes('skipVideo') && box.options.berries ? (
           <View style={styles.actionContainer}>
-            <View style={styles.action}>
-              <SkipIcon width={20} height={20} fill="white" />
+            <View style={[styles.action, { backgroundColor: colors.background }]}>
+              <SkipIcon width={20} height={20} fill={colors.textColor} />
               <ActionValue value={20} />
             </View>
-            <Text style={styles.actionDescription}>Skips the current video</Text>
+            <Text style={[styles.actionDescription, { color: colors.textColor }]}>Skips the current video</Text>
           </View>
         ) : null}
         {!permissions.includes('forcePlay') && box.options.berries ? (
           <View style={styles.actionContainer}>
-            <View style={styles.action}>
-              <PlayNowIcon width={20} height={20} fill="white" />
+            <View style={[styles.action, { backgroundColor: colors.background }]}>
+              <PlayNowIcon width={20} height={20} fill={colors.textColor} />
               <ActionValue value={30} />
             </View>
-            <Text style={styles.actionDescription}>Skips the current video for the selected one.</Text>
+            <Text style={[styles.actionDescription, { color: colors.textColor }]}>Skips the current video for the selected one.</Text>
           </View>
         ) : null}
       </View>
