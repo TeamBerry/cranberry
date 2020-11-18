@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollButtonContainer: {
-    backgroundColor: '#3f3f3f',
     padding: 7,
     borderRadius: 6,
     margin: 5,
@@ -141,17 +140,14 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
       return (
         <TouchableWithoutFeedback
           onPress={() => scrollToBottom()}
-          style={styles.scrollButtonContainer}
+          style={[styles.scrollButtonContainer, { backgroundColor: colors.backgroundInactiveColor }]}
         >
           <View style={styles.scrollButton}>
-            <DownIcon width={14} height={14} fill="white" />
-            <Text style={{
-              color: colors.textColor, marginLeft: 10, marginRight: 10,
-            }}
-            >
+            <DownIcon width={14} height={14} fill={colors.textColor} />
+            <Text style={{ color: colors.textColor, marginLeft: 10, marginRight: 10 }}>
               New Messages
             </Text>
-            <DownIcon width={14} height={14} fill="white" />
+            <DownIcon width={14} height={14} fill={colors.textColor} />
           </View>
         </TouchableWithoutFeedback>
       );
