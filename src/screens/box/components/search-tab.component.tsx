@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Image, View, Text, StyleSheet, TextInput, FlatList, Pressable,
+  View, Text, StyleSheet, TextInput, FlatList, Pressable,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -10,13 +10,12 @@ import Config from 'react-native-config';
 
 import Collapsible from 'react-native-collapsible';
 import Box from '../../../models/box.model';
-import DurationIndicator from '../../../components/duration-indicator.component';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
-import BxButtonComponent from '../../../components/bx-button.component';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import CountdownIndicator from '../../../components/countdown-indicator.component';
 import { useTheme } from '../../../shared/theme.context';
+import SearchVideo from './search-video.component';
 
 const styles = StyleSheet.create({
   container: {
@@ -38,19 +37,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flex: 1,
   },
-  resultItem: {
-    paddingHorizontal: 7,
-    paddingVertical: 10,
-    flexDirection: 'column',
-  },
-  inQueueIndicator: {
-    fontFamily: 'Montserrat-SemiBold',
-    color: '#0CEBC0',
-  },
-  inQueueVideo: {
-    borderColor: '#0CEBC0',
-    borderWidth: 2,
-  },
 });
 
 export interface Video {
@@ -70,7 +56,6 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
   const [searchValue, setSearchValue] = useState('');
   const [youtubeSearchResults, setSearchResults] = useState([] as Array<Video>);
   const [user, setUser] = useState(null);
-  const [hasSearched, setSearched] = useState(false);
   const [isSearching, setSearching] = useState(false);
   const [searchCooldown, setSearchCooldown] = useState(false);
   const [error, setError] = useState(false);
@@ -111,7 +96,6 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
 
     try {
       setSearching(true);
-      setSearched(false);
       setError(false);
       setSearchCooldown(true);
       const youtubeSearchRequest = await axios.get(`${Config.API_URL}/search`, {
@@ -119,7 +103,6 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
       });
 
       setSearchResults(youtubeSearchRequest.data);
-      setSearched(true);
       setSearching(false);
       setTimeout(() => setSearchCooldown(false), 5000);
     } catch (error) {
@@ -129,113 +112,15 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
     }
   };
 
-  const SearchVideo = ({ video, isAlreadyInQueue }) => {
-    const addToQueue = async (flag?: VideoSubmissionRequest['flag']) => {
-      try {
-        await axios.post(`${Config.API_URL}/boxes/${box._id}/queue/video`, {
-          link: video.link,
-          flag,
-        } as Partial<VideoSubmissionRequest>);
-      } catch (error) {
-        setError(true);
-      }
-    };
-
-    return (
-      <View style={styles.resultItem}>
-        <View style={{ flex: 0, flexDirection: 'row' }}>
-          <View style={{ paddingRight: 10 }}>
-            <Image
-              style={[{ width: 140, height: 78.75 }, isAlreadyInQueue ? styles.inQueueVideo : null]}
-              source={{ uri: `https://i.ytimg.com/vi/${video.link}/hqdefault.jpg` }}
-            />
-            <DurationIndicator duration={video.duration} withBorder={isAlreadyInQueue} />
-          </View>
-          <View style={{
-            flex: 1,
-            justifyContent: 'center',
-          }}
-          >
-            <Text style={{ color: colors.textColor, fontFamily: 'Montserrat-Light' }} numberOfLines={3}>
-              {isAlreadyInQueue ? (<Text style={styles.inQueueIndicator}>Already in Queue: </Text>) : null}
-              {video.name}
-            </Text>
-          </View>
-        </View>
-        <View style={{
-          display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'space-between', paddingTop: 10,
-        }}
-        >
-          <>
-            {!isAlreadyInQueue ? (
-              <>
-                {permissions.includes('addVideo') ? (
-                  <Pressable onPress={() => { addToQueue(); }}>
-                    <BxButtonComponent options={{
-                      type: 'play',
-                      text: 'Queue',
-                      textDisplay: 'full',
-                    }}
-                    />
-                  </Pressable>
-                ) : null}
-              </>
-            ) : null}
-            {(permissions.includes('forceNext') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
-                || box.options.berries ? (
-                  <Pressable onPress={() => { addToQueue('next'); }}>
-                    <BxButtonComponent options={{
-                      type: 'forceNext',
-                      text: permissions.includes('forceNext') ? 'Play Next' : '10 $BC$',
-                      textDisplay: 'full',
-                      context: permissions.includes('forceNext') ? 'primary' : 'berries',
-                    }}
-                    />
-                  </Pressable>
-              ) : null}
-            {(permissions.includes('forcePlay') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
-                || box.options.berries ? (
-                  <Pressable onPress={() => { addToQueue('now'); }}>
-                    <BxButtonComponent options={{
-                      type: 'forcePlay',
-                      text: permissions.includes('forcePlay') ? 'Play Now' : '30 $BC$',
-                      textDisplay: 'full',
-                      context: permissions.includes('forcePlay') ? 'primary' : 'berries',
-                    }}
-                    />
-                  </Pressable>
-              ) : null}
-          </>
-        </View>
-      </View>
-    );
-  };
-
-  const SearchList = () => {
-    if (isSearching) {
-      return <BxLoadingIndicator />;
+  const addToQueue = async (video: Video, flag?: VideoSubmissionRequest['flag']) => {
+    try {
+      await axios.post(`${Config.API_URL}/boxes/${box._id}/queue/video`, {
+        link: video.link,
+        flag,
+      } as Partial<VideoSubmissionRequest>);
+    } catch (error) {
+      setError(true);
     }
-
-    if (youtubeSearchResults.length === 0) {
-      if (!hasSearched) {
-        return null;
-      }
-
-      return (
-        <Text>No results.</Text>
-      );
-    }
-
-    return (
-      <FlatList
-        data={youtubeSearchResults}
-        ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.videoSeparator, height: 1 }} />}
-        renderItem={({ item }) => (
-          <SearchVideo video={item} isAlreadyInQueue={videosInQueue.indexOf(item.link) !== -1} />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-    );
   };
 
   return (
@@ -265,7 +150,25 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
               <CountdownIndicator time={5000} text="Next search available in a few seconds." />
             ) : null}
             <View style={{ height: '88%' }}>
-              <SearchList />
+              {isSearching ? (
+                <BxLoadingIndicator />
+              ) : (
+                <FlatList
+                  data={youtubeSearchResults}
+                  ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.videoSeparator, height: 1 }} />}
+                  ListEmptyComponent={() => <Text>No results.</Text>}
+                  renderItem={({ item }) => (
+                    <SearchVideo
+                      video={item}
+                      isAlreadyInQueue={videosInQueue.indexOf(item.link) !== -1}
+                      berriesEnabled={box.options.berries}
+                      permissions={permissions}
+                      onPress={addToQueue}
+                    />
+                  )}
+                  keyExtractor={(item, index) => index.toString()}
+                />
+              )}
             </View>
           </>
         ) : (
