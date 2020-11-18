@@ -349,7 +349,7 @@ const Queue = (props: {
           <>
             <View style={{ height: '55%', width: 1, backgroundColor: '#777777' }} />
             <Pressable style={styles.shareSpace} onPress={onShare}>
-              <InviteIcon width={20} height={20} fill="#009AEB" />
+              <InviteIcon width={20} height={20} fill="rgba(0,154,235,0.75)" />
             </Pressable>
           </>
         ) : null}

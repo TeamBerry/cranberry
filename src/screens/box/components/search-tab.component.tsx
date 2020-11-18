@@ -156,7 +156,8 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
                 <FlatList
                   data={youtubeSearchResults}
                   ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.videoSeparator, height: 1 }} />}
-                  ListEmptyComponent={() => <Text>No results.</Text>}
+                  ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor }}>No results.</Text>}
+                  ListFooterComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>●</Text>}
                   renderItem={({ item }) => (
                     <SearchVideo
                       video={item}
