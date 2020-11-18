@@ -6,6 +6,7 @@ import { Permission } from '@teamberry/muscadine';
 import ChatTab from './chat-tab.component';
 import SearchTab from './search-tab.component';
 import Box from '../../../models/box.model';
+import { useTheme } from '../../../shared/theme.context';
 
 const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: Array<Permission> }) => {
   const [index, setIndex] = useState(0);
@@ -16,6 +17,7 @@ const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: 
   const {
     box, socket, berryCount, permissions,
   } = props;
+  const { colors } = useTheme();
 
   const initialLayout = { width: Dimensions.get('window').width };
 
@@ -32,14 +34,15 @@ const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: 
 
   const renderTabBar = (props) => (
     <TabBar
-      // eslint-disable-next-line react/jsx-props-no-spreading
+            // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
-      style={{ backgroundColor: '#191919' }}
+      style={{ backgroundColor: colors.backgroundSecondaryAlternateColor }}
       indicatorStyle={{ backgroundColor: '#009AEB' }}
-      pressColor="#191919"
+      pressColor={colors.backgroundSecondaryAlternateColor}
       labelStyle={{
         fontFamily: 'Montserrat-Regular',
         textTransform: 'capitalize',
+        color: colors.textColor,
       }}
       activeColor="#009AEB"
     />

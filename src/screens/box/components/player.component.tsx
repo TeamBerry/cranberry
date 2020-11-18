@@ -1,17 +1,20 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { useState, useEffect, useRef } from 'react';
-import { Image } from 'react-native';
+import { Image, View } from 'react-native';
 import YouTube from 'react-native-youtube';
 import { PlayingItem } from '@teamberry/muscadine';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
+import DurationLine from './duration-line.component';
 
-const Player = ({ boxKey, currentItem }: {
+const Player = ({ boxKey, currentItem, height }: {
     boxKey: string,
-    currentItem: PlayingItem
+    currentItem: PlayingItem,
+    height: number
 }) => {
   const _youtubeRef = useRef(null);
   const [isLoading, setLoading] = useState(true);
   const [isPlayerReady, setPlayerReadiness] = useState(false);
+  const [videoPosition, setVideoPosition] = useState(0);
 
   useEffect(() => {
     setLoading(false);
@@ -19,10 +22,14 @@ const Player = ({ boxKey, currentItem }: {
 
   useEffect(() => {
     if (currentItem && isPlayerReady) {
+      // Acts as a reset if the same video is played twice
+      setVideoPosition(-1);
       const exactPosition = currentItem.position
         ? currentItem.position
         : Math.floor((Date.now() - Date.parse(currentItem.startTime.toString())) / 1000);
       const position = exactPosition <= 2 ? 0 : exactPosition;
+
+      setVideoPosition(position);
 
       _youtubeRef.current.seekTo(position);
     }
@@ -36,16 +43,21 @@ const Player = ({ boxKey, currentItem }: {
 
   if (currentItem) {
     return (
-      <YouTube
-        ref={_youtubeRef}
-        apiKey={boxKey}
-        play
-        videoId={currentItem.video.link}
-        style={{ alignSelf: 'stretch', height: '100%' }}
-        onReady={() => setPlayerReadiness(true)}
+      <View style={{ flexDirection: 'column' }}>
+        <YouTube
+          ref={_youtubeRef}
+          apiKey={boxKey}
+          play
+          videoId={currentItem.video.link}
+          style={{ alignSelf: 'stretch', height: height - 2 }}
+          onReady={() => setPlayerReadiness(true)}
         // eslint-disable-next-line no-console
-        onError={(e) => console.log(e)}
-      />
+          onError={(e) => console.log(e)}
+        />
+        <View style={{ height: 2, width: '100%', backgroundColor: '#444444' }}>
+          <DurationLine current={videoPosition} videoDuration={currentItem.video.duration} />
+        </View>
+      </View>
     );
   }
 

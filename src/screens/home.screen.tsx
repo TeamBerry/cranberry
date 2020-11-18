@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal,
+  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal, ScrollView,
 } from 'react-native';
 import SideMenu from 'react-native-side-menu-updated';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -13,14 +13,16 @@ import BoxCard from '../components/box-card.component';
 import ProfilePicture from '../components/profile-picture.component';
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import UserIcon from '../../assets/icons/user-icon.svg';
+import Box from '../models/box.model';
+import FeaturedBoxCard from '../components/featured-box-card.component';
+import { useTheme } from '../shared/theme.context';
+import BxActionComponent from '../components/bx-action.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
     paddingLeft: 10,
-    backgroundColor: '#262626',
-    borderColor: '#191919',
     borderStyle: 'solid',
     borderBottomWidth: 1,
   },
@@ -36,14 +38,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#262626',
   },
   titlePage: {
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 30,
     marginTop: '1%',
-    marginBottom: 10,
-    color: 'white',
     paddingLeft: 10,
   },
   fab: {
@@ -72,6 +71,12 @@ const styles = StyleSheet.create({
   boxOptionHelp: {
     color: '#FFFFFF',
   },
+  boxesSection: {
+    marginVertical: 5,
+  },
+  sectionSeparator: {
+    height: 2,
+  },
 });
 
 const HomeScreen = ({ navigation }) => {
@@ -79,14 +84,18 @@ const HomeScreen = ({ navigation }) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [boxes, setBoxes] = useState([]);
+  const [boxes, setBoxes] = useState([] as Array<Box>);
+  const [featuredBoxes, setFeaturedBoxes] = useState([] as Array<Box>);
   const _boxListRef = useRef(null);
+  const { colors } = useTheme();
 
   const getBoxes = async () => {
     try {
       setBoxLoading(false);
       const boxesResults = await axios.get(`${Config.API_URL}/boxes`);
-      setBoxes(boxesResults.data);
+
+      setFeaturedBoxes(boxesResults.data.filter((box: Box) => box.featured));
+      setBoxes(boxesResults.data.filter((box: Box) => !box.featured));
       setBoxLoading(true);
     } catch (error) {
       setBoxLoading(true);
@@ -122,13 +131,8 @@ const HomeScreen = ({ navigation }) => {
 
   const onRefresh = () => {
     setBoxes([]);
+    setFeaturedBoxes([]);
     getBoxes();
-  };
-
-  const scrollToTop = () => {
-    if (_boxListRef && _boxListRef.current) {
-      _boxListRef.current.scrollToIndex({ index: 0, animated: true });
-    }
   };
 
   return (
@@ -144,7 +148,7 @@ const HomeScreen = ({ navigation }) => {
                 <StatusBar barStyle='dark-content' />
             </View> */}
 
-        <View style={styles.headerContainer}>
+        <View style={[styles.headerContainer, { backgroundColor: colors.background, borderColor: colors.backgroundSecondaryAlternateColor }]}>
           <View style={styles.headerStyle}>
             <Pressable
               onPress={() => setMenuOpen(!isMenuOpen)}
@@ -152,32 +156,62 @@ const HomeScreen = ({ navigation }) => {
               {user && user.mail ? (
                 <ProfilePicture userId={user ? user._id : null} size={30} />
               ) : (
-                <UserIcon width={30} height={30} fill="white" />
+                <UserIcon width={30} height={30} fill={colors.textColor} />
               )}
             </Pressable>
           </View>
         </View>
 
-        <View style={styles.container}>
-          <Pressable onPress={() => scrollToTop()}>
-            <Text style={styles.titlePage}>Boxes</Text>
-          </Pressable>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
           {hasLoadedBoxes ? (
-            <FlatList
-              ref={_boxListRef}
-              data={boxes}
-              refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
-              ListEmptyComponent={(
-                <Text style={{ color: 'white', textAlign: 'center' }}>
-                  An error occurred while loading boxes. Please try again.
-                </Text>
-            )}
-              renderItem={({ item }) => (
-                <BoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
+            <>
+              {boxes.length === 0 && featuredBoxes.length === 0 ? (
+                <View style={{ padding: 40 }}>
+                  <Text style={{ color: colors.textColor, textAlign: 'center' }}>
+                    An error occurred while loading boxes. Please try again.
+                  </Text>
+                  <Pressable onPress={() => onRefresh()}>
+                    <BxActionComponent options={{ text: 'Retry' }} />
+                  </Pressable>
+                </View>
+              ) : (
+                <ScrollView
+                  ref={_boxListRef}
+                  refreshControl={<RefreshControl refreshing={!hasLoadedBoxes} onRefresh={onRefresh} />}
+                >
+                  <Text style={[styles.titlePage, { color: colors.textColor }]}>Boxes</Text>
+                  <View style={styles.boxesSection}>
+                    <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
+                      <Text style={{ color: colors.textColor }}>Top Boxes</Text>
+                      <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>Featured boxes picked by our staff</Text>
+                    </View>
+                    <FlatList
+                      data={featuredBoxes}
+                      renderItem={({ item }) => (
+                        <FeaturedBoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
+                      )}
+                      horizontal
+                      keyExtractor={(item) => item.name}
+                    />
+                  </View>
+                  <View style={[styles.sectionSeparator, { backgroundColor: colors.backgroundSecondaryAlternateColor }]} />
+                  <View style={styles.boxesSection}>
+                    <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
+                      <Text style={{ color: colors.textColor }}>Communities</Text>
+                      <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>Find a box for your needs</Text>
+                    </View>
+                    {boxes.map((box, index) => (
+                      <>
+                        <BoxCard box={box} onPress={() => navigation.navigate('Box', { boxToken: box._id })} key={box._id.toString()} />
+                        {index < boxes.length - 1 ? (
+                          <View style={{ height: 1, backgroundColor: colors.backgroundSecondaryColor }} />
+                        ) : null}
+                      </>
+                    ))}
+                  </View>
+                </ScrollView>
               )}
-              ItemSeparatorComponent={() => <View style={{ backgroundColor: '#404040', height: 1 }} />}
-              keyExtractor={(item) => item.name}
-            />
+            </>
           ) : (
             <BxLoadingIndicator />
           )}

@@ -34,6 +34,8 @@ class Box {
     }
 
     acl: ACLConfig
+
+    featured: Date
 }
 
 export default Box;

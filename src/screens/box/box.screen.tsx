@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, useWindowDimensions, BackHandler, Text,
+  View, useWindowDimensions, BackHandler, Text,
 } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -18,17 +18,12 @@ import Queue from './components/queue.component';
 import Panel from './components/panel.component';
 import OfflineNotice from '../../components/offline-notice.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
-
-const styles = StyleSheet.create({
-  playerSpace: {
-    backgroundColor: '#262626',
-  },
-});
+import { useTheme } from '../../shared/theme.context';
 
 const BoxScreen = ({ route, navigation }) => {
   const { boxToken } = route.params;
   const window = useWindowDimensions();
-  const playerHeight = window.width * (9 / 16);
+  const playerHeight = window.width * (9 / 16) + 10;
   const remainingHeight = window.height - playerHeight;
 
   let socketConnection = null;
@@ -42,6 +37,7 @@ const BoxScreen = ({ route, navigation }) => {
   const [isConnected, setConnectionStatus] = useState(null);
   const [permissions, setPermissions] = useState([] as Array<Permission>);
   const [feedback, setFeedbackMessage] = useState(null as FeedbackMessage);
+  const { colors } = useTheme();
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -123,7 +119,7 @@ const BoxScreen = ({ route, navigation }) => {
 
   if (!isConnected) {
     return (
-      <View style={{ backgroundColor: '#191919', height: '100%' }}>
+      <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: '100%' }}>
         <BxLoadingIndicator />
       </View>
     );
@@ -132,11 +128,12 @@ const BoxScreen = ({ route, navigation }) => {
   return (
     <BoxContext.Provider value={socket}>
       <OfflineNotice />
-      <View style={[styles.playerSpace, { height: playerHeight }]}>
+      <View style={{ height: playerHeight, backgroundColor: colors.backgroundInactiveColor }}>
         {socket && boxKey ? (
           <Player
             boxKey={boxKey}
             currentItem={currentQueueItem}
+            height={playerHeight}
           />
         ) : (
           <BxLoadingIndicator />

@@ -12,6 +12,7 @@ import DurationIndicator from '../../../components/duration-indicator.component'
 import BxButtonComponent from '../../../components/bx-button.component';
 
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
+import { useTheme } from '../../../shared/theme.context';
 
 const styles = StyleSheet.create({
   queueVideo: {
@@ -21,7 +22,6 @@ const styles = StyleSheet.create({
   },
   queueVideoName: {
     fontFamily: 'Montserrat-Regular',
-    color: 'white',
   },
   currentVideo: {
     borderColor: '#009AEB',
@@ -59,6 +59,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
 
   const [areActionsVisible, setActionsVisibility] = useState(false);
   const [deletionConfirmationShown, showDeletionConfirmation] = useState(false);
+  const { colors } = useTheme();
 
   const removeVideo = () => {
     if (!deletionConfirmationShown) {
@@ -111,7 +112,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
             justifyContent: 'center',
           }}
           >
-            <Text style={styles.queueVideoName} numberOfLines={2}>
+            <Text style={[styles.queueVideoName, { color: colors.textColor }]} numberOfLines={2}>
               {item.stateForcedWithBerries ? (
                 <View>
                   <BerriesIcon width={16} height={16} />
@@ -125,7 +126,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
             </Text>
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <ProfilePicture userId={item.submitted_by._id} size={20} />
-              <Text style={{ paddingLeft: 5, color: '#BBBBBB' }}>{item.submitted_by.name}</Text>
+              <Text style={{ paddingLeft: 5, color: colors.textSystemColor }}>{item.submitted_by.name}</Text>
             </View>
           </View>
         </View>

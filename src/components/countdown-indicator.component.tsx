@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '../shared/theme.context';
 
 const styles = StyleSheet.create({
   defaultStyle: {
@@ -9,6 +10,7 @@ const styles = StyleSheet.create({
 
 const CountdownIndicator = (props: { time: number, color?: string, text: string }) => {
   const { time, color, text } = props;
+  const { colors } = useTheme();
 
   const [width, setWidth] = useState(100);
   let displayTimeout;
@@ -24,7 +26,7 @@ const CountdownIndicator = (props: { time: number, color?: string, text: string 
 
   return (
     <>
-      <Text style={{ textAlign: 'center', color: '#BBBBBB', paddingVertical: 5 }}>{text}</Text>
+      <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>{text}</Text>
       { width > 0 ? (
         <View style={[styles.defaultStyle, { width: `${width}%`, backgroundColor: color ?? '#009AEB' }]} />
       ) : null}

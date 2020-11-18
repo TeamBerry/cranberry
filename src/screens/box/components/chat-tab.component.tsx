@@ -16,11 +16,11 @@ import DownIcon from '../../../../assets/icons/down-icon.svg';
 import Box from '../../../models/box.model';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
+import { useTheme } from '../../../shared/theme.context';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#191919',
     justifyContent: 'space-between',
   },
   messageList: {
@@ -30,16 +30,13 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 5,
     height: 40,
-    backgroundColor: '#303030',
     borderColor: '#009AEB',
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 5,
-    color: 'white',
     flex: 1,
   },
   scrollButtonContainer: {
-    backgroundColor: '#3f3f3f',
     padding: 7,
     borderRadius: 6,
     margin: 5,
@@ -68,6 +65,8 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
     time: new Date(),
     scope: box._id,
   };
+
+  const { colors } = useTheme();
 
   const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage | SystemMessage>);
   const [messageInput, setMessageInput] = useState('');
@@ -141,17 +140,14 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
       return (
         <TouchableWithoutFeedback
           onPress={() => scrollToBottom()}
-          style={styles.scrollButtonContainer}
+          style={[styles.scrollButtonContainer, { backgroundColor: colors.backgroundInactiveColor }]}
         >
           <View style={styles.scrollButton}>
-            <DownIcon width={14} height={14} fill="white" />
-            <Text style={{
-              color: 'white', marginLeft: 10, marginRight: 10,
-            }}
-            >
+            <DownIcon width={14} height={14} fill={colors.textColor} />
+            <Text style={{ color: colors.textColor, marginLeft: 10, marginRight: 10 }}>
               New Messages
             </Text>
-            <DownIcon width={14} height={14} fill="white" />
+            <DownIcon width={14} height={14} fill={colors.textColor} />
           </View>
         </TouchableWithoutFeedback>
       );
@@ -162,7 +158,7 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}
       behavior="padding"
     >
       <ScrollView
@@ -180,9 +176,9 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
         {user && user.mail ? (
           <View style={{ display: 'flex', flexDirection: 'row' }}>
             <TextInput
-              style={styles.chatInput}
+              style={[styles.chatInput, { backgroundColor: colors.backgroundChatColor, color: colors.textColor }]}
               placeholder="Type to chat..."
-              placeholderTextColor="#BBB"
+              placeholderTextColor={colors.textSystemColor}
               onChangeText={(text) => setMessageInput(text)}
               value={messageInput}
               onSubmitEditing={() => sendMessage()}
@@ -195,7 +191,7 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
           </View>
         ) : (
           <View style={{ display: 'flex', height: 30 }}>
-            <Text style={{ color: 'white', textAlign: 'center' }}>Create an account or log in to chat with everyone!</Text>
+            <Text style={{ color: colors.textColor, textAlign: 'center' }}>Create an account or log in to chat with everyone!</Text>
           </View>
         )}
       </View>

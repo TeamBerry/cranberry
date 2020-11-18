@@ -1,7 +1,7 @@
 import React, {
   useReducer, useEffect, useMemo, useState,
 } from 'react';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import {
@@ -19,6 +19,7 @@ import SignupScreen from './src/screens/signup.screen';
 import CreateBoxScreen from './src/screens/create-box.screen';
 import JoinBoxScreen from './src/screens/join-box.screen';
 import ParseLinkScreen from './src/screens/parse-link.screen';
+import { ThemeProvider } from './src/shared/theme.context';
 
 const RootStack = createStackNavigator();
 
@@ -179,13 +180,6 @@ export default function App() {
     [],
   );
 
-  const ActiveTheme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-    },
-  };
-
   const RootFlow = () => (
     <RootStack.Navigator
       screenOptions={{
@@ -261,12 +255,14 @@ export default function App() {
   }
 
   return (
-    <PaperProvider>
-      <AuthContext.Provider value={authContext}>
-        <NavigationContainer theme={ActiveTheme}>
-          <RootFlow />
-        </NavigationContainer>
-      </AuthContext.Provider>
-    </PaperProvider>
+    <ThemeProvider>
+      <PaperProvider>
+        <AuthContext.Provider value={authContext}>
+          <NavigationContainer>
+            <RootFlow />
+          </NavigationContainer>
+        </AuthContext.Provider>
+      </PaperProvider>
+    </ThemeProvider>
   );
 }
