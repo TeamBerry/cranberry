@@ -201,7 +201,7 @@ const HomeScreen = ({ navigation }) => {
                     </View>
                     {boxes.map((box, index) => (
                       <>
-                        <BoxCard box={box} onPress={() => navigation.navigate('Box', { boxToken: box._id })} />
+                        <BoxCard box={box} onPress={() => navigation.navigate('Box', { boxToken: box._id })} key={box._id.toString()} />
                         {index < boxes.length - 1 ? (
                           <View style={{ height: 1, backgroundColor: colors.backgroundSecondaryColor }} />
                         ) : null}
