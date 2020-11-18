@@ -16,6 +16,7 @@ import UserIcon from '../../assets/icons/user-icon.svg';
 import Box from '../models/box.model';
 import FeaturedBoxCard from '../components/featured-box-card.component';
 import { useTheme } from '../shared/theme.context';
+import BxActionComponent from '../components/bx-action.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -130,13 +131,8 @@ const HomeScreen = ({ navigation }) => {
 
   const onRefresh = () => {
     setBoxes([]);
+    setFeaturedBoxes([]);
     getBoxes();
-  };
-
-  const scrollToTop = () => {
-    if (_boxListRef && _boxListRef.current) {
-      _boxListRef.current.scrollTo({ x: 0, y: 0, animated: true });
-    }
   };
 
   return (
@@ -170,9 +166,14 @@ const HomeScreen = ({ navigation }) => {
           {hasLoadedBoxes ? (
             <>
               {boxes.length === 0 && featuredBoxes.length === 0 ? (
-                <Text style={{ color: colors.textColor, textAlign: 'center' }}>
-                  An error occurred while loading boxes. Please try again.
-                </Text>
+                <View style={{ padding: 40 }}>
+                  <Text style={{ color: colors.textColor, textAlign: 'center' }}>
+                    An error occurred while loading boxes. Please try again.
+                  </Text>
+                  <Pressable onPress={() => onRefresh()}>
+                    <BxActionComponent options={{ text: 'Retry' }} />
+                  </Pressable>
+                </View>
               ) : (
                 <ScrollView
                   ref={_boxListRef}
