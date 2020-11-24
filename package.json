@@ -41,7 +41,7 @@
         "yup": "0.29.3"
     },
     "devDependencies": {
-        "@babel/core": "7.12.3",
+        "@babel/core": "7.12.9",
         "@types/react": "16.9.56",
         "@types/react-native": "0.63.35",
         "@types/yup": "0.29.9",
