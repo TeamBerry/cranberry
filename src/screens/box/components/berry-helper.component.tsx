@@ -3,8 +3,8 @@ import { View, Text, StyleSheet } from 'react-native';
 
 import { Permission } from '@teamberry/muscadine';
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
-import PlayNextIcon from '../../../../assets/icons/force-next-icon.svg';
-import PlayNowIcon from '../../../../assets/icons/force-play-icon.svg';
+import PlayNextIcon from '../../../../assets/icons/play-next-icon.svg';
+import PlayNowIcon from '../../../../assets/icons/play-now-icon.svg';
 import SkipIcon from '../../../../assets/icons/skip-icon.svg';
 import Box from '../../../models/box.model';
 import { useTheme } from '../../../shared/theme.context';

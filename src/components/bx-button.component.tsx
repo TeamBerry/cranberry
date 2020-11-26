@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-import PlayIcon from '../../assets/icons/play-icon.svg';
-import PlayNextIcon from '../../assets/icons/force-next-icon.svg';
-import PlayNowIcon from '../../assets/icons/force-play-icon.svg';
+import PlayIcon from '../../assets/icons/play-later-icon.svg';
+import PlayNextIcon from '../../assets/icons/play-next-icon.svg';
+import PlayNowIcon from '../../assets/icons/play-now-icon.svg';
 import DeleteIcon from '../../assets/icons/trash-icon.svg';
 import SkipIcon from '../../assets/icons/skip-icon.svg';
 import BerriesIcon from '../../assets/icons/berry-coin-icon.svg';
