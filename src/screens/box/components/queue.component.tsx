@@ -16,7 +16,7 @@ import ProfilePicture from '../../../components/profile-picture.component';
 
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 import InviteIcon from '../../../../assets/icons/invite-icon.svg';
-import EditIcon from '../../../../assets/icons/edit-icon.svg';
+import SettingsIcon from '../../../../assets/icons/settings-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
@@ -246,7 +246,7 @@ const Queue = (props: {
             />
             {permissions.includes('editBox') ? (
               <Pressable style={[styles.shareSpace, { paddingHorizontal: 7 }]} onPress={onEdit}>
-                <EditIcon width={20} height={20} fill={colors.textColor} />
+                <SettingsIcon width={20} height={20} fill={colors.textColor} />
               </Pressable>
             ) : null}
             {permissions.includes('inviteUser') ? (
