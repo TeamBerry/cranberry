@@ -16,6 +16,7 @@ import ProfilePicture from '../../../components/profile-picture.component';
 
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 import InviteIcon from '../../../../assets/icons/invite-icon.svg';
+import EditIcon from '../../../../assets/icons/edit-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
@@ -38,8 +39,6 @@ const styles = StyleSheet.create({
   },
   shareSpace: {
     flex: 0,
-    paddingLeft: 10,
-    paddingRight: 7,
     flexDirection: 'row',
     alignContent: 'center',
     alignItems: 'center',
@@ -57,10 +56,11 @@ const Queue = (props: {
     currentVideo: QueueItem,
     height: number,
     berryCount: number,
-    permissions: Array<Permission>
+    permissions: Array<Permission>,
+    onEdit: () => void
 }) => {
   const {
-    box, currentVideo, height, berryCount, permissions,
+    box, currentVideo, height, berryCount, permissions, onEdit,
   } = props;
   const { colors } = useTheme();
 
@@ -225,7 +225,7 @@ const Queue = (props: {
             <Text style={[styles.boxName, { color: colors.textSystemColor }]} numberOfLines={1}>{box.name}</Text>
             <CurrentVideo />
           </View>
-          <View style={{ width: 40 }}>
+          <View style={{ width: 30 }}>
             <Animated.View
               style={{ transform: [{ rotate: spin }] }}
             >
@@ -238,10 +238,18 @@ const Queue = (props: {
             </Animated.View>
           </View>
         </Pressable>
+        <View style={{
+          height: '55%', width: 1, marginRight: 5, marginLeft: 10, backgroundColor: '#777777',
+        }}
+        />
+        {permissions.includes('editBox') ? (
+          <Pressable style={[styles.shareSpace, { paddingHorizontal: 5 }]} onPress={onEdit}>
+            <EditIcon width={20} height={20} fill={colors.textColor} />
+          </Pressable>
+        ) : null}
         {permissions.includes('inviteUser') ? (
           <>
-            <View style={{ height: '55%', width: 1, backgroundColor: '#777777' }} />
-            <Pressable style={styles.shareSpace} onPress={onShare}>
+            <Pressable style={[styles.shareSpace, { paddingRight: 7 }]} onPress={onShare}>
               <InviteIcon width={20} height={20} fill="rgba(0,154,235,0.75)" />
             </Pressable>
           </>
