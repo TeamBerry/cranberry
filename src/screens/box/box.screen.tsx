@@ -205,6 +205,7 @@ const BoxScreen = ({ route, navigation }) => {
       const updatedBox = await axios.put(`${Config.API_URL}/boxes/${boxToken}`, {
         _id: boxToken, ...boxInputData, acl: box.acl, description: box.description, lang: box.lang,
       });
+      setEditing(false);
       setUpdated(true);
       setUpdating(false);
       setBox(updatedBox.data);
