@@ -8,7 +8,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 
 import {
-  SyncPacket, BerryCount, Permission, FeedbackMessage,
+  SyncPacket, BerryCount, Permission, FeedbackMessage, PlayingItem,
 } from '@teamberry/muscadine';
 import { IconButton, Snackbar, Switch } from 'react-native-paper';
 import Collapsible from 'react-native-collapsible';
@@ -30,6 +30,7 @@ import ReplayIcon from '../../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../../assets/icons/coin-enabled-icon.svg';
 import LockIcon from '../../../assets/icons/lock-icon.svg';
 import DurationRestrictionIcon from '../../../assets/icons/duration-limit-icon.svg';
+import { AuthSubject } from '../../models/session.model';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -84,11 +85,11 @@ const BoxScreen = ({ route, navigation }) => {
 
   let socketConnection = null;
 
-  const [box, setBox] = useState(null);
-  const [user, setUser] = useState(null);
+  const [box, setBox] = useState<Box>(null);
+  const [user, setUser] = useState<AuthSubject>(null);
   const [socket, setSocket] = useState(null);
-  const [boxKey, setBoxKey] = useState(null);
-  const [currentQueueItem, setCurrentQueueItem] = useState(null);
+  const [boxKey, setBoxKey] = useState<string>(null);
+  const [currentQueueItem, setCurrentQueueItem] = useState<PlayingItem>(null);
   const [berryCount, setBerryCount] = useState(0);
   const [isConnected, setConnectionStatus] = useState(null);
   const [permissions, setPermissions] = useState<Array<Permission>>([]);
@@ -108,8 +109,7 @@ const BoxScreen = ({ route, navigation }) => {
       const box = await axios.get(`${Config.API_URL}/boxes/${boxToken}`);
       setBox(box.data);
 
-      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      setUser(user);
+      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     bootstrap();
@@ -202,10 +202,12 @@ const BoxScreen = ({ route, navigation }) => {
   const updateBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions }) => {
     setUpdating(true);
     try {
-      const box = await axios.put(`${Config.API_URL}/boxes/${boxToken}`, { _id: boxToken, ...boxInputData });
+      const updatedBox = await axios.put(`${Config.API_URL}/boxes/${boxToken}`, {
+        _id: boxToken, ...boxInputData, acl: box.acl, description: box.description, lang: box.lang,
+      });
       setUpdated(true);
       setUpdating(false);
-      setBox(box.data);
+      setBox(updatedBox.data);
     } catch (error) {
       console.error('ERROR: ', error);
       setUpdating(false);
@@ -369,25 +371,6 @@ const BoxScreen = ({ route, navigation }) => {
                               <View style={styles.modeSpace}>
                                 <View style={styles.modeDefinition}>
                                   <View style={{ paddingRight: 5 }}>
-                                    <BerriesIcon width={20} height={20} fill={colors.textColor} />
-                                  </View>
-                                  <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Berries System</Text>
-                                </View>
-                                <Switch
-                                  value={values.berries}
-                                  onValueChange={(value) => setFieldValue('berries', value)}
-                                  color="#009AEB"
-                                />
-                              </View>
-                              <Text style={{ color: colors.textSystemColor }}>
-                                Your users will be able to collect Berries while they are in your box. They will then be able to spend
-                                the berries to skip a video or select the next video to play.
-                              </Text>
-                            </View>
-                            <View style={styles.modeContainer}>
-                              <View style={styles.modeSpace}>
-                                <View style={styles.modeDefinition}>
-                                  <View style={{ paddingRight: 5 }}>
                                     <DurationRestrictionIcon width={20} height={20} fill={colors.textColor} />
                                   </View>
                                   <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Duration Restriction</Text>
@@ -409,6 +392,25 @@ const BoxScreen = ({ route, navigation }) => {
                                 />
                                 {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
                               </View>
+                            </View>
+                            <View style={styles.modeContainer}>
+                              <View style={styles.modeSpace}>
+                                <View style={styles.modeDefinition}>
+                                  <View style={{ paddingRight: 5 }}>
+                                    <BerriesIcon width={20} height={20} fill={colors.textColor} />
+                                  </View>
+                                  <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Berries System</Text>
+                                </View>
+                                <Switch
+                                  value={values.berries}
+                                  onValueChange={(value) => setFieldValue('berries', value)}
+                                  color="#009AEB"
+                                />
+                              </View>
+                              <Text style={{ color: colors.textSystemColor }}>
+                                Your users will be able to collect Berries while they are in your box. They will then be able to spend
+                                the berries to skip a video or select the next video to play.
+                              </Text>
                             </View>
                             {!isUpdating ? (
                               <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
