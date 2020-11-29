@@ -125,6 +125,10 @@ const BoxScreen = ({ route, navigation }) => {
     );
   }
 
+  const onEdit = () => {
+    navigation.navigate('EditBox');
+  };
+
   return (
     <BoxContext.Provider value={socket}>
       <OfflineNotice />
@@ -141,7 +145,14 @@ const BoxScreen = ({ route, navigation }) => {
       </View>
       {isConnected && box && berryCount !== null && permissions ? (
         <>
-          <Queue box={box} currentVideo={currentQueueItem} height={remainingHeight} berryCount={berryCount} permissions={permissions} />
+          <Queue
+            box={box}
+            currentVideo={currentQueueItem}
+            height={remainingHeight}
+            berryCount={berryCount}
+            permissions={permissions}
+            onEdit={onEdit}
+          />
           <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />
         </>
       ) : (

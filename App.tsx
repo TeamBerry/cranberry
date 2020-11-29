@@ -19,6 +19,7 @@ import SignupScreen from './src/screens/signup.screen';
 import CreateBoxScreen from './src/screens/create-box.screen';
 import JoinBoxScreen from './src/screens/join-box.screen';
 import ParseLinkScreen from './src/screens/parse-link.screen';
+import EditBoxScreen from './src/screens/edit-box-screen';
 import { ThemeProvider } from './src/shared/theme.context';
 
 const RootStack = createStackNavigator();
@@ -233,6 +234,11 @@ export default function App() {
       <RootStack.Screen
         name="CreateBox"
         component={CreateBoxScreen}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen
+        name="EditBox"
+        component={EditBoxScreen}
         options={{ headerShown: false }}
       />
       <RootStack.Screen
