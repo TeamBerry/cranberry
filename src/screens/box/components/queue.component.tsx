@@ -238,20 +238,24 @@ const Queue = (props: {
             </Animated.View>
           </View>
         </Pressable>
-        <View style={{
-          height: '55%', width: 1, marginHorizontal: 5, backgroundColor: '#777777',
-        }}
-        />
-        {permissions.includes('editBox') ? (
-          <Pressable style={[styles.shareSpace, { paddingHorizontal: 5 }]} onPress={onEdit}>
-            <EditIcon width={20} height={20} fill={colors.textColor} />
-          </Pressable>
-        ) : null}
-        {permissions.includes('inviteUser') ? (
+        {permissions.includes('editBox') || permissions.includes('inviteUser') ? (
           <>
-            <Pressable style={[styles.shareSpace, { paddingRight: 7 }]} onPress={onShare}>
-              <InviteIcon width={20} height={20} fill="rgba(0,154,235,0.75)" />
-            </Pressable>
+            <View style={{
+              height: '55%', width: 1, marginLeft: 5, marginRight: 7, backgroundColor: '#777777',
+            }}
+            />
+            {permissions.includes('editBox') ? (
+              <Pressable style={[styles.shareSpace, { paddingHorizontal: 7 }]} onPress={onEdit}>
+                <EditIcon width={20} height={20} fill={colors.textColor} />
+              </Pressable>
+            ) : null}
+            {permissions.includes('inviteUser') ? (
+              <>
+                <Pressable style={[styles.shareSpace, { paddingRight: 7 }]} onPress={onShare}>
+                  <InviteIcon width={20} height={20} fill="rgba(0,154,235,0.75)" />
+                </Pressable>
+              </>
+            ) : null}
           </>
         ) : null}
       </View>
