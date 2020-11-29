@@ -238,7 +238,7 @@ const BoxScreen = ({ route, navigation }) => {
             >
               { isEditing ? (
                 <View>
-                  <View style={[styles.headerContainer, { backgroundColor: colors.background }]}>
+                  <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
                     <Text style={[styles.titlePage, { color: colors.textColor }]}>Box Settings</Text>
                     <Pressable onPress={() => setEditing(false)}>
                       <IconButton
