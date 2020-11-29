@@ -225,7 +225,7 @@ const Queue = (props: {
             <Text style={[styles.boxName, { color: colors.textSystemColor }]} numberOfLines={1}>{box.name}</Text>
             <CurrentVideo />
           </View>
-          <View style={{ width: 30 }}>
+          <View style={{ width: 40 }}>
             <Animated.View
               style={{ transform: [{ rotate: spin }] }}
             >
@@ -239,7 +239,7 @@ const Queue = (props: {
           </View>
         </Pressable>
         <View style={{
-          height: '55%', width: 1, marginRight: 5, marginLeft: 10, backgroundColor: '#777777',
+          height: '55%', width: 1, marginHorizontal: 5, backgroundColor: '#777777',
         }}
         />
         {permissions.includes('editBox') ? (

@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    height: 50,
   },
   titlePage: {
     fontFamily: 'Montserrat-SemiBold',
@@ -116,12 +117,22 @@ const BoxScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      navigation.navigate('Home');
-      return true;
+      if (!isEditing && !isSharing) {
+        navigation.navigate('Home');
+        return true;
+      }
+
+      if (isEditing || isSharing) {
+        setEditing(false);
+        setSharing(false);
+        return true;
+      }
+
+      return false;
     });
 
     return () => backHandler.remove();
-  }, []);
+  }, [isEditing, isSharing]);
 
   useEffect(() => {
     if (user && boxToken) {
@@ -188,10 +199,10 @@ const BoxScreen = ({ route, navigation }) => {
     );
   }
 
-  const updateBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions}) => {
+  const updateBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions }) => {
     setUpdating(true);
     try {
-      const box = await axios.put(`${Config.API_URL}/boxes/${boxToken}`, boxInputData);
+      const box = await axios.put(`${Config.API_URL}/boxes/${boxToken}`, { _id: boxToken, ...boxInputData });
       setUpdated(true);
       setUpdating(false);
       setBox(box.data);
