@@ -191,7 +191,7 @@ const HomeScreen = ({ navigation }) => {
                         <FeaturedBoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
                       )}
                       horizontal
-                      keyExtractor={(item) => item.name}
+                      keyExtractor={(item) => item._id}
                     />
                   </View>
                   <View style={[styles.sectionSeparator, { backgroundColor: colors.backgroundSecondaryAlternateColor }]} />
