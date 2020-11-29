@@ -20,6 +20,7 @@ import CreateBoxScreen from './src/screens/create-box.screen';
 import JoinBoxScreen from './src/screens/join-box.screen';
 import ParseLinkScreen from './src/screens/parse-link.screen';
 import { ThemeProvider } from './src/shared/theme.context';
+import { AuthSubject } from './src/models/session.model';
 
 const RootStack = createStackNavigator();
 
@@ -48,7 +49,6 @@ export default function App() {
   const { inviteLink } = useInitialUrl();
 
   const createAnonymousToken = async () => {
-    let session = {};
     const values = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let anonymousToken = '';
 
@@ -57,7 +57,7 @@ export default function App() {
       anonymousToken += values[Math.round(Math.random() * (values.length - 1))];
     }
 
-    session = {
+    const session: AuthSubject = {
       _id: `user-${anonymousToken}`,
       name: null,
       mail: null,

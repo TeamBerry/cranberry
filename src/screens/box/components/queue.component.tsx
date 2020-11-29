@@ -21,6 +21,7 @@ import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
 import BxChipComponent from '../../../components/bx-chip.component';
+import { AuthSubject } from '../../../models/session.model';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -68,13 +69,12 @@ const Queue = (props: {
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
   const [queueVideos, setQueueVideos] = useState<Array<QueueItem>>([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<AuthSubject>(null);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
   useEffect(() => {
     const bootstrap = async () => {
-      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      setUser(user);
+      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     bootstrap();

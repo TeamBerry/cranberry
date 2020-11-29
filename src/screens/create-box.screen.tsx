@@ -18,6 +18,7 @@ import DurationRestrictionIcon from '../../assets/icons/duration-limit-icon.svg'
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import BxActionComponent from '../components/bx-action.component';
 import { useTheme } from '../shared/theme.context';
+import { AuthSubject } from '../models/session.model';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -73,15 +74,14 @@ export type BoxOptions = {
 }
 
 const CreateBoxScreen = ({ navigation }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<AuthSubject>(null);
   const [isCreating, setCreating] = useState(false);
   const [box, setBox] = useState(null);
   const { colors } = useTheme();
 
   useEffect(() => {
     const getSession = async () => {
-      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      setUser(user);
+      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     getSession();
