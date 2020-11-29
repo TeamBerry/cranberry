@@ -126,7 +126,8 @@ const BoxScreen = ({ route, navigation }) => {
   }
 
   const onEdit = () => {
-    navigation.navigate('EditBox');
+    console.log('BOXTOKEN: ', boxToken);
+    navigation.navigate('EditBox', { boxToken });
   };
 
   return (

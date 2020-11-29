@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  KeyboardAvoidingView, StyleSheet, View, Text, TouchableOpacity, Pressable, ScrollView,
+  KeyboardAvoidingView, StyleSheet, View, Text, TouchableOpacity, Pressable, ScrollView, BackHandler,
 } from 'react-native';
 import { Switch, IconButton, Snackbar } from 'react-native-paper';
 import axios from 'axios';
@@ -72,28 +72,52 @@ export type BoxOptions = {
       videoMaxDurationLimit: number
   }
 
-const EditBoxScreen = ({ navigation, existingBox }) => {
+const EditBoxScreen = ({ route, navigation }) => {
+  const { boxToken } = route.params;
   const [isUpdating, setUpdating] = useState(false);
   const [isUpdated, setUpdated] = useState(false);
-  const [box, setBox] = useState<Box>(existingBox);
+  const [box, setBox] = useState<Box>();
   const { colors } = useTheme();
+
+  useEffect(() => {
+    const bootstrap = async () => {
+      const box = await axios.get(`${Config.API_URL}/boxes/${boxToken}`);
+      setBox(box.data);
+    };
+
+    bootstrap();
+  }, []);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      navigation.pop();
+      return true;
+    });
+
+    return () => backHandler.remove();
+  }, []);
 
   const updateBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions}) => {
     setUpdating(true);
     try {
-      const box = await axios.put(`${Config.API_URL}/boxes/${existingBox._id}`, boxInputData);
+      const box = await axios.put(`${Config.API_URL}/boxes/${boxToken}`, boxInputData);
       setUpdated(true);
       setUpdating(false);
       setBox(box.data);
     } catch (error) {
       console.error('ERROR: ', error);
+      setUpdating(false);
     }
   };
+
+  if (!box) {
+    return <BxLoadingIndicator />;
+  }
 
   return (
     <>
       <View style={[styles.headerContainer, { backgroundColor: colors.background }]}>
-        <Text style={[styles.titlePage, { color: colors.textColor }]}>Create a box</Text>
+        <Text style={[styles.titlePage, { color: colors.textColor }]}>Update your box</Text>
         <TouchableOpacity
           onPress={() => navigation.pop()}
         >
@@ -271,7 +295,7 @@ const EditBoxScreen = ({ navigation, existingBox }) => {
                 </View>
                 {!isUpdating ? (
                   <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
-                    <BxActionComponent options={{ text: 'Create Box' }} />
+                    <BxActionComponent options={{ text: 'Save Modifications' }} />
                   </Pressable>
                 ) : (
                   <BxLoadingIndicator />
@@ -286,7 +310,7 @@ const EditBoxScreen = ({ navigation, existingBox }) => {
                     borderLeftWidth: 10,
                   }}
                 >
-                  <Text style={{ color: 'white' }}>Your box has been created. Hang tight! We&apos;re redirecting you to it...</Text>
+                  <Text style={{ color: 'white' }}>Your box has been updated.</Text>
                 </Snackbar>
               </View>
             )}
