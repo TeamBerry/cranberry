@@ -454,9 +454,8 @@ const BoxScreen = ({ route, navigation }) => {
                       />
                     </Pressable>
                   </View>
-                  <View style={{
-                    padding: 20, alignContent: 'space-between', flexDirection: 'column', flex: 0,
-                  }}
+                  <View
+                    style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50, padding: 20 }]}
                   >
                     <Text style={{ color: colors.textColor, textAlign: 'center' }}>You can send this invite link to your friends</Text>
                     {shareLink ? (
