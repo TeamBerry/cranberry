@@ -244,17 +244,17 @@ const Queue = (props: {
               height: '55%', width: 1, marginLeft: 5, marginRight: 7, backgroundColor: '#777777',
             }}
             />
-            {permissions.includes('editBox') ? (
-              <Pressable style={[styles.shareSpace, { paddingHorizontal: 7 }]} onPress={onEdit}>
-                <SettingsIcon width={20} height={20} fill={colors.textColor} />
-              </Pressable>
-            ) : null}
             {permissions.includes('inviteUser') ? (
               <>
-                <Pressable style={[styles.shareSpace, { paddingRight: 7 }]} onPress={onShare}>
-                  <InviteIcon width={20} height={20} fill="rgba(0,154,235,0.75)" />
+                <Pressable style={[styles.shareSpace, { paddingLeft: 7 }]} onPress={onShare}>
+                  <InviteIcon width={25} height={25} fill={colors.textColor} />
                 </Pressable>
               </>
+            ) : null}
+            {permissions.includes('editBox') ? (
+              <Pressable style={[styles.shareSpace, { paddingHorizontal: 7 }]} onPress={onEdit}>
+                <SettingsIcon width={25} height={25} fill={colors.textColor} />
+              </Pressable>
             ) : null}
           </>
         ) : null}
