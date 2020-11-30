@@ -10,6 +10,7 @@ import BxActionComponent from './bx-action.component';
 
 import UserIcon from '../../assets/icons/user-icon.svg';
 import { useTheme } from '../shared/theme.context';
+import { AuthSubject } from '../models/session.model';
 
 const styles = StyleSheet.create({
   container: {
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
 
 const CustomMenu = () => {
   const navigation = useNavigation();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<AuthSubject>(null);
 
   useEffect(() => {
     const bootstrap = async () => {

@@ -16,6 +16,7 @@ import BerryHelper from './berry-helper.component';
 import CountdownIndicator from '../../../components/countdown-indicator.component';
 import { useTheme } from '../../../shared/theme.context';
 import SearchVideo from './search-video.component';
+import { AuthSubject } from '../../../models/session.model';
 
 const styles = StyleSheet.create({
   container: {
@@ -54,8 +55,8 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
   const { colors } = useTheme();
 
   const [searchValue, setSearchValue] = useState('');
-  const [youtubeSearchResults, setSearchResults] = useState([] as Array<Video>);
-  const [user, setUser] = useState(null);
+  const [youtubeSearchResults, setSearchResults] = useState<Array<Video>>([]);
+  const [user, setUser] = useState<AuthSubject>(null);
   const [isSearching, setSearching] = useState(false);
   const [searchCooldown, setSearchCooldown] = useState(false);
   const [error, setError] = useState(false);
@@ -65,8 +66,7 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
 
   useEffect(() => {
     const getSession = async () => {
-      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      setUser(user);
+      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     if (user === null) {

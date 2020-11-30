@@ -17,6 +17,7 @@ import Box from '../models/box.model';
 import FeaturedBoxCard from '../components/featured-box-card.component';
 import { useTheme } from '../shared/theme.context';
 import BxActionComponent from '../components/bx-action.component';
+import { AuthSubject } from '../models/session.model';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -83,9 +84,9 @@ const HomeScreen = ({ navigation }) => {
   const [hasLoadedBoxes, setBoxLoading] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [boxes, setBoxes] = useState([] as Array<Box>);
-  const [featuredBoxes, setFeaturedBoxes] = useState([] as Array<Box>);
+  const [user, setUser] = useState<AuthSubject>(null);
+  const [boxes, setBoxes] = useState<Array<Box>>([]);
+  const [featuredBoxes, setFeaturedBoxes] = useState<Array<Box>>([]);
   const _boxListRef = useRef(null);
   const { colors } = useTheme();
 
@@ -105,8 +106,7 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     const bootstrap = async () => {
       getBoxes();
-      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      setUser(user);
+      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     bootstrap();
@@ -191,7 +191,7 @@ const HomeScreen = ({ navigation }) => {
                         <FeaturedBoxCard box={item} onPress={() => navigation.navigate('Box', { boxToken: item._id })} />
                       )}
                       horizontal
-                      keyExtractor={(item) => item.name}
+                      keyExtractor={(item) => item._id}
                     />
                   </View>
                   <View style={[styles.sectionSeparator, { backgroundColor: colors.backgroundSecondaryAlternateColor }]} />

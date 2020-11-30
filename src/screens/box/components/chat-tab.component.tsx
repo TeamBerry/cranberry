@@ -17,6 +17,7 @@ import Box from '../../../models/box.model';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
+import { AuthSubject } from '../../../models/session.model';
 
 const styles = StyleSheet.create({
   container: {
@@ -68,9 +69,9 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
 
   const { colors } = useTheme();
 
-  const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage | SystemMessage>);
+  const [messages, setMessages] = useState<Array<Message | FeedbackMessage | SystemMessage>>([welcomeMessage]);
   const [messageInput, setMessageInput] = useState('');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<AuthSubject>(null);
   const [hasNewMessages, setNewMessageAlert] = useState(false);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 

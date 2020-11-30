@@ -18,6 +18,7 @@ import DurationRestrictionIcon from '../../assets/icons/duration-limit-icon.svg'
 import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import BxActionComponent from '../components/bx-action.component';
 import { useTheme } from '../shared/theme.context';
+import { AuthSubject } from '../models/session.model';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -73,15 +74,14 @@ export type BoxOptions = {
 }
 
 const CreateBoxScreen = ({ navigation }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<AuthSubject>(null);
   const [isCreating, setCreating] = useState(false);
   const [box, setBox] = useState(null);
   const { colors } = useTheme();
 
   useEffect(() => {
     const getSession = async () => {
-      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      setUser(user);
+      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     getSession();
@@ -234,25 +234,6 @@ const CreateBoxScreen = ({ navigation }) => {
                   <View style={styles.modeSpace}>
                     <View style={styles.modeDefinition}>
                       <View style={{ paddingRight: 5 }}>
-                        <BerriesIcon width={20} height={20} fill={colors.textColor} />
-                      </View>
-                      <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Berries System</Text>
-                    </View>
-                    <Switch
-                      value={values.berries}
-                      onValueChange={(value) => setFieldValue('berries', value)}
-                      color="#009AEB"
-                    />
-                  </View>
-                  <Text style={{ color: colors.textSystemColor }}>
-                    Your users will be able to collect Berries while they are in your box. They will then be able to spend
-                    the berries to skip a video or select the next video to play.
-                  </Text>
-                </View>
-                <View style={styles.modeContainer}>
-                  <View style={styles.modeSpace}>
-                    <View style={styles.modeDefinition}>
-                      <View style={{ paddingRight: 5 }}>
                         <DurationRestrictionIcon width={20} height={20} fill={colors.textColor} />
                       </View>
                       <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Duration Restriction</Text>
@@ -274,6 +255,25 @@ const CreateBoxScreen = ({ navigation }) => {
                     />
                     {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
                   </View>
+                </View>
+                <View style={styles.modeContainer}>
+                  <View style={styles.modeSpace}>
+                    <View style={styles.modeDefinition}>
+                      <View style={{ paddingRight: 5 }}>
+                        <BerriesIcon width={20} height={20} fill={colors.textColor} />
+                      </View>
+                      <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Berries System</Text>
+                    </View>
+                    <Switch
+                      value={values.berries}
+                      onValueChange={(value) => setFieldValue('berries', value)}
+                      color="#009AEB"
+                    />
+                  </View>
+                  <Text style={{ color: colors.textSystemColor }}>
+                    Your users will be able to collect Berries while they are in your box. They will then be able to spend
+                    the berries to skip a video or select the next video to play.
+                  </Text>
                 </View>
                 {!isCreating ? (
                   <Pressable onPress={() => handleSubmit()} disabled={!isValid}>

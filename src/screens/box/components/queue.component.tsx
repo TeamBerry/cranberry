@@ -9,23 +9,19 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import { Snackbar } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Formik } from 'formik';
-import * as yup from 'yup';
 
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
 
-import RandomIcon from '../../../../assets/icons/random-icon.svg';
-import ReplayIcon from '../../../../assets/icons/replay-icon.svg';
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
-import BerriesEnabledIcon from '../../../../assets/icons/coin-enabled-icon.svg';
-import DurationRestrictionIcon from '../../../../assets/icons/duration-limit-icon.svg';
 import InviteIcon from '../../../../assets/icons/invite-icon.svg';
+import SettingsIcon from '../../../../assets/icons/settings-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
-import FormTextInput from '../../../components/form-text-input.component';
 import { useTheme } from '../../../shared/theme.context';
+import BxChipComponent from '../../../components/bx-chip.component';
+import { AuthSubject } from '../../../models/session.model';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -44,8 +40,6 @@ const styles = StyleSheet.create({
   },
   shareSpace: {
     flex: 0,
-    paddingLeft: 10,
-    paddingRight: 7,
     flexDirection: 'row',
     alignContent: 'center',
     alignItems: 'center',
@@ -63,25 +57,24 @@ const Queue = (props: {
     currentVideo: QueueItem,
     height: number,
     berryCount: number,
-    permissions: Array<Permission>
+    permissions: Array<Permission>,
+    onEdit: () => void
 }) => {
   const {
-    box, currentVideo, height, berryCount, permissions,
+    box, currentVideo, height, berryCount, permissions, onEdit,
   } = props;
   const { colors } = useTheme();
 
   const [isCollapsed, setCollapse] = useState(true);
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
-  const [isDurationInputVisible, setDurationInputVisibility] = useState(false);
   const [queueVideos, setQueueVideos] = useState<Array<QueueItem>>([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<AuthSubject>(null);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
   useEffect(() => {
     const bootstrap = async () => {
-      const user = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-      setUser(user);
+      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     bootstrap();
@@ -191,106 +184,6 @@ const Queue = (props: {
     return () => backHandler.remove();
   }, [isCollapsed]);
 
-  const patchBox = async (setting) => {
-    try {
-      await axios.patch(`${Config.API_URL}/boxes/${box._id}`, setting);
-      setUpdateState(true);
-    } catch (error) {
-      setError(true);
-    }
-  };
-
-  const RandomIndicator = () => {
-    if (permissions.includes('editBox')) {
-      return (
-        <Pressable onPress={() => { patchBox({ random: !box.options.random }); }}>
-          <RandomIcon width={20} height={20} fill={box.options.random ? '#009AEB' : colors.inactiveColor} />
-        </Pressable>
-      );
-    }
-
-    if (box.options.random) {
-      return <RandomIcon width={20} height={20} fill="#009AEB" />;
-    }
-
-    return null;
-  };
-
-  const LoopIndicator = () => {
-    if (permissions.includes('editBox')) {
-      return (
-        <Pressable onPress={() => { patchBox({ loop: !box.options.loop }); }}>
-          <ReplayIcon width={20} height={20} fill={box.options.loop ? '#009AEB' : colors.inactiveColor} />
-        </Pressable>
-      );
-    }
-
-    if (box.options.loop) {
-      return <ReplayIcon width={20} height={20} fill="#009AEB" />;
-    }
-
-    return null;
-  };
-
-  const BerriesIndicator = () => {
-    if (permissions.includes('editBox')) {
-      return (
-        <Pressable onPress={() => { patchBox({ berries: !box.options.berries }); }}>
-          <BerriesEnabledIcon width={20} height={20} fill={box.options.berries ? '#009AEB' : colors.inactiveColor} />
-        </Pressable>
-      );
-    }
-
-    if (box.options.berries) {
-      return <BerriesEnabledIcon width={20} height={20} fill="#009AEB" />;
-    }
-
-    return null;
-  };
-
-  const DurationRestrictionIndicator = () => {
-    if (permissions.includes('editBox')) {
-      if (box.options.videoMaxDurationLimit !== 0) {
-        return (
-          <Pressable onPress={() => { patchBox({ videoMaxDurationLimit: 0 }); }}>
-            <View style={{ flex: 0, flexDirection: 'row' }}>
-              <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : colors.inactiveColor} />
-              {box.options.videoMaxDurationLimit ? (
-                <Text style={{ color: '#009AEB' }}>
-                  {box.options.videoMaxDurationLimit}
-                  {' '}
-                  mins
-                </Text>
-              ) : null}
-            </View>
-          </Pressable>
-        );
-      }
-      return (
-        <Pressable onPress={() => { setDurationInputVisibility(!isDurationInputVisible); }}>
-          <View style={{ flex: 0, flexDirection: 'row' }}>
-            <DurationRestrictionIcon width={20} height={20} fill={colors.inactiveColor} />
-          </View>
-        </Pressable>
-      );
-    }
-
-    if (box.options.videoMaxDurationLimit) {
-      return (
-        <View style={{ flex: 0, flexDirection: 'row' }}>
-          <DurationRestrictionIcon width={20} height={20} fill={box.options.videoMaxDurationLimit !== 0 ? '#009AEB' : colors.inactiveColor} />
-          <Text style={{ color: '#009AEB' }}>
-            {box.options.videoMaxDurationLimit}
-            {' '}
-            mins
-          </Text>
-        </View>
-      );
-    }
-
-    return null;
-  };
-
   const QueueList = () => (
     <FlatList
       data={queueVideos}
@@ -345,12 +238,24 @@ const Queue = (props: {
             </Animated.View>
           </View>
         </Pressable>
-        {permissions.includes('inviteUser') ? (
+        {permissions.includes('editBox') || permissions.includes('inviteUser') ? (
           <>
-            <View style={{ height: '55%', width: 1, backgroundColor: '#777777' }} />
-            <Pressable style={styles.shareSpace} onPress={onShare}>
-              <InviteIcon width={20} height={20} fill="rgba(0,154,235,0.75)" />
-            </Pressable>
+            <View style={{
+              height: '55%', width: 1, marginLeft: 5, marginRight: 7, backgroundColor: '#777777',
+            }}
+            />
+            {permissions.includes('inviteUser') ? (
+              <>
+                <Pressable style={[styles.shareSpace, { paddingLeft: 7 }]} onPress={onShare}>
+                  <InviteIcon width={25} height={25} fill={colors.textColor} />
+                </Pressable>
+              </>
+            ) : null}
+            {permissions.includes('editBox') ? (
+              <Pressable style={[styles.shareSpace, { paddingHorizontal: 7 }]} onPress={onEdit}>
+                <SettingsIcon width={25} height={25} fill={colors.textColor} />
+              </Pressable>
+            ) : null}
           </>
         ) : null}
       </View>
@@ -361,20 +266,30 @@ const Queue = (props: {
         >
           <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, padding: 10 }}>
             <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
-              {/* Display icons in "inactive" status for users who can act on them. Don't display icons for user who cannot. */}
-              <View style={{ flex: 0, flexDirection: 'row' }}>
-                <View style={{ paddingRight: 20 }}>
-                  <RandomIndicator />
-                </View>
-                <View style={{ paddingRight: 20 }}>
-                  <LoopIndicator />
-                </View>
-                <View style={{ paddingRight: 20 }}>
-                  <BerriesIndicator />
-                </View>
-                <View style={{ paddingRight: 20 }}>
-                  <DurationRestrictionIndicator />
-                </View>
+              <View style={{ flexDirection: 'row' }}>
+                {box.options.random ? (
+                  <View style={{ paddingHorizontal: 2 }}>
+                    <BxChipComponent options={{ type: 'random', chipText: 'Random' }} display="icon" />
+                  </View>
+                ) : null}
+                {box.options.loop ? (
+                  <View style={{ paddingHorizontal: 2 }}>
+                    <BxChipComponent options={{ type: 'loop', chipText: 'Loop' }} display="icon" />
+                  </View>
+                ) : null}
+                {box.options.berries ? (
+                  <View style={{ paddingHorizontal: 2 }}>
+                    <BxChipComponent options={{ type: 'coin-enabled', chipText: 'Berries' }} display="icon" />
+                  </View>
+                ) : null}
+                {box.options.videoMaxDurationLimit !== 0 ? (
+                  <View style={{ paddingHorizontal: 2 }}>
+                    <BxChipComponent
+                      options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }}
+                      display="full"
+                    />
+                  </View>
+                ) : null}
               </View>
               <View>
                 {user && user.mail && box?.options?.berries && box?.creator?._id !== user._id ? (
@@ -384,56 +299,6 @@ const Queue = (props: {
                 ) : null}
               </View>
             </View>
-            {isDurationInputVisible ? (
-              <View style={{ paddingVertical: 5 }}>
-                <Formik
-                  initialValues={{
-                    videoMaxDurationLimit: box.options.videoMaxDurationLimit.toString(),
-                  }}
-                  validationSchema={
-                    yup.object().shape({
-                      videoMaxDurationLimit: yup
-                        .number()
-                        .positive('The duration cannot be negative.')
-                        .integer()
-                        .typeError('You must specify a number.'),
-                    })
-                    }
-                  onSubmit={(values) => {
-                    patchBox({ videoMaxDurationLimit: parseInt(values.videoMaxDurationLimit, 10) });
-                    setDurationInputVisibility(false);
-                  }}
-                >
-                  {({
-                    handleChange, handleSubmit, values, touched, errors,
-                  }) => (
-                    <View>
-                      <FormTextInput
-                        value={values.videoMaxDurationLimit}
-                        keyboardType="numeric"
-                        onChangeText={handleChange('videoMaxDurationLimit')}
-                        onSubmitEditing={() => handleSubmit()}
-                        onBlur={() => handleSubmit()}
-                        placeholder="Set the duration restriction (in minutes)"
-                        autoFocus
-                        placeholderTextColor={colors.textSystemColor}
-                        style={{
-                          height: 40,
-                          borderWidth: 1,
-                          borderStyle: 'solid',
-                          borderColor: '#009aeb',
-                          padding: 10,
-                          borderRadius: 5,
-                          color: colors.textColor,
-                        }}
-                      />
-                      {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit
-                        && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
-                    </View>
-                  )}
-                </Formik>
-              </View>
-            ) : null}
           </View>
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
