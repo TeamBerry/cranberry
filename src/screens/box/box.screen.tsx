@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ScrollView,
+  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ScrollView, Share,
 } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -103,6 +103,7 @@ const BoxScreen = ({ route, navigation }) => {
 
   // Sharing
   const [isSharing, setSharing] = useState(false);
+  const [shareLink, setShareLink] = useState<string>(null);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -210,8 +211,23 @@ const BoxScreen = ({ route, navigation }) => {
       setUpdating(false);
       setBox(updatedBox.data);
     } catch (error) {
-      console.error('ERROR: ', error);
       setUpdating(false);
+    }
+  };
+
+  const generateInvite = async () => {
+    const invite = await axios.post(`${Config.API_URL}/boxes/${box._id}/invite`, null);
+    setShareLink(`https://berrybox.tv/i/${invite.data.link}`);
+  };
+
+  const shareInvite = async () => {
+    try {
+      await Share.share({
+        title: 'Share an invite to this box (This invite will expire in 15 minutes)',
+        message: shareLink,
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -427,6 +443,44 @@ const BoxScreen = ({ route, navigation }) => {
                   </KeyboardAvoidingView>
                 </View>
               ) : null}
+              { isSharing ? (
+                <View>
+                  <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
+                    <Text style={[styles.titlePage, { color: colors.textColor }]}>Invite users</Text>
+                    <Pressable onPress={() => setSharing(false)}>
+                      <IconButton
+                        icon="close"
+                        color={colors.textColor}
+                      />
+                    </Pressable>
+                  </View>
+                  <View
+                    style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50, padding: 20 }]}
+                  >
+                    <Text style={{ color: colors.textColor, textAlign: 'center' }}>You can send this invite link to your friends</Text>
+                    {shareLink ? (
+                      <>
+                        <View style={{ paddingVertical: 40 }}>
+                          <View style={{
+                            padding: 10, borderColor: colors.videoSeparator, borderWidth: 1, borderRadius: 5,
+                          }}
+                          >
+                            <Text style={{ color: colors.textColor, fontWeight: '700', textAlign: 'center' }}>{shareLink}</Text>
+                          </View>
+                          <Text style={{ color: colors.textSystemColor, textAlign: 'center' }}>This link will be valid for 15 minutes.</Text>
+                        </View>
+                        <View>
+                          <Pressable onPress={() => shareInvite()}>
+                            <BxActionComponent options={{ text: 'Share the link' }} />
+                          </Pressable>
+                        </View>
+                      </>
+                    ) : (
+                      <BxLoadingIndicator />
+                    )}
+                  </View>
+                </View>
+              ) : null}
             </Collapsible>
           ) : null}
           <Queue
@@ -436,6 +490,7 @@ const BoxScreen = ({ route, navigation }) => {
             berryCount={berryCount}
             permissions={permissions}
             onEdit={() => setEditing(!isEditing)}
+            onShare={() => { setSharing(true); generateInvite(); }}
           />
           <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />
         </>
