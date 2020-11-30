@@ -58,10 +58,11 @@ const Queue = (props: {
     height: number,
     berryCount: number,
     permissions: Array<Permission>,
-    onEdit: () => void
+    onEdit: () => void,
+    onShare: () => void,
 }) => {
   const {
-    box, currentVideo, height, berryCount, permissions, onEdit,
+    box, currentVideo, height, berryCount, permissions, onEdit, onShare,
   } = props;
   const { colors } = useTheme();
 
@@ -198,18 +199,6 @@ const Queue = (props: {
       ListFooterComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>●</Text>}
     />
   );
-
-  const onShare = async () => {
-    try {
-      const invite = await axios.post(`${Config.API_URL}/boxes/${box._id}/invite`, null);
-      await Share.share({
-        title: 'Share an invite to this box (This invite will expire in 15 minutes)',
-        message: `https://berrybox.tv/i/${invite.data.link}`,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <>
