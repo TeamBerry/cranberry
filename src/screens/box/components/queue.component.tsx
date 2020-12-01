@@ -1,12 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, Animated, Pressable, Share, BackHandler,
+  StyleSheet, Text, View, FlatList, Animated, Pressable, BackHandler,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
-import { Svg, Polygon } from 'react-native-svg';
-import axios from 'axios';
-import Config from 'react-native-config';
 import { Snackbar } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -14,6 +11,7 @@ import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
 
+import CollapseIcon from '../../../../assets/icons/open-collapse-icon.svg';
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 import InviteIcon from '../../../../assets/icons/invite-icon.svg';
 import SettingsIcon from '../../../../assets/icons/settings-icon.svg';
@@ -138,37 +136,19 @@ const Queue = (props: {
 
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
-  const rotateOpen = () => {
-    Animated
-      .timing(rotateAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      })
-      .start();
-  };
-
-  const rotateClose = () => {
-    Animated
-      .timing(rotateAnim, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      })
-      .start();
-  };
-
   const spin = rotateAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '180deg'],
   });
 
   const toggleCollapsible = () => {
-    if (!isCollapsed) {
-      rotateClose();
-    } else {
-      rotateOpen();
-    }
+    Animated
+      .timing(rotateAnim, {
+        toValue: isCollapsed ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      })
+      .start();
     setCollapse(!isCollapsed);
   };
 
@@ -214,18 +194,9 @@ const Queue = (props: {
             <Text style={[styles.boxName, { color: colors.textSystemColor }]} numberOfLines={1}>{box.name}</Text>
             <CurrentVideo />
           </View>
-          <View style={{ width: 40 }}>
-            <Animated.View
-              style={{ transform: [{ rotate: spin }] }}
-            >
-              <Svg height="50" width="40">
-                <Polygon
-                  points="30,22 10,22 20,32"
-                  fill={colors.textColor}
-                />
-              </Svg>
-            </Animated.View>
-          </View>
+          <Animated.View style={{ width: 30, transform: [{ rotate: spin }] }}>
+            <CollapseIcon width={30} height={30} fill={colors.textColor} />
+          </Animated.View>
         </Pressable>
         {permissions.includes('editBox') || permissions.includes('inviteUser') ? (
           <>
