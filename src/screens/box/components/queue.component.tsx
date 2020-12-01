@@ -201,74 +201,72 @@ const Queue = (props: {
         {permissions.includes('editBox') || permissions.includes('inviteUser') ? (
           <>
             <View style={{
-              height: '55%', width: 1, marginLeft: 5, marginRight: 7, backgroundColor: '#777777',
+              height: '55%', width: 1, marginLeft: 5, marginRight: 10, backgroundColor: '#777777',
             }}
             />
             {permissions.includes('inviteUser') ? (
               <>
-                <Pressable style={[styles.shareSpace, { paddingLeft: 7 }]} onPress={onShare}>
+                <Pressable style={[styles.shareSpace, { paddingRight: permissions.includes('editBox') ? 4 : 7 }]} onPress={onShare}>
                   <InviteIcon width={20} height={20} fill={colors.textColor} />
                 </Pressable>
               </>
             ) : null}
             {permissions.includes('editBox') ? (
-              <Pressable style={[styles.shareSpace, { paddingHorizontal: 7 }]} onPress={onEdit}>
+              <Pressable style={[styles.shareSpace, { paddingRight: 7 }]} onPress={onEdit}>
                 <SettingsIcon width={22} height={22} fill={colors.textColor} />
               </Pressable>
             ) : null}
           </>
         ) : null}
       </View>
-      <View style={{ backgroundColor: colors.background }}>
-        <Collapsible
-          collapsed={isCollapsed}
-          style={{ height: height - 50 }}
-        >
-          <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, padding: 10 }}>
-            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
-              <View style={{ flexDirection: 'row' }}>
-                {box.options.random ? (
-                  <View style={{ paddingHorizontal: 2 }}>
-                    <BxChipComponent options={{ type: 'random', chipText: 'Random' }} display="icon" />
-                  </View>
-                ) : null}
-                {box.options.loop ? (
-                  <View style={{ paddingHorizontal: 2 }}>
-                    <BxChipComponent options={{ type: 'loop', chipText: 'Loop' }} display="icon" />
-                  </View>
-                ) : null}
-                {box.options.berries ? (
-                  <View style={{ paddingHorizontal: 2 }}>
-                    <BxChipComponent options={{ type: 'coin-enabled', chipText: 'Berries' }} display="icon" />
-                  </View>
-                ) : null}
-                {box.options.videoMaxDurationLimit !== 0 ? (
-                  <View style={{ paddingHorizontal: 2 }}>
-                    <BxChipComponent
-                      options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }}
-                      display="full"
-                    />
-                  </View>
-                ) : null}
-              </View>
-              <View>
-                {user && user.mail && box?.options?.berries && box?.creator?._id !== user._id ? (
-                  <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
-                    <BerryCounter count={berryCount} />
-                  </Pressable>
-                ) : null}
-              </View>
+      <Collapsible
+        collapsed={isCollapsed}
+        style={{ backgroundColor: colors.background, height: height - 50 }}
+      >
+        <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, padding: 10 }}>
+          <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row' }}>
+              {box.options.random ? (
+                <View style={{ paddingHorizontal: 2 }}>
+                  <BxChipComponent options={{ type: 'random', chipText: 'Random' }} display="icon" />
+                </View>
+              ) : null}
+              {box.options.loop ? (
+                <View style={{ paddingHorizontal: 2 }}>
+                  <BxChipComponent options={{ type: 'loop', chipText: 'Loop' }} display="icon" />
+                </View>
+              ) : null}
+              {box.options.berries ? (
+                <View style={{ paddingHorizontal: 2 }}>
+                  <BxChipComponent options={{ type: 'coin-enabled', chipText: 'Berries' }} display="icon" />
+                </View>
+              ) : null}
+              {box.options.videoMaxDurationLimit !== 0 ? (
+                <View style={{ paddingHorizontal: 2 }}>
+                  <BxChipComponent
+                    options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }}
+                    display="full"
+                  />
+                </View>
+              ) : null}
+            </View>
+            <View>
+              {user && user.mail && box?.options?.berries && box?.creator?._id !== user._id ? (
+                <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
+                  <BerryCounter count={berryCount} />
+                </Pressable>
+              ) : null}
             </View>
           </View>
-          <Collapsible collapsed={!isBerriesHelperShown}>
-            <BerryHelper box={box} permissions={permissions} />
-          </Collapsible>
-          {user && user.mail && box.playlist.length > 0 ? (
-            <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
-          ) : null}
-          <QueueList />
+        </View>
+        <Collapsible collapsed={!isBerriesHelperShown}>
+          <BerryHelper box={box} permissions={permissions} />
         </Collapsible>
-      </View>
+        {user && user.mail && box.playlist.length > 0 ? (
+          <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
+        ) : null}
+        <QueueList />
+      </Collapsible>
       <Snackbar
         visible={hasUpdatedSuccessfully}
         duration={1500}
