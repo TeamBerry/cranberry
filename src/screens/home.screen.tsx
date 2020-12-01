@@ -201,12 +201,12 @@ const HomeScreen = ({ navigation }) => {
                       <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>Find a box for your needs</Text>
                     </View>
                     {boxes.map((box, index) => (
-                      <>
-                        <BoxCard box={box} onPress={() => navigation.navigate('Box', { boxToken: box._id })} key={box._id.toString()} />
+                      <React.Fragment key={box._id.toString()}>
+                        <BoxCard box={box} onPress={() => navigation.navigate('Box', { boxToken: box._id })} />
                         {index < boxes.length - 1 ? (
                           <View style={{ height: 1, backgroundColor: colors.backgroundSecondaryColor }} />
                         ) : null}
-                      </>
+                      </React.Fragment>
                     ))}
                   </View>
                 </ScrollView>
