@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, Animated, Pressable, BackHandler,
+  StyleSheet, Text, View, FlatList, Animated, Pressable, BackHandler, TextInput,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
@@ -20,6 +20,9 @@ import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
 import BxChipComponent from '../../../components/bx-chip.component';
 import { AuthSubject } from '../../../models/session.model';
+import SearchIcon from '../../../../assets/icons/search-icon.svg';
+import BackIcon from '../../../../assets/icons/back-icon.svg';
+import ErrorIcon from '../../../../assets/icons/error-icon.svg';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -71,6 +74,42 @@ const Queue = (props: {
   const [user, setUser] = useState<AuthSubject>(null);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
+  // Search
+  const _filterInput = useRef(null);
+  const [isSearching, setSearching] = useState(false);
+  const [filterResults, setFilterResults] = useState<Array<QueueItem>>([]);
+  const [filterText, setFilterText] = useState<string>(null);
+
+  const filterQueue = (text?: string) => {
+    if ((!text && !filterText) || !Array.isArray(queueVideos)) {
+      setFilterResults(queueVideos);
+    }
+
+    const formattedFilterText = text ? text.toLowerCase() : filterText;
+    setFilterText(formattedFilterText);
+    const filterFields = ['video.name', 'video.link', 'submitted_by.name'];
+
+    const getProp = (object, property) => property.split('.').reduce((r, e) => r[e], object);
+
+    const filteredQueue = queueVideos.filter((queueItem) => filterFields.some(
+      (key) => getProp(queueItem, key).toLowerCase().indexOf(formattedFilterText) !== -1,
+    ));
+
+    setFilterResults(filteredQueue);
+  };
+
+  const exitFiltering = () => {
+    setSearching(false);
+    setFilterText(null);
+    setFilterResults(queueVideos);
+  };
+
+  const resetFiltering = () => {
+    setFilterText(null);
+    setFilterResults(queueVideos);
+    _filterInput.current.clear();
+  };
+
   useEffect(() => {
     const bootstrap = async () => {
       setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
@@ -115,6 +154,11 @@ const Queue = (props: {
     }
 
     setQueueVideos(upcomingVideos);
+    if (!filterText) {
+      setFilterResults(upcomingVideos);
+    } else {
+      filterQueue();
+    }
   }, [box.playlist]);
 
   const CurrentVideo = () => {
@@ -167,7 +211,7 @@ const Queue = (props: {
 
   const QueueList = () => (
     <FlatList
-      data={queueVideos}
+      data={filterResults}
       ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: 1 }} />}
       renderItem={({ item }) => (
         <QueueVideo item={item} boxToken={box._id} permissions={permissions} berriesEnabled={user && user.mail && box.options.berries} />
@@ -224,40 +268,68 @@ const Queue = (props: {
         style={{ backgroundColor: colors.background, height: height - 50 }}
       >
         <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, padding: 10 }}>
-          <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row' }}>
-              {box.options.random ? (
-                <View style={{ paddingHorizontal: 2 }}>
-                  <BxChipComponent options={{ type: 'random', chipText: 'Random' }} display="icon" />
-                </View>
-              ) : null}
-              {box.options.loop ? (
-                <View style={{ paddingHorizontal: 2 }}>
-                  <BxChipComponent options={{ type: 'loop', chipText: 'Loop' }} display="icon" />
-                </View>
-              ) : null}
-              {box.options.berries ? (
-                <View style={{ paddingHorizontal: 2 }}>
-                  <BxChipComponent options={{ type: 'coin-enabled', chipText: 'Berries' }} display="icon" />
-                </View>
-              ) : null}
-              {box.options.videoMaxDurationLimit !== 0 ? (
-                <View style={{ paddingHorizontal: 2 }}>
-                  <BxChipComponent
-                    options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }}
-                    display="full"
-                  />
-                </View>
-              ) : null}
+          {!isSearching ? (
+            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View style={{ flexDirection: 'row' }}>
+                {box.options.random ? (
+                  <View style={{ paddingHorizontal: 2 }}>
+                    <BxChipComponent options={{ type: 'random', chipText: 'Random' }} display="icon" />
+                  </View>
+                ) : null}
+                {box.options.loop ? (
+                  <View style={{ paddingHorizontal: 2 }}>
+                    <BxChipComponent options={{ type: 'loop', chipText: 'Loop' }} display="icon" />
+                  </View>
+                ) : null}
+                {box.options.berries ? (
+                  <View style={{ paddingHorizontal: 2 }}>
+                    <BxChipComponent options={{ type: 'coin-enabled', chipText: 'Berries' }} display="icon" />
+                  </View>
+                ) : null}
+                {box.options.videoMaxDurationLimit !== 0 ? (
+                  <View style={{ paddingHorizontal: 2 }}>
+                    <BxChipComponent
+                      options={{ type: 'duration-limit', chipText: `${box.options.videoMaxDurationLimit} mins` }}
+                      display="full"
+                    />
+                  </View>
+                ) : null}
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                {user && user.mail && box?.options?.berries && box?.creator?._id !== user._id ? (
+                  <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
+                    <BerryCounter count={berryCount} />
+                  </Pressable>
+                ) : null}
+                <Pressable onPress={() => setSearching(true)}>
+                  <SearchIcon height={20} width={20} fill={colors.textColor} style={{ marginLeft: 10 }} />
+                </Pressable>
+              </View>
             </View>
-            <View>
-              {user && user.mail && box?.options?.berries && box?.creator?._id !== user._id ? (
-                <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
-                  <BerryCounter count={berryCount} />
+          ) : (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Pressable onPress={exitFiltering} style={{ marginRight: 15 }}>
+                <BackIcon height={20} width={20} fill={colors.textColor} />
+              </Pressable>
+              <TextInput
+                ref={_filterInput}
+                placeholder="Search in queue..."
+                style={{
+                  flex: 1, height: 40, backgroundColor: 'transparent', color: colors.textColor,
+                }}
+                placeholderTextColor={colors.textSystemColor}
+                onChangeText={(text) => filterQueue(text)}
+                autoCorrect={false}
+                autoFocus
+                underlineColorAndroid="transparent"
+              />
+              { filterText && filterText.length > 0 ? (
+                <Pressable onPress={resetFiltering}>
+                  <ErrorIcon width={20} height={20} fill={colors.textColor} />
                 </Pressable>
               ) : null}
             </View>
-          </View>
+          )}
         </View>
         <Collapsible collapsed={!isBerriesHelperShown}>
           <BerryHelper box={box} permissions={permissions} />
