@@ -236,13 +236,13 @@ const Queue = (props: {
             {permissions.includes('inviteUser') ? (
               <>
                 <Pressable style={[styles.shareSpace, { paddingLeft: 7 }]} onPress={onShare}>
-                  <InviteIcon width={25} height={25} fill={colors.textColor} />
+                  <InviteIcon width={20} height={20} fill={colors.textColor} />
                 </Pressable>
               </>
             ) : null}
             {permissions.includes('editBox') ? (
               <Pressable style={[styles.shareSpace, { paddingHorizontal: 7 }]} onPress={onEdit}>
-                <SettingsIcon width={25} height={25} fill={colors.textColor} />
+                <SettingsIcon width={22} height={22} fill={colors.textColor} />
               </Pressable>
             ) : null}
           </>
