@@ -7,6 +7,7 @@ import Box from '../models/box.model';
 import ProfilePicture from './profile-picture.component';
 
 import UsersIcon from '../../assets/icons/users-icon.svg';
+import UnlockIcon from '../../assets/icons/unlock-icon.svg';
 import BxChipComponent from './bx-chip.component';
 import { useTheme } from '../shared/theme.context';
 
@@ -63,8 +64,8 @@ const styles = StyleSheet.create({
 
 const displayCurrentvideo = (box: Box): QueueItem => box.playlist.find((video) => video.startTime !== null && video.endTime === null);
 
-const BoxCard = (props: { box: Box, onPress: () => void }) => {
-  const { box, onPress } = props;
+const BoxCard = (props: { box: Box, onPress: () => void, isUnlocked: boolean }) => {
+  const { box, onPress, isUnlocked } = props;
   const currentVideo = displayCurrentvideo(box);
   const { colors } = useTheme();
 
@@ -89,7 +90,12 @@ const BoxCard = (props: { box: Box, onPress: () => void }) => {
           </View>
         </View>
         <View style={styles.boxInfo}>
-          <Text style={[styles.boxTitle, { color: colors.textColor }]} numberOfLines={1}>{box.name}</Text>
+          <View style={{ display: 'flex', flexDirection: 'row' }}>
+            {isUnlocked ? (
+              <UnlockIcon width={20} height={20} fill={colors.successColor} />
+            ) : null}
+            <Text style={[styles.boxTitle, { color: colors.textColor }]} numberOfLines={1}>{box.name}</Text>
+          </View>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
             <ProfilePicture userId={box.creator._id} size={15} />
             <Text style={{ color: colors.textSystemColor, paddingLeft: 4 }}>{box.creator.name}</Text>

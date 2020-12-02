@@ -18,6 +18,7 @@ import FeaturedBoxCard from '../components/featured-box-card.component';
 import { useTheme } from '../shared/theme.context';
 import BxActionComponent from '../components/bx-action.component';
 import { AuthSubject } from '../models/session.model';
+import UnlockIcon from '../../assets/icons/unlock-icon.svg';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -199,12 +200,25 @@ const HomeScreen = ({ navigation }) => {
                     <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
                       <Text style={{ color: colors.textColor }}>Communities</Text>
                       <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>
-                        Find a box for your needs. Private boxes you have access to will appear as well.
+                        Find a box for your needs.
                       </Text>
+                      <View style={{
+                        display: 'flex', flexDirection: 'row', alignItems: 'center',
+                      }}
+                      >
+                        <UnlockIcon width={10} height={10} fill={colors.inactiveColor} />
+                        <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>
+                          Private boxes you have access to will appear with this icon.
+                        </Text>
+                      </View>
                     </View>
                     {boxes.map((box, index) => (
                       <React.Fragment key={box._id.toString()}>
-                        <BoxCard box={box} onPress={() => navigation.navigate('Box', { boxToken: box._id })} />
+                        <BoxCard
+                          box={box}
+                          onPress={() => navigation.navigate('Box', { boxToken: box._id })}
+                          isUnlocked={box.private && box.creator._id !== user._id}
+                        />
                         {index < boxes.length - 1 ? (
                           <View style={{ height: 1, backgroundColor: colors.backgroundSecondaryColor }} />
                         ) : null}
