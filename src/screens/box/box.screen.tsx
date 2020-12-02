@@ -341,7 +341,7 @@ const BoxScreen = ({ route, navigation }) => {
                                 />
                               </View>
                               <Text style={{ color: colors.textSystemColor }}>
-                                Your box will not appear publicly. You may grant access by inviting users directly.
+                                Your box will not appear publicly. You may grant access by sharing invite links.
                               </Text>
                             </View>
                             <View style={{
