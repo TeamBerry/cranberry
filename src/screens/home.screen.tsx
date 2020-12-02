@@ -198,7 +198,9 @@ const HomeScreen = ({ navigation }) => {
                   <View style={styles.boxesSection}>
                     <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
                       <Text style={{ color: colors.textColor }}>Communities</Text>
-                      <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>Find a box for your needs</Text>
+                      <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>
+                        Find a box for your needs. Private boxes you have access to will appear as well.
+                      </Text>
                     </View>
                     {boxes.map((box, index) => (
                       <React.Fragment key={box._id.toString()}>
