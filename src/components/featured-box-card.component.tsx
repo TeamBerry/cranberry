@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   },
   boxCurrent: {
     fontFamily: 'Montserrat-Regular',
+    paddingHorizontal: 5,
   },
   boxUserDisplay: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
