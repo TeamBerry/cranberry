@@ -12,7 +12,7 @@ const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
-    { key: 'search', title: 'Search' },
+    { key: 'search', title: 'Add Videos' },
   ]);
   const {
     box, socket, berryCount, permissions,
@@ -34,15 +34,16 @@ const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: 
 
   const renderTabBar = (props) => (
     <TabBar
-            // eslint-disable-next-line react/jsx-props-no-spreading
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
-      style={{ backgroundColor: colors.backgroundSecondaryAlternateColor }}
+      style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: 40 }}
       indicatorStyle={{ backgroundColor: '#009AEB' }}
       pressColor={colors.backgroundSecondaryAlternateColor}
       labelStyle={{
         fontFamily: 'Montserrat-Regular',
         textTransform: 'capitalize',
         color: colors.textColor,
+        top: -4,
       }}
       activeColor="#009AEB"
     />
