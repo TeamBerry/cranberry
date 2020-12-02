@@ -7,7 +7,7 @@ import Box from '../models/box.model';
 import ProfilePicture from './profile-picture.component';
 
 import UsersIcon from '../../assets/icons/users-icon.svg';
-import LockIcon from '../../assets/icons/lock-icon.svg';
+import UnlockIcon from '../../assets/icons/unlock-icon.svg';
 import BxChipComponent from './bx-chip.component';
 import { useTheme } from '../shared/theme.context';
 
@@ -92,7 +92,7 @@ const BoxCard = (props: { box: Box, onPress: () => void, isUnlocked: boolean }) 
         <View style={styles.boxInfo}>
           <View style={{ display: 'flex', flexDirection: 'row' }}>
             {isUnlocked ? (
-              <LockIcon width={20} height={20} fill={colors.successColor} />
+              <UnlockIcon width={20} height={20} fill={colors.successColor} />
             ) : null}
             <Text style={[styles.boxTitle, { color: colors.textColor }]} numberOfLines={1}>{box.name}</Text>
           </View>
