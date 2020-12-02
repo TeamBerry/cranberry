@@ -204,7 +204,11 @@ const HomeScreen = ({ navigation }) => {
                     </View>
                     {boxes.map((box, index) => (
                       <React.Fragment key={box._id.toString()}>
-                        <BoxCard box={box} onPress={() => navigation.navigate('Box', { boxToken: box._id })} />
+                        <BoxCard
+                          box={box}
+                          onPress={() => navigation.navigate('Box', { boxToken: box._id })}
+                          isUnlocked={box.private && box.creator._id !== user._id}
+                        />
                         {index < boxes.length - 1 ? (
                           <View style={{ height: 1, backgroundColor: colors.backgroundSecondaryColor }} />
                         ) : null}

@@ -20,6 +20,7 @@ export const lightColors = {
   textSystemColor: '#444444',
   // States
   inactiveColor: '#8F8F8F',
+  successColor: '#0AC29D',
   // Separators
   videoSeparator: '#D9D9D9',
 };
@@ -40,6 +41,7 @@ export const darkColors = {
   textSystemColor: '#BBBBBB',
   // States
   inactiveColor: '#CCCCCC',
+  successColor: '#0CEBC0',
   // Separators
   videoSeparator: '#3F3F3F',
 };
