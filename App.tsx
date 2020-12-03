@@ -21,6 +21,7 @@ import JoinBoxScreen from './src/screens/join-box.screen';
 import ParseLinkScreen from './src/screens/parse-link.screen';
 import { ThemeProvider } from './src/shared/theme.context';
 import { AuthSubject } from './src/models/session.model';
+import SettingsScreen from './src/screens/settings/settings.screen';
 
 const RootStack = createStackNavigator();
 
@@ -222,7 +223,16 @@ export default function App() {
             }}
           />
         </>
-      ) : null}
+      ) : (
+        <RootStack.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{
+            animationTypeForReplace: 'pop',
+            headerShown: false,
+          }}
+        />
+      )}
       <RootStack.Screen
         name="Box"
         component={BoxScreen}
