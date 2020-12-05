@@ -77,7 +77,7 @@ const CustomMenu = () => {
     if (!user?.mail) {
       return (
         <View style={styles.identityContainer}>
-          <View style={styles.identitySpace}>
+          <View style={[styles.identitySpace, { paddingHorizontal: 40 }]}>
             <View style={{ marginRight: 10 }}>
               <UserIcon width={40} height={40} fill={colors.textColor} />
             </View>
@@ -86,9 +86,12 @@ const CustomMenu = () => {
               chat with users and more!
             </Text>
           </View>
-          <Pressable onPress={() => navigation.navigate('SignIn')}>
-            <BxActionComponent options={{ text: 'Log in' }} />
-          </Pressable>
+          <View style={styles.sectionSeparator} />
+          <View style={styles.menuSpace}>
+            <Pressable onPress={() => navigation.navigate('SignIn')}>
+              <BxActionComponent options={{ text: 'Log in' }} />
+            </Pressable>
+          </View>
         </View>
       );
     }
