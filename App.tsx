@@ -22,6 +22,7 @@ import ParseLinkScreen from './src/screens/parse-link.screen';
 import { ThemeProvider } from './src/shared/theme.context';
 import { AuthSubject } from './src/models/session.model';
 import SettingsScreen from './src/screens/settings/settings.screen';
+import ColorSelectScreen from './src/screens/settings/color-select.screen';
 
 const RootStack = createStackNavigator();
 
@@ -224,14 +225,24 @@ export default function App() {
           />
         </>
       ) : (
-        <RootStack.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{
-            animationTypeForReplace: 'pop',
-            headerShown: false,
-          }}
-        />
+        <>
+          <RootStack.Screen
+            name="Settings"
+            component={SettingsScreen}
+            options={{
+              animationTypeForReplace: 'pop',
+              headerShown: false,
+            }}
+          />
+          <RootStack.Screen
+            name="ColorSelect"
+            component={ColorSelectScreen}
+            options={{
+              animationTypeForReplace: 'push',
+              headerShown: false,
+            }}
+          />
+        </>
       )}
       <RootStack.Screen
         name="Box"

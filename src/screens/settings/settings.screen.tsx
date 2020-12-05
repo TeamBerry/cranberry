@@ -21,12 +21,12 @@ const SettingsScreen = ({ navigation }) => {
   useEffect(() => {
     const bootstrap = async () => {
       try {
-        setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
-        setColorblindSetting(user.settings.isColorblind);
-        console.log(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
+        const authSubject: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+        setUser(authSubject);
+        setColorblindSetting(authSubject.settings.isColorblind);
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error('Session could not be obtained');
+        console.error('Session could not be obtained', e);
       }
     };
 
@@ -154,7 +154,7 @@ const SettingsScreen = ({ navigation }) => {
               </>
               <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
             </View>
-            <View style={styles.setting}>
+            <Pressable style={styles.setting} onPress={() => navigation.push('ColorSelect')}>
               <View style={styles.settingSpace}>
                 <Text style={styles.settingName}>Username color</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -163,7 +163,7 @@ const SettingsScreen = ({ navigation }) => {
                 </View>
               </View>
               <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
-            </View>
+            </Pressable>
             <View style={styles.setting}>
               <View style={styles.settingSpace}>
                 <View>
