@@ -33,6 +33,7 @@
         "@typescript-eslint/no-unused-vars": "error",
         "no-shadow": "off",
         "import/no-unresolved": "off",
+        "import/extensions": "off",
         "global-require": "off",
         "max-len": [
             "warn",
