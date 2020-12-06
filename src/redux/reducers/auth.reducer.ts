@@ -2,6 +2,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { AuthSubject } from '../../models/session.model';
+import store from '../store';
 
 export const createAnonymousToken = async (): Promise<AuthSubject> => {
   const values = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -23,6 +24,8 @@ export const createAnonymousToken = async (): Promise<AuthSubject> => {
       isColorblind: false,
     },
   };
+
+  store.dispatch({ type: 'UPDATE_USER', payload: session });
 
   await AsyncStorage.setItem('BBOX-user', JSON.stringify(session));
 
