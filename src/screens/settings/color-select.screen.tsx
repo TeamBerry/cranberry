@@ -1,18 +1,36 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  View, Text, Pressable, StyleSheet,
+  View, Text, Pressable, StyleSheet, ToastAndroid,
 } from 'react-native';
 import { TriangleColorPicker } from 'react-native-color-picker';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import Config from 'react-native-config';
+import AsyncStorage from '@react-native-community/async-storage';
 import { useTheme } from '../../shared/theme.context';
 import BackIcon from '../../../assets/icons/back-icon.svg';
 import BxActionComponent from '../../components/bx-action.component';
-import AuthContext from '../../shared/auth.context';
+import { updateUser } from '../../redux/actions';
+import { AuthSubject } from '../../models/session.model';
 
-const ColorSelectScreen = ({ route, navigation }) => {
-  const { name, color } = route.params;
+const ColorSelectScreen = (props: { navigation, user: AuthSubject, color: string, updateUser }) => {
+  const {
+    navigation, user, color, updateUser,
+  } = props;
   const [userColor, setUserColor] = useState<string>(color);
   const { colors } = useTheme();
-  const { refreshSettings } = useContext(AuthContext);
+
+  const updateSettings = async (settings: Partial<AuthSubject['settings']>) => {
+    try {
+      user.settings = Object.assign(user.settings, settings);
+      await axios.patch(`${Config.API_URL}/user/settings`, user.settings);
+      await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
+      ToastAndroid.show('Settings updated', 3000);
+      updateUser(user);
+    } catch (error) {
+      ToastAndroid.show('There was an error. Please try again', 4000);
+    }
+  };
 
   const styles = StyleSheet.create({
     headerContainer: {
@@ -79,10 +97,10 @@ const ColorSelectScreen = ({ route, navigation }) => {
             <Text style={{ color: colors.textSystemColor }}>Previews:</Text>
             <View style={styles.preview}>
               <View style={[styles.colorPreview, { backgroundColor: '#E9E9E9' }]}>
-                <Text style={{ textAlign: 'center', color: userColor }}>{name}</Text>
+                <Text style={{ textAlign: 'center', color: userColor }}>{user.name}</Text>
               </View>
               <View style={[styles.colorPreview, { backgroundColor: '#191919' }]}>
-                <Text style={{ textAlign: 'center', color: userColor }}>{name}</Text>
+                <Text style={{ textAlign: 'center', color: userColor }}>{user.name}</Text>
               </View>
             </View>
             <Text style={{ color: colors.textSystemColor, fontSize: 11 }}>
@@ -90,7 +108,7 @@ const ColorSelectScreen = ({ route, navigation }) => {
               read in light or dark themes and for users with color blindness.
             </Text>
           </View>
-          <Pressable onPress={() => refreshSettings({ color: userColor })} style={{ marginTop: 20 }}>
+          <Pressable onPress={() => updateSettings({ color: userColor })} style={{ marginTop: 20 }}>
             <BxActionComponent options={{ text: 'Save color' }} />
           </Pressable>
         </View>
@@ -99,4 +117,9 @@ const ColorSelectScreen = ({ route, navigation }) => {
   );
 };
 
-export default ColorSelectScreen;
+const mapStateToProps = (state) => {
+  const user = state.userReducer;
+  return { user, color: user?.settings?.color ?? '#D13E9C' };
+};
+
+export default connect(mapStateToProps, { updateUser })(ColorSelectScreen);

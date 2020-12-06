@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
 import axios from 'axios';
 import Config from 'react-native-config';
+import { connect } from 'react-redux';
 
 import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
@@ -81,11 +82,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, user }) => {
   const [hasLoadedBoxes, setBoxLoading] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
-  const [user, setUser] = useState<AuthSubject>(null);
   const [boxes, setBoxes] = useState<Array<Box>>([]);
   const [featuredBoxes, setFeaturedBoxes] = useState<Array<Box>>([]);
   const _boxListRef = useRef(null);
@@ -105,12 +105,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const bootstrap = async () => {
-      getBoxes();
-      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
-    };
-
-    bootstrap();
+    getBoxes();
   }, []);
 
   useEffect(() => {
@@ -276,4 +271,9 @@ const HomeScreen = ({ navigation }) => {
   );
 };
 
-export default HomeScreen;
+const mapStateToProps = (state) => {
+  console.log('Home Screen gets this: ', state);
+  return { user: state.userReducer };
+};
+
+export default connect(mapStateToProps)(HomeScreen);

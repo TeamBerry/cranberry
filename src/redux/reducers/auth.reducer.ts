@@ -1,8 +1,9 @@
+/* eslint-disable no-case-declarations */
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { AuthSubject } from '../../models/session.model';
 
-export const createAnonymousToken = async () => {
+export const createAnonymousToken = async (): Promise<AuthSubject> => {
   const values = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let anonymousToken = '';
 
@@ -58,12 +59,6 @@ export const authReducer = (state, action) => {
         ...state,
         isSignout: true,
         userToken: null,
-        user: null,
-      };
-    case 'REFRESH_SETTINGS':
-      return {
-        ...state,
-        user: action.user,
       };
     default:
       throw new Error();

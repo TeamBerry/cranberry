@@ -5,13 +5,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import {
-  View, Image, Linking, LogBox, ToastAndroid,
+  View, Image, Linking, LogBox,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import Config from 'react-native-config';
-
+import { Provider } from 'react-redux';
 import { enableScreens } from 'react-native-screens';
+// eslint-disable-next-line import/extensions
+import store from './src/redux/store';
+
 import BoxScreen from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
 import AuthContext from './src/shared/auth.context';
@@ -21,11 +24,11 @@ import CreateBoxScreen from './src/screens/create-box.screen';
 import JoinBoxScreen from './src/screens/join-box.screen';
 import ParseLinkScreen from './src/screens/parse-link.screen';
 import { ThemeProvider } from './src/shared/theme.context';
-import { AuthSubject } from './src/models/session.model';
 import SettingsScreen from './src/screens/settings/settings.screen';
 import ColorSelectScreen from './src/screens/settings/color-select.screen';
 import { authReducer } from './src/redux/reducers/auth.reducer';
 import ChangePasswordScreen from './src/screens/settings/change-password.screen';
+import { AuthSubject } from './src/models/session.model';
 
 enableScreens();
 const RootStack = createStackNavigator();
@@ -54,24 +57,27 @@ export default function App() {
   const [isAppReady, setAppReadiness] = useState(false);
 
   const { inviteLink } = useInitialUrl();
-
   const [state, dispatch] = useReducer(
     authReducer,
     {
       isLoading: true,
       isSignout: false,
       userToken: null,
-      user: null,
     },
   );
 
   useEffect(() => {
     const bootstrapAsync = async () => {
       let userToken = null;
+      let session: AuthSubject;
 
       try {
         userToken = await AsyncStorage.getItem('BBOX-token');
         dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+        if (userToken) {
+          session = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+          store.dispatch({ type: 'UPDATE_USER', payload: session });
+        }
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log('Restoring token failed.');
@@ -98,6 +104,7 @@ export default function App() {
           await AsyncStorage.setItem('BBOX-expires_at', JSON.stringify(response.data.expiresIn));
           await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject));
           dispatch({ type: 'SIGN_IN', token: response.data.bearer });
+          store.dispatch({ type: 'UPDATE_USER', payload: response.data.subject });
         } catch (error) {
           throw new Error(error.response.data);
         }
@@ -114,6 +121,7 @@ export default function App() {
           await AsyncStorage.setItem('BBOX-expires_at', JSON.stringify(response.data.expiresIn));
           await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject));
           dispatch({ type: 'SIGN_IN', token: response.data.bearer });
+          store.dispatch({ type: 'UPDATE_USER', payload: response.data.subject });
         } catch (error) {
           throw new Error(error.response.data);
         }
@@ -123,18 +131,6 @@ export default function App() {
         await AsyncStorage.removeItem('BBOX-expires_at');
         await AsyncStorage.removeItem('BBOX-user');
         dispatch({ type: 'SIGN_OUT' });
-      },
-      refreshSettings: async (settings: Partial<AuthSubject['settings']>) => {
-        try {
-          const user: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-          user.settings = Object.assign(user.settings, settings);
-          await axios.patch(`${Config.API_URL}/user/settings`, settings);
-          await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
-          ToastAndroid.show('Settings updated', 3000);
-          dispatch({ type: 'REFRESH_SETTINGS', user });
-        } catch (error) {
-          ToastAndroid.show('There was en error. Please try again', 4000);
-        }
       },
     }),
     [],
@@ -265,9 +261,11 @@ export default function App() {
     <ThemeProvider>
       <PaperProvider>
         <AuthContext.Provider value={authContext}>
-          <NavigationContainer>
-            <RootFlow />
-          </NavigationContainer>
+          <Provider store={store}>
+            <NavigationContainer>
+              <RootFlow />
+            </NavigationContainer>
+          </Provider>
         </AuthContext.Provider>
       </PaperProvider>
     </ThemeProvider>

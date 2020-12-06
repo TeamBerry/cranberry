@@ -1,41 +1,28 @@
-import React, {
-  useContext, useEffect, useState,
-} from 'react';
+import React, { useEffect } from 'react';
 import {
-  StyleSheet, Text, View, Pressable,
+  StyleSheet, Text, View, Pressable, ToastAndroid,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import { Switch } from 'react-native-paper';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import Config from 'react-native-config';
+import AsyncStorage from '@react-native-community/async-storage';
 import { useTheme } from '../../shared/theme.context';
 
 import BackIcon from '../../../assets/icons/back-icon.svg';
 import ProfilePicture from '../../components/profile-picture.component';
-import { AuthSubject } from '../../models/session.model';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
-import AuthContext from '../../shared/auth.context';
+import { updateUser } from '../../redux/actions';
+import { AuthSubject } from '../../models/session.model';
+import { getUser } from '../../redux/selectors';
 
-const SettingsScreen = ({ navigation }) => {
-  const [user, setUser] = useState<AuthSubject>(null);
-  const [isColorblind, setColorblindSetting] = useState(user?.settings?.isColorblind ?? false);
+const SettingsScreen = (props: {
+  navigation, user: AuthSubject, updateUser,
+}) => {
+  const {
+    navigation, user, updateUser,
+  } = props;
   const { colors } = useTheme();
-  const { refreshSettings } = useContext(AuthContext);
-
-  useEffect(() => {
-    const bootstrap = async () => {
-      try {
-        // TODO: Fix multiple refreshes
-        console.log('BOOTSTRAP');
-        const authSubject: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-        setUser(authSubject);
-        setColorblindSetting(authSubject.settings.isColorblind);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Session could not be obtained', e);
-      }
-    };
-
-    bootstrap();
-  }, []);
 
   const styles = StyleSheet.create({
     headerContainer: {
@@ -116,6 +103,22 @@ const SettingsScreen = ({ navigation }) => {
     console.log('REQUEST ACCESS TO PICTURES');
   };
 
+  const updateSettings = async (settings: Partial<AuthSubject['settings']>) => {
+    try {
+      user.settings = Object.assign(user.settings, settings);
+      await axios.patch(`${Config.API_URL}/user/settings`, user.settings);
+      await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
+      ToastAndroid.show('Settings updated', 3000);
+      updateUser(user);
+    } catch (error) {
+      ToastAndroid.show('There was an error. Please try again', 4000);
+    }
+  };
+
+  useEffect(() => {
+    console.log('user: ', user);
+  }, [user]);
+
   return (
     <>
       <View style={styles.headerContainer}>
@@ -164,8 +167,8 @@ const SettingsScreen = ({ navigation }) => {
                   <Text style={styles.helpText}>Removes all custom colors from your chat.</Text>
                 </View>
                 <Switch
-                  value={isColorblind}
-                  onValueChange={(value) => refreshSettings({ isColorblind: value })}
+                  value={user.settings.isColorblind}
+                  onValueChange={(value) => updateSettings({ isColorblind: value })}
                   color="#009AEB"
                 />
               </View>
@@ -179,4 +182,4 @@ const SettingsScreen = ({ navigation }) => {
   );
 };
 
-export default SettingsScreen;
+export default connect((state) => ({ user: getUser(state) }), { updateUser })(SettingsScreen);
