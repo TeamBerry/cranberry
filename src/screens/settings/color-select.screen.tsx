@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {
   View, Text, Pressable, StyleSheet, ToastAndroid,
 } from 'react-native';
-import { ColorPicker } from 'react-native-color-picker';
+import { TriangleColorPicker } from 'react-native-color-picker';
 import Config from 'react-native-config';
 import axios from 'axios';
 import { AuthSubject } from '../../models/session.model';
@@ -71,7 +71,7 @@ const ColorSelectScreen = ({ navigation }) => {
       width: 100,
     },
     previewContainer: {
-      marginHorizontal: 20,
+      marginTop: 20,
     },
     preview: {
       flexDirection: 'row',
@@ -106,12 +106,11 @@ const ColorSelectScreen = ({ navigation }) => {
         </View>
       </View>
       { user ? (
-        <>
+        <View style={{ marginHorizontal: 20 }}>
           <View style={{ height: 300 }}>
-            <ColorPicker
+            <TriangleColorPicker
               defaultColor={userColor}
               oldColor={userColor}
-              hideSliders
               onColorSelected={(color) => setUserColor(color)}
               style={{ flex: 1, height: 100 }}
             />
@@ -131,10 +130,10 @@ const ColorSelectScreen = ({ navigation }) => {
               read in light or dark themes and for users with color blindness.
             </Text>
           </View>
-          <Pressable onPress={() => saveUserColor()} style={{ padding: 20 }}>
+          <Pressable onPress={() => saveUserColor()} style={{ marginTop: 20 }}>
             <BxActionComponent options={{ text: 'Save color' }} />
           </Pressable>
-        </>
+        </View>
       ) : null}
     </>
   );
