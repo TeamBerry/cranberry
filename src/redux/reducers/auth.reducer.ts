@@ -63,7 +63,7 @@ export const authReducer = (state, action) => {
     case 'REFRESH_SETTINGS':
       return {
         ...state,
-        user: action.authSubject,
+        user: action.user,
       };
     default:
       throw new Error();

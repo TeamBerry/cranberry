@@ -11,6 +11,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import Config from 'react-native-config';
 
+import { enableScreens } from 'react-native-screens';
 import BoxScreen from './src/screens/box/box.screen';
 import LoginScreen from './src/screens/login.screen';
 import AuthContext from './src/shared/auth.context';
@@ -26,6 +27,7 @@ import ColorSelectScreen from './src/screens/settings/color-select.screen';
 import { authReducer } from './src/redux/reducers/auth.reducer';
 import ChangePasswordScreen from './src/screens/settings/change-password.screen';
 
+enableScreens();
 const RootStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
 
@@ -141,9 +143,11 @@ export default function App() {
   const SettingsSpace = () => (
     <SettingsStack.Navigator
       screenOptions={{
-        cardStyle: { backgroundColor: '#191919' },
+        cardStyle: { backgroundColor: '#191919', opacity: 1 },
         headerShown: false,
       }}
+      mode="card"
+      initialRouteName="Settings"
     >
       <SettingsStack.Screen
         name="Settings"
@@ -175,10 +179,12 @@ export default function App() {
   const RootFlow = () => (
     <RootStack.Navigator
       screenOptions={{
-        cardStyle: { backgroundColor: '#191919' },
+        cardStyle: { backgroundColor: '#191919', opacity: 1 },
+        headerShown: false,
       }}
       initialRouteName={inviteLink ? 'ParseLink' : 'Home'}
       mode="card"
+      detachInactiveScreens
     >
       <RootStack.Screen
         name="Home"
@@ -195,7 +201,7 @@ export default function App() {
           headerShown: false,
         }}
       />
-      { state.userToken == null ? (
+      { state.userToken === null ? (
         <>
           <RootStack.Screen
             name="SignIn"
