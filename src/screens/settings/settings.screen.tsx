@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   StyleSheet, Text, View, Pressable, ToastAndroid,
 } from 'react-native';
@@ -12,11 +12,13 @@ import BackIcon from '../../../assets/icons/back-icon.svg';
 import ProfilePicture from '../../components/profile-picture.component';
 import { AuthSubject } from '../../models/session.model';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
+import AuthContext from '../../shared/auth.context';
 
 const SettingsScreen = ({ navigation }) => {
   const [user, setUser] = useState<AuthSubject>(null);
   const [isColorblind, setColorblindSetting] = useState(user?.settings?.isColorblind ?? false);
   const { colors } = useTheme();
+  const { refreshSettings } = useContext(AuthContext);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -113,19 +115,7 @@ const SettingsScreen = ({ navigation }) => {
   };
 
   const onSettingChanged = async (settings: Partial<AuthSubject['settings']>) => {
-    try {
-      // Patch in database
-      await axios.patch(`${Config.API_URL}/user/settings`, settings);
-
-      // Update storage & states
-      user.settings = Object.assign(user.settings, settings);
-      setUser(user);
-      setColorblindSetting(user.settings.isColorblind);
-      await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
-      ToastAndroid.show('Settings updated', 3000);
-    } catch (error) {
-      ToastAndroid.show('There was an error. Please try again.', 5000);
-    }
+    await refreshSettings(settings);
   };
 
   return (

@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import {
-  View, Image, Linking, LogBox,
+  View, Image, Linking, LogBox, ToastAndroid,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -178,6 +178,17 @@ export default function App() {
         await AsyncStorage.removeItem('BBOX-expires_at');
         await AsyncStorage.removeItem('BBOX-user');
         dispatch({ type: 'SIGN_OUT' });
+      },
+      refreshSettings: async (settings: Partial<AuthSubject['settings']>) => {
+        try {
+          const user: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
+          user.settings = Object.assign(user.settings, settings);
+          await axios.patch(`${Config.API_URL}/user/settings`, settings);
+          await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
+          ToastAndroid.show('Settings updated', 3000);
+        } catch (error) {
+          ToastAndroid.show('There was en error. Please try again', 4000);
+        }
       },
     }),
     [],

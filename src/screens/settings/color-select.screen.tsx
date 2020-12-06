@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
   View, Text, Pressable, StyleSheet, ToastAndroid,
@@ -10,11 +10,13 @@ import { AuthSubject } from '../../models/session.model';
 import { useTheme } from '../../shared/theme.context';
 import BackIcon from '../../../assets/icons/back-icon.svg';
 import BxActionComponent from '../../components/bx-action.component';
+import AuthContext from '../../shared/auth.context';
 
 const ColorSelectScreen = ({ navigation }) => {
   const [user, setUser] = useState<AuthSubject>(null);
   const [userColor, setUserColor] = useState<string>(null);
   const { colors } = useTheme();
+  const { refreshSettings } = useContext(AuthContext);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -30,20 +32,6 @@ const ColorSelectScreen = ({ navigation }) => {
 
     bootstrap();
   }, []);
-
-  const saveUserColor = async () => {
-    try {
-      // Patch in database
-      await axios.patch(`${Config.API_URL}/user/settings`, { color: userColor });
-
-      // Update storage & states
-      user.settings = Object.assign(user.settings, { color: userColor });
-      await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
-      ToastAndroid.show('Color updated', 2000);
-    } catch (error) {
-      ToastAndroid.show('There was an error. Please try again.', 5000);
-    }
-  };
 
   const styles = StyleSheet.create({
     headerContainer: {
@@ -130,7 +118,7 @@ const ColorSelectScreen = ({ navigation }) => {
               read in light or dark themes and for users with color blindness.
             </Text>
           </View>
-          <Pressable onPress={() => saveUserColor()} style={{ marginTop: 20 }}>
+          <Pressable onPress={() => refreshSettings({ color: userColor })} style={{ marginTop: 20 }}>
             <BxActionComponent options={{ text: 'Save color' }} />
           </Pressable>
         </View>
