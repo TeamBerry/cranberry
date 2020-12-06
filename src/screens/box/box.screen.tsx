@@ -180,7 +180,8 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
           setPermissions(permissions);
         })
         .on('denied', () => {
-          console.log('DENIED');
+          ToastAndroid.show('Connection to the box has been denied.', 3000);
+          navigation.navigate('Home');
         });
     }
 
