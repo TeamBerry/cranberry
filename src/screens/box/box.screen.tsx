@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ScrollView, Share,
+  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ScrollView, Share, ToastAndroid,
 } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -227,7 +227,7 @@ const BoxScreen = ({ route, navigation }) => {
         message: shareLink,
       });
     } catch (error) {
-      console.error(error);
+      ToastAndroid.show('There was an unexpected error. Please try again', 5000);
     }
   };
 
@@ -467,7 +467,9 @@ const BoxScreen = ({ route, navigation }) => {
                           >
                             <Text style={{ color: colors.textColor, fontWeight: '700', textAlign: 'center' }}>{shareLink}</Text>
                           </View>
-                          <Text style={{ color: colors.textSystemColor, textAlign: 'center' }}>This link will be valid for 15 minutes.</Text>
+                          <Text style={{ color: colors.textSystemColor, textAlign: 'center' }}>
+                            This link will be valid for 15 minutes.
+                          </Text>
                         </View>
                         <View>
                           <Pressable onPress={() => shareInvite()}>

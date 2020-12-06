@@ -1,8 +1,7 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import {
   Text, View, StyleSheet, Pressable, Linking,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import AuthContext from '../shared/auth.context';
 import ProfilePicture from './profile-picture.component';

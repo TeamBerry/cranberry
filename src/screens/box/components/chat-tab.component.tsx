@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import {

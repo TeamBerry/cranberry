@@ -3,7 +3,6 @@ import {
   View, Text, StyleSheet, TextInput, FlatList, Pressable,
 } from 'react-native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-community/async-storage';
 import { VideoSubmissionRequest, QueueItem, Permission } from '@teamberry/muscadine';
 import { Snackbar } from 'react-native-paper';
 import Config from 'react-native-config';

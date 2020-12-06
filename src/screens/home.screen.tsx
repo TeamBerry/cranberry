@@ -149,7 +149,9 @@ const HomeScreen = ({ navigation }) => {
                 <StatusBar barStyle='dark-content' />
             </View> */}
 
-        <View style={[styles.headerContainer, { backgroundColor: colors.background, borderColor: colors.backgroundSecondaryAlternateColor }]}>
+        <View style={[styles.headerContainer,
+          { backgroundColor: colors.background, borderColor: colors.backgroundSecondaryAlternateColor }]}
+        >
           <View style={styles.headerStyle}>
             <Pressable
               onPress={() => setMenuOpen(!isMenuOpen)}
