@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   Text, View, StyleSheet, Pressable, Linking,
 } from 'react-native';
@@ -12,9 +12,9 @@ import UserIcon from '../../assets/icons/user-icon.svg';
 import { useTheme } from '../shared/theme.context';
 import { AuthSubject } from '../models/session.model';
 
-const CustomMenu = () => {
+const CustomMenu = (props: { user: AuthSubject }) => {
+  const { user } = props;
   const navigation = useNavigation();
-  const [user, setUser] = useState<AuthSubject>(null);
   const { signOut } = useContext(AuthContext);
   const { colors } = useTheme();
 
@@ -59,19 +59,6 @@ const CustomMenu = () => {
       flex: 1,
     },
   });
-
-  useEffect(() => {
-    const bootstrap = async () => {
-      try {
-        setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Session could not be obtained');
-      }
-    };
-
-    bootstrap();
-  }, []);
 
   const UserSpace = () => {
     if (!user?.mail) {

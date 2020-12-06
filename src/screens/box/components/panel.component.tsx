@@ -7,15 +7,22 @@ import ChatTab from './chat-tab.component';
 import SearchTab from './search-tab.component';
 import Box from '../../../models/box.model';
 import { useTheme } from '../../../shared/theme.context';
+import { AuthSubject } from '../../../models/session.model';
 
-const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: Array<Permission> }) => {
+const Panel = (props: {
+    box: Box,
+    user: AuthSubject
+    socket: any,
+    berryCount: number,
+    permissions: Array<Permission>
+}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'chat', title: 'Chat' },
     { key: 'search', title: 'Add Videos' },
   ]);
   const {
-    box, socket, berryCount, permissions,
+    box, socket, berryCount, permissions, user,
   } = props;
   const { colors } = useTheme();
 
@@ -24,9 +31,25 @@ const Panel = (props: { box: Box, socket: any, berryCount: number, permissions: 
   const renderScene = ({ route }) => {
     switch (route.key) {
       case 'chat':
-        return <ChatTab box={box} socket={socket} berryCount={berryCount} permissions={permissions} />;
+        return (
+          <ChatTab
+            box={box}
+            user={user}
+            socket={socket}
+            berryCount={berryCount}
+            permissions={permissions}
+          />
+        );
       case 'search':
-        return <SearchTab box={box} socket={socket} berryCount={berryCount} permissions={permissions} />;
+        return (
+          <SearchTab
+            box={box}
+            user={user}
+            socket={socket}
+            berryCount={berryCount}
+            permissions={permissions}
+          />
+        );
       default:
         return null;
     }

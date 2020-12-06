@@ -485,6 +485,7 @@ const BoxScreen = ({ route, navigation }) => {
           ) : null}
           <Queue
             box={box}
+            user={user}
             currentVideo={currentQueueItem}
             height={remainingHeight}
             berryCount={berryCount}
@@ -492,7 +493,13 @@ const BoxScreen = ({ route, navigation }) => {
             onEdit={() => setEditing(!isEditing)}
             onShare={() => { setSharing(true); generateInvite(); }}
           />
-          <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />
+          <Panel
+            box={box}
+            user={user}
+            socket={socket}
+            berryCount={berryCount}
+            permissions={permissions}
+          />
         </>
       ) : (
         <BxLoadingIndicator />

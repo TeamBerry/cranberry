@@ -114,10 +114,6 @@ const SettingsScreen = ({ navigation }) => {
     console.log('REQUEST ACCESS TO PICTURES');
   };
 
-  const onSettingChanged = async (settings: Partial<AuthSubject['settings']>) => {
-    await refreshSettings(settings);
-  };
-
   return (
     <>
       <View style={styles.headerContainer}>
@@ -166,7 +162,7 @@ const SettingsScreen = ({ navigation }) => {
                 </View>
                 <Switch
                   value={isColorblind}
-                  onValueChange={(value) => onSettingChanged({ isColorblind: value })}
+                  onValueChange={(value) => refreshSettings({ isColorblind: value })}
                   color="#009AEB"
                 />
               </View>

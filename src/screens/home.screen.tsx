@@ -139,7 +139,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <>
       <SideMenu
-        menu={<CustomMenu />}
+        menu={<CustomMenu user={user} />}
         isOpen={isMenuOpen}
         bounceBackOnOverdraw={false}
         onChange={(isOpen: boolean) => setMenuOpen(isOpen)}
