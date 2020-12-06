@@ -58,13 +58,12 @@ export const authReducer = (state, action) => {
         ...state,
         isSignout: true,
         userToken: null,
-        authSubject: null,
+        user: null,
       };
     case 'REFRESH_SETTINGS':
       return {
         ...state,
-        isSignout: false,
-        authSubject: action.authSubject,
+        user: action.authSubject,
       };
     default:
       throw new Error();

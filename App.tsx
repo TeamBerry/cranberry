@@ -58,6 +58,7 @@ export default function App() {
       isLoading: true,
       isSignout: false,
       userToken: null,
+      user: null,
     },
   );
 
@@ -127,6 +128,7 @@ export default function App() {
           await axios.patch(`${Config.API_URL}/user/settings`, settings);
           await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
           ToastAndroid.show('Settings updated', 3000);
+          dispatch({ type: 'REFRESH_SETTINGS', user });
         } catch (error) {
           ToastAndroid.show('There was en error. Please try again', 4000);
         }

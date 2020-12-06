@@ -144,7 +144,11 @@ const SettingsScreen = ({ navigation }) => {
               </>
               <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
             </View>
-            <Pressable style={styles.setting} onPress={() => navigation.push('ColorSelect')}>
+            <Pressable
+              style={styles.setting}
+              onPress={() => navigation.push('ColorSelect',
+                { color: user.settings.color, name: user.name })}
+            >
               <View style={styles.settingSpace}>
                 <Text style={styles.settingName}>Username color</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>

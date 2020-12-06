@@ -1,37 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
+import React, { useContext, useState } from 'react';
 import {
-  View, Text, Pressable, StyleSheet, ToastAndroid,
+  View, Text, Pressable, StyleSheet,
 } from 'react-native';
 import { TriangleColorPicker } from 'react-native-color-picker';
-import Config from 'react-native-config';
-import axios from 'axios';
-import { AuthSubject } from '../../models/session.model';
 import { useTheme } from '../../shared/theme.context';
 import BackIcon from '../../../assets/icons/back-icon.svg';
 import BxActionComponent from '../../components/bx-action.component';
 import AuthContext from '../../shared/auth.context';
 
-const ColorSelectScreen = ({ navigation }) => {
-  const [user, setUser] = useState<AuthSubject>(null);
-  const [userColor, setUserColor] = useState<string>(null);
+const ColorSelectScreen = ({ route, navigation }) => {
+  const { name, color } = route.params;
+  const [userColor, setUserColor] = useState<string>(color);
   const { colors } = useTheme();
   const { refreshSettings } = useContext(AuthContext);
-
-  useEffect(() => {
-    const bootstrap = async () => {
-      try {
-        const authSubject: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
-        setUser(authSubject);
-        setUserColor(authSubject.settings.color);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Session could not be obtained', e);
-      }
-    };
-
-    bootstrap();
-  }, []);
 
   const styles = StyleSheet.create({
     headerContainer: {
@@ -93,7 +74,7 @@ const ColorSelectScreen = ({ navigation }) => {
           <Text style={styles.settingTitle}>Change your user color</Text>
         </View>
       </View>
-      { user ? (
+      { color ? (
         <View style={{ marginHorizontal: 20 }}>
           <View style={{ height: 300 }}>
             <TriangleColorPicker
@@ -107,10 +88,10 @@ const ColorSelectScreen = ({ navigation }) => {
             <Text style={{ color: colors.textSystemColor }}>Previews:</Text>
             <View style={styles.preview}>
               <View style={[styles.colorPreview, { backgroundColor: '#E9E9E9' }]}>
-                <Text style={{ textAlign: 'center', color: userColor }}>{user.name}</Text>
+                <Text style={{ textAlign: 'center', color: userColor }}>{name}</Text>
               </View>
               <View style={[styles.colorPreview, { backgroundColor: '#191919' }]}>
-                <Text style={{ textAlign: 'center', color: userColor }}>{user.name}</Text>
+                <Text style={{ textAlign: 'center', color: userColor }}>{name}</Text>
               </View>
             </View>
             <Text style={{ color: colors.textSystemColor, fontSize: 11 }}>
