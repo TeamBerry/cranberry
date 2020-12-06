@@ -169,4 +169,4 @@ const ChangePasswordScreen = (props: { navigation, user: AuthSubject }) => {
   );
 };
 
-export default connect((state) => ({ user: getUser(state) }))(ChangePasswordScreen);
+export default connect((state) => getUser(state))(ChangePasswordScreen);

@@ -178,4 +178,4 @@ const SettingsScreen = (props: {
   );
 };
 
-export default connect((state) => ({ user: getUser(state) }), { updateUser })(SettingsScreen);
+export default connect((state) => getUser(state), { updateUser })(SettingsScreen);

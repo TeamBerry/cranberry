@@ -546,4 +546,4 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
   );
 };
 
-export default connect((state) => ({ user: getUser(state) }))(BoxScreen);
+export default connect((state) => getUser(state))(BoxScreen);

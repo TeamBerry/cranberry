@@ -296,4 +296,4 @@ const CreateBoxScreen = (props: { navigation, user: AuthSubject }) => {
   );
 };
 
-export default connect((state) => ({ user: getUser(state) }))(CreateBoxScreen);
+export default connect((state) => getUser(state))(CreateBoxScreen);
