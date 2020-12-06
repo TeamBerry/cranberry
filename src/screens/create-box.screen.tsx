@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   KeyboardAvoidingView, StyleSheet, View, Text, TouchableOpacity, Pressable, ScrollView,
 } from 'react-native';
@@ -6,8 +6,9 @@ import { Switch, IconButton, Snackbar } from 'react-native-paper';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import AsyncStorage from '@react-native-community/async-storage';
 import Config from 'react-native-config';
+import { connect } from 'react-redux';
+import { getUser } from '../redux/selectors';
 
 import FormTextInput from '../components/form-text-input.component';
 import RandomIcon from '../../assets/icons/random-icon.svg';
@@ -73,19 +74,11 @@ export type BoxOptions = {
     videoMaxDurationLimit: number
 }
 
-const CreateBoxScreen = ({ navigation }) => {
-  const [user, setUser] = useState<AuthSubject>(null);
+const CreateBoxScreen = (props: { navigation, user: AuthSubject }) => {
+  const { navigation, user } = props;
   const [isCreating, setCreating] = useState(false);
   const [box, setBox] = useState(null);
   const { colors } = useTheme();
-
-  useEffect(() => {
-    const getSession = async () => {
-      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
-    };
-
-    getSession();
-  }, []);
 
   const createBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions}) => {
     setCreating(true);
@@ -303,4 +296,4 @@ const CreateBoxScreen = ({ navigation }) => {
   );
 };
 
-export default CreateBoxScreen;
+export default connect((state) => ({ user: getUser(state) }))(CreateBoxScreen);

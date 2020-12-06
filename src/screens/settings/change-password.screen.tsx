@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View, Text, Pressable, StyleSheet, KeyboardAvoidingView, ToastAndroid,
 } from 'react-native';
@@ -6,36 +6,22 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import Config from 'react-native-config';
-import AsyncStorage from '@react-native-community/async-storage';
+import { connect } from 'react-redux';
 import { useTheme } from '../../shared/theme.context';
+import { getUser } from '../../redux/selectors';
 
 import BackIcon from '../../../assets/icons/back-icon.svg';
 import FormTextInput from '../../components/form-text-input.component';
 import BxActionComponent from '../../components/bx-action.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
-import { AuthSubject } from '../../models/session.model';
 import AuthContext from '../../shared/auth.context';
+import { AuthSubject } from '../../models/session.model';
 
-const ChangePasswordScreen = ({ navigation }) => {
+const ChangePasswordScreen = (props: { navigation, user: AuthSubject }) => {
+  const { navigation, user } = props;
   const { colors } = useTheme();
   const [isUpdating, setUpdating] = useState(false);
-  const [user, setUser] = useState<AuthSubject>(null);
   const { signOut } = useContext(AuthContext);
-
-  useEffect(() => {
-    const bootstrap = async () => {
-      try {
-        // TODO: Fix multiple refreshes
-        console.log('BOOTSTRAP');
-        setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Session could not be obtained', e);
-      }
-    };
-
-    bootstrap();
-  }, []);
 
   const styles = StyleSheet.create({
     headerContainer: {
@@ -183,4 +169,4 @@ const ChangePasswordScreen = ({ navigation }) => {
   );
 };
 
-export default ChangePasswordScreen;
+export default connect((state) => ({ user: getUser(state) }))(ChangePasswordScreen);

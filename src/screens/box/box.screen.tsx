@@ -3,9 +3,9 @@ import {
   View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ScrollView, Share, ToastAndroid,
 } from 'react-native';
 import io from 'socket.io-client';
-import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import Config from 'react-native-config';
+import { connect } from 'react-redux';
 
 import {
   SyncPacket, BerryCount, Permission, FeedbackMessage, PlayingItem,
@@ -14,6 +14,7 @@ import { IconButton, Snackbar, Switch } from 'react-native-paper';
 import Collapsible from 'react-native-collapsible';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { getUser } from '../../redux/selectors';
 import Player from './components/player.component';
 import Box from '../../models/box.model';
 import BoxContext from './box.context';
@@ -77,7 +78,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const BoxScreen = ({ route, navigation }) => {
+const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
+  const { route, navigation, user } = props;
   const { boxToken } = route.params;
   const window = useWindowDimensions();
   const playerHeight = window.width * (9 / 16) + 10;
@@ -86,7 +88,6 @@ const BoxScreen = ({ route, navigation }) => {
   let socketConnection = null;
 
   const [box, setBox] = useState<Box>(null);
-  const [user, setUser] = useState<AuthSubject>(null);
   const [socket, setSocket] = useState(null);
   const [boxKey, setBoxKey] = useState<string>(null);
   const [currentQueueItem, setCurrentQueueItem] = useState<PlayingItem>(null);
@@ -109,8 +110,6 @@ const BoxScreen = ({ route, navigation }) => {
     const bootstrap = async () => {
       const box = await axios.get(`${Config.API_URL}/boxes/${boxToken}`);
       setBox(box.data);
-
-      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     bootstrap();
@@ -546,4 +545,4 @@ const BoxScreen = ({ route, navigation }) => {
   );
 };
 
-export default BoxScreen;
+export default connect((state) => ({ user: getUser(state) }))(BoxScreen);
