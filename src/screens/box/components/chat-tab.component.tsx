@@ -167,7 +167,7 @@ const ChatTab = (props: {
         onScrollEndDrag={(e) => handleScroll(e.nativeEvent)}
       >
         {messages.map((message, index) => (
-          <ChatMessage key={index.toString()} message={message} />
+          <ChatMessage key={index.toString()} colorblindMode={user.settings.isColorblind} message={message} />
         ))}
       </ScrollView>
       <ResumeScrollButton />

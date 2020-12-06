@@ -6,10 +6,6 @@ import { Message, FeedbackMessage, SystemMessage } from '@teamberry/muscadine';
 import Config from 'react-native-config';
 import { useTheme } from '../../../shared/theme.context';
 
-export type Props = {
-    message: Message | FeedbackMessage | SystemMessage
-}
-
 const styles = StyleSheet.create({
   message: {
     paddingVertical: 3,
@@ -74,13 +70,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const ChatMessage = ({ message }: Props) => {
+const ChatMessage = (props: { message: Message | FeedbackMessage | SystemMessage, colorblindMode: boolean }) => {
+  const { message, colorblindMode } = props;
   const { colors } = useTheme();
 
   const AuthorRender = (message: Message) => {
     if (message.author) {
       const { name, color } = message.author as Message['author'];
-      return (<Text style={[styles.author, { color }]}>{name}</Text>);
+      return (<Text style={[styles.author, { color: colorblindMode ? colors.textColor : color }]}>{name}</Text>);
     }
     return null;
   };
