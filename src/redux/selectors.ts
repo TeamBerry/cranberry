@@ -1,3 +1,3 @@
-export const getSettings = (store) => store.userReducer.settings;
+export const getSettings = (store) => store.user.settings;
 
-export const getUser = (store) => store.userReducer;
+export const getUser = (store) => store.user;
