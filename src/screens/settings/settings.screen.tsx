@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext, useEffect, useState,
+} from 'react';
 import {
-  StyleSheet, Text, View, Pressable, ToastAndroid,
+  StyleSheet, Text, View, Pressable,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Switch } from 'react-native-paper';
-import axios from 'axios';
-import Config from 'react-native-config';
 import { useTheme } from '../../shared/theme.context';
 
 import BackIcon from '../../../assets/icons/back-icon.svg';
@@ -23,6 +23,8 @@ const SettingsScreen = ({ navigation }) => {
   useEffect(() => {
     const bootstrap = async () => {
       try {
+        // TODO: Fix multiple refreshes
+        console.log('BOOTSTRAP');
         const authSubject: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user'));
         setUser(authSubject);
         setColorblindSetting(authSubject.settings.isColorblind);
@@ -134,12 +136,13 @@ const SettingsScreen = ({ navigation }) => {
             <Text style={styles.userName}>{user.name}</Text>
           </View>
           <View style={{ paddingHorizontal: 10 }}>
-            <View style={styles.setting}>
-              <>
-                <Text style={styles.settingName}>Change password</Text>
-              </>
+            <Pressable
+              style={styles.setting}
+              onPress={() => navigation.push('ChangePassword')}
+            >
+              <Text style={styles.settingName}>Change password</Text>
               <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
-            </View>
+            </Pressable>
             <Pressable
               style={styles.setting}
               onPress={() => navigation.push('ColorSelect',

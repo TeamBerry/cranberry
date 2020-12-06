@@ -24,6 +24,7 @@ import { AuthSubject } from './src/models/session.model';
 import SettingsScreen from './src/screens/settings/settings.screen';
 import ColorSelectScreen from './src/screens/settings/color-select.screen';
 import { authReducer } from './src/redux/reducers/auth.reducer';
+import ChangePasswordScreen from './src/screens/settings/change-password.screen';
 
 const RootStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
@@ -149,6 +150,14 @@ export default function App() {
         component={SettingsScreen}
         options={{
           animationTypeForReplace: 'pop',
+          headerShown: false,
+        }}
+      />
+      <SettingsStack.Screen
+        name="ChangePassword"
+        component={ChangePasswordScreen}
+        options={{
+          animationTypeForReplace: 'push',
           headerShown: false,
         }}
       />

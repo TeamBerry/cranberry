@@ -30,15 +30,6 @@ const ColorSelectScreen = ({ route, navigation }) => {
       flexDirection: 'row',
       justifyContent: 'flex-start',
     },
-    form: {
-      flex: 1,
-      width: 320,
-      paddingBottom: 20,
-    },
-    image: {
-      height: 100,
-      width: 100,
-    },
     previewContainer: {
       marginTop: 20,
     },
