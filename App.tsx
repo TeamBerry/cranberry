@@ -25,6 +25,7 @@ import SettingsScreen from './src/screens/settings/settings.screen';
 import ColorSelectScreen from './src/screens/settings/color-select.screen';
 
 const RootStack = createStackNavigator();
+const SettingsStack = createStackNavigator();
 
 const useInitialUrl = () => {
   const [inviteLink, setInviteLink] = useState(null as string);
@@ -182,13 +183,39 @@ export default function App() {
     [],
   );
 
+  const SettingsSpace = () => (
+    <SettingsStack.Navigator
+      screenOptions={{
+        cardStyle: { backgroundColor: '#191919' },
+        headerShown: false,
+      }}
+    >
+      <SettingsStack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          animationTypeForReplace: 'pop',
+          headerShown: false,
+        }}
+      />
+      <SettingsStack.Screen
+        name="ColorSelect"
+        component={ColorSelectScreen}
+        options={{
+          animationTypeForReplace: 'push',
+          headerShown: false,
+        }}
+      />
+    </SettingsStack.Navigator>
+  );
+
   const RootFlow = () => (
     <RootStack.Navigator
       screenOptions={{
         cardStyle: { backgroundColor: '#191919' },
       }}
       initialRouteName={inviteLink ? 'ParseLink' : 'Home'}
-      mode="modal"
+      mode="card"
     >
       <RootStack.Screen
         name="Home"
@@ -225,24 +252,14 @@ export default function App() {
           />
         </>
       ) : (
-        <>
-          <RootStack.Screen
-            name="Settings"
-            component={SettingsScreen}
-            options={{
-              animationTypeForReplace: 'pop',
-              headerShown: false,
-            }}
-          />
-          <RootStack.Screen
-            name="ColorSelect"
-            component={ColorSelectScreen}
-            options={{
-              animationTypeForReplace: 'push',
-              headerShown: false,
-            }}
-          />
-        </>
+        <RootStack.Screen
+          name="Settings"
+          component={SettingsSpace}
+          options={{
+            headerShown: false,
+            animationTypeForReplace: 'push',
+          }}
+        />
       )}
       <RootStack.Screen
         name="Box"
