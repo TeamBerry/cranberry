@@ -9,7 +9,6 @@ export const userReducer = (
 ): AuthSubject => {
   switch (action.type) {
     case 'UPDATE_USER': {
-      console.log('UPDATE USER ACTION');
       return action.payload;
     }
     default:

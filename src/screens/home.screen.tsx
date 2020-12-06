@@ -3,7 +3,6 @@ import {
   StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal, ScrollView,
 } from 'react-native';
 import SideMenu from 'react-native-side-menu-updated';
-import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -18,8 +17,9 @@ import Box from '../models/box.model';
 import FeaturedBoxCard from '../components/featured-box-card.component';
 import { useTheme } from '../shared/theme.context';
 import BxActionComponent from '../components/bx-action.component';
-import { AuthSubject } from '../models/session.model';
 import UnlockIcon from '../../assets/icons/unlock-icon.svg';
+import { getUser } from '../redux/selectors';
+import { AuthSubject } from '../models/session.model';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const HomeScreen = ({ navigation, user }) => {
+const HomeScreen = (props: { navigation, user: AuthSubject }) => {
+  const { navigation, user } = props;
   const [hasLoadedBoxes, setBoxLoading] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
@@ -271,9 +272,4 @@ const HomeScreen = ({ navigation, user }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  console.log('Home Screen gets this: ', state);
-  return { user: state.userReducer };
-};
-
-export default connect(mapStateToProps)(HomeScreen);
+export default connect((state) => getUser(state))(HomeScreen);

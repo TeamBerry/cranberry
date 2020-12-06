@@ -115,10 +115,6 @@ const SettingsScreen = (props: {
     }
   };
 
-  useEffect(() => {
-    console.log('user: ', user);
-  }, [user]);
-
   return (
     <>
       <View style={styles.headerContainer}>
