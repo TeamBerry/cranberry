@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import Config from 'react-native-config';
 import AsyncStorage from '@react-native-community/async-storage';
+import ImagePicker from 'react-native-image-picker';
 import { useTheme } from '../../shared/theme.context';
 
 import BackIcon from '../../../assets/icons/back-icon.svg';
@@ -22,6 +23,10 @@ const SettingsScreen = (props: {
     navigation, user, updateUser, color, colorblind,
   } = props;
   const { colors } = useTheme();
+  const verificationCriteria = {
+    authorizedTypes: ['image/png', 'image/jpeg', 'image/jpg'],
+    maximumSize: 2,
+  };
 
   const styles = StyleSheet.create({
     headerContainer: {
@@ -98,8 +103,27 @@ const SettingsScreen = (props: {
     },
   });
 
+  const handlePicture = (picture) => {
+    if (picture.fileSize > verificationCriteria.maximumSize * 1000 * 1000) {
+      ToastAndroid.show('The file is too big.', 5000);
+      return;
+    }
+
+    if (verificationCriteria.authorizedTypes.indexOf(picture.type) === -1) {
+      ToastAndroid.show('The type of the picture is unauthorized (JPG or PNG only)', 5000);
+      return;
+    }
+
+    navigation.push('PicturePreview', { picture });
+  };
+
   const onPictureChange = () => {
-    console.log('REQUEST ACCESS TO PICTURES');
+    ImagePicker.launchImageLibrary(
+      {
+        mediaType: 'photo',
+      },
+      handlePicture,
+    );
   };
 
   const updateSettings = async (settings: Partial<AuthSubject['settings']>) => {

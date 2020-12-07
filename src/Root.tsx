@@ -25,6 +25,7 @@ import ColorSelectScreen from './screens/settings/color-select.screen';
 import ChangePasswordScreen from './screens/settings/change-password.screen';
 import CreateBoxScreen from './screens/create-box.screen';
 import { getToken } from './redux/selectors';
+import picturePreviewScreen from './screens/settings/picture-preview.screen';
 
 const RootStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
@@ -139,6 +140,14 @@ const Root = (props: { userToken: string }) => {
       <SettingsStack.Screen
         name="Settings"
         component={SettingsScreen}
+        options={{
+          animationTypeForReplace: 'pop',
+          headerShown: false,
+        }}
+      />
+      <SettingsStack.Screen
+        name="PicturePreview"
+        component={picturePreviewScreen}
         options={{
           animationTypeForReplace: 'pop',
           headerShown: false,
