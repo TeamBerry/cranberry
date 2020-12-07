@@ -12,7 +12,7 @@ export type StoreType = {
 }
 
 const initialState: StoreType = {
-  userToken: 'TEST',
+  userToken: null,
   user: null,
 };
 
@@ -76,9 +76,6 @@ export const userReducer = (state = initialState, action): StoreType => {
         userToken: null,
       };
     default:
-      console.log('I am called.');
-      return {
-        ...state,
-      };
+      return state;
   }
 };
