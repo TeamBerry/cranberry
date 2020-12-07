@@ -107,7 +107,7 @@ const SettingsScreen = (props: {
       user.settings = Object.assign(user.settings, settings);
       await axios.patch(`${Config.API_URL}/user/settings`, user.settings);
       await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
-      updateUser(user);
+      updateUser({ user });
       ToastAndroid.show('Settings updated', 3000);
     } catch (error) {
       ToastAndroid.show('There was an error. Please try again', 4000);
