@@ -44,29 +44,10 @@ const SettingsScreen = (props: {
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
-    loginLink: {
-      textTransform: 'uppercase',
-      color: '#009AEB',
-      fontFamily: 'Montserrat-SemiBold',
-    },
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      paddingTop: 40,
-      backgroundColor: colors.background,
-    },
-    form: {
-      flex: 1,
-      width: 320,
-      paddingBottom: 20,
-    },
-    image: {
-      height: 100,
-      width: 100,
-    },
     userName: {
       color: colors.textColor,
+      fontSize: 24,
+      fontFamily: 'Montserrat-SemiBold',
     },
     accountSummary: {
       backgroundColor: colors.backgroundAlternateColor,
@@ -118,7 +99,7 @@ const SettingsScreen = (props: {
           const picture = response;
 
           if (picture.fileSize > verificationCriteria.maximumSize * 1000 * 1000) {
-            ToastAndroid.show('The file is too big.', 5000);
+            ToastAndroid.show('The file is too big. Max size: 2MB', 5000);
             return;
           }
 
@@ -178,19 +159,23 @@ const SettingsScreen = (props: {
               <Text style={styles.settingName}>Change password</Text>
               <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
             </Pressable>
-            <Pressable
-              style={styles.setting}
-              onPress={() => navigation.push('ColorSelect')}
-            >
-              <View style={styles.settingSpace}>
-                <Text style={styles.settingName}>Username color</Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                  <View style={[styles.userColor, { backgroundColor: color }]} />
-                  <Text style={[styles.settingValue, { color }]}>{user.name}</Text>
+            {colorblind === true ? (
+              null
+            ) : (
+              <Pressable
+                style={styles.setting}
+                onPress={() => navigation.push('ColorSelect')}
+              >
+                <View style={styles.settingSpace}>
+                  <Text style={styles.settingName}>Username color</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={[styles.userColor, { backgroundColor: color }]} />
+                    <Text style={[styles.settingValue, { color }]}>{user.name}</Text>
+                  </View>
                 </View>
-              </View>
-              <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
-            </Pressable>
+                <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
+              </Pressable>
+            )}
             <View style={styles.setting}>
               <View style={styles.settingSpace}>
                 <View>
@@ -199,7 +184,7 @@ const SettingsScreen = (props: {
                 </View>
                 <Switch
                   value={colorblind}
-                  onValueChange={(value) => updateSettings({ isColorblind: value })}
+                  onValueChange={(value) => updateSettings({ isColorblind: value, color: '#DF62A9' })}
                   color="#009AEB"
                 />
               </View>
