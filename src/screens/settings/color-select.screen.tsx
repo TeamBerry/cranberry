@@ -26,7 +26,8 @@ const ColorSelectScreen = (props: { navigation, user: AuthSubject, color: string
       await axios.patch(`${Config.API_URL}/user/settings`, user.settings);
       await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
       ToastAndroid.show('Settings updated', 3000);
-      updateUser(user);
+      updateUser({ user });
+      navigation.goBack();
     } catch (error) {
       ToastAndroid.show('There was an error. Please try again', 4000);
     }
