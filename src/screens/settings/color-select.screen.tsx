@@ -118,8 +118,8 @@ const ColorSelectScreen = (props: { navigation, user: AuthSubject, color: string
 };
 
 const mapStateToProps = (state) => {
-  const user = state.userReducer;
-  return { user, color: user?.settings?.color ?? '#D13E9C' };
+  const { user } = state.user;
+  return { user, color: user?.settings?.color };
 };
 
 export default connect(mapStateToProps, { updateUser })(ColorSelectScreen);

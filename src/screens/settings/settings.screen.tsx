@@ -14,13 +14,12 @@ import ProfilePicture from '../../components/profile-picture.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 import { updateUser } from '../../redux/actions';
 import { AuthSubject } from '../../models/session.model';
-import { getUser } from '../../redux/selectors';
 
 const SettingsScreen = (props: {
-  navigation, user: AuthSubject, updateUser,
+  navigation, user: AuthSubject, updateUser, color: string, colorblind: boolean
 }) => {
   const {
-    navigation, user, updateUser,
+    navigation, user, updateUser, color, colorblind,
   } = props;
   const { colors } = useTheme();
 
@@ -108,8 +107,8 @@ const SettingsScreen = (props: {
       user.settings = Object.assign(user.settings, settings);
       await axios.patch(`${Config.API_URL}/user/settings`, user.settings);
       await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
-      ToastAndroid.show('Settings updated', 3000);
       updateUser(user);
+      ToastAndroid.show('Settings updated', 3000);
     } catch (error) {
       ToastAndroid.show('There was an error. Please try again', 4000);
     }
@@ -126,7 +125,7 @@ const SettingsScreen = (props: {
           </Pressable>
         </View>
       </View>
-      {user ? (
+      {user && color && colorblind !== null ? (
         <>
           <View style={styles.accountSummary}>
             <Pressable onPress={onPictureChange}>
@@ -144,14 +143,13 @@ const SettingsScreen = (props: {
             </Pressable>
             <Pressable
               style={styles.setting}
-              onPress={() => navigation.push('ColorSelect',
-                { color: user.settings.color, name: user.name })}
+              onPress={() => navigation.push('ColorSelect')}
             >
               <View style={styles.settingSpace}>
                 <Text style={styles.settingName}>Username color</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                  <View style={[styles.userColor, { backgroundColor: user.settings.color }]} />
-                  <Text style={[styles.settingValue, { color: user.settings.color }]}>{user.name}</Text>
+                  <View style={[styles.userColor, { backgroundColor: color }]} />
+                  <Text style={[styles.settingValue, { color }]}>{user.name}</Text>
                 </View>
               </View>
               <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
@@ -163,7 +161,7 @@ const SettingsScreen = (props: {
                   <Text style={styles.helpText}>Removes all custom colors from your chat.</Text>
                 </View>
                 <Switch
-                  value={user.settings.isColorblind}
+                  value={colorblind}
                   onValueChange={(value) => updateSettings({ isColorblind: value })}
                   color="#009AEB"
                 />
@@ -178,4 +176,9 @@ const SettingsScreen = (props: {
   );
 };
 
-export default connect((state) => getUser(state), { updateUser })(SettingsScreen);
+const mapStateToProps = (state) => {
+  const { user } = state.user;
+  return { user, color: user?.settings?.color, colorblind: user?.settings?.isColorblind };
+};
+
+export default connect(mapStateToProps, { updateUser })(SettingsScreen);
