@@ -1,22 +1,39 @@
-import { connect } from 'react-redux';
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   View, Text, Pressable, StyleSheet, ToastAndroid, Image,
 } from 'react-native';
+import axios from 'axios';
+import Config from 'react-native-config';
+import AsyncStorage from '@react-native-community/async-storage';
+import { updateUser } from '../../redux/actions';
 import { getUser } from '../../redux/selectors';
 import { useTheme } from '../../shared/theme.context';
 import { AuthSubject } from '../../models/session.model';
 import BackIcon from '../../../assets/icons/back-icon.svg';
 import BxActionComponent from '../../components/bx-action.component';
 
-const PicturePreviewScreen = (props: { route, navigation, user: AuthSubject }) => {
-  const { route, navigation, user } = props;
+const PicturePreviewScreen = (props: { route, navigation, user: AuthSubject, updateUser }) => {
+  const {
+    route, navigation, user, updateUser,
+  } = props;
   const { picture } = route.params;
   const { colors } = useTheme();
 
-  const uploadPicture = () => {
-    const formData: FormData = new FormData();
-    formData.append('picture', picture, picture.fileName);
+  const uploadPicture = async () => {
+    // Upload picture
+    const formData = new FormData();
+    formData.append('picture', picture, picture.name);
+    const uploadedPicturePath: { file: string } = await axios.post(`${Config.API_URL}/users/${user._id}/picture`, formData);
+
+    // Update user settings
+    user.settings.picture = uploadedPicturePath.file;
+    await AsyncStorage.setItem('BBOX-user', JSON.stringify(user));
+    updateUser({ user });
+    ToastAndroid.show('Settings updated', 3000);
+
+    // Navigate back
+    navigation.goBack();
   };
 
   const styles = StyleSheet.create({
@@ -74,13 +91,15 @@ const PicturePreviewScreen = (props: { route, navigation, user: AuthSubject }) =
         <View style={{ flexDirection: 'column', justifyContent: 'space-between', marginTop: 40 }}>
           <View style={{ alignItems: 'center', marginVertical: 20 }}>
             <Image
-              source={{ uri: `data:${picture.type};base64,${picture.data}` }}
+              source={{ uri: picture.uri }}
               style={{
-                width: 300, height: 300, alignItems: 'center', justifyContent: 'center',
+                width: 300, height: 300, alignItems: 'center', justifyContent: 'center', borderRadius: 150,
               }}
             />
           </View>
-          <Pressable>
+          <Pressable
+            onPress={() => uploadPicture()}
+          >
             <BxActionComponent options={{ text: 'Save picture' }} />
           </Pressable>
         </View>
@@ -89,4 +108,4 @@ const PicturePreviewScreen = (props: { route, navigation, user: AuthSubject }) =
   );
 };
 
-export default connect((state) => getUser(state))(PicturePreviewScreen);
+export default connect((state) => getUser(state), { updateUser })(PicturePreviewScreen);

@@ -103,26 +103,39 @@ const SettingsScreen = (props: {
     },
   });
 
-  const handlePicture = (picture) => {
-    if (picture.fileSize > verificationCriteria.maximumSize * 1000 * 1000) {
-      ToastAndroid.show('The file is too big.', 5000);
-      return;
-    }
-
-    if (verificationCriteria.authorizedTypes.indexOf(picture.type) === -1) {
-      ToastAndroid.show('The type of the picture is unauthorized (JPG or PNG only)', 5000);
-      return;
-    }
-
-    navigation.push('PicturePreview', { picture });
-  };
-
   const onPictureChange = () => {
     ImagePicker.launchImageLibrary(
       {
         mediaType: 'photo',
       },
-      handlePicture,
+      (response) => {
+        if (response.didCancel) {
+          // eslint-disable-next-line no-console
+          console.log('Cancelled');
+        } else if (response.error) {
+          ToastAndroid.show('An error occurred. Please try again', 5000);
+        } else {
+          const picture = response;
+
+          if (picture.fileSize > verificationCriteria.maximumSize * 1000 * 1000) {
+            ToastAndroid.show('The file is too big.', 5000);
+            return;
+          }
+
+          if (verificationCriteria.authorizedTypes.indexOf(picture.type) === -1) {
+            ToastAndroid.show('The type of the picture is unauthorized (JPG or PNG only)', 5000);
+            return;
+          }
+
+          navigation.push('PicturePreview', {
+            picture: {
+              uri: picture.uri,
+              type: picture.type,
+              name: picture.fileName,
+            },
+          });
+        }
+      },
     );
   };
 
