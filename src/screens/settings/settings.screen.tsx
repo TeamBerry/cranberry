@@ -82,6 +82,18 @@ const SettingsScreen = (props: {
       color: colors.inactiveColor,
       fontSize: 9,
     },
+    settingSectionTitle: {
+      fontSize: 14,
+      textTransform: 'uppercase',
+      fontWeight: '700',
+      color: colors.textSystemColor,
+      marginTop: 10,
+    },
+    separator: {
+      borderBottomWidth: 1,
+      borderBottomColor: colors.videoSeparator,
+      marginVertical: 5,
+    },
   });
 
   const onPictureChange = () => {
@@ -156,13 +168,7 @@ const SettingsScreen = (props: {
             <Text style={styles.userName}>{user.name}</Text>
           </View>
           <View style={{ paddingHorizontal: 10 }}>
-            <Pressable
-              style={styles.setting}
-              onPress={() => navigation.push('ChangePassword')}
-            >
-              <Text style={styles.settingName}>Change password</Text>
-              <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
-            </Pressable>
+            <Text style={styles.settingSectionTitle}>Appearance</Text>
             {colorblind === true ? (
               null
             ) : (
@@ -184,7 +190,7 @@ const SettingsScreen = (props: {
               <View style={styles.settingSpace}>
                 <View>
                   <Text style={styles.settingName}>Colorblind Mode</Text>
-                  <Text style={styles.helpText}>Removes all custom colors from your chat.</Text>
+                  <Text style={styles.helpText}>Removes all custom colors from your chat and resets your own color.</Text>
                 </View>
                 <Switch
                   value={colorblind}
@@ -193,6 +199,15 @@ const SettingsScreen = (props: {
                 />
               </View>
             </View>
+            <View style={styles.separator} />
+            <Text style={styles.settingSectionTitle}>Security</Text>
+            <Pressable
+              style={styles.setting}
+              onPress={() => navigation.push('ChangePassword')}
+            >
+              <Text style={styles.settingName}>Change password</Text>
+              <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
+            </Pressable>
           </View>
         </>
       ) : (
