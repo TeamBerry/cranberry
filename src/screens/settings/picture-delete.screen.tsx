@@ -102,7 +102,7 @@ const PictureDeleteScreen = (props: { navigation, user: AuthSubject, updateUser 
           />
           <BackIcon width={60} height={60} fill={colors.textColor} rotation={180} />
           <ProfilePicture
-            fileName={null}
+            fileName="default-picture"
             size={100}
             style={{ borderWidth: 1, borderColor: '#0C9AEB' }}
           />
