@@ -26,6 +26,7 @@ import ChangePasswordScreen from './screens/settings/change-password.screen';
 import CreateBoxScreen from './screens/create-box.screen';
 import { getToken } from './redux/selectors';
 import picturePreviewScreen from './screens/settings/picture-preview.screen';
+import pictureDeleteScreen from './screens/settings/picture-delete.screen';
 
 const RootStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
@@ -148,6 +149,14 @@ const Root = (props: { userToken: string }) => {
       <SettingsStack.Screen
         name="PicturePreview"
         component={picturePreviewScreen}
+        options={{
+          animationTypeForReplace: 'pop',
+          headerShown: false,
+        }}
+      />
+      <SettingsStack.Screen
+        name="PictureDelete"
+        component={pictureDeleteScreen}
         options={{
           animationTypeForReplace: 'pop',
           headerShown: false,
