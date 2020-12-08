@@ -3,10 +3,10 @@ import {
   StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal, ScrollView,
 } from 'react-native';
 import SideMenu from 'react-native-side-menu-updated';
-import AsyncStorage from '@react-native-community/async-storage';
 import { FAB } from 'react-native-paper';
 import axios from 'axios';
 import Config from 'react-native-config';
+import { connect } from 'react-redux';
 
 import CustomMenu from '../components/custom-menu.component';
 import BoxCard from '../components/box-card.component';
@@ -17,8 +17,8 @@ import Box from '../models/box.model';
 import FeaturedBoxCard from '../components/featured-box-card.component';
 import { useTheme } from '../shared/theme.context';
 import BxActionComponent from '../components/bx-action.component';
-import { AuthSubject } from '../models/session.model';
 import UnlockIcon from '../../assets/icons/unlock-icon.svg';
+import { AuthSubject } from '../models/session.model';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -81,11 +81,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) => {
+  const { navigation, user, picture } = props;
   const [hasLoadedBoxes, setBoxLoading] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
-  const [user, setUser] = useState<AuthSubject>(null);
   const [boxes, setBoxes] = useState<Array<Box>>([]);
   const [featuredBoxes, setFeaturedBoxes] = useState<Array<Box>>([]);
   const _boxListRef = useRef(null);
@@ -105,12 +105,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const bootstrap = async () => {
-      getBoxes();
-      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
-    };
-
-    bootstrap();
+    getBoxes();
   }, []);
 
   useEffect(() => {
@@ -139,7 +134,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <>
       <SideMenu
-        menu={<CustomMenu />}
+        menu={<CustomMenu user={user} onEvent={() => setMenuOpen(false)} />}
         isOpen={isMenuOpen}
         bounceBackOnOverdraw={false}
         onChange={(isOpen: boolean) => setMenuOpen(isOpen)}
@@ -149,13 +144,15 @@ const HomeScreen = ({ navigation }) => {
                 <StatusBar barStyle='dark-content' />
             </View> */}
 
-        <View style={[styles.headerContainer, { backgroundColor: colors.background, borderColor: colors.backgroundSecondaryAlternateColor }]}>
+        <View style={[styles.headerContainer,
+          { backgroundColor: colors.background, borderColor: colors.backgroundSecondaryAlternateColor }]}
+        >
           <View style={styles.headerStyle}>
             <Pressable
               onPress={() => setMenuOpen(!isMenuOpen)}
             >
               {user && user.mail ? (
-                <ProfilePicture userId={user ? user._id : null} size={30} />
+                <ProfilePicture fileName={picture} size={30} />
               ) : (
                 <UserIcon width={30} height={30} fill={colors.textColor} />
               )}
@@ -217,7 +214,7 @@ const HomeScreen = ({ navigation }) => {
                         <BoxCard
                           box={box}
                           onPress={() => navigation.navigate('Box', { boxToken: box._id })}
-                          isUnlocked={box.private && box.creator._id !== user._id}
+                          isUnlocked={box.private && user && box.creator._id !== user._id}
                         />
                         {index < boxes.length - 1 ? (
                           <View style={{ height: 1, backgroundColor: colors.backgroundSecondaryColor }} />
@@ -274,4 +271,11 @@ const HomeScreen = ({ navigation }) => {
   );
 };
 
-export default HomeScreen;
+const mapStateToProps = (state) => {
+  const { user } = state.user;
+  return {
+    user, picture: user?.settings?.picture,
+  };
+};
+
+export default connect(mapStateToProps)(HomeScreen);

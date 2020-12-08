@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ScrollView, Share,
+  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ScrollView, Share, ToastAndroid,
 } from 'react-native';
 import io from 'socket.io-client';
-import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import Config from 'react-native-config';
+import { connect } from 'react-redux';
 
 import {
   SyncPacket, BerryCount, Permission, FeedbackMessage, PlayingItem,
@@ -14,6 +14,7 @@ import { IconButton, Snackbar, Switch } from 'react-native-paper';
 import Collapsible from 'react-native-collapsible';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { getUser } from '../../redux/selectors';
 import Player from './components/player.component';
 import Box from '../../models/box.model';
 import BoxContext from './box.context';
@@ -77,7 +78,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const BoxScreen = ({ route, navigation }) => {
+const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
+  const { route, navigation, user } = props;
   const { boxToken } = route.params;
   const window = useWindowDimensions();
   const playerHeight = window.width * (9 / 16) + 10;
@@ -86,7 +88,6 @@ const BoxScreen = ({ route, navigation }) => {
   let socketConnection = null;
 
   const [box, setBox] = useState<Box>(null);
-  const [user, setUser] = useState<AuthSubject>(null);
   const [socket, setSocket] = useState(null);
   const [boxKey, setBoxKey] = useState<string>(null);
   const [currentQueueItem, setCurrentQueueItem] = useState<PlayingItem>(null);
@@ -109,8 +110,6 @@ const BoxScreen = ({ route, navigation }) => {
     const bootstrap = async () => {
       const box = await axios.get(`${Config.API_URL}/boxes/${boxToken}`);
       setBox(box.data);
-
-      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
     };
 
     bootstrap();
@@ -181,7 +180,8 @@ const BoxScreen = ({ route, navigation }) => {
           setPermissions(permissions);
         })
         .on('denied', () => {
-          console.log('DENIED');
+          ToastAndroid.show('Connection to the box has been denied.', 3000);
+          navigation.navigate('Home');
         });
     }
 
@@ -227,7 +227,7 @@ const BoxScreen = ({ route, navigation }) => {
         message: shareLink,
       });
     } catch (error) {
-      console.error(error);
+      ToastAndroid.show('There was an unexpected error. Please try again', 5000);
     }
   };
 
@@ -467,7 +467,9 @@ const BoxScreen = ({ route, navigation }) => {
                           >
                             <Text style={{ color: colors.textColor, fontWeight: '700', textAlign: 'center' }}>{shareLink}</Text>
                           </View>
-                          <Text style={{ color: colors.textSystemColor, textAlign: 'center' }}>This link will be valid for 15 minutes.</Text>
+                          <Text style={{ color: colors.textSystemColor, textAlign: 'center' }}>
+                            This link will be valid for 15 minutes.
+                          </Text>
                         </View>
                         <View>
                           <Pressable onPress={() => shareInvite()}>
@@ -485,6 +487,7 @@ const BoxScreen = ({ route, navigation }) => {
           ) : null}
           <Queue
             box={box}
+            user={user}
             currentVideo={currentQueueItem}
             height={remainingHeight}
             berryCount={berryCount}
@@ -492,7 +495,13 @@ const BoxScreen = ({ route, navigation }) => {
             onEdit={() => setEditing(!isEditing)}
             onShare={() => { setSharing(true); generateInvite(); }}
           />
-          <Panel box={box} socket={socket} berryCount={berryCount} permissions={permissions} />
+          <Panel
+            box={box}
+            user={user}
+            socket={socket}
+            berryCount={berryCount}
+            permissions={permissions}
+          />
         </>
       ) : (
         <BxLoadingIndicator />
@@ -537,4 +546,4 @@ const BoxScreen = ({ route, navigation }) => {
   );
 };
 
-export default BoxScreen;
+export default connect((state) => getUser(state))(BoxScreen);

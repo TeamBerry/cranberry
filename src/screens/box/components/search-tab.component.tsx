@@ -3,7 +3,6 @@ import {
   View, Text, StyleSheet, TextInput, FlatList, Pressable,
 } from 'react-native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-community/async-storage';
 import { VideoSubmissionRequest, QueueItem, Permission } from '@teamberry/muscadine';
 import { Snackbar } from 'react-native-paper';
 import Config from 'react-native-config';
@@ -47,16 +46,21 @@ export interface Video {
     duration?: string;
 }
 
-const SearchTab = (props: {socket: any, box: Box, berryCount: number, permissions: Array<Permission>}) => {
+const SearchTab = (props: {
+    socket: any,
+    box: Box,
+    berryCount: number,
+    permissions: Array<Permission>,
+    user: AuthSubject
+}) => {
   const {
-    socket, box, berryCount, permissions,
+    socket, box, berryCount, permissions, user,
   } = props;
 
   const { colors } = useTheme();
 
   const [searchValue, setSearchValue] = useState('');
   const [youtubeSearchResults, setSearchResults] = useState<Array<Video>>([]);
-  const [user, setUser] = useState<AuthSubject>(null);
   const [isSearching, setSearching] = useState(false);
   const [searchCooldown, setSearchCooldown] = useState(false);
   const [error, setError] = useState(false);
@@ -65,14 +69,6 @@ const SearchTab = (props: {socket: any, box: Box, berryCount: number, permission
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
   useEffect(() => {
-    const getSession = async () => {
-      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
-    };
-
-    if (user === null) {
-      getSession();
-    }
-
     const videoIds = box.playlist.map((queueItem: QueueItem) => queueItem.video.link);
     setQueueIds(videoIds);
 

@@ -5,7 +5,6 @@ import {
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
 import { Snackbar } from 'react-native-paper';
-import AsyncStorage from '@react-native-community/async-storage';
 
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
@@ -55,6 +54,7 @@ const styles = StyleSheet.create({
 
 const Queue = (props: {
     box: Box,
+    user: AuthSubject,
     currentVideo: QueueItem,
     height: number,
     berryCount: number,
@@ -63,7 +63,7 @@ const Queue = (props: {
     onShare: () => void,
 }) => {
   const {
-    box, currentVideo, height, berryCount, permissions, onEdit, onShare,
+    box, user, currentVideo, height, berryCount, permissions, onEdit, onShare,
   } = props;
   const { colors } = useTheme();
 
@@ -71,7 +71,6 @@ const Queue = (props: {
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
   const [queueVideos, setQueueVideos] = useState<Array<QueueItem>>([]);
-  const [user, setUser] = useState<AuthSubject>(null);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
   // Search
@@ -109,14 +108,6 @@ const Queue = (props: {
     setFilterResults(queueVideos);
     _filterInput.current.clear();
   };
-
-  useEffect(() => {
-    const bootstrap = async () => {
-      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
-    };
-
-    bootstrap();
-  }, []);
 
   useEffect((): void => {
     if (!box) {
@@ -232,7 +223,7 @@ const Queue = (props: {
           style={styles.currentSpace}
         >
           <View style={{ width: 35 }}>
-            <ProfilePicture userId={box.creator._id} size={25} />
+            <ProfilePicture fileName={box.creator.settings.picture} size={25} />
           </View>
           <View style={{ flex: 1, flexShrink: 1 }}>
             <Text style={[styles.boxName, { color: colors.textSystemColor }]} numberOfLines={1}>{box.name}</Text>
