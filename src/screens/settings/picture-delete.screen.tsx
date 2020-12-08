@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, Pressable, StyleSheet, ToastAndroid, Image,
+  View, Text, Pressable, StyleSheet, ToastAndroid,
 } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
