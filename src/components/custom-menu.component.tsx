@@ -11,8 +11,8 @@ import UserIcon from '../../assets/icons/user-icon.svg';
 import { useTheme } from '../shared/theme.context';
 import { AuthSubject } from '../models/session.model';
 
-const CustomMenu = (props: { user: AuthSubject }) => {
-  const { user } = props;
+const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
+  const { user, onEvent } = props;
   const navigation = useNavigation();
   const { signOut } = useContext(AuthContext);
   const { colors } = useTheme();
@@ -92,7 +92,7 @@ const CustomMenu = (props: { user: AuthSubject }) => {
         </View>
         <View style={styles.sectionSeparator} />
         <View style={styles.menuSpace}>
-          <Pressable onPress={() => navigation.navigate('Settings')} style={styles.menuItem}>
+          <Pressable onPress={() => { onEvent(); navigation.navigate('Settings'); }} style={styles.menuItem}>
             <Text style={{ color: colors.textColor }}>Settings</Text>
           </Pressable>
           <Pressable onPress={() => signOut()}>

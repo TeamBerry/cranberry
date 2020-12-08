@@ -134,7 +134,7 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
   return (
     <>
       <SideMenu
-        menu={<CustomMenu user={user} />}
+        menu={<CustomMenu user={user} onEvent={() => setMenuOpen(false)} />}
         isOpen={isMenuOpen}
         bounceBackOnOverdraw={false}
         onChange={(isOpen: boolean) => setMenuOpen(isOpen)}
