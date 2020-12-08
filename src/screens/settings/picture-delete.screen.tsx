@@ -85,7 +85,8 @@ const PictureDeleteScreen = (props: { navigation, user: AuthSubject, updateUser 
       </View>
       <View style={{ marginHorizontal: 20, marginTop: 20 }}>
         <Text style={{ color: colors.textSystemColor, fontSize: 11, textAlign: 'center' }}>
-          Your profile picture will be reset to the default picture. This operation is irreversible. Are you sure?
+          Your profile picture will be reset to the default picture. This operation cannot be undone, although you may change
+          your profile picture when you want.
         </Text>
         <View style={{
           flex: 0,
