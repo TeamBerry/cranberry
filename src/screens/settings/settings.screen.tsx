@@ -17,10 +17,10 @@ import { updateUser } from '../../redux/actions';
 import { AuthSubject } from '../../models/session.model';
 
 const SettingsScreen = (props: {
-  navigation, user: AuthSubject, updateUser, color: string, colorblind: boolean
+  navigation, user: AuthSubject, updateUser, color: string, colorblind: boolean, picture: string
 }) => {
   const {
-    navigation, user, updateUser, color, colorblind,
+    navigation, user, updateUser, color, colorblind, picture,
   } = props;
   const { colors } = useTheme();
   const verificationCriteria = {
@@ -147,7 +147,11 @@ const SettingsScreen = (props: {
         <>
           <View style={styles.accountSummary}>
             <Pressable onPress={onPictureChange}>
-              <ProfilePicture userId={user._id} size={70} style={{ borderWidth: 1, borderColor: '#0C9AEB', marginRight: 20 }} />
+              <ProfilePicture
+                fileName={picture}
+                size={70}
+                style={{ borderWidth: 1, borderColor: '#0C9AEB', marginRight: 20 }}
+              />
             </Pressable>
             <Text style={styles.userName}>{user.name}</Text>
           </View>
@@ -200,7 +204,9 @@ const SettingsScreen = (props: {
 
 const mapStateToProps = (state) => {
   const { user } = state.user;
-  return { user, color: user?.settings?.color, colorblind: user?.settings?.isColorblind };
+  return {
+    user, color: user?.settings?.color, colorblind: user?.settings?.isColorblind, picture: user?.settings?.picture,
+  };
 };
 
 export default connect(mapStateToProps, { updateUser })(SettingsScreen);

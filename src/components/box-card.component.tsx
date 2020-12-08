@@ -97,7 +97,7 @@ const BoxCard = (props: { box: Box, onPress: () => void, isUnlocked: boolean }) 
             <Text style={[styles.boxTitle, { color: colors.textColor }]} numberOfLines={1}>{box.name}</Text>
           </View>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-            <ProfilePicture userId={box.creator._id} size={15} />
+            <ProfilePicture fileName={box.creator.settings.picture} size={15} />
             <Text style={{ color: colors.textSystemColor, paddingLeft: 4 }}>{box.creator.name}</Text>
           </View>
           <Text

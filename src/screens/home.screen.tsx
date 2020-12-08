@@ -18,7 +18,6 @@ import FeaturedBoxCard from '../components/featured-box-card.component';
 import { useTheme } from '../shared/theme.context';
 import BxActionComponent from '../components/bx-action.component';
 import UnlockIcon from '../../assets/icons/unlock-icon.svg';
-import { getUser } from '../redux/selectors';
 import { AuthSubject } from '../models/session.model';
 
 const styles = StyleSheet.create({
@@ -82,8 +81,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const HomeScreen = (props: { navigation, user: AuthSubject }) => {
-  const { navigation, user } = props;
+const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) => {
+  const { navigation, user, picture } = props;
   const [hasLoadedBoxes, setBoxLoading] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isBoxMenuOpen, setBoxMenuOpen] = useState(false);
@@ -153,7 +152,7 @@ const HomeScreen = (props: { navigation, user: AuthSubject }) => {
               onPress={() => setMenuOpen(!isMenuOpen)}
             >
               {user && user.mail ? (
-                <ProfilePicture userId={user ? user._id : null} size={30} />
+                <ProfilePicture fileName={picture} size={30} />
               ) : (
                 <UserIcon width={30} height={30} fill={colors.textColor} />
               )}
@@ -272,4 +271,11 @@ const HomeScreen = (props: { navigation, user: AuthSubject }) => {
   );
 };
 
-export default connect((state) => getUser(state))(HomeScreen);
+const mapStateToProps = (state) => {
+  const { user } = state.user;
+  return {
+    user, picture: user?.settings?.picture,
+  };
+};
+
+export default connect(mapStateToProps)(HomeScreen);

@@ -223,7 +223,7 @@ const Queue = (props: {
           style={styles.currentSpace}
         >
           <View style={{ width: 35 }}>
-            <ProfilePicture userId={box.creator._id} size={25} />
+            <ProfilePicture fileName={box.creator.settings.picture} size={25} />
           </View>
           <View style={{ flex: 1, flexShrink: 1 }}>
             <Text style={[styles.boxName, { color: colors.textSystemColor }]} numberOfLines={1}>{box.name}</Text>

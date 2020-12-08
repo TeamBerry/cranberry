@@ -24,7 +24,7 @@ const PicturePreviewScreen = (props: { route, navigation, user: AuthSubject, upd
     // Upload picture
     const formData = new FormData();
     formData.append('picture', picture, picture.name);
-    const uploadedPicturePath: { file: string } = await axios.post(`${Config.API_URL}/users/${user._id}/picture`, formData);
+    const uploadedPicturePath: { file: string } = await (await axios.post(`${Config.API_URL}/user/picture`, formData)).data;
 
     // Update user settings
     user.settings.picture = uploadedPicturePath.file;

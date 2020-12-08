@@ -125,7 +125,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
               {item.video.name}
             </Text>
             <View style={{ display: 'flex', flexDirection: 'row' }}>
-              <ProfilePicture userId={item.submitted_by._id} size={20} />
+              <ProfilePicture fileName={item.submitted_by.settings.picture} size={20} />
               <Text style={{ paddingLeft: 5, color: colors.textSystemColor }}>{item.submitted_by.name}</Text>
             </View>
           </View>

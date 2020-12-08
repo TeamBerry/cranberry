@@ -86,7 +86,7 @@ const FeaturedBoxCard = (props: { box: Box, onPress: () => void }) => {
         <View style={styles.boxMainInfo}>
           <View style={{ display: 'flex', flexDirection: 'row' }}>
             <View style={{ paddingRight: 5 }}>
-              <ProfilePicture userId={box.creator._id} size={35} />
+              <ProfilePicture fileName={box.creator.settings.picture} size={35} />
             </View>
             <View style={{ width: 185 }}>
               <Text style={[styles.boxTitle, { color: colors.textColor }]} numberOfLines={2}>{box.name}</Text>

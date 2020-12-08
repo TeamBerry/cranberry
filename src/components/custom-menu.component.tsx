@@ -86,7 +86,7 @@ const CustomMenu = (props: { user: AuthSubject }) => {
       <View style={styles.identityContainer}>
         <View style={styles.identitySpace}>
           <View style={{ marginRight: 10 }}>
-            <ProfilePicture userId={user._id} size={50} />
+            <ProfilePicture fileName={user.settings.picture} size={50} />
           </View>
           <Text style={[styles.userName, { color: colors.textColor }]}>{user.name}</Text>
         </View>
