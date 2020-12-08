@@ -137,7 +137,6 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
         menu={<CustomMenu user={user} onEvent={() => setMenuOpen(false)} />}
         isOpen={isMenuOpen}
         bounceBackOnOverdraw={false}
-        onChange={(isOpen: boolean) => setMenuOpen(isOpen)}
         autoClosing
       >
         {/* <View style={{height: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight, backgroundColor: '#262626'}}>
