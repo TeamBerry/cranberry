@@ -20,7 +20,7 @@
         "@react-navigation/stack": "5.12.8",
         "@teamberry/muscadine": "^0.9.2",
         "axios": "0.21.0",
-        "formik": "2.2.5",
+        "formik": "2.2.6",
         "react": "17.0.1",
         "react-dom": "17.0.1",
         "react-native": "0.63.4",
