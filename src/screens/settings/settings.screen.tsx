@@ -43,7 +43,8 @@ const SettingsScreen = (props: {
       elevation: 0,
       shadowOpacity: 0,
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
     },
     userName: {
       color: colors.textColor,
@@ -94,6 +95,12 @@ const SettingsScreen = (props: {
       borderBottomWidth: 1,
       borderBottomColor: colors.videoSeparator,
       marginVertical: 5,
+    },
+    settingTitle: {
+      color: colors.textColor,
+      marginLeft: 30,
+      fontFamily: 'Montserrat-SemiBold',
+      fontSize: 18,
     },
   });
 
@@ -154,6 +161,7 @@ const SettingsScreen = (props: {
           >
             <BackIcon width={20} height={20} fill={colors.textColor} />
           </Pressable>
+          <Text style={styles.settingTitle}>My Settings</Text>
         </View>
       </View>
       {user && color && colorblind !== null ? (
@@ -186,7 +194,7 @@ const SettingsScreen = (props: {
             <Text style={styles.userName}>{user.name}</Text>
           </View>
           <View style={{ paddingHorizontal: 10 }}>
-            <Text style={styles.settingSectionTitle}>Appearance</Text>
+            <Text style={styles.settingSectionTitle}>Appearance & Accessibility</Text>
             {colorblind === true ? (
               null
             ) : (

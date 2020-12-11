@@ -10,6 +10,7 @@ import BxActionComponent from './bx-action.component';
 import UserIcon from '../../assets/icons/user-icon.svg';
 import { useTheme } from '../shared/theme.context';
 import { AuthSubject } from '../models/session.model';
+import SettingsIcon from '../../assets/icons/settings-icon.svg';
 
 const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
   const { user, onEvent } = props;
@@ -28,7 +29,25 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
       paddingHorizontal: 20,
     },
     menuItem: {
-      paddingVertical: 20,
+      paddingVertical: 10,
+      paddingLeft: 10,
+      display: 'flex',
+      flexDirection: 'row',
+      backgroundColor: colors.backgroundChatColor,
+      marginBottom: 2,
+    },
+    menuItemFirst: {
+      borderTopLeftRadius: 5,
+      borderTopRightRadius: 5,
+    },
+    menuItemLast: {
+      borderBottomLeftRadius: 5,
+      borderBottomRightRadius: 5,
+    },
+    menuItemText: {
+      color: colors.textColor,
+      marginLeft: 10,
+      fontFamily: 'Montserrat-Regular',
     },
     userImage: {
       height: 50,
@@ -92,10 +111,15 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
         </View>
         <View style={styles.sectionSeparator} />
         <View style={styles.menuSpace}>
-          <Pressable onPress={() => { onEvent(); navigation.navigate('Settings'); }} style={styles.menuItem}>
-            <Text style={{ color: colors.textColor }}>Settings</Text>
+          <Pressable
+            onPress={() => { onEvent(); navigation.navigate('Settings'); }}
+            style={[styles.menuItem, styles.menuItemFirst, styles.menuItemLast]}
+            android_ripple={{ color: colors.primary }}
+          >
+            <SettingsIcon width={20} height={20} fill={colors.inactiveColor} />
+            <Text style={styles.menuItemText}>My Settings</Text>
           </Pressable>
-          <Pressable onPress={() => signOut()}>
+          <Pressable onPress={() => signOut()} style={{ marginTop: 30 }}>
             <BxActionComponent options={{ text: 'Sign out' }} />
           </Pressable>
         </View>

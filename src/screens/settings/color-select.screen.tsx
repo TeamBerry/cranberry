@@ -68,7 +68,7 @@ const ColorSelectScreen = (props: { navigation, user: AuthSubject, color: string
     settingTitle: {
       color: colors.textColor,
       marginLeft: 30,
-      fontWeight: '700',
+      fontFamily: 'Montserrat-SemiBold',
     },
   });
 
