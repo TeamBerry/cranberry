@@ -8,6 +8,7 @@ import { enableScreens } from 'react-native-screens';
 import store from './src/redux/store';
 
 import Root from './src/Root';
+import { ThemeProvider } from './src/shared/theme.context';
 
 enableScreens();
 
@@ -16,7 +17,9 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <Root />
+      <ThemeProvider>
+        <Root />
+      </ThemeProvider>
     </Provider>
   );
 }

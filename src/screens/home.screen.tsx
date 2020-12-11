@@ -20,67 +20,6 @@ import BxActionComponent from '../components/bx-action.component';
 import UnlockIcon from '../../assets/icons/unlock-icon.svg';
 import { AuthSubject } from '../models/session.model';
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    borderStyle: 'solid',
-    borderBottomWidth: 1,
-  },
-  headerStyle: {
-    height: 30,
-    elevation: 0,
-    shadowOpacity: 0,
-  },
-  userImage: {
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-  },
-  container: {
-    flex: 1,
-  },
-  titlePage: {
-    fontFamily: 'Montserrat-SemiBold',
-    fontSize: 30,
-    marginTop: '1%',
-    paddingLeft: 10,
-  },
-  fab: {
-    position: 'absolute',
-    marginRight: 16,
-    marginBottom: 30,
-    right: 0,
-    bottom: 0,
-    backgroundColor: '#009AEB',
-  },
-  boxOption: {
-    height: 80,
-    backgroundColor: '#009AEB',
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    margin: 10,
-    flex: 0,
-    justifyContent: 'space-around',
-  },
-  boxOptionTitle: {
-    fontSize: 18,
-    fontFamily: 'Montserrat-SemiBold',
-    color: 'white',
-  },
-  boxOptionHelp: {
-    color: '#FFFFFF',
-  },
-  boxesSection: {
-    marginVertical: 5,
-  },
-  sectionSeparator: {
-    height: 2,
-  },
-});
-
 const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) => {
   const { navigation, user, picture } = props;
   const [hasLoadedBoxes, setBoxLoading] = useState(false);
@@ -90,6 +29,72 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
   const [featuredBoxes, setFeaturedBoxes] = useState<Array<Box>>([]);
   const _boxListRef = useRef(null);
   const { colors } = useTheme();
+
+  const styles = StyleSheet.create({
+    headerContainer: {
+      paddingTop: 10,
+      paddingBottom: 10,
+      paddingLeft: 10,
+      borderStyle: 'solid',
+      borderBottomWidth: 1,
+    },
+    headerStyle: {
+      height: 30,
+      elevation: 0,
+      shadowOpacity: 0,
+    },
+    userImage: {
+      height: 30,
+      width: 30,
+      borderRadius: 15,
+    },
+    container: {
+      flex: 1,
+    },
+    titlePage: {
+      fontFamily: 'Montserrat-SemiBold',
+      fontSize: 30,
+      marginTop: '1%',
+      paddingLeft: 10,
+    },
+    fab: {
+      position: 'absolute',
+      marginRight: 16,
+      marginBottom: 30,
+      right: 0,
+      bottom: 0,
+      backgroundColor: '#009AEB',
+    },
+    boxOption: {
+      height: 80,
+      backgroundColor: '#009AEB',
+      borderRadius: 5,
+      paddingVertical: 10,
+      paddingHorizontal: 15,
+      margin: 10,
+      flex: 0,
+      justifyContent: 'space-around',
+    },
+    boxOptionTitle: {
+      fontSize: 18,
+      fontFamily: 'Montserrat-SemiBold',
+      color: 'white',
+    },
+    boxOptionHelp: {
+      color: '#FFFFFF',
+    },
+    boxesSection: {
+      marginVertical: 5,
+    },
+    sectionSeparator: {
+      height: 2,
+    },
+    sectionTitle: {
+      color: colors.textSystemColor,
+      fontFamily: 'Montserrat-SemiBold',
+      textTransform: 'uppercase',
+    },
+  });
 
   const getBoxes = async () => {
     try {
@@ -179,8 +184,8 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
                   <Text style={[styles.titlePage, { color: colors.textColor }]}>Boxes</Text>
                   <View style={styles.boxesSection}>
                     <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
-                      <Text style={{ color: colors.textColor }}>Top Boxes</Text>
-                      <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>Featured boxes picked by our staff</Text>
+                      <Text style={styles.sectionTitle}>Featured</Text>
+                      <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>Picked by our staff</Text>
                     </View>
                     <FlatList
                       data={featuredBoxes}
@@ -194,7 +199,9 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
                   <View style={[styles.sectionSeparator, { backgroundColor: colors.backgroundSecondaryAlternateColor }]} />
                   <View style={styles.boxesSection}>
                     <View style={{ paddingLeft: 10, paddingBottom: 10 }}>
-                      <Text style={{ color: colors.textColor }}>Communities</Text>
+                      <Text style={styles.sectionTitle}>
+                        Communities
+                      </Text>
                       <Text style={{ color: colors.inactiveColor, fontSize: 11 }}>
                         Find a box for your needs.
                       </Text>

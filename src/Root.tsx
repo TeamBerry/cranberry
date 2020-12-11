@@ -16,7 +16,7 @@ import LoginScreen from './screens/login.screen';
 import ParseLinkScreen from './screens/parse-link.screen';
 import SignupScreen from './screens/signup.screen';
 import AuthContext from './shared/auth.context';
-import { ThemeProvider } from './shared/theme.context';
+import { useTheme } from './shared/theme.context';
 
 import BoxScreen from './screens/box/box.screen';
 import HomeScreen from './screens/home.screen';
@@ -54,21 +54,24 @@ const Root = (props: { userToken: string }) => {
   const { inviteLink } = useInitialUrl();
   const dispatch = useDispatch();
   const { userToken } = props;
+  const { colors } = useTheme();
 
   useEffect(() => {
     const bootstrapAsync = async () => {
       const userToken = await AsyncStorage.getItem('BBOX-token') ?? null;
-      const session: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user')) ?? null;
+      const user: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user')) ?? null;
 
       dispatch({
         type: RESTORE_TOKEN,
         payload: {
-          user: session,
+          user,
           userToken,
         },
       });
 
-      setAppReadiness(true);
+      setTimeout(() => {
+        setAppReadiness(true);
+      }, 1000);
     };
 
     bootstrapAsync();
@@ -132,7 +135,7 @@ const Root = (props: { userToken: string }) => {
   const SettingsSpace = () => (
     <SettingsStack.Navigator
       screenOptions={{
-        cardStyle: { backgroundColor: '#191919', opacity: 1 },
+        cardStyle: { backgroundColor: colors.deepBackground, opacity: 1 },
         headerShown: false,
       }}
       mode="card"
@@ -184,7 +187,7 @@ const Root = (props: { userToken: string }) => {
   const RootFlow = () => (
     <RootStack.Navigator
       screenOptions={{
-        cardStyle: { backgroundColor: '#191919', opacity: 1 },
+        cardStyle: { backgroundColor: colors.deepBackground, opacity: 1 },
         headerShown: false,
       }}
       initialRouteName={inviteLink ? 'ParseLink' : 'Home'}
@@ -267,15 +270,13 @@ const Root = (props: { userToken: string }) => {
   }
 
   return (
-    <ThemeProvider>
-      <PaperProvider>
-        <AuthContext.Provider value={authContext}>
-          <NavigationContainer>
-            <RootFlow />
-          </NavigationContainer>
-        </AuthContext.Provider>
-      </PaperProvider>
-    </ThemeProvider>
+    <PaperProvider>
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer>
+          <RootFlow />
+        </NavigationContainer>
+      </AuthContext.Provider>
+    </PaperProvider>
   );
 };
 
