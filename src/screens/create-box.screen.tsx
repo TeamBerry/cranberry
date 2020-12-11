@@ -162,6 +162,7 @@ const CreateBoxScreen = (props: { navigation, user: AuthSubject }) => {
                     placeholder="Box Name"
                     autoCorrect={false}
                     returnKeyType="next"
+                    autoFocus
                   />
                   {touched.name && errors.name && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.name}</Text>}
                 </View>
