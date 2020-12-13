@@ -1,10 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import React, {
   useEffect, useMemo, useState,
 } from 'react';
-import { Linking, View, Image } from 'react-native';
+import {
+  Linking, View, Image, Animated,
+} from 'react-native';
 import Config from 'react-native-config';
 import { connect, useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -137,6 +139,40 @@ const Root = (props: { userToken: string }) => {
       screenOptions={{
         cardStyle: { backgroundColor: colors.deepBackground, opacity: 1 },
         headerShown: false,
+        cardStyleInterpolator: ({
+          current, next, inverted, layouts: { screen },
+        }) => ({
+          cardStyle: {
+            transform: [
+              {
+                translateX: Animated.multiply(
+                  Animated
+                    .add(
+                      current.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                        extrapolate: 'clamp',
+                      }),
+                      next ? next.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                        extrapolate: 'clamp',
+                      }) : 0,
+                    ).interpolate({
+                      inputRange: [0, 1, 2],
+                      outputRange: [
+                        screen.width,
+                        0,
+                        screen.width * -0.3,
+                      ],
+                      extrapolate: 'clamp',
+                    }),
+                  inverted,
+                ),
+              },
+            ],
+          },
+        }),
       }}
       mode="card"
       initialRouteName="Settings"
@@ -144,42 +180,22 @@ const Root = (props: { userToken: string }) => {
       <SettingsStack.Screen
         name="Settings"
         component={SettingsScreen}
-        options={{
-          animationTypeForReplace: 'pop',
-          headerShown: false,
-        }}
       />
       <SettingsStack.Screen
         name="PicturePreview"
         component={picturePreviewScreen}
-        options={{
-          animationTypeForReplace: 'pop',
-          headerShown: false,
-        }}
       />
       <SettingsStack.Screen
         name="PictureDelete"
         component={pictureDeleteScreen}
-        options={{
-          animationTypeForReplace: 'pop',
-          headerShown: false,
-        }}
       />
       <SettingsStack.Screen
         name="ChangePassword"
         component={ChangePasswordScreen}
-        options={{
-          animationTypeForReplace: 'push',
-          headerShown: false,
-        }}
       />
       <SettingsStack.Screen
         name="ColorSelect"
         component={ColorSelectScreen}
-        options={{
-          animationTypeForReplace: 'push',
-          headerShown: false,
-        }}
       />
     </SettingsStack.Navigator>
   );
@@ -192,14 +208,10 @@ const Root = (props: { userToken: string }) => {
       }}
       initialRouteName={inviteLink ? 'ParseLink' : 'Home'}
       mode="card"
-      detachInactiveScreens
     >
       <RootStack.Screen
         name="Home"
         component={HomeScreen}
-        options={{
-          headerShown: false,
-        }}
       />
       <RootStack.Screen
         name="ParseLink"
@@ -216,7 +228,6 @@ const Root = (props: { userToken: string }) => {
             component={LoginScreen}
             options={{
               animationTypeForReplace: 'pop',
-              headerShown: false,
             }}
           />
           <RootStack.Screen
@@ -224,7 +235,6 @@ const Root = (props: { userToken: string }) => {
             component={SignupScreen}
             options={{
               animationTypeForReplace: 'pop',
-              headerShown: false,
             }}
           />
         </>
@@ -232,28 +242,25 @@ const Root = (props: { userToken: string }) => {
         <RootStack.Screen
           name="Settings"
           component={SettingsSpace}
-          options={{
-            headerShown: false,
-            animationTypeForReplace: 'push',
-          }}
         />
       )}
       <RootStack.Screen
         name="Box"
         component={BoxScreen}
-        options={{
-          headerShown: false,
-        }}
       />
       <RootStack.Screen
         name="CreateBox"
         component={CreateBoxScreen}
-        options={{ headerShown: false }}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid,
+        }}
       />
       <RootStack.Screen
         name="JoinBox"
         component={JoinBoxScreen}
-        options={{ headerShown: false }}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid,
+        }}
       />
     </RootStack.Navigator>
   );
