@@ -174,7 +174,7 @@ const Root = (props: { userToken: string }) => {
           },
         }),
       }}
-      mode="card"
+      mode="modal"
       initialRouteName="Settings"
     >
       <SettingsStack.Screen
@@ -205,9 +205,24 @@ const Root = (props: { userToken: string }) => {
       screenOptions={{
         cardStyle: { backgroundColor: colors.deepBackground, opacity: 1 },
         headerShown: false,
+        cardStyleInterpolator: ({ current: { progress } }) => ({
+          cardStyle: {
+            opacity: progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 1],
+            }),
+          },
+          overlayStyle: {
+            opacity: progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 0.5],
+              extrapolate: 'clamp',
+            }),
+          },
+        }),
       }}
       initialRouteName={inviteLink ? 'ParseLink' : 'Home'}
-      mode="card"
+      mode="modal"
     >
       <RootStack.Screen
         name="Home"
@@ -217,9 +232,6 @@ const Root = (props: { userToken: string }) => {
         name="ParseLink"
         component={ParseLinkScreen}
         initialParams={{ initialUrl: inviteLink || null }}
-        options={{
-          headerShown: false,
-        }}
       />
       { userToken === null ? (
         <>
