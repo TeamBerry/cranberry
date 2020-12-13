@@ -5,12 +5,13 @@ import React, {
   useEffect, useMemo, useState,
 } from 'react';
 import {
-  Linking, View, Image, Animated,
+  Linking, Animated,
 } from 'react-native';
 import Config from 'react-native-config';
 import { connect, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Provider as PaperProvider } from 'react-native-paper';
+import SplashScreen from 'react-native-splash-screen';
 import { AuthSubject } from './models/session.model';
 import { RESTORE_TOKEN, SIGN_IN, SIGN_OUT } from './redux/actionTypes';
 import JoinBoxScreen from './screens/join-box.screen';
@@ -52,7 +53,6 @@ const useInitialUrl = () => {
 };
 
 const Root = (props: { userToken: string }) => {
-  const [isAppReady, setAppReadiness] = useState(false);
   const { inviteLink } = useInitialUrl();
   const dispatch = useDispatch();
   const { userToken } = props;
@@ -72,7 +72,7 @@ const Root = (props: { userToken: string }) => {
       });
 
       setTimeout(() => {
-        setAppReadiness(true);
+        SplashScreen.hide();
       }, 1000);
     };
 
@@ -276,17 +276,6 @@ const Root = (props: { userToken: string }) => {
       />
     </RootStack.Navigator>
   );
-
-  if (!isAppReady) {
-    return (
-      <View style={{ flex: 1 }}>
-        <Image
-          source={require('../assets/splash.png')}
-          style={{ height: '100%', width: '100%' }}
-        />
-      </View>
-    );
-  }
 
   return (
     <PaperProvider>
