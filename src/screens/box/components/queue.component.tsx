@@ -248,7 +248,7 @@ const Queue = (props: {
             ) : null}
             {permissions.includes('editBox') ? (
               <Pressable style={[styles.shareSpace, { paddingRight: 7 }]} onPress={onEdit}>
-                <SettingsIcon width={22} height={22} fill={colors.textColor} />
+                <SettingsIcon width={20} height={20} fill={colors.textColor} />
               </Pressable>
             ) : null}
           </>
