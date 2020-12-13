@@ -10,7 +10,7 @@ import BxActionComponent from './bx-action.component';
 import UserIcon from '../../assets/icons/user-icon.svg';
 import { useTheme } from '../shared/theme.context';
 import { AuthSubject } from '../models/session.model';
-import SettingsIcon from '../../assets/icons/settings-icon.svg';
+import UserSettingsIcon from '../../assets/icons/user-settings-icon.svg';
 
 const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
   const { user, onEvent } = props;
@@ -116,7 +116,7 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
             style={[styles.menuItem, styles.menuItemFirst, styles.menuItemLast]}
             android_ripple={{ color: colors.primary }}
           >
-            <SettingsIcon width={20} height={20} fill={colors.inactiveColor} />
+            <UserSettingsIcon width={20} height={20} fill={colors.inactiveColor} />
             <Text style={styles.menuItemText}>My Settings</Text>
           </Pressable>
           <Pressable onPress={() => signOut()} style={{ marginTop: 30 }}>
