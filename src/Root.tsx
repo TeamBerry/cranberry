@@ -63,6 +63,12 @@ const Root = (props: { userToken: string }) => {
       const userToken = await AsyncStorage.getItem('BBOX-token') ?? null;
       const user: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user')) ?? null;
 
+      if (userToken) {
+        axios.defaults.headers.common.Authorization = `Bearer ${userToken}`;
+      } else {
+        delete axios.defaults.headers.common.Authorization;
+      }
+
       dispatch({
         type: RESTORE_TOKEN,
         payload: {
@@ -91,6 +97,7 @@ const Root = (props: { userToken: string }) => {
           await AsyncStorage.setItem('BBOX-token', response.data.bearer);
           await AsyncStorage.setItem('BBOX-expires_at', JSON.stringify(response.data.expiresIn));
           await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject));
+          axios.defaults.headers.common.Authorization = `Bearer ${response.data.bearer}`;
           dispatch({
             type: SIGN_IN,
             payload: {
@@ -128,6 +135,7 @@ const Root = (props: { userToken: string }) => {
         await AsyncStorage.removeItem('BBOX-token');
         await AsyncStorage.removeItem('BBOX-expires_at');
         await AsyncStorage.removeItem('BBOX-user');
+        delete axios.defaults.headers.common.Authorization;
         dispatch({ type: SIGN_OUT });
       },
     }),

@@ -50,26 +50,18 @@ export const userReducer = (state = initialState, action): StoreType => {
         user: action.payload.user,
       };
     case RESTORE_TOKEN:
-      if (action.payload.userToken) {
-        axios.defaults.headers.common.Authorization = `Bearer ${action.payload.userToken}`;
-      } else {
-        delete axios.defaults.headers.common.Authorization;
-      }
-
       return {
         ...state,
         userToken: action.payload.userToken ?? null,
         user: action.payload.user ?? createAnonymousSession(),
       };
     case SIGN_IN:
-      axios.defaults.headers.common.Authorization = `Bearer ${action.payload.userToken}`;
       return {
         ...state,
         userToken: action.payload.userToken,
         user: action.payload.user,
       };
     case SIGN_OUT:
-      delete axios.defaults.headers.common.Authorization;
       return {
         ...state,
         user: createAnonymousSession(),
