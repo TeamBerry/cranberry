@@ -6,9 +6,7 @@ import Collapsible from 'react-native-collapsible';
 type VideoListRowProps = {
     onRowPress: () => void,
     onRowOpen: () => void,
-    onRowDidOpen: () => void,
     onRowClose: () => void,
-    onRowDidClose: () => void,
 }
 
 type VideoListRowState = {
@@ -32,13 +30,11 @@ class VideoListRow extends Component<VideoListRowProps, VideoListRowState> {
   }
 
   openRow() {
-    console.log('Opening Row');
     this.props.onRowOpen();
     this.setState({ isOpen: true });
   }
 
   closeRow() {
-    console.log('Closing Row');
     this.props.onRowClose();
     this.setState({ isOpen: false });
   }

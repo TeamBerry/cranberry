@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/require-default-props */
 import React, { PureComponent, ReactElement } from 'react';
 import { FlatList, FlatListProps } from 'react-native';
 import VideoListRow from './video-list-row.component';
@@ -8,8 +7,6 @@ import VideoListRow from './video-list-row.component';
 type VideoListViewProps = {
     onRowOpen?: (key, rows) => void,
     onRowClose?: (key, rows) => void,
-    onRowDidOpen?: (key, rows) => void,
-    onRowDidClose?: (key, rows) => void,
     renderItem: (rowData, rowMap) => ReactElement,
     renderHiddenItem: (rowData, rowMap) => ReactElement
 }
@@ -19,25 +16,20 @@ class VideoListView extends PureComponent<VideoListViewProps & FlatListProps<any
 
     _rows = {};
 
-    _listView = {};
-
-    listViewProps = {};
-
     componentDidUpdate() {
-      console.log(this.props);
       this.closeAllRows();
     }
 
     onRowOpen(key) {
       if (this.openRowKey && this.openRowKey !== key) {
-        this.safeCloseRow();
+        this.closeUniqueRow();
       }
       this.openRowKey = key;
     }
 
     onRowPress() {
       if (this.openRowKey) {
-        this.safeCloseRow();
+        this.closeUniqueRow();
         this.openRowKey = null;
       }
     }
@@ -50,7 +42,7 @@ class VideoListView extends PureComponent<VideoListViewProps & FlatListProps<any
       });
     }
 
-    safeCloseRow() {
+    closeUniqueRow() {
       const rowRef = this._rows[this.openRowKey];
       if (rowRef && rowRef.closeRow) {
         this._rows[this.openRowKey].closeRow();
@@ -68,9 +60,7 @@ class VideoListView extends PureComponent<VideoListViewProps & FlatListProps<any
           ref={(row) => { this._rows[key] = row; }}
           onRowPress={() => this.onRowPress()}
           onRowOpen={() => this.onRowOpen(key)}
-          onRowDidOpen={() => this.props.onRowDidOpen && this.props.onRowDidOpen(key, this._rows)}
           onRowClose={() => this.props.onRowClose && this.props.onRowClose(key, this._rows)}
-          onRowDidClose={() => this.props.onRowDidClose && this.props.onRowDidClose(key, this._rows)}
         >
           {VisibleComponent}
           {HiddenComponent}
@@ -82,7 +72,6 @@ class VideoListView extends PureComponent<VideoListViewProps & FlatListProps<any
       return (
         <FlatList
           {...this.props}
-          {...this.listViewProps}
           renderItem={(item) => this.renderItem(item, item.index)}
         />
       );
