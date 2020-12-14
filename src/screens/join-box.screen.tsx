@@ -13,6 +13,8 @@ import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import BxActionComponent from '../components/bx-action.component';
 import { useTheme } from '../shared/theme.context';
 
+import UnlockIcon from '../../assets/icons/unlock-icon.svg';
+
 const styles = StyleSheet.create({
   headerContainer: {
     paddingVertical: 15,
@@ -109,7 +111,7 @@ const JoinBoxScreen = ({ navigation }) => {
                   value={values.link}
                   onChangeText={handleChange('link')}
                   onBlur={() => setFieldTouched('link')}
-                  placeholder="Invite link"
+                  placeholder="Paste your invite link"
                   autoCorrect={false}
                   returnKeyType="next"
                   autoFocus
@@ -120,6 +122,20 @@ const JoinBoxScreen = ({ navigation }) => {
                   <Text style={{ color: colors.inactiveColor }}>https://berrybox.tv/invite/Z0dfeDa4</Text>
                   <Text style={{ color: colors.inactiveColor }}>https://berrybox.tv/i/Z0dfeDa4</Text>
                 </View>
+              </View>
+              <View style={{
+                paddingVertical: 10,
+                alignItems: 'center',
+                flexDirection: 'row',
+              }}
+              >
+                <UnlockIcon height={30} width={30} fill={colors.successColor} />
+                <Text style={{
+                  color: colors.inactiveColor, flex: 1, paddingHorizontal: 5, fontSize: 10,
+                }}
+                >
+                  Once you join a private box, you will be able to access it at any time from the home screen.
+                </Text>
               </View>
               {!isChecking ? (
                 <Pressable onPress={() => handleSubmit()} disabled={!isValid}>

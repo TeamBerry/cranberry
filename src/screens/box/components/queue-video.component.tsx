@@ -125,7 +125,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
               {item.video.name}
             </Text>
             <View style={{ display: 'flex', flexDirection: 'row' }}>
-              <ProfilePicture userId={item.submitted_by._id} size={20} />
+              <ProfilePicture fileName={item.submitted_by.settings.picture} size={20} />
               <Text style={{ paddingLeft: 5, color: colors.textSystemColor }}>{item.submitted_by.name}</Text>
             </View>
           </View>
@@ -158,7 +158,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                     <Pressable onPress={() => playNext()}>
                       <BxButtonComponent options={{
                         type: 'forceNext',
-                        text: permissions.includes('forceNext') ? 'Play Next' : '10 $BC$',
+                        text: permissions.includes('forceNext') ? 'Next' : '10 $BC$',
                         textDisplay: 'full',
                         context: permissions.includes('forceNext') ? 'primary' : 'berries',
                       }}
@@ -169,7 +169,7 @@ const QueueVideo = (props: { item: QueueItem, boxToken: string, permissions: Arr
                     <Pressable onPress={() => playNow()}>
                       <BxButtonComponent options={{
                         type: 'forcePlay',
-                        text: permissions.includes('forcePlay') ? 'Play Now' : '30 $BC$',
+                        text: permissions.includes('forcePlay') ? 'Now' : '30 $BC$',
                         textDisplay: 'full',
                         context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                       }}

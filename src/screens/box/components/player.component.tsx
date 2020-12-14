@@ -1,6 +1,6 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { useState, useEffect, useRef } from 'react';
-import { Image, View } from 'react-native';
+import { Image, ToastAndroid, View } from 'react-native';
 import YouTube from 'react-native-youtube';
 import { PlayingItem } from '@teamberry/muscadine';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
@@ -51,8 +51,7 @@ const Player = ({ boxKey, currentItem, height }: {
           videoId={currentItem.video.link}
           style={{ alignSelf: 'stretch', height: height - 2 }}
           onReady={() => setPlayerReadiness(true)}
-        // eslint-disable-next-line no-console
-          onError={(e) => console.log(e)}
+          onError={() => ToastAndroid.show('The player encountered an error. Please try again', 5000)}
         />
         <View style={{ height: 2, width: '100%', backgroundColor: '#444444' }}>
           <DurationLine current={videoPosition} videoDuration={currentItem.video.duration} />

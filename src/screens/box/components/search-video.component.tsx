@@ -10,7 +10,6 @@ import { useTheme } from '../../../shared/theme.context';
 
 const styles = StyleSheet.create({
   resultItem: {
-    paddingHorizontal: 7,
     paddingVertical: 10,
     flexDirection: 'column',
   },
@@ -77,7 +76,7 @@ const SearchVideo = (props: Props) => {
                 <Pressable onPress={() => onPress(video)}>
                   <BxButtonComponent options={{
                     type: 'play',
-                    text: 'Queue',
+                    text: 'Later',
                     textDisplay: 'full',
                   }}
                   />
@@ -90,7 +89,7 @@ const SearchVideo = (props: Props) => {
                   <Pressable onPress={() => onPress(video, 'next')}>
                     <BxButtonComponent options={{
                       type: 'forceNext',
-                      text: permissions.includes('forceNext') ? 'Play Next' : '10 $BC$',
+                      text: permissions.includes('forceNext') ? 'Next' : '10 $BC$',
                       textDisplay: 'full',
                       context: permissions.includes('forceNext') ? 'primary' : 'berries',
                     }}
@@ -102,7 +101,7 @@ const SearchVideo = (props: Props) => {
                   <Pressable onPress={() => onPress(video, 'now')}>
                     <BxButtonComponent options={{
                       type: 'forcePlay',
-                      text: permissions.includes('forcePlay') ? 'Play Now' : '30 $BC$',
+                      text: permissions.includes('forcePlay') ? 'Now' : '30 $BC$',
                       textDisplay: 'full',
                       context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                     }}

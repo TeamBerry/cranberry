@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import {
@@ -17,6 +16,7 @@ import Box from '../../../models/box.model';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
+import { AuthSubject } from '../../../models/session.model';
 
 const styles = StyleSheet.create({
   container: {
@@ -49,10 +49,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions:Array<Permission> }) => {
+const ChatTab = (props: {
+    socket: any,
+    box: Box,
+    berryCount: number,
+    permissions: Array<Permission>,
+    user: AuthSubject
+}) => {
   const _chatRef = useRef(null);
   const {
-    socket, box, berryCount, permissions,
+    socket, box, berryCount, permissions, user,
   } = props;
 
   const welcomeMessage: FeedbackMessage = {
@@ -68,9 +74,8 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
 
   const { colors } = useTheme();
 
-  const [messages, setMessages] = useState([welcomeMessage] as Array<Message | FeedbackMessage | SystemMessage>);
+  const [messages, setMessages] = useState<Array<Message | FeedbackMessage | SystemMessage>>([welcomeMessage]);
   const [messageInput, setMessageInput] = useState('');
-  const [user, setUser] = useState(null);
   const [hasNewMessages, setNewMessageAlert] = useState(false);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
@@ -83,12 +88,6 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
   }, [isAutoScrollEnabled]);
 
   useEffect(() => {
-    const getSession = async () => {
-      setUser(JSON.parse(await AsyncStorage.getItem('BBOX-user')));
-    };
-
-    getSession();
-
     // Connect to socket
     socket.on('chat', (newMessage: Message | FeedbackMessage | SystemMessage) => {
       // eslint-disable-next-line no-shadow
@@ -168,7 +167,7 @@ const ChatTab = (props: { socket: any, box: Box, berryCount: number, permissions
         onScrollEndDrag={(e) => handleScroll(e.nativeEvent)}
       >
         {messages.map((message, index) => (
-          <ChatMessage key={index.toString()} message={message} />
+          <ChatMessage key={index.toString()} colorblindMode={user?.settings?.isColorblind} message={message} />
         ))}
       </ScrollView>
       <ResumeScrollButton />

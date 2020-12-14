@@ -128,6 +128,7 @@ export default function LoginScreen({ navigation }) {
                   autoCorrect={false}
                   keyboardType="email-address"
                   returnKeyType="next"
+                  autoFocus
                 />
                 {touched.email && errors.email && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.email}</Text>}
               </View>
