@@ -1,14 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import React, {
   useEffect, useMemo, useState,
 } from 'react';
-import { Linking, View, Image } from 'react-native';
+import {
+  Linking, Animated,
+} from 'react-native';
 import Config from 'react-native-config';
 import { connect, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Provider as PaperProvider } from 'react-native-paper';
+import SplashScreen from 'react-native-splash-screen';
 import { AuthSubject } from './models/session.model';
 import { RESTORE_TOKEN, SIGN_IN, SIGN_OUT } from './redux/actionTypes';
 import JoinBoxScreen from './screens/join-box.screen';
@@ -50,7 +53,6 @@ const useInitialUrl = () => {
 };
 
 const Root = (props: { userToken: string }) => {
-  const [isAppReady, setAppReadiness] = useState(false);
   const { inviteLink } = useInitialUrl();
   const dispatch = useDispatch();
   const { userToken } = props;
@@ -61,6 +63,12 @@ const Root = (props: { userToken: string }) => {
       const userToken = await AsyncStorage.getItem('BBOX-token') ?? null;
       const user: AuthSubject = JSON.parse(await AsyncStorage.getItem('BBOX-user')) ?? null;
 
+      if (userToken) {
+        axios.defaults.headers.common.Authorization = `Bearer ${userToken}`;
+      } else {
+        delete axios.defaults.headers.common.Authorization;
+      }
+
       dispatch({
         type: RESTORE_TOKEN,
         payload: {
@@ -70,7 +78,7 @@ const Root = (props: { userToken: string }) => {
       });
 
       setTimeout(() => {
-        setAppReadiness(true);
+        SplashScreen.hide();
       }, 1000);
     };
 
@@ -89,6 +97,7 @@ const Root = (props: { userToken: string }) => {
           await AsyncStorage.setItem('BBOX-token', response.data.bearer);
           await AsyncStorage.setItem('BBOX-expires_at', JSON.stringify(response.data.expiresIn));
           await AsyncStorage.setItem('BBOX-user', JSON.stringify(response.data.subject));
+          axios.defaults.headers.common.Authorization = `Bearer ${response.data.bearer}`;
           dispatch({
             type: SIGN_IN,
             payload: {
@@ -126,6 +135,7 @@ const Root = (props: { userToken: string }) => {
         await AsyncStorage.removeItem('BBOX-token');
         await AsyncStorage.removeItem('BBOX-expires_at');
         await AsyncStorage.removeItem('BBOX-user');
+        delete axios.defaults.headers.common.Authorization;
         dispatch({ type: SIGN_OUT });
       },
     }),
@@ -137,49 +147,63 @@ const Root = (props: { userToken: string }) => {
       screenOptions={{
         cardStyle: { backgroundColor: colors.deepBackground, opacity: 1 },
         headerShown: false,
+        cardStyleInterpolator: ({
+          current, next, inverted, layouts: { screen },
+        }) => ({
+          cardStyle: {
+            transform: [
+              {
+                translateX: Animated.multiply(
+                  Animated
+                    .add(
+                      current.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                        extrapolate: 'clamp',
+                      }),
+                      next ? next.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                        extrapolate: 'clamp',
+                      }) : 0,
+                    ).interpolate({
+                      inputRange: [0, 1, 2],
+                      outputRange: [
+                        screen.width,
+                        0,
+                        screen.width * -0.3,
+                      ],
+                      extrapolate: 'clamp',
+                    }),
+                  inverted,
+                ),
+              },
+            ],
+          },
+        }),
       }}
-      mode="card"
+      mode="modal"
       initialRouteName="Settings"
     >
       <SettingsStack.Screen
         name="Settings"
         component={SettingsScreen}
-        options={{
-          animationTypeForReplace: 'pop',
-          headerShown: false,
-        }}
       />
       <SettingsStack.Screen
         name="PicturePreview"
         component={picturePreviewScreen}
-        options={{
-          animationTypeForReplace: 'pop',
-          headerShown: false,
-        }}
       />
       <SettingsStack.Screen
         name="PictureDelete"
         component={pictureDeleteScreen}
-        options={{
-          animationTypeForReplace: 'pop',
-          headerShown: false,
-        }}
       />
       <SettingsStack.Screen
         name="ChangePassword"
         component={ChangePasswordScreen}
-        options={{
-          animationTypeForReplace: 'push',
-          headerShown: false,
-        }}
       />
       <SettingsStack.Screen
         name="ColorSelect"
         component={ColorSelectScreen}
-        options={{
-          animationTypeForReplace: 'push',
-          headerShown: false,
-        }}
       />
     </SettingsStack.Navigator>
   );
@@ -189,25 +213,33 @@ const Root = (props: { userToken: string }) => {
       screenOptions={{
         cardStyle: { backgroundColor: colors.deepBackground, opacity: 1 },
         headerShown: false,
+        cardStyleInterpolator: ({ current: { progress } }) => ({
+          cardStyle: {
+            opacity: progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 1],
+            }),
+          },
+          overlayStyle: {
+            opacity: progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 0.5],
+              extrapolate: 'clamp',
+            }),
+          },
+        }),
       }}
       initialRouteName={inviteLink ? 'ParseLink' : 'Home'}
-      mode="card"
-      detachInactiveScreens
+      mode="modal"
     >
       <RootStack.Screen
         name="Home"
         component={HomeScreen}
-        options={{
-          headerShown: false,
-        }}
       />
       <RootStack.Screen
         name="ParseLink"
         component={ParseLinkScreen}
         initialParams={{ initialUrl: inviteLink || null }}
-        options={{
-          headerShown: false,
-        }}
       />
       { userToken === null ? (
         <>
@@ -216,7 +248,6 @@ const Root = (props: { userToken: string }) => {
             component={LoginScreen}
             options={{
               animationTypeForReplace: 'pop',
-              headerShown: false,
             }}
           />
           <RootStack.Screen
@@ -224,7 +255,6 @@ const Root = (props: { userToken: string }) => {
             component={SignupScreen}
             options={{
               animationTypeForReplace: 'pop',
-              headerShown: false,
             }}
           />
         </>
@@ -232,42 +262,28 @@ const Root = (props: { userToken: string }) => {
         <RootStack.Screen
           name="Settings"
           component={SettingsSpace}
-          options={{
-            headerShown: false,
-            animationTypeForReplace: 'push',
-          }}
         />
       )}
       <RootStack.Screen
         name="Box"
         component={BoxScreen}
-        options={{
-          headerShown: false,
-        }}
       />
       <RootStack.Screen
         name="CreateBox"
         component={CreateBoxScreen}
-        options={{ headerShown: false }}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid,
+        }}
       />
       <RootStack.Screen
         name="JoinBox"
         component={JoinBoxScreen}
-        options={{ headerShown: false }}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid,
+        }}
       />
     </RootStack.Navigator>
   );
-
-  if (!isAppReady) {
-    return (
-      <View style={{ flex: 1 }}>
-        <Image
-          source={require('../assets/splash.png')}
-          style={{ height: '100%', width: '100%' }}
-        />
-      </View>
-    );
-  }
 
   return (
     <PaperProvider>
