@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, Animated, Pressable, BackHandler, TextInput,
+  StyleSheet, Text, View, Animated, Pressable, BackHandler, TextInput,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
@@ -22,6 +22,8 @@ import { AuthSubject } from '../../../models/session.model';
 import SearchIcon from '../../../../assets/icons/search-icon.svg';
 import BackIcon from '../../../../assets/icons/back-icon.svg';
 import ErrorIcon from '../../../../assets/icons/error-icon.svg';
+import VideoListView from '../../../components/VideoList/video-list-view.component';
+import QueueVideoActions from './queue-video-actions.component';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -201,12 +203,22 @@ const Queue = (props: {
   }, [isCollapsed]);
 
   const QueueList = () => (
-    <FlatList
+    <VideoListView
       data={filterResults}
-      ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: 1 }} />}
       renderItem={({ item }) => (
-        <QueueVideo item={item} boxToken={box._id} permissions={permissions} berriesEnabled={user && user.mail && box.options.berries} />
+        <QueueVideo
+          item={item}
+        />
       )}
+      renderHiddenItem={({ item }) => (
+        <QueueVideoActions
+          item={item}
+          boxToken={box._id}
+          permissions={permissions}
+          berriesEnabled={user && user.mail && box.options.berries}
+        />
+      )}
+      ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: 1 }} />}
       keyExtractor={(item) => item._id}
       initialNumToRender={8}
       windowSize={12}
