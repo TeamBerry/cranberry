@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, Animated, Pressable, BackHandler, TextInput,
+  StyleSheet, Text, View, Animated, Pressable, BackHandler, TextInput,
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
-  StyleSheet, Text, View, Image, BackHandler,
+  StyleSheet, Text, View, Image,
 } from 'react-native';
 
 import { QueueItem } from '@teamberry/muscadine';
@@ -37,32 +37,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const QueueVideo = (props: {
-    item: QueueItem,
-}) => {
-  const {
-    item,
-  } = props;
-
-  const [areActionsVisible, setActionsVisibility] = useState(false);
-  const [deletionConfirmationShown, showDeletionConfirmation] = useState(false);
+const QueueVideo = (props: {item: QueueItem }) => {
+  const { item } = props;
   const { colors } = useTheme();
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (areActionsVisible) {
-        setActionsVisibility(false);
-        showDeletionConfirmation(false);
-        return true;
-      }
-      return false;
-    });
-
-    return () => backHandler.remove();
-  }, [areActionsVisible]);
-
   return (
-    <View style={[styles.queueVideo, deletionConfirmationShown ? { backgroundColor: 'rgba(235,23,42,0.2)' } : {}]}>
+    <View style={styles.queueVideo}>
       <View style={{ flex: 0, flexDirection: 'row' }}>
         <View style={{ paddingRight: 10 }}>
           <Image
@@ -75,9 +55,7 @@ const QueueVideo = (props: {
           />
           <DurationIndicator
             duration={item.video.duration}
-            withBorder={
-                        item.isPreselected || (item.startTime !== null && item.endTime === null)
-                    }
+            withBorder={item.isPreselected || (item.startTime !== null && item.endTime === null)}
           />
         </View>
         <View style={{
@@ -87,14 +65,14 @@ const QueueVideo = (props: {
         >
           <Text style={[styles.queueVideoName, { color: colors.textColor }]} numberOfLines={2}>
             {item.stateForcedWithBerries ? (
-              <View>
-                <BerriesIcon width={16} height={16} />
-              </View>
+              <View><BerriesIcon width={16} height={16} /></View>
             ) : null}
-            <Text style={styles.nextVideoIndicator}>{item.isPreselected ? 'Next: ' : null}</Text>
-            <Text style={styles.currentVideoIndicator}>
-              {(item.startTime !== null && item.endTime === null) ? 'Playing: ' : null}
-            </Text>
+            {item.isPreselected ? (
+              <Text style={styles.nextVideoIndicator}>Next: </Text>
+            ) : null}
+            {(item.startTime !== null && item.endTime === null) ? (
+              <Text style={styles.currentVideoIndicator}>Playing: </Text>
+            ) : null}
             {item.video.name}
           </Text>
           <View style={{ display: 'flex', flexDirection: 'row' }}>
