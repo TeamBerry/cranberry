@@ -30,6 +30,7 @@ import CreateBoxScreen from './screens/create-box.screen';
 import { getToken } from './redux/selectors';
 import picturePreviewScreen from './screens/settings/picture-preview.screen';
 import pictureDeleteScreen from './screens/settings/picture-delete.screen';
+import BadgesScreen from './screens/collection/badges.screen';
 
 const RootStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
@@ -259,10 +260,16 @@ const Root = (props: { userToken: string }) => {
           />
         </>
       ) : (
-        <RootStack.Screen
-          name="Settings"
-          component={SettingsSpace}
-        />
+        <>
+          <RootStack.Screen
+            name="Settings"
+            component={SettingsSpace}
+          />
+          <RootStack.Screen
+            name="Badges"
+            component={BadgesScreen}
+          />
+        </>
       )}
       <RootStack.Screen
         name="Box"

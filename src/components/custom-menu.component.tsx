@@ -119,6 +119,15 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
             <UserSettingsIcon width={20} height={20} fill={colors.inactiveColor} />
             <Text style={styles.menuItemText}>My Settings</Text>
           </Pressable>
+          <View style={{ marginTop: 15 }} />
+          <Pressable
+            onPress={() => { onEvent(); navigation.navigate('Badges'); }}
+            style={[styles.menuItem, styles.menuItemFirst, styles.menuItemLast]}
+            android_ripple={{ color: colors.primary }}
+          >
+            <UserSettingsIcon width={20} height={20} fill={colors.inactiveColor} />
+            <Text style={styles.menuItemText}>My Badges</Text>
+          </Pressable>
           <Pressable onPress={() => signOut()} style={{ marginTop: 30 }}>
             <BxActionComponent options={{ text: 'Sign out' }} />
           </Pressable>
