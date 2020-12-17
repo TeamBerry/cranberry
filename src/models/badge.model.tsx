@@ -9,9 +9,9 @@ class Badge {
 
     isSecret: boolean
 
-    availableFrom: string
+    availableFrom: Date | string
 
-    availableTo: string
+    availableTo: Date | string
 }
 
 export default Badge;

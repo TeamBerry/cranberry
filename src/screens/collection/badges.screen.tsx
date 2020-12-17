@@ -89,9 +89,15 @@ const BadgesScreen = (props: {
       </View>
       { user && badges ? (
         <View style={{ padding: 10 }}>
+          <Text style={{
+            color: colors.textSystemColor, fontSize: 11, textAlign: 'center', marginBottom: 10,
+          }}
+          >
+            Tap a badge you have unlocked to have it display in chat!
+          </Text>
           <FlatList
             data={badges}
-            renderItem={({ item }) => <BadgeCard badge={item} />}
+            renderItem={({ item }) => <BadgeCard badge={item} unlocked={false} onChoose={() => { console.log('CHOSEN'); }} />}
             keyExtractor={(item) => item._id}
           />
         </View>
