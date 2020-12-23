@@ -18,7 +18,7 @@ import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
 import { AuthSubject } from '../../../models/session.model';
 
-const ChatTab = (props: {
+const Chat = (props: {
     socket: any,
     box: Box,
     berryCount: number,
@@ -202,4 +202,4 @@ const ChatTab = (props: {
   );
 };
 
-export default ChatTab;
+export default Chat;

@@ -31,7 +31,7 @@ import BerriesIcon from '../../../assets/icons/coin-enabled-icon.svg';
 import LockIcon from '../../../assets/icons/lock-icon.svg';
 import DurationRestrictionIcon from '../../../assets/icons/duration-limit-icon.svg';
 import { AuthSubject } from '../../models/session.model';
-import ChatTab from './components/chat-tab.component';
+import Chat from './components/chat.component';
 import ErrorIcon from '../../../assets/icons/error-icon.svg';
 
 const styles = StyleSheet.create({
@@ -490,7 +490,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
             onEdit={() => setEditing(!isEditing)}
             onShare={() => { setSharing(true); generateInvite(); }}
           />
-          <ChatTab
+          <Chat
             box={box}
             user={user}
             socket={socket}
