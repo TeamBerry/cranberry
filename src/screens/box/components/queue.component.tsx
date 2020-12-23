@@ -4,8 +4,9 @@ import {
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
-import { Snackbar } from 'react-native-paper';
+import { FAB, Snackbar } from 'react-native-paper';
 
+import { black } from 'react-native-paper/lib/typescript/styles/colors';
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
@@ -53,6 +54,14 @@ const styles = StyleSheet.create({
   },
   currentVideo: {
     fontFamily: 'Montserrat-SemiBold',
+  },
+  fab: {
+    position: 'absolute',
+    marginRight: 10,
+    marginBottom: 40,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#009AEB',
   },
 });
 
@@ -110,7 +119,9 @@ const Queue = (props: {
   const resetQueueSearching = () => {
     setQueueSearchText(null);
     setQueueSearchResults(queueVideos);
-    _queueSearchInput.current.clear();
+    if (_queueSearchInput && _queueSearchInput.current) {
+      _queueSearchInput.current.clear();
+    }
   };
 
   // Youtube Searching. The rest is in the YoutubeSearch component
@@ -196,16 +207,24 @@ const Queue = (props: {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (isQueueFiltering || isYoutubeSearching) {
+        setYoutubeSearching(false);
+        resetQueueSearching();
+        setQueueFiltering(false);
+        return true;
+      }
+
       if (!isCollapsed) {
         toggleCollapsible();
         showBerriesHelper(false);
         return true;
       }
+
       return false;
     });
 
     return () => backHandler.remove();
-  }, [isCollapsed]);
+  }, [isCollapsed, isYoutubeSearching, isQueueFiltering]);
 
   const QueueList = () => (
     <VideoListView
@@ -315,11 +334,6 @@ const Queue = (props: {
                 <Pressable onPress={() => setQueueFiltering(true)}>
                   <SearchIcon height={20} width={20} fill={colors.textColor} style={{ marginLeft: 10 }} />
                 </Pressable>
-                {permissions.includes('addVideo') ? (
-                  <Pressable onPress={() => setYoutubeSearching(true)}>
-                    <AddVideosIcon height={20} width={20} fill={colors.textColor} style={{ marginLeft: 10 }} />
-                  </Pressable>
-                ) : null}
               </View>
             </View>
           ) : (
@@ -374,6 +388,14 @@ const Queue = (props: {
               <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
             ) : null}
             <QueueList />
+            {permissions.includes('addVideo') ? (
+              <FAB
+                style={styles.fab}
+                color="white"
+                icon="plus"
+                onPress={() => setYoutubeSearching(true)}
+              />
+            ) : null}
           </>
         ) : null}
       </Collapsible>
