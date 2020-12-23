@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import {
   SyncPacket, BerryCount, Permission, FeedbackMessage, PlayingItem,
 } from '@teamberry/muscadine';
-import { IconButton, Snackbar, Switch } from 'react-native-paper';
+import { Snackbar, Switch } from 'react-native-paper';
 import Collapsible from 'react-native-collapsible';
 import { Formik } from 'formik';
 import * as yup from 'yup';
