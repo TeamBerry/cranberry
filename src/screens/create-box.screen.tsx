@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   KeyboardAvoidingView, StyleSheet, View, Text, TouchableOpacity, Pressable, ScrollView,
 } from 'react-native';
-import { Switch, IconButton, Snackbar } from 'react-native-paper';
+import { Switch, Snackbar } from 'react-native-paper';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -20,6 +20,7 @@ import BxLoadingIndicator from '../components/bx-loading-indicator.component';
 import BxActionComponent from '../components/bx-action.component';
 import { useTheme } from '../shared/theme.context';
 import { AuthSubject } from '../models/session.model';
+import ErrorIcon from '../../assets/icons/error-icon.svg';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -101,10 +102,7 @@ const CreateBoxScreen = (props: { navigation, user: AuthSubject }) => {
         <TouchableOpacity
           onPress={() => navigation.pop()}
         >
-          <IconButton
-            icon="close"
-            color={colors.textColor}
-          />
+          <ErrorIcon height={25} width={25} fill={colors.textColor} style={{ marginRight: 15 }} />
         </TouchableOpacity>
       </View>
       <KeyboardAvoidingView
