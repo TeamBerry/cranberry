@@ -6,7 +6,6 @@ import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
 import { FAB, Snackbar } from 'react-native-paper';
 
-import { black } from 'react-native-paper/lib/typescript/styles/colors';
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
 import ProfilePicture from '../../../components/profile-picture.component';
@@ -21,12 +20,12 @@ import { useTheme } from '../../../shared/theme.context';
 import BxChipComponent from '../../../components/bx-chip.component';
 import { AuthSubject } from '../../../models/session.model';
 import SearchIcon from '../../../../assets/icons/search-icon.svg';
-import AddVideosIcon from '../../../../assets/icons/plus-icon.svg';
 import BackIcon from '../../../../assets/icons/back-icon.svg';
 import ErrorIcon from '../../../../assets/icons/error-icon.svg';
 import VideoListView from '../../../components/VideoList/video-list-view.component';
 import QueueVideoActions from './queue-video-actions.component';
 import YoutubeSearch from './youtube-search.component';
+import AddVideosIcon from '../../../../assets/icons/add-videos-icon.svg';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -62,6 +61,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: '#009AEB',
+    padding: 15,
+    borderRadius: 30,
+    elevation: 10,
   },
 });
 
@@ -389,12 +391,13 @@ const Queue = (props: {
             ) : null}
             <QueueList />
             {permissions.includes('addVideo') ? (
-              <FAB
+              <Pressable
                 style={styles.fab}
-                color="white"
-                icon="plus"
                 onPress={() => setYoutubeSearching(true)}
-              />
+                android_ripple={{ color: '#47B4EE', radius: 28 }}
+              >
+                <AddVideosIcon width={25} height={25} fill={colors.textColor} />
+              </Pressable>
             ) : null}
           </>
         ) : null}

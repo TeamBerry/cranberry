@@ -130,7 +130,7 @@ const YoutubeSearch = (props: {
           style={{
             flex: 1, height: 40, backgroundColor: 'transparent', color: colors.textColor,
           }}
-          placeholder="Search YouTube for videos to add..."
+          placeholder="Search YouTube for videos to add"
           placeholderTextColor={colors.textSystemColor}
           onChangeText={(text) => setSearchValue(text)}
           value={searchValue}
