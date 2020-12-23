@@ -18,37 +18,6 @@ import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
 import { AuthSubject } from '../../../models/session.model';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  messageList: {
-    paddingTop: 0,
-  },
-  chatInput: {
-    padding: 10,
-    marginBottom: 5,
-    height: 40,
-    borderColor: '#009AEB',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 5,
-    flex: 1,
-  },
-  scrollButtonContainer: {
-    padding: 7,
-    borderRadius: 6,
-    margin: 5,
-  },
-  scrollButton: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
 const ChatTab = (props: {
     socket: any,
     box: Box,
@@ -73,6 +42,38 @@ const ChatTab = (props: {
   };
 
   const { colors } = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'space-between',
+      backgroundColor: colors.backgroundSecondaryAlternateColor,
+    },
+    messageList: {
+      paddingTop: 0,
+    },
+    chatInput: {
+      padding: 10,
+      marginBottom: 5,
+      height: 40,
+      borderRadius: 5,
+      flex: 1,
+      backgroundColor: colors.backgroundChatColor,
+      color: colors.textColor,
+    },
+    scrollButtonContainer: {
+      padding: 7,
+      borderRadius: 6,
+      margin: 5,
+      backgroundColor: colors.backgroundInactiveColor,
+    },
+    scrollButton: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
 
   const [messages, setMessages] = useState<Array<Message | FeedbackMessage | SystemMessage>>([welcomeMessage]);
   const [messageInput, setMessageInput] = useState('');
@@ -139,7 +140,7 @@ const ChatTab = (props: {
       return (
         <TouchableWithoutFeedback
           onPress={() => scrollToBottom()}
-          style={[styles.scrollButtonContainer, { backgroundColor: colors.backgroundInactiveColor }]}
+          style={styles.scrollButtonContainer}
         >
           <View style={styles.scrollButton}>
             <DownIcon width={14} height={14} fill={colors.textColor} />
@@ -157,8 +158,8 @@ const ChatTab = (props: {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}
-      behavior="padding"
+      style={styles.container}
+      behavior="height"
     >
       <ScrollView
         style={styles.messageList}
@@ -175,7 +176,7 @@ const ChatTab = (props: {
         {user && user.mail ? (
           <View style={{ display: 'flex', flexDirection: 'row' }}>
             <TextInput
-              style={[styles.chatInput, { backgroundColor: colors.backgroundChatColor, color: colors.textColor }]}
+              style={styles.chatInput}
               placeholder="Type to chat..."
               placeholderTextColor={colors.textSystemColor}
               onChangeText={(text) => setMessageInput(text)}

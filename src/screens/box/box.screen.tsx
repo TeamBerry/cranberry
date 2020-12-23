@@ -19,7 +19,6 @@ import Player from './components/player.component';
 import Box from '../../models/box.model';
 import BoxContext from './box.context';
 import Queue from './components/queue.component';
-import Panel from './components/panel.component';
 import OfflineNotice from '../../components/offline-notice.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 import { useTheme } from '../../shared/theme.context';
@@ -32,6 +31,8 @@ import BerriesIcon from '../../../assets/icons/coin-enabled-icon.svg';
 import LockIcon from '../../../assets/icons/lock-icon.svg';
 import DurationRestrictionIcon from '../../../assets/icons/duration-limit-icon.svg';
 import { AuthSubject } from '../../models/session.model';
+import ChatTab from './components/chat-tab.component';
+import ErrorIcon from '../../../assets/icons/error-icon.svg';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -257,10 +258,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
                   <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
                     <Text style={[styles.titlePage, { color: colors.textColor }]}>Box Settings</Text>
                     <Pressable onPress={() => setEditing(false)}>
-                      <IconButton
-                        icon="close"
-                        color={colors.textColor}
-                      />
+                      <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
                     </Pressable>
                   </View>
                   <KeyboardAvoidingView
@@ -448,10 +446,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
                   <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
                     <Text style={[styles.titlePage, { color: colors.textColor }]}>Invite users</Text>
                     <Pressable onPress={() => setSharing(false)}>
-                      <IconButton
-                        icon="close"
-                        color={colors.textColor}
-                      />
+                      <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
                     </Pressable>
                   </View>
                   <View
@@ -495,7 +490,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
             onEdit={() => setEditing(!isEditing)}
             onShare={() => { setSharing(true); generateInvite(); }}
           />
-          <Panel
+          <ChatTab
             box={box}
             user={user}
             socket={socket}

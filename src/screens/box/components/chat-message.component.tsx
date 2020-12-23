@@ -103,7 +103,7 @@ const ChatMessage = (props: { message: Message | FeedbackMessage | SystemMessage
     );
   };
 
-  const ChatBadge = () => {
+  const RoleBadge = () => {
     switch (message.author.role) {
       case 'vip':
         return (
@@ -151,7 +151,7 @@ const ChatMessage = (props: { message: Message | FeedbackMessage | SystemMessage
             source={require('../../../../assets/badges/staff-badge.png')}
           />
         ) : null}
-        <ChatBadge />
+        <RoleBadge />
         {AuthorRender(message as Message)}
         {`: ${message.contents}`}
       </Text>
