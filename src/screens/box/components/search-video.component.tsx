@@ -11,6 +11,7 @@ import { useTheme } from '../../../shared/theme.context';
 const styles = StyleSheet.create({
   resultItem: {
     paddingVertical: 10,
+    paddingHorizontal: 7,
     flexDirection: 'column',
   },
   inQueueIndicator: {

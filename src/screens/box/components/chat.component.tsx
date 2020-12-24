@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable,
+  TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable, ScrollView,
 } from 'react-native';
-import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import {
   Message, FeedbackMessage, SystemMessage, Permission,
@@ -18,38 +17,7 @@ import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
 import { AuthSubject } from '../../../models/session.model';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  messageList: {
-    paddingTop: 0,
-  },
-  chatInput: {
-    padding: 10,
-    marginBottom: 5,
-    height: 40,
-    borderColor: '#009AEB',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 5,
-    flex: 1,
-  },
-  scrollButtonContainer: {
-    padding: 7,
-    borderRadius: 6,
-    margin: 5,
-  },
-  scrollButton: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
-const ChatTab = (props: {
+const Chat = (props: {
     socket: any,
     box: Box,
     berryCount: number,
@@ -73,6 +41,38 @@ const ChatTab = (props: {
   };
 
   const { colors } = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignContent: 'flex-end',
+      backgroundColor: colors.backgroundSecondaryAlternateColor,
+    },
+    messageList: {
+      paddingTop: 0,
+    },
+    chatInput: {
+      padding: 10,
+      marginBottom: 5,
+      height: 40,
+      borderRadius: 5,
+      flex: 1,
+      backgroundColor: colors.backgroundChatColor,
+      color: colors.textColor,
+    },
+    scrollButtonContainer: {
+      padding: 7,
+      borderRadius: 6,
+      margin: 5,
+      backgroundColor: colors.backgroundInactiveColor,
+    },
+    scrollButton: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
 
   const [messages, setMessages] = useState<Array<Message | FeedbackMessage | SystemMessage>>([welcomeMessage]);
   const [messageInput, setMessageInput] = useState('');
@@ -137,9 +137,9 @@ const ChatTab = (props: {
   const ResumeScrollButton = () => {
     if (hasNewMessages) {
       return (
-        <TouchableWithoutFeedback
+        <Pressable
           onPress={() => scrollToBottom()}
-          style={[styles.scrollButtonContainer, { backgroundColor: colors.backgroundInactiveColor }]}
+          style={styles.scrollButtonContainer}
         >
           <View style={styles.scrollButton}>
             <DownIcon width={14} height={14} fill={colors.textColor} />
@@ -148,7 +148,7 @@ const ChatTab = (props: {
             </Text>
             <DownIcon width={14} height={14} fill={colors.textColor} />
           </View>
-        </TouchableWithoutFeedback>
+        </Pressable>
       );
     }
 
@@ -157,7 +157,7 @@ const ChatTab = (props: {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}
+      style={styles.container}
       behavior="padding"
     >
       <ScrollView
@@ -175,7 +175,7 @@ const ChatTab = (props: {
         {user && user.mail ? (
           <View style={{ display: 'flex', flexDirection: 'row' }}>
             <TextInput
-              style={[styles.chatInput, { backgroundColor: colors.backgroundChatColor, color: colors.textColor }]}
+              style={styles.chatInput}
               placeholder="Type to chat..."
               placeholderTextColor={colors.textSystemColor}
               onChangeText={(text) => setMessageInput(text)}
@@ -201,4 +201,4 @@ const ChatTab = (props: {
   );
 };
 
-export default ChatTab;
+export default Chat;

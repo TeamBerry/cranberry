@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   KeyboardAvoidingView, StyleSheet, Text, View, Pressable,
 } from 'react-native';
-import { IconButton, Snackbar } from 'react-native-paper';
+import { Snackbar } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -14,6 +14,7 @@ import BxActionComponent from '../components/bx-action.component';
 import { useTheme } from '../shared/theme.context';
 
 import UnlockIcon from '../../assets/icons/unlock-icon.svg';
+import ErrorIcon from '../../assets/icons/error-icon.svg';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -81,10 +82,7 @@ const JoinBoxScreen = ({ navigation }) => {
         <Pressable
           onPress={() => navigation.pop()}
         >
-          <IconButton
-            icon="close"
-            color={colors.textColor}
-          />
+          <ErrorIcon height={25} width={25} fill={colors.textColor} style={{ marginRight: 15 }} />
         </Pressable>
       </View>
       <KeyboardAvoidingView
