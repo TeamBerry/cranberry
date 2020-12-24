@@ -246,36 +246,37 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
           <BxLoadingIndicator />
         )}
       </View>
-      {isConnected && box && berryCount !== null && permissions ? (
-        <>
-          { permissions.includes('editBox') || permissions.includes('inviteUser') ? (
-            <Collapsible
-              collapsed={!isEditing && !isSharing}
-              style={{ height: remainingHeight + 50 }}
-            >
-              { isEditing ? (
-                <View>
-                  <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
-                    <Text style={[styles.titlePage, { color: colors.textColor }]}>Box Settings</Text>
-                    <Pressable onPress={() => setEditing(false)}>
-                      <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
-                    </Pressable>
-                  </View>
-                  <KeyboardAvoidingView
-                    style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50 }]}
-                    behavior="height"
-                  >
-                    <ScrollView>
-                      <Formik
-                        initialValues={{
-                          name: box.name,
-                          private: box.private,
-                          random: box.options.random,
-                          loop: box.options.loop,
-                          berries: box.options.berries,
-                          videoMaxDurationLimit: box.options.videoMaxDurationLimit.toString(),
-                        }}
-                        validationSchema={
+      <View style={{ flex: 1, alignContent: 'flex-end' }}>
+        {isConnected && box && berryCount !== null && permissions ? (
+          <>
+            { permissions.includes('editBox') || permissions.includes('inviteUser') ? (
+              <Collapsible
+                collapsed={!isEditing && !isSharing}
+                style={{ height: remainingHeight + 50 }}
+              >
+                { isEditing ? (
+                  <View>
+                    <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
+                      <Text style={[styles.titlePage, { color: colors.textColor }]}>Box Settings</Text>
+                      <Pressable onPress={() => setEditing(false)}>
+                        <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
+                      </Pressable>
+                    </View>
+                    <KeyboardAvoidingView
+                      style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50 }]}
+                      behavior="height"
+                    >
+                      <ScrollView>
+                        <Formik
+                          initialValues={{
+                            name: box.name,
+                            private: box.private,
+                            random: box.options.random,
+                            loop: box.options.loop,
+                            berries: box.options.berries,
+                            videoMaxDurationLimit: box.options.videoMaxDurationLimit.toString(),
+                          }}
+                          validationSchema={
                 yup.object().shape({
                   name: yup
                     .string()
@@ -296,211 +297,212 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
                     .default(0),
                 })
               }
-                        onSubmit={(values) => updateBox({
-                          name: values.name,
-                          private: values.private,
-                          options: {
-                            random: values.random,
-                            loop: values.loop,
-                            berries: values.berries,
-                            videoMaxDurationLimit: parseInt(values.videoMaxDurationLimit, 10),
-                          },
-                        })}
-                      >
-                        {({
-                          handleChange, setFieldTouched, setFieldValue, handleSubmit, values, touched, errors, isValid,
-                        }) => (
-                          <View style={styles.form}>
-                            <Text style={styles.sectionTitle}>Information</Text>
-                            <View style={styles.modeContainer}>
-                              <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Box Name</Text>
-                              <FormTextInput
-                                value={values.name}
-                                onChangeText={handleChange('name')}
-                                onBlur={() => setFieldTouched('name')}
-                                placeholder="Box Name"
-                                autoCorrect={false}
-                                returnKeyType="next"
-                              />
-                              {touched.name && errors.name && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.name}</Text>}
-                            </View>
-                            <View style={styles.modeContainer}>
-                              <View style={styles.modeSpace}>
-                                <View style={styles.modeDefinition}>
-                                  <View style={{ paddingRight: 5 }}>
-                                    <LockIcon width={20} height={20} fill={colors.textColor} />
-                                  </View>
-                                  <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Access Restriction</Text>
-                                </View>
-                                <Switch
-                                  value={values.private}
-                                  onValueChange={(value) => setFieldValue('private', value)}
-                                  color="#009AEB"
-                                />
-                              </View>
-                              <Text style={{ color: colors.textSystemColor }}>
-                                Your box will not appear publicly. You may grant access by sharing invite links.
-                              </Text>
-                            </View>
-                            <View style={{
-                              borderBottomColor: '#777777',
-                              borderBottomWidth: 1,
-                            }}
-                            />
-                            <Text style={styles.sectionTitle}>Settings</Text>
-                            <View style={styles.modeContainer}>
-                              <View style={styles.modeSpace}>
-                                <View style={styles.modeDefinition}>
-                                  <View style={{ paddingRight: 5 }}>
-                                    <RandomIcon width={20} height={20} fill={colors.textColor} />
-                                  </View>
-                                  <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Pick Videos at Random</Text>
-                                </View>
-                                <Switch
-                                  value={values.random}
-                                  onValueChange={(value) => setFieldValue('random', value)}
-                                  color="#009AEB"
-                                />
-                              </View>
-                              <Text style={{ color: colors.textSystemColor }}>
-                                Videos will be played randomly from the queue.
-                              </Text>
-                            </View>
-                            <View style={styles.modeContainer}>
-                              <View style={styles.modeSpace}>
-                                <View style={styles.modeDefinition}>
-                                  <View style={{ paddingRight: 5 }}>
-                                    <ReplayIcon width={20} height={20} fill={colors.textColor} />
-                                  </View>
-                                  <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Loop Queue</Text>
-                                </View>
-                                <Switch
-                                  value={values.loop}
-                                  onValueChange={(value) => setFieldValue('loop', value)}
-                                  color="#009AEB"
-                                />
-                              </View>
-                              <Text style={{ color: colors.textSystemColor }}>Played videos will be automatically requeued.</Text>
-                            </View>
-                            <View style={styles.modeContainer}>
-                              <View style={styles.modeSpace}>
-                                <View style={styles.modeDefinition}>
-                                  <View style={{ paddingRight: 5 }}>
-                                    <DurationRestrictionIcon width={20} height={20} fill={colors.textColor} />
-                                  </View>
-                                  <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Duration Restriction</Text>
-                                </View>
-                              </View>
-                              <Text style={{ color: colors.textSystemColor }}>
-                                Videos that exceed the set limit (in minutes) will not be accepted into the queue. Specifying 0 or
-                                nothing will disable this restriction.
-                              </Text>
-                              <View style={{ paddingVertical: 5 }}>
+                          onSubmit={(values) => updateBox({
+                            name: values.name,
+                            private: values.private,
+                            options: {
+                              random: values.random,
+                              loop: values.loop,
+                              berries: values.berries,
+                              videoMaxDurationLimit: parseInt(values.videoMaxDurationLimit, 10),
+                            },
+                          })}
+                        >
+                          {({
+                            handleChange, setFieldTouched, setFieldValue, handleSubmit, values, touched, errors, isValid,
+                          }) => (
+                            <View style={styles.form}>
+                              <Text style={styles.sectionTitle}>Information</Text>
+                              <View style={styles.modeContainer}>
+                                <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Box Name</Text>
                                 <FormTextInput
-                                  value={values.videoMaxDurationLimit}
-                                  onChangeText={handleChange('videoMaxDurationLimit')}
-                                  onBlur={() => setFieldTouched('videoMaxDurationLimit')}
-                                  placeholder="Set the duration restriction (in minutes)"
+                                  value={values.name}
+                                  onChangeText={handleChange('name')}
+                                  onBlur={() => setFieldTouched('name')}
+                                  placeholder="Box Name"
                                   autoCorrect={false}
                                   returnKeyType="next"
-                                  keyboardType="numeric"
                                 />
-                                {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
+                                {touched.name && errors.name && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.name}</Text>}
                               </View>
-                            </View>
-                            <View style={styles.modeContainer}>
-                              <View style={styles.modeSpace}>
-                                <View style={styles.modeDefinition}>
-                                  <View style={{ paddingRight: 5 }}>
-                                    <BerriesIcon width={20} height={20} fill={colors.textColor} />
+                              <View style={styles.modeContainer}>
+                                <View style={styles.modeSpace}>
+                                  <View style={styles.modeDefinition}>
+                                    <View style={{ paddingRight: 5 }}>
+                                      <LockIcon width={20} height={20} fill={colors.textColor} />
+                                    </View>
+                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Access Restriction</Text>
                                   </View>
-                                  <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Berries System</Text>
+                                  <Switch
+                                    value={values.private}
+                                    onValueChange={(value) => setFieldValue('private', value)}
+                                    color="#009AEB"
+                                  />
                                 </View>
-                                <Switch
-                                  value={values.berries}
-                                  onValueChange={(value) => setFieldValue('berries', value)}
-                                  color="#009AEB"
-                                />
+                                <Text style={{ color: colors.textSystemColor }}>
+                                  Your box will not appear publicly. You may grant access by sharing invite links.
+                                </Text>
                               </View>
-                              <Text style={{ color: colors.textSystemColor }}>
-                                Your users will be able to collect Berries while they are in your box. They will then be able to spend
-                                the berries to skip a video or select the next video to play.
-                              </Text>
+                              <View style={{
+                                borderBottomColor: '#777777',
+                                borderBottomWidth: 1,
+                              }}
+                              />
+                              <Text style={styles.sectionTitle}>Settings</Text>
+                              <View style={styles.modeContainer}>
+                                <View style={styles.modeSpace}>
+                                  <View style={styles.modeDefinition}>
+                                    <View style={{ paddingRight: 5 }}>
+                                      <RandomIcon width={20} height={20} fill={colors.textColor} />
+                                    </View>
+                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Pick Videos at Random</Text>
+                                  </View>
+                                  <Switch
+                                    value={values.random}
+                                    onValueChange={(value) => setFieldValue('random', value)}
+                                    color="#009AEB"
+                                  />
+                                </View>
+                                <Text style={{ color: colors.textSystemColor }}>
+                                  Videos will be played randomly from the queue.
+                                </Text>
+                              </View>
+                              <View style={styles.modeContainer}>
+                                <View style={styles.modeSpace}>
+                                  <View style={styles.modeDefinition}>
+                                    <View style={{ paddingRight: 5 }}>
+                                      <ReplayIcon width={20} height={20} fill={colors.textColor} />
+                                    </View>
+                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Loop Queue</Text>
+                                  </View>
+                                  <Switch
+                                    value={values.loop}
+                                    onValueChange={(value) => setFieldValue('loop', value)}
+                                    color="#009AEB"
+                                  />
+                                </View>
+                                <Text style={{ color: colors.textSystemColor }}>Played videos will be automatically requeued.</Text>
+                              </View>
+                              <View style={styles.modeContainer}>
+                                <View style={styles.modeSpace}>
+                                  <View style={styles.modeDefinition}>
+                                    <View style={{ paddingRight: 5 }}>
+                                      <DurationRestrictionIcon width={20} height={20} fill={colors.textColor} />
+                                    </View>
+                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Duration Restriction</Text>
+                                  </View>
+                                </View>
+                                <Text style={{ color: colors.textSystemColor }}>
+                                  Videos that exceed the set limit (in minutes) will not be accepted into the queue. Specifying 0 or
+                                  nothing will disable this restriction.
+                                </Text>
+                                <View style={{ paddingVertical: 5 }}>
+                                  <FormTextInput
+                                    value={values.videoMaxDurationLimit}
+                                    onChangeText={handleChange('videoMaxDurationLimit')}
+                                    onBlur={() => setFieldTouched('videoMaxDurationLimit')}
+                                    placeholder="Set the duration restriction (in minutes)"
+                                    autoCorrect={false}
+                                    returnKeyType="next"
+                                    keyboardType="numeric"
+                                  />
+                                  {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
+                                </View>
+                              </View>
+                              <View style={styles.modeContainer}>
+                                <View style={styles.modeSpace}>
+                                  <View style={styles.modeDefinition}>
+                                    <View style={{ paddingRight: 5 }}>
+                                      <BerriesIcon width={20} height={20} fill={colors.textColor} />
+                                    </View>
+                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Berries System</Text>
+                                  </View>
+                                  <Switch
+                                    value={values.berries}
+                                    onValueChange={(value) => setFieldValue('berries', value)}
+                                    color="#009AEB"
+                                  />
+                                </View>
+                                <Text style={{ color: colors.textSystemColor }}>
+                                  Your users will be able to collect Berries while they are in your box. They will then be able to spend
+                                  the berries to skip a video or select the next video to play.
+                                </Text>
+                              </View>
+                              {!isUpdating ? (
+                                <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
+                                  <BxActionComponent options={{ text: 'Save Modifications' }} />
+                                </Pressable>
+                              ) : (
+                                <BxLoadingIndicator />
+                              )}
                             </View>
-                            {!isUpdating ? (
-                              <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
-                                <BxActionComponent options={{ text: 'Save Modifications' }} />
-                              </Pressable>
-                            ) : (
-                              <BxLoadingIndicator />
-                            )}
-                          </View>
-                        )}
-                      </Formik>
-                    </ScrollView>
-                  </KeyboardAvoidingView>
-                </View>
-              ) : null}
-              { isSharing ? (
-                <View>
-                  <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
-                    <Text style={[styles.titlePage, { color: colors.textColor }]}>Invite users</Text>
-                    <Pressable onPress={() => setSharing(false)}>
-                      <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
-                    </Pressable>
+                          )}
+                        </Formik>
+                      </ScrollView>
+                    </KeyboardAvoidingView>
                   </View>
-                  <View
-                    style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50, padding: 20 }]}
-                  >
-                    <Text style={{ color: colors.textColor, textAlign: 'center' }}>You can send this invite link to your friends</Text>
-                    {shareLink ? (
-                      <>
-                        <View style={{ paddingVertical: 40 }}>
-                          <View style={{
-                            padding: 10, borderColor: colors.videoSeparator, borderWidth: 1, borderRadius: 5,
-                          }}
-                          >
-                            <Text style={{ color: colors.textColor, fontWeight: '700', textAlign: 'center' }}>{shareLink}</Text>
+                ) : null}
+                { isSharing ? (
+                  <View>
+                    <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
+                      <Text style={[styles.titlePage, { color: colors.textColor }]}>Invite users</Text>
+                      <Pressable onPress={() => setSharing(false)}>
+                        <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
+                      </Pressable>
+                    </View>
+                    <View
+                      style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50, padding: 20 }]}
+                    >
+                      <Text style={{ color: colors.textColor, textAlign: 'center' }}>You can send this invite link to your friends</Text>
+                      {shareLink ? (
+                        <>
+                          <View style={{ paddingVertical: 40 }}>
+                            <View style={{
+                              padding: 10, borderColor: colors.videoSeparator, borderWidth: 1, borderRadius: 5,
+                            }}
+                            >
+                              <Text style={{ color: colors.textColor, fontWeight: '700', textAlign: 'center' }}>{shareLink}</Text>
+                            </View>
+                            <Text style={{ color: colors.textSystemColor, textAlign: 'center' }}>
+                              This link will be valid for 15 minutes.
+                            </Text>
                           </View>
-                          <Text style={{ color: colors.textSystemColor, textAlign: 'center' }}>
-                            This link will be valid for 15 minutes.
-                          </Text>
-                        </View>
-                        <View>
-                          <Pressable onPress={() => shareInvite()}>
-                            <BxActionComponent options={{ text: 'Share the link' }} />
-                          </Pressable>
-                        </View>
-                      </>
-                    ) : (
-                      <BxLoadingIndicator />
-                    )}
+                          <View>
+                            <Pressable onPress={() => shareInvite()}>
+                              <BxActionComponent options={{ text: 'Share the link' }} />
+                            </Pressable>
+                          </View>
+                        </>
+                      ) : (
+                        <BxLoadingIndicator />
+                      )}
+                    </View>
                   </View>
-                </View>
-              ) : null}
-            </Collapsible>
-          ) : null}
-          <Queue
-            box={box}
-            user={user}
-            currentVideo={currentQueueItem}
-            height={remainingHeight}
-            berryCount={berryCount}
-            permissions={permissions}
-            onEdit={() => setEditing(!isEditing)}
-            onShare={() => { setSharing(true); generateInvite(); }}
-          />
-          <Chat
-            box={box}
-            user={user}
-            socket={socket}
-            berryCount={berryCount}
-            permissions={permissions}
-          />
-        </>
-      ) : (
-        <BxLoadingIndicator />
-      )}
+                ) : null}
+              </Collapsible>
+            ) : null}
+            <Queue
+              box={box}
+              user={user}
+              currentVideo={currentQueueItem}
+              height={remainingHeight}
+              berryCount={berryCount}
+              permissions={permissions}
+              onEdit={() => setEditing(!isEditing)}
+              onShare={() => { setSharing(true); generateInvite(); }}
+            />
+            <Chat
+              box={box}
+              user={user}
+              socket={socket}
+              berryCount={berryCount}
+              permissions={permissions}
+            />
+          </>
+        ) : (
+          <BxLoadingIndicator />
+        )}
+      </View>
       <Snackbar
         visible={feedback !== null && feedback.context === 'success'}
         onDismiss={() => setFeedbackMessage(null)}

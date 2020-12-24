@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable,
+  TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable, ScrollView,
 } from 'react-native';
-import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import {
   Message, FeedbackMessage, SystemMessage, Permission,
@@ -46,7 +45,7 @@ const Chat = (props: {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: 'space-between',
+      alignContent: 'flex-end',
       backgroundColor: colors.backgroundSecondaryAlternateColor,
     },
     messageList: {
@@ -138,7 +137,7 @@ const Chat = (props: {
   const ResumeScrollButton = () => {
     if (hasNewMessages) {
       return (
-        <TouchableWithoutFeedback
+        <Pressable
           onPress={() => scrollToBottom()}
           style={styles.scrollButtonContainer}
         >
@@ -149,7 +148,7 @@ const Chat = (props: {
             </Text>
             <DownIcon width={14} height={14} fill={colors.textColor} />
           </View>
-        </TouchableWithoutFeedback>
+        </Pressable>
       );
     }
 
@@ -159,7 +158,7 @@ const Chat = (props: {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior="height"
+      behavior="padding"
     >
       <ScrollView
         style={styles.messageList}
