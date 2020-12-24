@@ -24,6 +24,8 @@ import BackIcon from '../../../../assets/icons/back-icon.svg';
 import ErrorIcon from '../../../../assets/icons/error-icon.svg';
 import VideoListView from '../../../components/VideoList/video-list-view.component';
 import QueueVideoActions from './queue-video-actions.component';
+import YoutubeSearch from './youtube-search.component';
+import AddVideosIcon from '../../../../assets/icons/add-videos-icon.svg';
 
 const styles = StyleSheet.create({
   currentSpaceContainer: {
@@ -52,6 +54,17 @@ const styles = StyleSheet.create({
   currentVideo: {
     fontFamily: 'Montserrat-SemiBold',
   },
+  fab: {
+    position: 'absolute',
+    marginRight: 10,
+    marginBottom: 40,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#009AEB',
+    padding: 15,
+    borderRadius: 30,
+    elevation: 10,
+  },
 });
 
 const Queue = (props: {
@@ -75,19 +88,19 @@ const Queue = (props: {
   const [queueVideos, setQueueVideos] = useState<Array<QueueItem>>([]);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
-  // Search
-  const _filterInput = useRef(null);
-  const [isSearching, setSearching] = useState(false);
-  const [filterResults, setFilterResults] = useState<Array<QueueItem>>([]);
-  const [filterText, setFilterText] = useState<string>(null);
+  // Queue Filtering
+  const _queueSearchInput = useRef(null);
+  const [isQueueFiltering, setQueueFiltering] = useState(false);
+  const [queueSearchResults, setQueueSearchResults] = useState<Array<QueueItem>>([]);
+  const [queueSearchText, setQueueSearchText] = useState<string>(null);
 
-  const filterQueue = (text?: string) => {
-    if ((!text && !filterText) || !Array.isArray(queueVideos)) {
-      setFilterResults(queueVideos);
+  const searchQueue = (text?: string) => {
+    if ((!text && !queueSearchText) || !Array.isArray(queueVideos)) {
+      setQueueSearchResults(queueVideos);
     }
 
-    const formattedFilterText = text ? text.toLowerCase() : filterText;
-    setFilterText(formattedFilterText);
+    const formattedFilterText = text ? text.toLowerCase() : queueSearchText;
+    setQueueSearchText(formattedFilterText);
     const filterFields = ['video.name', 'video.link', 'submitted_by.name'];
 
     const getProp = (object, property) => property.split('.').reduce((r, e) => r[e], object);
@@ -96,20 +109,25 @@ const Queue = (props: {
       (key) => getProp(queueItem, key).toLowerCase().indexOf(formattedFilterText) !== -1,
     ));
 
-    setFilterResults(filteredQueue);
+    setQueueSearchResults(filteredQueue);
   };
 
-  const exitFiltering = () => {
-    setSearching(false);
-    setFilterText(null);
-    setFilterResults(queueVideos);
+  const exitQueueSearching = () => {
+    setQueueFiltering(false);
+    setQueueSearchText(null);
+    setQueueSearchResults(queueVideos);
   };
 
-  const resetFiltering = () => {
-    setFilterText(null);
-    setFilterResults(queueVideos);
-    _filterInput.current.clear();
+  const resetQueueSearching = () => {
+    setQueueSearchText(null);
+    setQueueSearchResults(queueVideos);
+    if (_queueSearchInput && _queueSearchInput.current) {
+      _queueSearchInput.current.clear();
+    }
   };
+
+  // Youtube Searching. The rest is in the YoutubeSearch component
+  const [isYoutubeSearching, setYoutubeSearching] = useState(false);
 
   useEffect((): void => {
     if (!box) {
@@ -147,10 +165,10 @@ const Queue = (props: {
     }
 
     setQueueVideos(upcomingVideos);
-    if (!filterText) {
-      setFilterResults(upcomingVideos);
+    if (!queueSearchText) {
+      setQueueSearchResults(upcomingVideos);
     } else {
-      filterQueue();
+      searchQueue();
     }
   }, [box.playlist]);
 
@@ -191,20 +209,28 @@ const Queue = (props: {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (isQueueFiltering || isYoutubeSearching) {
+        setYoutubeSearching(false);
+        resetQueueSearching();
+        setQueueFiltering(false);
+        return true;
+      }
+
       if (!isCollapsed) {
         toggleCollapsible();
         showBerriesHelper(false);
         return true;
       }
+
       return false;
     });
 
     return () => backHandler.remove();
-  }, [isCollapsed]);
+  }, [isCollapsed, isYoutubeSearching, isQueueFiltering]);
 
   const QueueList = () => (
     <VideoListView
-      data={filterResults}
+      data={queueSearchResults}
       renderItem={({ item }) => (
         <QueueVideo
           item={item}
@@ -270,9 +296,12 @@ const Queue = (props: {
         collapsed={isCollapsed}
         style={{ backgroundColor: colors.background, height: height - 50 }}
       >
-        <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, padding: 10 }}>
-          {!isSearching ? (
-            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor }}>
+          {!isQueueFiltering && !isYoutubeSearching ? (
+            <View style={{
+              flex: 0, flexDirection: 'row', justifyContent: 'space-between', padding: 10,
+            }}
+            >
               <View style={{ flexDirection: 'row' }}>
                 {box.options.random ? (
                   <View style={{ paddingHorizontal: 2 }}>
@@ -304,43 +333,74 @@ const Queue = (props: {
                     <BerryCounter count={berryCount} />
                   </Pressable>
                 ) : null}
-                <Pressable onPress={() => setSearching(true)}>
+                <Pressable onPress={() => setQueueFiltering(true)}>
                   <SearchIcon height={20} width={20} fill={colors.textColor} style={{ marginLeft: 10 }} />
                 </Pressable>
               </View>
             </View>
           ) : (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Pressable onPress={exitFiltering} style={{ marginRight: 15 }}>
-                <BackIcon height={20} width={20} fill={colors.textColor} />
-              </Pressable>
-              <TextInput
-                ref={_filterInput}
-                placeholder="Search in queue..."
-                style={{
-                  flex: 1, height: 40, backgroundColor: 'transparent', color: colors.textColor,
-                }}
-                placeholderTextColor={colors.textSystemColor}
-                onChangeText={(text) => filterQueue(text)}
-                autoCorrect={false}
-                autoFocus
-                underlineColorAndroid="transparent"
-              />
-              { filterText && filterText.length > 0 ? (
-                <Pressable onPress={resetFiltering}>
-                  <ErrorIcon width={20} height={20} fill={colors.textColor} />
-                </Pressable>
+            <>
+              {isYoutubeSearching ? (
+                <YoutubeSearch
+                  box={box}
+                  user={user}
+                  berryCount={berryCount}
+                  permissions={permissions}
+                  onCancel={() => setYoutubeSearching(false)}
+                />
               ) : null}
-            </View>
+              {isQueueFiltering ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+                  <Pressable onPress={exitQueueSearching} style={{ marginRight: 15 }}>
+                    <BackIcon height={20} width={20} fill={colors.textColor} />
+                  </Pressable>
+                  <TextInput
+                    ref={_queueSearchInput}
+                    placeholder="Search in queue..."
+                    style={{
+                      flex: 1, height: 40, backgroundColor: 'transparent', color: colors.textColor,
+                    }}
+                    placeholderTextColor={colors.textSystemColor}
+                    onChangeText={(text) => searchQueue(text)}
+                    autoCorrect={false}
+                    autoFocus
+                    underlineColorAndroid="transparent"
+                  />
+                  { queueSearchText && queueSearchText.length > 0 ? (
+                    <Pressable onPress={resetQueueSearching}>
+                      <ErrorIcon width={20} height={20} fill={colors.textColor} />
+                    </Pressable>
+                  ) : null}
+                  {user && user.mail && box?.options?.berries && box?.creator?._id !== user._id ? (
+                    <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
+                      <BerryCounter count={berryCount} />
+                    </Pressable>
+                  ) : null}
+                </View>
+              ) : null}
+            </>
           )}
         </View>
         <Collapsible collapsed={!isBerriesHelperShown}>
           <BerryHelper box={box} permissions={permissions} />
         </Collapsible>
-        {user && user.mail && box.playlist.length > 0 ? (
-          <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
+        {!isYoutubeSearching ? (
+          <>
+            {user && user.mail && box.playlist.length > 0 ? (
+              <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
+            ) : null}
+            <QueueList />
+            {permissions.includes('addVideo') ? (
+              <Pressable
+                style={styles.fab}
+                onPress={() => setYoutubeSearching(true)}
+                android_ripple={{ color: '#47B4EE', radius: 28 }}
+              >
+                <AddVideosIcon width={25} height={25} fill={colors.textColor} />
+              </Pressable>
+            ) : null}
+          </>
         ) : null}
-        <QueueList />
       </Collapsible>
       <Snackbar
         visible={hasUpdatedSuccessfully}

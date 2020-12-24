@@ -59,8 +59,8 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
     },
     fab: {
       position: 'absolute',
-      marginRight: 16,
-      marginBottom: 30,
+      marginRight: 10,
+      marginBottom: 20,
       right: 0,
       bottom: 0,
       backgroundColor: '#009AEB',
