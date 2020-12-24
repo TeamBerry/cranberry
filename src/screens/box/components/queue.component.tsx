@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { QueueItem, Permission } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
-import { FAB, Snackbar } from 'react-native-paper';
+import { Snackbar } from 'react-native-paper';
 
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
