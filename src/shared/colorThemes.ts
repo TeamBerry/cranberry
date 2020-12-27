@@ -22,6 +22,8 @@ export const lightColors = {
   // States
   inactiveColor: '#8F8F8F',
   successColor: '#0AC29D',
+  warningColor: '#CF9D0A',
+  activeColor: '#EB8400',
   chipColor: '#C7C7C7',
   // Separators
   videoSeparator: '#D9D9D9',
@@ -45,6 +47,8 @@ export const darkColors = {
   // States
   inactiveColor: '#CCCCCC',
   successColor: '#0CEBC0',
+  warningColor: '#FFC40D',
+  activeColor: '#EB8400',
   chipColor: '#363636',
   // Separators
   videoSeparator: '#3F3F3F',

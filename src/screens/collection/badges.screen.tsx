@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet, Text, View, Pressable, ToastAndroid, Image, FlatList,
+  StyleSheet, Text, View, Pressable, ToastAndroid, FlatList,
 } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -13,17 +13,18 @@ import { updateUser } from '../../redux/actions';
 import Badge from '../../models/badge.model';
 import BadgeCard from '../../components/badge-card.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
+import User from '../../models/user.model';
 
 const BadgesScreen = (props: {
-    navigation, user: AuthSubject, badge: string, updateUser
+    navigation, user: AuthSubject, displayedBadge: string, updateUser
 }) => {
   const {
-    navigation, user, badge, updateUser,
+    navigation, user, displayedBadge, updateUser,
   } = props;
   const { colors } = useTheme();
-  const [isLoading, setLoading] = useState(true);
   const [badges, setBadges] = useState<Array<Badge>>([]);
-  const [userBadges, setUserBadges] = useState([]);
+  const [userBadges, setUserBadges] = useState<User['badges']>([]);
+  const [userBadgeIds, setUserBadgeIds] = useState<Array<string>>([]);
   const styles = StyleSheet.create({
     headerContainer: {
       paddingVertical: 20,
@@ -50,13 +51,13 @@ const BadgesScreen = (props: {
   });
 
   const getBadges = async () => {
-    setLoading(true);
     const badges = await (await axios.get(`${Config.API_URL}/badges`)).data;
     setBadges(badges);
 
-    const userBadges = await (await axios.get(`${Config.API_URL}/users/badges`)).data;
+    const userBadges: User['badges'] = (await (await axios.get(`${Config.API_URL}/users/me`)).data).badges;
+    const userBadgeIds = userBadges.map((ub) => ub.badge);
     setUserBadges(userBadges);
-    setLoading(false);
+    setUserBadgeIds(userBadgeIds);
   };
 
   useEffect(() => {
@@ -75,6 +76,8 @@ const BadgesScreen = (props: {
     }
   };
 
+  const matchingBadge = (badge: string): User['badges'][0] => userBadges.find((ub) => ub.badge === badge);
+
   return (
     <>
       <View style={styles.headerContainer}>
@@ -87,7 +90,7 @@ const BadgesScreen = (props: {
           <Text style={styles.settingTitle}>My Badges</Text>
         </View>
       </View>
-      { user && badges ? (
+      { user && badges && userBadges && userBadgeIds ? (
         <View style={{ padding: 10 }}>
           <Text style={{
             color: colors.textSystemColor, fontSize: 11, textAlign: 'center', marginBottom: 10,
@@ -97,7 +100,14 @@ const BadgesScreen = (props: {
           </Text>
           <FlatList
             data={badges}
-            renderItem={({ item }) => <BadgeCard badge={item} unlocked={false} onChoose={() => { console.log('CHOSEN'); }} />}
+            renderItem={({ item }) => (
+              <BadgeCard
+                badge={item}
+                unlockedAt={matchingBadge(item._id)?.unlockedAt ?? null}
+                isDisplayed={displayedBadge === item._id}
+                onChoose={() => { updateSettings({ badge: item._id }); }}
+              />
+            )}
             keyExtractor={(item) => item._id}
           />
         </View>
@@ -110,7 +120,7 @@ const BadgesScreen = (props: {
 const mapStateToProps = (state) => {
   const { user } = state.user;
   return {
-    user, badge: user?.settings?.badge,
+    user, displayedBadge: user?.settings?.badge,
   };
 };
 

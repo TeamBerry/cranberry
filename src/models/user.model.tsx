@@ -19,7 +19,10 @@ class User {
 
     acl: ACLConfig;
 
-    badges: any[];
+    badges: Array<{
+        badge: string
+        unlockedAt: Date
+    }>;
 }
 
 export default User;
