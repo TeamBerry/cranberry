@@ -152,6 +152,9 @@ const ChatMessage = (props: { message: Message | FeedbackMessage | SystemMessage
           />
         ) : null}
         <RoleBadge />
+        {message.author._id && message.author.badge ? (
+          <Image source={{ uri: message.author.badge }} style={{ width: 16, height: 16, marginHorizontal: 2 }} />
+        ) : null}
         {AuthorRender(message as Message)}
         {`: ${message.contents}`}
       </Text>
