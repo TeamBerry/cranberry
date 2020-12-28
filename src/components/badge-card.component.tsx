@@ -23,6 +23,7 @@ const BadgeCard = (props: { badge: Badge, unlockedAt: Date, isDisplayed: boolean
       padding: 10,
       borderRadius: 5,
       marginVertical: 5,
+      marginHorizontal: 10,
     },
     badgeCardUnlocked: {
       borderRightWidth: 15,
@@ -108,7 +109,7 @@ const BadgeCard = (props: { badge: Badge, unlockedAt: Date, isDisplayed: boolean
             {format(parseISO(unlockedAt as unknown as string), 'dd MMM y')}
           </Text>
         ) : null}
-        {badge.availableFrom || badge.availableTo ? (
+        {(badge.availableFrom || badge.availableTo) && !unlockedAt ? (
           <BadgeLife />
         ) : null}
       </View>

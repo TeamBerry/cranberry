@@ -91,9 +91,9 @@ const BadgesScreen = (props: {
         </View>
       </View>
       { user && badges && userBadges && userBadgeIds ? (
-        <View style={{ padding: 10 }}>
+        <>
           <Text style={{
-            color: colors.textSystemColor, fontSize: 11, textAlign: 'center', marginBottom: 10,
+            color: colors.textSystemColor, fontSize: 11, textAlign: 'center', marginVertical: 10,
           }}
           >
             Tap a badge you have unlocked to have it display in chat!
@@ -110,7 +110,7 @@ const BadgesScreen = (props: {
             )}
             keyExtractor={(item) => item._id}
           />
-        </View>
+        </>
       )
         : <BxLoadingIndicator />}
     </>
