@@ -87,7 +87,7 @@ const BadgesScreen = (props: {
           >
             <BackIcon width={20} height={20} fill={colors.textColor} />
           </Pressable>
-          <Text style={styles.settingTitle}>My Badges</Text>
+          <Text style={styles.settingTitle}>Badges</Text>
         </View>
       </View>
       { user && badges && userBadges && userBadgeIds ? (

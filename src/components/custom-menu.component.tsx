@@ -11,6 +11,7 @@ import UserIcon from '../../assets/icons/user-icon.svg';
 import { useTheme } from '../shared/theme.context';
 import { AuthSubject } from '../models/session.model';
 import UserSettingsIcon from '../../assets/icons/user-settings-icon.svg';
+import BadgesIcon from '../../assets/icons/badges-icon.svg';
 
 const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
   const { user, onEvent } = props;
@@ -112,21 +113,21 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
         <View style={styles.sectionSeparator} />
         <View style={styles.menuSpace}>
           <Pressable
+            onPress={() => { onEvent(); navigation.navigate('Badges'); }}
+            style={[styles.menuItem, styles.menuItemFirst, styles.menuItemLast]}
+            android_ripple={{ color: colors.primary }}
+          >
+            <BadgesIcon width={20} height={20} fill={colors.inactiveColor} />
+            <Text style={styles.menuItemText}>Badges</Text>
+          </Pressable>
+          <View style={{ marginTop: 15 }} />
+          <Pressable
             onPress={() => { onEvent(); navigation.navigate('Settings'); }}
             style={[styles.menuItem, styles.menuItemFirst, styles.menuItemLast]}
             android_ripple={{ color: colors.primary }}
           >
             <UserSettingsIcon width={20} height={20} fill={colors.inactiveColor} />
-            <Text style={styles.menuItemText}>My Settings</Text>
-          </Pressable>
-          <View style={{ marginTop: 15 }} />
-          <Pressable
-            onPress={() => { onEvent(); navigation.navigate('Badges'); }}
-            style={[styles.menuItem, styles.menuItemFirst, styles.menuItemLast]}
-            android_ripple={{ color: colors.primary }}
-          >
-            <UserSettingsIcon width={20} height={20} fill={colors.inactiveColor} />
-            <Text style={styles.menuItemText}>My Badges</Text>
+            <Text style={styles.menuItemText}>Settings</Text>
           </Pressable>
           <Pressable onPress={() => signOut()} style={{ marginTop: 30 }}>
             <BxActionComponent options={{ text: 'Sign out' }} />
