@@ -129,6 +129,7 @@ const Queue = (props: {
   // Youtube Searching. The rest is in the YoutubeSearch component
   const [isYoutubeSearching, setYoutubeSearching] = useState(false);
 
+  // Triggers when the playlist is updated, and builds it for display
   useEffect((): void => {
     if (!box) {
       setQueueVideos([]);
@@ -165,12 +166,16 @@ const Queue = (props: {
     }
 
     setQueueVideos(upcomingVideos);
+  }, [box.playlist]);
+
+  // Triggers when the queue is updated and applies filtering if necessary
+  useEffect(() => {
     if (!queueSearchText) {
-      setQueueSearchResults(upcomingVideos);
+      setQueueSearchResults(queueVideos);
     } else {
       searchQueue();
     }
-  }, [box.playlist]);
+  }, [queueVideos]);
 
   const CurrentVideo = () => {
     if (!currentVideo) {
