@@ -163,7 +163,7 @@ const SettingsScreen = (props: {
           >
             <BackIcon width={20} height={20} fill={colors.textColor} />
           </Pressable>
-          <Text style={styles.settingTitle}>My Settings</Text>
+          <Text style={styles.settingTitle}>Settings</Text>
         </View>
       </View>
       {user && color && colorblind !== null ? (

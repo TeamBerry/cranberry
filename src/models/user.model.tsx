@@ -14,11 +14,15 @@ class User {
         picture: string,
         color: string,
         isColorblind: boolean
+        badge: string
     };
 
     acl: ACLConfig;
 
-    favorites: any[];
+    badges: Array<{
+        badge: string
+        unlockedAt: Date
+    }>;
 }
 
 export default User;
