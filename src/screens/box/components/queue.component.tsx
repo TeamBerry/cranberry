@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
 const Queue = (props: {
     box: Box,
     user: AuthSubject,
+    queue: Array<QueueItem>,
     currentVideo: QueueItem,
     height: number,
     berryCount: number,
@@ -78,7 +79,7 @@ const Queue = (props: {
     onShare: () => void,
 }) => {
   const {
-    box, user, currentVideo, height, berryCount, permissions, onEdit, onShare,
+    box, user, queue, currentVideo, height, berryCount, permissions, onEdit, onShare,
   } = props;
   const { colors } = useTheme();
 
@@ -138,12 +139,10 @@ const Queue = (props: {
     let upcomingVideos = [];
 
     if (!box.options.loop) {
-      upcomingVideos = box.playlist.filter((item) => item.startTime === null);
+      upcomingVideos = queue.filter((item) => item.startTime === null);
     } else {
-      upcomingVideos = box.playlist;
+      upcomingVideos = queue;
     }
-
-    upcomingVideos.reverse();
 
     // Put the preslected video first
     const preselectedVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.isPreselected);
@@ -154,7 +153,7 @@ const Queue = (props: {
     }
 
     // Put the current video first
-    const playingVideo: QueueItem = box.playlist.find((item: QueueItem) => item.startTime !== null && item.endTime === null);
+    const playingVideo: QueueItem = queue.find((item: QueueItem) => item.startTime !== null && item.endTime === null);
     if (playingVideo) {
       // If loop, the full queue is displayed, regardless of the state of the videos.
       // So the current video has to be spliced out before being unshifted.
@@ -166,7 +165,7 @@ const Queue = (props: {
     }
 
     setQueueVideos(upcomingVideos);
-  }, [box.playlist]);
+  }, [queue]);
 
   // Triggers when the queue is updated and applies filtering if necessary
   useEffect(() => {
@@ -348,6 +347,7 @@ const Queue = (props: {
               {isYoutubeSearching ? (
                 <YoutubeSearch
                   box={box}
+                  queue={queue}
                   user={user}
                   berryCount={berryCount}
                   permissions={permissions}
@@ -391,7 +391,7 @@ const Queue = (props: {
         </Collapsible>
         {!isYoutubeSearching ? (
           <>
-            {user && user.mail && box.playlist.length > 0 ? (
+            {user && user.mail && queue.length > 0 ? (
               <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
             ) : null}
             <QueueList />

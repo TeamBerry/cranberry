@@ -8,7 +8,7 @@ import Config from 'react-native-config';
 import { connect } from 'react-redux';
 
 import {
-  SyncPacket, BerryCount, Permission, FeedbackMessage, PlayingItem,
+  SyncPacket, BerryCount, Permission, FeedbackMessage, PlayingItem, QueueItem,
 } from '@teamberry/muscadine';
 import { Snackbar, Switch } from 'react-native-paper';
 import Collapsible from 'react-native-collapsible';
@@ -89,6 +89,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
   let socketConnection = null;
 
   const [box, setBox] = useState<Box>(null);
+  const [queue, setQueue] = useState<Array<QueueItem | PlayingItem>>([]);
   const [socket, setSocket] = useState(null);
   const [boxKey, setBoxKey] = useState<string>(null);
   const [currentQueueItem, setCurrentQueueItem] = useState<PlayingItem>(null);
@@ -168,6 +169,9 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
         })
         .on('box', (box: Box) => {
           setBox(box);
+        })
+        .on('queue', (queue: Array<QueueItem | PlayingItem>) => {
+          setQueue(queue);
         })
         .on('chat', (message: FeedbackMessage) => {
           if (message.source === 'feedback') {
@@ -484,6 +488,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
             <Queue
               box={box}
               user={user}
+              queue={queue}
               currentVideo={currentQueueItem}
               height={remainingHeight}
               berryCount={berryCount}

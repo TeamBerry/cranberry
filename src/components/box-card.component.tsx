@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Text, View, Image, StyleSheet, ScrollView, Pressable,
 } from 'react-native';
-import { QueueItem } from '@teamberry/muscadine';
 import Box from '../models/box.model';
 import ProfilePicture from './profile-picture.component';
 
@@ -62,11 +61,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const displayCurrentvideo = (box: Box): QueueItem => box.playlist.find((video) => video.startTime !== null && video.endTime === null);
-
 const BoxCard = (props: { box: Box, onPress: () => void, isUnlocked: boolean }) => {
   const { box, onPress, isUnlocked } = props;
-  const currentVideo = displayCurrentvideo(box);
+  const currentVideo = box.currentVideo ?? null;
   const { colors } = useTheme();
 
   return (

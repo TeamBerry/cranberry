@@ -52,11 +52,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const displayCurrentvideo = (box: Box): QueueItem => box.playlist.find((video) => video.startTime !== null && video.endTime === null);
-
 const FeaturedBoxCard = (props: { box: Box, onPress: () => void }) => {
   const { box, onPress } = props;
-  const currentVideo = displayCurrentvideo(box);
+  const currentVideo = box.currentVideo ?? null;
   const { colors } = useTheme();
 
   return (

@@ -1,4 +1,4 @@
-import { ACLConfig, QueueItem } from '@teamberry/muscadine';
+import { ACLConfig, PlayingItem, QueueItem } from '@teamberry/muscadine';
 
 class Box {
     _id: string
@@ -17,8 +17,6 @@ class Box {
 
     name: string
 
-    playlist: Array<QueueItem>
-
     open: boolean
 
     private: boolean
@@ -26,8 +24,6 @@ class Box {
     createdAt: Date
 
     updatedAt: Date
-
-    users?: number
 
     options: {
         random: boolean,
@@ -39,6 +35,10 @@ class Box {
     acl: ACLConfig
 
     featured: Date
+
+    users?: number
+
+    currentVideo?: QueueItem | PlayingItem
 }
 
 export default Box;
