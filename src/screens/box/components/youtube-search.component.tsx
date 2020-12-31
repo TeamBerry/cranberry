@@ -3,7 +3,9 @@ import {
   View, Text, StyleSheet, TextInput, FlatList, Pressable,
 } from 'react-native';
 import axios from 'axios';
-import { VideoSubmissionRequest, QueueItem, Permission } from '@teamberry/muscadine';
+import {
+  VideoSubmissionRequest, QueueItem, Permission, PlayingItem,
+} from '@teamberry/muscadine';
 import { Snackbar } from 'react-native-paper';
 import Config from 'react-native-config';
 
@@ -28,13 +30,14 @@ export interface Video {
 
 const YoutubeSearch = (props: {
     box: Box,
+    queue: Array<QueueItem | PlayingItem>,
     berryCount: number,
     permissions: Array<Permission>,
     user: AuthSubject,
     onCancel: () => void,
 }) => {
   const {
-    box, berryCount, permissions, user, onCancel,
+    box, queue, berryCount, permissions, user, onCancel,
   } = props;
 
   const { colors } = useTheme();
@@ -68,10 +71,10 @@ const YoutubeSearch = (props: {
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
   useEffect(() => {
-    const videoIds = box.playlist.map((queueItem: QueueItem) => queueItem.video.link);
+    const videoIds = queue.map((queueItem: QueueItem) => queueItem.video.link);
     setQueueIds(videoIds);
     setBoxOptions(box.options);
-  }, [box.playlist]);
+  }, [queue]);
 
   const search = async () => {
     if (searchCooldown) {
