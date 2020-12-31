@@ -144,8 +144,6 @@ const Queue = (props: {
       upcomingVideos = queue;
     }
 
-    upcomingVideos.reverse();
-
     // Put the preslected video first
     const preselectedVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.isPreselected);
     if (preselectedVideoIndex !== -1) {
