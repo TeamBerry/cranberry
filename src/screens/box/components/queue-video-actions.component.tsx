@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
-import BxButtonComponent from '../../../components/bx-button.component';
+import BxButtonComponent, { ButtonOptions } from '../../../components/bx-button.component';
 
 const QueueVideoActions = (props: {
     item: QueueItem,
@@ -36,6 +36,33 @@ const QueueVideoActions = (props: {
     }
   };
 
+  const PlayNextButton = () => {
+    const type = item.isPreselected ? 'play' : 'forceNext';
+    let text = '10 $BC$';
+    let context: ButtonOptions['context'] = 'berries';
+
+    if (permissions.includes('forceNext')) {
+      context = 'primary';
+      if (item.isPreselected) {
+        text = 'Later';
+      } else {
+        text = 'Next';
+      }
+    }
+
+    return (
+      <Pressable onPress={() => playNext()}>
+        <BxButtonComponent options={{
+          type,
+          text,
+          textDisplay: 'full',
+          context,
+        }}
+        />
+      </Pressable>
+    );
+  };
+
   return (
     <View style={{
       display: 'flex', flexDirection: 'row', alignContent: 'center', paddingVertical: 10, justifyContent: 'space-around',
@@ -60,15 +87,7 @@ const QueueVideoActions = (props: {
           {!deletionConfirmationShown ? (
             <>
               {permissions.includes('forceNext') || berriesEnabled ? (
-                <Pressable onPress={() => playNext()}>
-                  <BxButtonComponent options={{
-                    type: 'forceNext',
-                    text: permissions.includes('forceNext') ? 'Next' : '10 $BC$',
-                    textDisplay: 'full',
-                    context: permissions.includes('forceNext') ? 'primary' : 'berries',
-                  }}
-                  />
-                </Pressable>
+                <PlayNextButton />
               ) : null}
               {permissions.includes('forcePlay') || berriesEnabled ? (
                 <Pressable onPress={() => playNow()}>
