@@ -132,4 +132,22 @@ const QueueVideoActions = (props: {
   );
 };
 
-export default QueueVideoActions;
+const isEqual = (prevProps: {
+    item: QueueItem,
+    boxToken: string,
+    permissions: Array<Permission>,
+    berriesEnabled: boolean
+}, nextProps: {
+    item: QueueItem,
+    boxToken: string,
+    permissions: Array<Permission>,
+    berriesEnabled: boolean
+}) => (
+  prevProps.item.isPreselected === nextProps.item.isPreselected
+        && prevProps.item.startTime === nextProps.item.startTime
+        && prevProps.item.stateForcedWithBerries === nextProps.item.stateForcedWithBerries
+        && prevProps.permissions === nextProps.permissions
+        && prevProps.berriesEnabled === nextProps.berriesEnabled
+);
+
+export default React.memo(QueueVideoActions, isEqual);

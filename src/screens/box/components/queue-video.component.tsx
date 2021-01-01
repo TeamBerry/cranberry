@@ -85,4 +85,15 @@ const QueueVideo = (props: {item: QueueItem }) => {
   );
 };
 
-export default QueueVideo;
+const isEqual = (prevProps: { item: QueueItem }, nextProps: { item: QueueItem }) => {
+  const previousItem = prevProps.item;
+  const nextItem = nextProps.item;
+
+  return (
+    previousItem.isPreselected === nextItem.isPreselected
+        && previousItem.startTime === nextItem.startTime
+        && previousItem.stateForcedWithBerries === nextItem.stateForcedWithBerries
+  );
+};
+
+export default React.memo(QueueVideo, isEqual);
