@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ScrollView, Share, ToastAndroid,
 } from 'react-native';
-import io from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { connect } from 'react-redux';
@@ -86,11 +86,16 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
   const playerHeight = window.width * (9 / 16) + 10;
   const remainingHeight = window.height - playerHeight;
 
-  let socketConnection = null;
+  const socketConnection: Socket = io(Config.SOCKET_URL, {
+    transports: ['websocket'],
+    reconnection: true,
+    reconnectionDelay: 500,
+    reconnectionAttempts: 10,
+  });
 
   const [box, setBox] = useState<Box>(null);
   const [queue, setQueue] = useState<Array<QueueItem | PlayingItem>>([]);
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState<Socket>(null);
   const [boxKey, setBoxKey] = useState<string>(null);
   const [currentQueueItem, setCurrentQueueItem] = useState<PlayingItem>(null);
   const [berryCount, setBerryCount] = useState(0);
@@ -138,12 +143,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
 
   useEffect(() => {
     if (user && boxToken) {
-      socketConnection = io(Config.SOCKET_URL, {
-        transports: ['websocket'],
-        reconnection: true,
-        reconnectionDelay: 500,
-        reconnectionAttemps: 10,
-      })
+      socketConnection
         .on('connect', () => {
           socketConnection.emit('auth', {
             origin: 'Cranberry', type: 'sync', boxToken, userToken: user._id,
@@ -197,14 +197,6 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
     });
   }, [user, boxToken]);
 
-  if (!isConnected) {
-    return (
-      <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: '100%' }}>
-        <BxLoadingIndicator />
-      </View>
-    );
-  }
-
   const updateBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions }) => {
     setUpdating(true);
     try {
@@ -236,6 +228,14 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
     }
   };
 
+  if (!isConnected) {
+    return (
+      <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: '100%' }}>
+        <BxLoadingIndicator />
+      </View>
+    );
+  }
+
   return (
     <BoxContext.Provider value={socket}>
       <OfflineNotice />
@@ -251,7 +251,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
         )}
       </View>
       <View style={{ flex: 1, alignContent: 'flex-end' }}>
-        {isConnected && box && berryCount !== null && permissions ? (
+        {box && berryCount !== null && permissions ? (
           <>
             { permissions.includes('editBox') || permissions.includes('inviteUser') ? (
               <Collapsible
