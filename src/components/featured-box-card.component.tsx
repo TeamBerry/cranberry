@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Text, View, Image, StyleSheet, Pressable,
 } from 'react-native';
-import { QueueItem } from '@teamberry/muscadine';
 import Box from '../models/box.model';
 import ProfilePicture from './profile-picture.component';
 import BxChipComponent from './bx-chip.component';
