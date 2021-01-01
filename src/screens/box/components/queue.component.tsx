@@ -232,31 +232,6 @@ const Queue = (props: {
     return () => backHandler.remove();
   }, [isCollapsed, isYoutubeSearching, isQueueFiltering]);
 
-  const QueueList = () => (
-    <VideoListView
-      data={queueSearchResults}
-      renderItem={({ item }) => (
-        <QueueVideo
-          item={item}
-        />
-      )}
-      renderHiddenItem={({ item }) => (
-        <QueueVideoActions
-          item={item}
-          boxToken={box._id}
-          permissions={permissions}
-          berriesEnabled={user && user.mail && box.options.berries}
-        />
-      )}
-      ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: 1 }} />}
-      keyExtractor={(item) => item._id}
-      initialNumToRender={8}
-      windowSize={12}
-      ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>The Queue is empty.</Text>}
-      ListFooterComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>●</Text>}
-    />
-  );
-
   return (
     <>
       <View style={[styles.currentSpaceContainer, { backgroundColor: colors.backgroundAlternateColor }]}>
@@ -394,7 +369,28 @@ const Queue = (props: {
             {user && user.mail && queue.length > 0 ? (
               <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
             ) : null}
-            <QueueList />
+            <VideoListView
+              data={queueSearchResults}
+              renderItem={({ item }) => (
+                <QueueVideo
+                  item={item}
+                />
+              )}
+              renderHiddenItem={({ item }) => (
+                <QueueVideoActions
+                  item={item}
+                  boxToken={box._id}
+                  permissions={permissions}
+                  berriesEnabled={user && user.mail && box.options.berries}
+                />
+              )}
+              ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: 1 }} />}
+              keyExtractor={(item) => item._id}
+              initialNumToRender={8}
+              windowSize={12}
+              ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>The Queue is empty.</Text>}
+              ListFooterComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>●</Text>}
+            />
             {permissions.includes('addVideo') ? (
               <Pressable
                 style={styles.fab}
