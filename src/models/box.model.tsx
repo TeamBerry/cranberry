@@ -21,9 +21,9 @@ class Box {
 
     private: boolean
 
-    createdAt: Date
+    createdAt?: Date
 
-    updatedAt: Date
+    updatedAt?: Date
 
     options: {
         random: boolean,
@@ -32,9 +32,9 @@ class Box {
         videoMaxDurationLimit: number
     }
 
-    acl: ACLConfig
+    acl?: ACLConfig
 
-    featured: Date
+    featured?: Date
 
     users?: number
 
