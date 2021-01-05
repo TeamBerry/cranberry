@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ScrollView, Share, ToastAndroid,
+  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, Share, ToastAndroid,
 } from 'react-native';
 import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
@@ -10,10 +10,8 @@ import { connect } from 'react-redux';
 import {
   SyncPacket, BerryCount, Permission, FeedbackMessage, PlayingItem, QueueItem,
 } from '@teamberry/muscadine';
-import { Snackbar, Switch } from 'react-native-paper';
+import { Snackbar } from 'react-native-paper';
 import Collapsible from 'react-native-collapsible';
-import { Formik } from 'formik';
-import * as yup from 'yup';
 import { getUser } from '../../redux/selectors';
 import Player from './components/player.component';
 import Box from '../../models/box.model';
@@ -23,16 +21,10 @@ import OfflineNotice from '../../components/offline-notice.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 import { useTheme } from '../../shared/theme.context';
 import BxActionComponent from '../../components/bx-action.component';
-import FormTextInput from '../../components/form-text-input.component';
-import { BoxOptions } from '../create-box.screen';
-import RandomIcon from '../../../assets/icons/random-icon.svg';
-import ReplayIcon from '../../../assets/icons/replay-icon.svg';
-import BerriesIcon from '../../../assets/icons/coin-enabled-icon.svg';
-import LockIcon from '../../../assets/icons/lock-icon.svg';
-import DurationRestrictionIcon from '../../../assets/icons/duration-limit-icon.svg';
 import { AuthSubject } from '../../models/session.model';
 import Chat from './components/chat.component';
 import ErrorIcon from '../../../assets/icons/error-icon.svg';
+import BoxForm from '../../components/box-form.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -106,7 +98,6 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
 
   // Editing
   const [isEditing, setEditing] = useState(false);
-  const [isUpdating, setUpdating] = useState(false);
   const [isUpdated, setUpdated] = useState(false);
 
   // Sharing
@@ -197,21 +188,6 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
     });
   }, [user, boxToken]);
 
-  const updateBox = async (boxInputData: { name: string, private: boolean, options: BoxOptions }) => {
-    setUpdating(true);
-    try {
-      const updatedBox = await axios.put(`${Config.API_URL}/boxes/${boxToken}`, {
-        _id: boxToken, ...boxInputData, acl: box.acl, description: box.description, lang: box.lang,
-      });
-      setEditing(false);
-      setUpdated(true);
-      setUpdating(false);
-      setBox(updatedBox.data);
-    } catch (error) {
-      setUpdating(false);
-    }
-  };
-
   const generateInvite = async () => {
     const invite = await axios.post(`${Config.API_URL}/boxes/${box._id}/invite`, null);
     setShareLink(`https://berrybox.tv/i/${invite.data.link}`);
@@ -270,179 +246,12 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
                       style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50 }]}
                       behavior="height"
                     >
-                      <ScrollView>
-                        <Formik
-                          initialValues={{
-                            name: box.name,
-                            private: box.private,
-                            random: box.options.random,
-                            loop: box.options.loop,
-                            berries: box.options.berries,
-                            videoMaxDurationLimit: box.options.videoMaxDurationLimit.toString(),
-                          }}
-                          validationSchema={
-                yup.object().shape({
-                  name: yup
-                    .string()
-                    .required('The box name is required'),
-                  private: yup
-                    .boolean(),
-                  random: yup
-                    .boolean(),
-                  loop: yup
-                    .boolean(),
-                  berries: yup
-                    .boolean(),
-                  videoMaxDurationLimit: yup
-                    .number()
-                    .positive('The duration cannot be negative.')
-                    .integer()
-                    .typeError('You must specify a number.')
-                    .default(0),
-                })
-              }
-                          onSubmit={(values) => updateBox({
-                            name: values.name,
-                            private: values.private,
-                            options: {
-                              random: values.random,
-                              loop: values.loop,
-                              berries: values.berries,
-                              videoMaxDurationLimit: parseInt(values.videoMaxDurationLimit, 10),
-                            },
-                          })}
-                        >
-                          {({
-                            handleChange, setFieldTouched, setFieldValue, handleSubmit, values, touched, errors, isValid,
-                          }) => (
-                            <View style={styles.form}>
-                              <Text style={styles.sectionTitle}>Information</Text>
-                              <View style={styles.modeContainer}>
-                                <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Box Name</Text>
-                                <FormTextInput
-                                  value={values.name}
-                                  onChangeText={handleChange('name')}
-                                  onBlur={() => setFieldTouched('name')}
-                                  placeholder="Box Name"
-                                  autoCorrect={false}
-                                  returnKeyType="next"
-                                />
-                                {touched.name && errors.name && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.name}</Text>}
-                              </View>
-                              <View style={styles.modeContainer}>
-                                <View style={styles.modeSpace}>
-                                  <View style={styles.modeDefinition}>
-                                    <View style={{ paddingRight: 5 }}>
-                                      <LockIcon width={20} height={20} fill={colors.textColor} />
-                                    </View>
-                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Access Restriction</Text>
-                                  </View>
-                                  <Switch
-                                    value={values.private}
-                                    onValueChange={(value) => setFieldValue('private', value)}
-                                    color="#009AEB"
-                                  />
-                                </View>
-                                <Text style={{ color: colors.textSystemColor }}>
-                                  Your box will not appear publicly. You may grant access by sharing invite links.
-                                </Text>
-                              </View>
-                              <View style={{
-                                borderBottomColor: '#777777',
-                                borderBottomWidth: 1,
-                              }}
-                              />
-                              <Text style={styles.sectionTitle}>Settings</Text>
-                              <View style={styles.modeContainer}>
-                                <View style={styles.modeSpace}>
-                                  <View style={styles.modeDefinition}>
-                                    <View style={{ paddingRight: 5 }}>
-                                      <RandomIcon width={20} height={20} fill={colors.textColor} />
-                                    </View>
-                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Pick Videos at Random</Text>
-                                  </View>
-                                  <Switch
-                                    value={values.random}
-                                    onValueChange={(value) => setFieldValue('random', value)}
-                                    color="#009AEB"
-                                  />
-                                </View>
-                                <Text style={{ color: colors.textSystemColor }}>
-                                  Videos will be played randomly from the queue.
-                                </Text>
-                              </View>
-                              <View style={styles.modeContainer}>
-                                <View style={styles.modeSpace}>
-                                  <View style={styles.modeDefinition}>
-                                    <View style={{ paddingRight: 5 }}>
-                                      <ReplayIcon width={20} height={20} fill={colors.textColor} />
-                                    </View>
-                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Loop Queue</Text>
-                                  </View>
-                                  <Switch
-                                    value={values.loop}
-                                    onValueChange={(value) => setFieldValue('loop', value)}
-                                    color="#009AEB"
-                                  />
-                                </View>
-                                <Text style={{ color: colors.textSystemColor }}>Played videos will be automatically requeued.</Text>
-                              </View>
-                              <View style={styles.modeContainer}>
-                                <View style={styles.modeSpace}>
-                                  <View style={styles.modeDefinition}>
-                                    <View style={{ paddingRight: 5 }}>
-                                      <DurationRestrictionIcon width={20} height={20} fill={colors.textColor} />
-                                    </View>
-                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Duration Restriction</Text>
-                                  </View>
-                                </View>
-                                <Text style={{ color: colors.textSystemColor }}>
-                                  Videos that exceed the set limit (in minutes) will not be accepted into the queue. Specifying 0 or
-                                  nothing will disable this restriction.
-                                </Text>
-                                <View style={{ paddingVertical: 5 }}>
-                                  <FormTextInput
-                                    value={values.videoMaxDurationLimit}
-                                    onChangeText={handleChange('videoMaxDurationLimit')}
-                                    onBlur={() => setFieldTouched('videoMaxDurationLimit')}
-                                    placeholder="Set the duration restriction (in minutes)"
-                                    autoCorrect={false}
-                                    returnKeyType="next"
-                                    keyboardType="numeric"
-                                  />
-                                  {touched.videoMaxDurationLimit && errors.videoMaxDurationLimit && <Text style={{ fontSize: 12, color: '#EB172A' }}>{errors.videoMaxDurationLimit}</Text>}
-                                </View>
-                              </View>
-                              <View style={styles.modeContainer}>
-                                <View style={styles.modeSpace}>
-                                  <View style={styles.modeDefinition}>
-                                    <View style={{ paddingRight: 5 }}>
-                                      <BerriesIcon width={20} height={20} fill={colors.textColor} />
-                                    </View>
-                                    <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>Berries System</Text>
-                                  </View>
-                                  <Switch
-                                    value={values.berries}
-                                    onValueChange={(value) => setFieldValue('berries', value)}
-                                    color="#009AEB"
-                                  />
-                                </View>
-                                <Text style={{ color: colors.textSystemColor }}>
-                                  Your users will be able to collect Berries while they are in your box. They will then be able to spend
-                                  the berries to skip a video or select the next video to play.
-                                </Text>
-                              </View>
-                              {!isUpdating ? (
-                                <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
-                                  <BxActionComponent options={{ text: 'Save Modifications' }} />
-                                </Pressable>
-                              ) : (
-                                <BxLoadingIndicator />
-                              )}
-                            </View>
-                          )}
-                        </Formik>
-                      </ScrollView>
+                      <BoxForm
+                        box={box}
+                        user={user}
+                        onSuccess={() => { setEditing(false); setUpdated(true); }}
+                        onError={() => { console.log('Error updating box'); }}
+                      />
                     </KeyboardAvoidingView>
                   </View>
                 ) : null}
