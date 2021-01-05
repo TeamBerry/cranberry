@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet, Text, View, Animated, Pressable, BackHandler, TextInput,
 } from 'react-native';
-import { QueueItem, Permission } from '@teamberry/muscadine';
+import { QueueItem, Permission, PlayingItem } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
 import { Snackbar } from 'react-native-paper';
 
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
 const Queue = (props: {
     box: Box,
     user: AuthSubject,
-    queue: Array<QueueItem>,
-    currentVideo: QueueItem,
+    queue: Array<QueueItem | PlayingItem>,
+    currentVideo: QueueItem | PlayingItem,
     height: number,
     berryCount: number,
     permissions: Array<Permission>,
