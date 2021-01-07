@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal, ScrollView,
+  StyleSheet, Text, View, FlatList, RefreshControl, BackHandler, Pressable, Modal, ScrollView, Linking,
 } from 'react-native';
 import SideMenu from 'react-native-side-menu-updated';
 import { FAB } from 'react-native-paper';
@@ -29,6 +29,15 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
   const [featuredBoxes, setFeaturedBoxes] = useState<Array<Box>>([]);
   const _boxListRef = useRef(null);
   const { colors } = useTheme();
+  const [isAllowed, setAllowed] = useState(true);
+
+  const checkCompatibility = async () => {
+    try {
+      await axios.post(`${Config.API_URL}/auth/compat`, { version: '0.16.0' });
+    } catch (error) {
+      setAllowed(false);
+    }
+  };
 
   const styles = StyleSheet.create({
     headerContainer: {
@@ -110,6 +119,9 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
   };
 
   useEffect(() => {
+    if (!checkCompatibility()) {
+      return;
+    }
     getBoxes();
   }, []);
 
@@ -243,36 +255,48 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
           onPress={() => setBoxMenuOpen(!isBoxMenuOpen)}
         />
       </SideMenu>
-      <View>
-        <Modal
-          animationType="slide"
-          transparent
-          visible={isBoxMenuOpen}
-          onRequestClose={() => {
-            setBoxMenuOpen(false);
-          }}
-        >
-          <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)' }}>
-            <Pressable onPress={() => setBoxMenuOpen(false)}>
-              <View style={{ width: '100%', height: '100%' }} />
-            </Pressable>
-            {user && user.mail ? (
-              <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('CreateBox'); }}>
-                <View style={styles.boxOption}>
-                  <Text style={styles.boxOptionTitle}>Create a Box</Text>
-                  <Text style={styles.boxOptionHelp}>Invite your friends and let the music play!</Text>
-                </View>
-              </Pressable>
-            ) : null}
-            <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('JoinBox'); }}>
+      <Modal
+        animationType="slide"
+        transparent
+        visible={isBoxMenuOpen}
+        onRequestClose={() => {
+          setBoxMenuOpen(false);
+        }}
+      >
+        <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)' }}>
+          <Pressable onPress={() => setBoxMenuOpen(false)}>
+            <View style={{ width: '100%', height: '100%' }} />
+          </Pressable>
+          {user && user.mail ? (
+            <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('CreateBox'); }}>
               <View style={styles.boxOption}>
-                <Text style={styles.boxOptionTitle}>Join a Box</Text>
-                <Text style={styles.boxOptionHelp}>Have an invite link? Then come here!</Text>
+                <Text style={styles.boxOptionTitle}>Create a Box</Text>
+                <Text style={styles.boxOptionHelp}>Invite your friends and let the music play!</Text>
               </View>
             </Pressable>
-          </View>
-        </Modal>
-      </View>
+          ) : null}
+          <Pressable onPress={() => { setBoxMenuOpen(false); navigation.push('JoinBox'); }}>
+            <View style={styles.boxOption}>
+              <Text style={styles.boxOptionTitle}>Join a Box</Text>
+              <Text style={styles.boxOptionHelp}>Have an invite link? Then come here!</Text>
+            </View>
+          </Pressable>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        visible={!isAllowed}
+      >
+        <View style={{
+          backgroundColor: colors.background, flex: 1, justifyContent: 'center', alignItems: 'center',
+        }}
+        >
+          <Text style={{ color: colors.textColor }}>You need to update the app to continue using Berrybox</Text>
+          <Pressable style={{ width: 200 }} onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.cranberry')}>
+            <BxActionComponent options={{ text: 'Update' }} />
+          </Pressable>
+        </View>
+      </Modal>
     </>
   );
 };
