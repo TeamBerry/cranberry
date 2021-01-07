@@ -178,6 +178,9 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
         .on('denied', () => {
           ToastAndroid.show('Connection to the box has been denied.', 3000);
           navigation.navigate('Home');
+        })
+        .on('connect_error', () => {
+          ToastAndroid.show('Could not connect to the server. Please try again.', 3000);
         });
     }
 
