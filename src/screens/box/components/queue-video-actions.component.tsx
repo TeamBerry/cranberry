@@ -37,13 +37,13 @@ const QueueVideoActions = (props: {
   };
 
   const PlayNextButton = () => {
-    const type = item.isPreselected ? 'play' : 'forceNext';
+    const type = item.setToNext ? 'play' : 'forceNext';
     let text = '10 $BC$';
     let context: ButtonOptions['context'] = 'berries';
 
     if (permissions.includes('forceNext')) {
       context = 'primary';
-      if (item.isPreselected) {
+      if (item.setToNext) {
         text = 'Later';
       } else {
         text = 'Next';
@@ -143,7 +143,7 @@ const isEqual = (prevProps: {
     permissions: Array<Permission>,
     berriesEnabled: boolean
 }) => (
-  prevProps.item.isPreselected === nextProps.item.isPreselected
+  prevProps.item.setToNext === nextProps.item.setToNext
         && prevProps.item.startTime === nextProps.item.startTime
         && prevProps.item.stateForcedWithBerries === nextProps.item.stateForcedWithBerries
         && prevProps.permissions === nextProps.permissions

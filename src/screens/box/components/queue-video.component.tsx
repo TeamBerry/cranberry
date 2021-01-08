@@ -8,6 +8,7 @@ import ProfilePicture from '../../../components/profile-picture.component';
 import DurationIndicator from '../../../components/duration-indicator.component';
 
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
+import PlayNextIcon from '../../../../assets/icons/play-next-icon.svg';
 import { useTheme } from '../../../shared/theme.context';
 
 const styles = StyleSheet.create({
@@ -35,10 +36,28 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     color: '#EB8400',
   },
+  priority: {
+    paddingHorizontal: 5,
+    marginRight: 5,
+    alignContent: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    right: -10,
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  priorityValue: {
+    textAlign: 'center',
+    fontSize: 10,
+    color: '#EB8400',
+    fontFamily: 'Montserrat-SemiBold',
+    marginLeft: 4,
+  },
 });
 
-const QueueVideo = (props: {item: QueueItem }) => {
-  const { item } = props;
+const QueueVideo = (props: { item: QueueItem, priority: number }) => {
+  const { item, priority } = props;
   const { colors } = useTheme();
 
   return (
@@ -47,7 +66,6 @@ const QueueVideo = (props: {item: QueueItem }) => {
         <View style={{ paddingRight: 10 }}>
           <Image
             style={[
-              item.isPreselected ? styles.preselectedVideo : {},
               (item.startTime !== null && item.endTime === null) ? styles.currentVideo : {},
               { width: 140, height: 78.75 },
             ]}
@@ -55,7 +73,7 @@ const QueueVideo = (props: {item: QueueItem }) => {
           />
           <DurationIndicator
             duration={item.video.duration}
-            withBorder={item.isPreselected || (item.startTime !== null && item.endTime === null)}
+            withBorder={item.startTime !== null && item.endTime === null}
           />
         </View>
         <View style={{
@@ -63,12 +81,15 @@ const QueueVideo = (props: {item: QueueItem }) => {
           justifyContent: 'center',
         }}
         >
+          {item.setToNext ? (
+            <View style={styles.priority}>
+              <PlayNextIcon fill="#EB8400" width={14} height={14} />
+              <Text style={styles.priorityValue}>{priority}</Text>
+            </View>
+          ) : null}
           <Text style={[styles.queueVideoName, { color: colors.textColor }]} numberOfLines={2}>
             {item.stateForcedWithBerries ? (
               <View><BerriesIcon width={16} height={16} /></View>
-            ) : null}
-            {item.isPreselected ? (
-              <Text style={styles.nextVideoIndicator}>Next: </Text>
             ) : null}
             {(item.startTime !== null && item.endTime === null) ? (
               <Text style={styles.currentVideoIndicator}>Playing: </Text>
@@ -85,12 +106,13 @@ const QueueVideo = (props: {item: QueueItem }) => {
   );
 };
 
-const isEqual = (prevProps: { item: QueueItem }, nextProps: { item: QueueItem }) => {
+const isEqual = (prevProps: { item: QueueItem, priority: number }, nextProps: { item: QueueItem, priority: number }) => {
   const previousItem = prevProps.item;
   const nextItem = nextProps.item;
 
   return (
-    previousItem.isPreselected === nextItem.isPreselected
+    previousItem.setToNext === nextItem.setToNext
+      && prevProps.priority === nextProps.priority
         && previousItem.startTime === nextItem.startTime
         && previousItem.stateForcedWithBerries === nextItem.stateForcedWithBerries
   );

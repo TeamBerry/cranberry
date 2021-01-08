@@ -87,6 +87,7 @@ const Queue = (props: {
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
   const [queueVideos, setQueueVideos] = useState<Array<QueueItem>>([]);
+  const [priorityVideos, setPriorityVideos] = useState<Array<QueueItem>>([]);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
   // Queue Filtering
@@ -144,13 +145,16 @@ const Queue = (props: {
       upcomingVideos = queue;
     }
 
-    // Put the preslected video first
-    const preselectedVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.isPreselected);
-    if (preselectedVideoIndex !== -1) {
-      const preselectedVideo = upcomingVideos[preselectedVideoIndex];
-      upcomingVideos.splice(preselectedVideoIndex, 1);
-      upcomingVideos.unshift(preselectedVideo);
-    }
+    // Put the next in line videos first
+    const priorityVideos = upcomingVideos
+      .filter((queueItem) => queueItem.setToNext)
+      .sort((a, b) => +new Date(a.setToNext) - +new Date(b.setToNext));
+
+    setPriorityVideos(priorityVideos);
+
+    const otherVideos = upcomingVideos.filter((queueItem) => !queueItem.setToNext);
+
+    upcomingVideos = [...priorityVideos, ...otherVideos];
 
     // Put the current video first
     const playingVideo: QueueItem = queue.find((item: QueueItem) => item.startTime !== null && item.endTime === null);
@@ -374,6 +378,7 @@ const Queue = (props: {
               renderItem={({ item }) => (
                 <QueueVideo
                   item={item}
+                  priority={priorityVideos.indexOf(item) + 1}
                 />
               )}
               renderHiddenItem={({ item }) => (
