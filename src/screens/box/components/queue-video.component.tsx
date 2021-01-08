@@ -8,6 +8,7 @@ import ProfilePicture from '../../../components/profile-picture.component';
 import DurationIndicator from '../../../components/duration-indicator.component';
 
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
+import PlayNextIcon from '../../../../assets/icons/play-next-icon.svg';
 import { useTheme } from '../../../shared/theme.context';
 
 const styles = StyleSheet.create({
@@ -37,20 +38,21 @@ const styles = StyleSheet.create({
   },
   priority: {
     paddingHorizontal: 5,
-    borderColor: '#EB8400',
-    borderWidth: 1,
-    borderRadius: 5,
     marginRight: 5,
     alignContent: 'center',
     justifyContent: 'center',
-    width: 22,
-    height: 22,
+    position: 'absolute',
+    top: 0,
+    right: -10,
+    display: 'flex',
+    flexDirection: 'row',
   },
   priorityValue: {
     textAlign: 'center',
-    fontSize: 8,
+    fontSize: 10,
     color: '#EB8400',
     fontFamily: 'Montserrat-SemiBold',
+    marginLeft: 4,
   },
 });
 
@@ -64,7 +66,6 @@ const QueueVideo = (props: { item: QueueItem, priority: number }) => {
         <View style={{ paddingRight: 10 }}>
           <Image
             style={[
-              item.setToNext ? styles.preselectedVideo : {},
               (item.startTime !== null && item.endTime === null) ? styles.currentVideo : {},
               { width: 140, height: 78.75 },
             ]}
@@ -72,7 +73,7 @@ const QueueVideo = (props: { item: QueueItem, priority: number }) => {
           />
           <DurationIndicator
             duration={item.video.duration}
-            withBorder={item.setToNext !== null || (item.startTime !== null && item.endTime === null)}
+            withBorder={item.startTime !== null && item.endTime === null}
           />
         </View>
         <View style={{
@@ -80,29 +81,18 @@ const QueueVideo = (props: { item: QueueItem, priority: number }) => {
           justifyContent: 'center',
         }}
         >
-          {item.setToNext || (item.startTime !== null && item.endTime === null) ? (
-            <View style={{
-              flex: 1, display: 'flex', flexDirection: 'row', alignContent: 'center',
-            }}
-            >
-              {item.setToNext ? (
-                <>
-                  <View style={styles.priority}>
-                    <Text style={styles.priorityValue}>{priority}</Text>
-                  </View>
-                  <Text style={styles.nextVideoIndicator}>
-                    Next
-                  </Text>
-                </>
-              ) : null}
-              {(item.startTime !== null && item.endTime === null) ? (
-                <Text style={styles.currentVideoIndicator}>Currently Playing</Text>
-              ) : null}
+          {item.setToNext ? (
+            <View style={styles.priority}>
+              <PlayNextIcon fill="#EB8400" width={14} height={14} />
+              <Text style={styles.priorityValue}>{priority}</Text>
             </View>
           ) : null}
           <Text style={[styles.queueVideoName, { color: colors.textColor }]} numberOfLines={2}>
             {item.stateForcedWithBerries ? (
               <View><BerriesIcon width={16} height={16} /></View>
+            ) : null}
+            {(item.startTime !== null && item.endTime === null) ? (
+              <Text style={styles.currentVideoIndicator}>Playing: </Text>
             ) : null}
             {item.video.name}
           </Text>
