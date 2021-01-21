@@ -5,7 +5,8 @@
         "ios": "react-native run-ios",
         "web": "expo start --web",
         "lint:check": "eslint -c .eslintrc.json --ext .tsx src",
-        "lint:fix": "eslint -c .eslintrc.json --ext .ts src --fix"
+        "lint:fix": "eslint -c .eslintrc.json --ext .ts src --fix",
+        "postversion": "node ./scripts/version-update.js && git add ."
     },
     "rnpm": {
         "assets": [
