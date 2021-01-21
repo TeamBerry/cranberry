@@ -8,6 +8,7 @@ import {
 } from '@teamberry/muscadine';
 
 import Collapsible from 'react-native-collapsible';
+import { Socket } from 'socket.io-client';
 import ChatMessage from './chat-message.component';
 
 import DownIcon from '../../../../assets/icons/down-icon.svg';
@@ -18,7 +19,7 @@ import { useTheme } from '../../../shared/theme.context';
 import { AuthSubject } from '../../../models/session.model';
 
 const Chat = (props: {
-    socket: any,
+    socket: Socket,
     box: Box,
     berryCount: number,
     permissions: Array<Permission>,

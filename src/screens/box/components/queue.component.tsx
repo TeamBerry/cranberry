@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet, Text, View, Animated, Pressable, BackHandler, TextInput,
 } from 'react-native';
-import { QueueItem, Permission } from '@teamberry/muscadine';
+import { QueueItem, Permission, PlayingItem } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
 import { Snackbar } from 'react-native-paper';
 
@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
 const Queue = (props: {
     box: Box,
     user: AuthSubject,
-    currentVideo: QueueItem,
+    queue: Array<QueueItem | PlayingItem>,
+    currentVideo: QueueItem | PlayingItem,
     height: number,
     berryCount: number,
     permissions: Array<Permission>,
@@ -78,7 +79,7 @@ const Queue = (props: {
     onShare: () => void,
 }) => {
   const {
-    box, user, currentVideo, height, berryCount, permissions, onEdit, onShare,
+    box, user, queue, currentVideo, height, berryCount, permissions, onEdit, onShare,
   } = props;
   const { colors } = useTheme();
 
@@ -86,6 +87,7 @@ const Queue = (props: {
   const [error, setError] = useState(false);
   const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
   const [queueVideos, setQueueVideos] = useState<Array<QueueItem>>([]);
+  const [priorityVideos, setPriorityVideos] = useState<Array<QueueItem>>([]);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
 
   // Queue Filtering
@@ -138,23 +140,24 @@ const Queue = (props: {
     let upcomingVideos = [];
 
     if (!box.options.loop) {
-      upcomingVideos = box.playlist.filter((item) => item.startTime === null);
+      upcomingVideos = queue.filter((item) => item.startTime === null);
     } else {
-      upcomingVideos = box.playlist;
+      upcomingVideos = queue;
     }
 
-    upcomingVideos.reverse();
+    // Put the next in line videos first
+    const priorityVideos = upcomingVideos
+      .filter((queueItem) => queueItem.setToNext)
+      .sort((a, b) => +new Date(a.setToNext) - +new Date(b.setToNext));
 
-    // Put the preslected video first
-    const preselectedVideoIndex = upcomingVideos.findIndex((item: QueueItem) => item.isPreselected);
-    if (preselectedVideoIndex !== -1) {
-      const preselectedVideo = upcomingVideos[preselectedVideoIndex];
-      upcomingVideos.splice(preselectedVideoIndex, 1);
-      upcomingVideos.unshift(preselectedVideo);
-    }
+    setPriorityVideos(priorityVideos);
+
+    const otherVideos = upcomingVideos.filter((queueItem) => !queueItem.setToNext);
+
+    upcomingVideos = [...priorityVideos, ...otherVideos];
 
     // Put the current video first
-    const playingVideo: QueueItem = box.playlist.find((item: QueueItem) => item.startTime !== null && item.endTime === null);
+    const playingVideo: QueueItem = queue.find((item: QueueItem) => item.startTime !== null && item.endTime === null);
     if (playingVideo) {
       // If loop, the full queue is displayed, regardless of the state of the videos.
       // So the current video has to be spliced out before being unshifted.
@@ -166,7 +169,7 @@ const Queue = (props: {
     }
 
     setQueueVideos(upcomingVideos);
-  }, [box.playlist]);
+  }, [queue]);
 
   // Triggers when the queue is updated and applies filtering if necessary
   useEffect(() => {
@@ -232,31 +235,6 @@ const Queue = (props: {
 
     return () => backHandler.remove();
   }, [isCollapsed, isYoutubeSearching, isQueueFiltering]);
-
-  const QueueList = () => (
-    <VideoListView
-      data={queueSearchResults}
-      renderItem={({ item }) => (
-        <QueueVideo
-          item={item}
-        />
-      )}
-      renderHiddenItem={({ item }) => (
-        <QueueVideoActions
-          item={item}
-          boxToken={box._id}
-          permissions={permissions}
-          berriesEnabled={user && user.mail && box.options.berries}
-        />
-      )}
-      ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: 1 }} />}
-      keyExtractor={(item) => item._id}
-      initialNumToRender={8}
-      windowSize={12}
-      ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>The Queue is empty.</Text>}
-      ListFooterComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>●</Text>}
-    />
-  );
 
   return (
     <>
@@ -348,6 +326,7 @@ const Queue = (props: {
               {isYoutubeSearching ? (
                 <YoutubeSearch
                   box={box}
+                  queue={queue}
                   user={user}
                   berryCount={berryCount}
                   permissions={permissions}
@@ -391,10 +370,32 @@ const Queue = (props: {
         </Collapsible>
         {!isYoutubeSearching ? (
           <>
-            {user && user.mail && box.playlist.length > 0 ? (
+            {user && user.mail && queue.length > 0 ? (
               <Text style={{ textAlign: 'center', color: colors.textSystemColor, paddingVertical: 5 }}>Tap a video for more info</Text>
             ) : null}
-            <QueueList />
+            <VideoListView
+              data={queueSearchResults}
+              renderItem={({ item }) => (
+                <QueueVideo
+                  item={item}
+                  priority={priorityVideos.indexOf(item) + 1}
+                />
+              )}
+              renderHiddenItem={({ item }) => (
+                <QueueVideoActions
+                  item={item}
+                  boxToken={box._id}
+                  permissions={permissions}
+                  berriesEnabled={user && user.mail && box.options.berries}
+                />
+              )}
+              ItemSeparatorComponent={() => <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: 1 }} />}
+              keyExtractor={(item) => item._id}
+              initialNumToRender={8}
+              windowSize={12}
+              ListEmptyComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>The Queue is empty.</Text>}
+              ListFooterComponent={() => <Text style={{ textAlign: 'center', color: colors.inactiveColor, marginHorizontal: 20 }}>●</Text>}
+            />
             {permissions.includes('addVideo') ? (
               <Pressable
                 style={styles.fab}
