@@ -12,6 +12,7 @@ import { useTheme } from '../shared/theme.context';
 import { AuthSubject } from '../models/session.model';
 import UserSettingsIcon from '../../assets/icons/user-settings-icon.svg';
 import BadgesIcon from '../../assets/icons/badges-icon.svg';
+import ACLIcon from '../../assets/icons/acl-icon.svg';
 
 const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
   const { user, onEvent } = props;
@@ -64,7 +65,7 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
     sectionSeparator: {
       height: 1,
       backgroundColor: colors.backgroundChatColor,
-      marginVertical: 20,
+      marginVertical: 15,
     },
     identitySpace: {
       flex: 0,
@@ -76,6 +77,12 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
     },
     identityContainer: {
       flex: 1,
+    },
+    menuSectionTitle: {
+      color: colors.textColor,
+      textAlign: 'center',
+      marginVertical: 10,
+      fontFamily: 'Montserrat-SemiBold',
     },
   });
 
@@ -112,6 +119,7 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
         </View>
         <View style={styles.sectionSeparator} />
         <View style={styles.menuSpace}>
+          <Text style={styles.menuSectionTitle}>Your Account</Text>
           <Pressable
             onPress={() => { onEvent(); navigation.navigate('Badges'); }}
             style={[styles.menuItem, styles.menuItemFirst, styles.menuItemLast]}
@@ -129,6 +137,21 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
             <UserSettingsIcon width={20} height={20} fill={colors.inactiveColor} />
             <Text style={styles.menuItemText}>Settings</Text>
           </Pressable>
+        </View>
+        <View style={styles.sectionSeparator} />
+        <View style={styles.menuSpace}>
+          <Text style={styles.menuSectionTitle}>Your Communities</Text>
+          <Pressable
+            onPress={() => { onEvent(); navigation.navigate('Settings'); }}
+            style={[styles.menuItem, styles.menuItemFirst, styles.menuItemLast]}
+            android_ripple={{ color: colors.primary }}
+          >
+            <ACLIcon width={20} height={20} fill={colors.inactiveColor} />
+            <Text style={styles.menuItemText}>Moderation</Text>
+          </Pressable>
+        </View>
+        <View style={styles.sectionSeparator} />
+        <View style={styles.menuSpace}>
           <Pressable onPress={() => signOut()} style={{ marginTop: 30 }}>
             <BxActionComponent options={{ text: 'Sign out' }} />
           </Pressable>
