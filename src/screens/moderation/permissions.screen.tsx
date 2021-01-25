@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet, Text, View, Pressable, Image, ScrollView, Switch, ToastAndroid,
+  StyleSheet, Text, View, Pressable, ScrollView, Switch, ToastAndroid,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -232,7 +232,7 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
       { user && acl && currentAcl ? (
         <ScrollView style={styles.form}>
           { sections.map((section, index) => (
-            <>
+            <React.Fragment key={index.toString()}>
               <Text style={styles.sectionTitle}>{section.name}</Text>
               {section.permissions.map((permission) => (
                 <React.Fragment key={permission.key}>
@@ -269,7 +269,7 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
                 }}
                 />
               ) : null}
-            </>
+            </React.Fragment>
           ))}
           <Pressable onPress={() => updateACL()}>
             <BxActionComponent options={{ text: 'Save Modifications' }} />
