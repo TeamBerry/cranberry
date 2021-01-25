@@ -142,7 +142,7 @@ const CustomMenu = (props: { user: AuthSubject, onEvent: () => void }) => {
         <View style={styles.menuSpace}>
           <Text style={styles.menuSectionTitle}>Your Communities</Text>
           <Pressable
-            onPress={() => { onEvent(); navigation.navigate('Settings'); }}
+            onPress={() => { onEvent(); navigation.navigate('Moderation'); }}
             style={[styles.menuItem, styles.menuItemFirst, styles.menuItemLast]}
             android_ripple={{ color: colors.primary }}
           >

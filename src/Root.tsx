@@ -31,9 +31,12 @@ import { getToken } from './redux/selectors';
 import picturePreviewScreen from './screens/settings/picture-preview.screen';
 import pictureDeleteScreen from './screens/settings/picture-delete.screen';
 import BadgesScreen from './screens/collection/badges.screen';
+import ModerationScreen from './screens/moderation/moderation.screen';
+import permissionsScreen from './screens/moderation/permissions.screen';
 
 const RootStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
+const ModerationStack = createStackNavigator();
 
 const useInitialUrl = () => {
   const [inviteLink, setInviteLink] = useState(null as string);
@@ -209,6 +212,60 @@ const Root = (props: { userToken: string }) => {
     </SettingsStack.Navigator>
   );
 
+  const ModerationSpace = () => (
+    <ModerationStack.Navigator
+      screenOptions={{
+        cardStyle: { backgroundColor: colors.deepBackground, opacity: 1 },
+        headerShown: false,
+        cardStyleInterpolator: ({
+          current, next, inverted, layouts: { screen },
+        }) => ({
+          cardStyle: {
+            transform: [
+              {
+                translateX: Animated.multiply(
+                  Animated
+                    .add(
+                      current.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                        extrapolate: 'clamp',
+                      }),
+                      next ? next.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 1],
+                        extrapolate: 'clamp',
+                      }) : 0,
+                    ).interpolate({
+                      inputRange: [0, 1, 2],
+                      outputRange: [
+                        screen.width,
+                        0,
+                        screen.width * -0.3,
+                      ],
+                      extrapolate: 'clamp',
+                    }),
+                  inverted,
+                ),
+              },
+            ],
+          },
+        }),
+      }}
+      mode="modal"
+      initialRouteName="Moderation"
+    >
+      <ModerationStack.Screen
+        name="Moderation"
+        component={ModerationScreen}
+      />
+      <ModerationStack.Screen
+        name="Permissions"
+        component={permissionsScreen}
+      />
+    </ModerationStack.Navigator>
+  );
+
   const RootFlow = () => (
     <RootStack.Navigator
       screenOptions={{
@@ -268,6 +325,10 @@ const Root = (props: { userToken: string }) => {
           <RootStack.Screen
             name="Badges"
             component={BadgesScreen}
+          />
+          <RootStack.Screen
+            name="Moderation"
+            component={ModerationSpace}
           />
         </>
       )}
