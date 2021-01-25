@@ -10,6 +10,7 @@ import axios from 'axios';
 import { getUser } from '../../redux/selectors';
 import { useTheme } from '../../shared/theme.context';
 import BackIcon from '../../../assets/icons/back-icon.svg';
+import BerriesIcon from '../../../assets/icons/berry-coin-icon.svg';
 import { AuthSubject } from '../../models/session.model';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 import BxActionComponent from '../../components/bx-action.component';
@@ -55,7 +56,7 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
           {
             key: 'forceNext',
             name: 'Add video to Priority Queue',
-            explanation: 'Puts the selected video in a priority queue.',
+            explanation: 'Puts the selected video in the priority queue.',
             withBerries: true,
           },
           {
@@ -134,7 +135,6 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
       await axios.patch(`${Config.API_URL}/users/acl`, acl);
       ToastAndroid.show('Moderation template updated.', 3000);
     } catch (error) {
-      console.log(error);
       ToastAndroid.show('Could not update your moderation template. Please try again.', 3000);
     }
   };
@@ -216,6 +216,19 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
           <Text style={styles.settingTitle}>Update role</Text>
         </View>
       </View>
+      <View style={{
+        display: 'flex', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5,
+      }}
+      >
+        <BerriesIcon width={20} height={20} style={{ marginRight: 5 }} />
+        <Text style={{
+          color: colors.textSystemColor, fontSize: 11, textAlign: 'center', marginVertical: 10, flex: 1,
+        }}
+        >
+          Permissions with this icon will require berries if they are disabled.
+          You can disable berries when creating your box.
+        </Text>
+      </View>
       { user && acl && currentAcl ? (
         <ScrollView style={styles.form}>
           { sections.map((section, index) => (
@@ -226,6 +239,9 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
                   <View style={styles.modeContainer}>
                     <View style={styles.modeSpace}>
                       <View style={styles.modeDefinition}>
+                        {permission.withBerries ? (
+                          <BerriesIcon width={20} height={20} style={{ marginRight: 5 }} />
+                        ) : null}
                         <Text style={[styles.modeTitle, { color: colors.textSecondaryColor }]}>{permission.name}</Text>
                       </View>
                       <Switch
