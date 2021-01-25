@@ -149,7 +149,7 @@ const ChangePasswordScreen = (props: { navigation, user: AuthSubject }) => {
                 {!isUpdating ? (
                   <>
                     <Text style={{ color: colors.textSystemColor, fontSize: 11, textAlign: 'center' }}>
-                      This operation cannot be undone. Once your password is reset, your will be disconnected.
+                      This operation cannot be undone. Once your password is reset, you will be disconnected.
                     </Text>
                     <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
                       <BxActionComponent options={{ text: 'Change my password' }} />
