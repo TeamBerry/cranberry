@@ -73,7 +73,7 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
           {
             key: 'editBox',
             name: 'Edit Box',
-            explanation: null,
+            explanation: 'Edits the box information and permissions',
             withBerries: false,
           },
           {
@@ -87,18 +87,18 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
       {
         name: 'User Actions',
         permissions: [
-        //   {
-        //     key: 'promoteVIP',
-        //     name: 'Promote an user to VIP',
-        //     explanation: 'Only you can promote Moderators',
-        //     withBerries: false,
-        //   },
-        //   {
-        //     key: 'demoteVIP',
-        //     name: 'Demote an user from VIP',
-        //     explanation: null,
-        //     withBerries: false,
-        //   },
+          {
+            key: 'setVIP',
+            name: 'Give VIP privileges',
+            explanation: 'Gives VIP privileges to an user.',
+            withBerries: false,
+          },
+          {
+            key: 'unsetVIP',
+            name: 'Remove VIP privileges',
+            explanation: 'Removes VIP privileges from an user.',
+            withBerries: false,
+          },
           {
             key: 'inviteUser',
             name: 'Invite users to the box',
