@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, Share, ToastAndroid,
+  View, useWindowDimensions, BackHandler, Text, Pressable, StyleSheet, KeyboardAvoidingView, ToastAndroid,
 } from 'react-native';
 import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
@@ -20,11 +20,11 @@ import Queue from './components/queue.component';
 import OfflineNotice from '../../components/offline-notice.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 import { useTheme } from '../../shared/theme.context';
-import BxActionComponent from '../../components/bx-action.component';
 import { AuthSubject } from '../../models/session.model';
 import Chat from './components/chat.component';
 import ErrorIcon from '../../../assets/icons/error-icon.svg';
 import BoxForm from '../../components/box-form.component';
+import UserList from './components/user-list.component';
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -101,8 +101,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
   const [isUpdated, setUpdated] = useState(false);
 
   // Sharing
-  const [isSharing, setSharing] = useState(false);
-  const [shareLink, setShareLink] = useState<string>(null);
+  const [isUserlistVisible, setUserlistVisibility] = useState(false);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -115,14 +114,14 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (!isEditing && !isSharing) {
+      if (!isEditing && !isUserlistVisible) {
         navigation.navigate('Home');
         return true;
       }
 
-      if (isEditing || isSharing) {
+      if (isEditing || isUserlistVisible) {
         setEditing(false);
-        setSharing(false);
+        setUserlistVisibility(false);
         return true;
       }
 
@@ -130,7 +129,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
     });
 
     return () => backHandler.remove();
-  }, [isEditing, isSharing]);
+  }, [isEditing, isUserlistVisible]);
 
   useEffect(() => {
     if (user && boxToken) {
@@ -191,22 +190,6 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
     });
   }, [user, boxToken]);
 
-  const generateInvite = async () => {
-    const invite = await axios.post(`${Config.API_URL}/boxes/${box._id}/invite`, null);
-    setShareLink(`https://berrybox.tv/i/${invite.data.link}`);
-  };
-
-  const shareInvite = async () => {
-    try {
-      await Share.share({
-        title: 'Share an invite to this box (This invite will expire in 15 minutes)',
-        message: shareLink,
-      });
-    } catch (error) {
-      ToastAndroid.show('There was an unexpected error. Please try again', 5000);
-    }
-  };
-
   if (!isConnected) {
     return (
       <View style={{ backgroundColor: colors.backgroundSecondaryAlternateColor, height: '100%' }}>
@@ -234,7 +217,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
           <>
             { permissions.includes('editBox') || permissions.includes('inviteUser') ? (
               <Collapsible
-                collapsed={!isEditing && !isSharing}
+                collapsed={!isEditing && !isUserlistVisible}
                 style={{ height: remainingHeight + 50 }}
               >
                 { isEditing ? (
@@ -258,41 +241,20 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
                     </KeyboardAvoidingView>
                   </View>
                 ) : null}
-                { isSharing ? (
+                { isUserlistVisible ? (
                   <View>
                     <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
-                      <Text style={[styles.titlePage, { color: colors.textColor }]}>Invite users</Text>
-                      <Pressable onPress={() => setSharing(false)}>
+                      <Text style={[styles.titlePage, { color: colors.textColor }]}>Users</Text>
+                      <Pressable onPress={() => setUserlistVisibility(false)}>
                         <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
                       </Pressable>
                     </View>
-                    <View
-                      style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50, padding: 20 }]}
-                    >
-                      <Text style={{ color: colors.textColor, textAlign: 'center' }}>You can send this invite link to your friends</Text>
-                      {shareLink ? (
-                        <>
-                          <View style={{ paddingVertical: 40 }}>
-                            <View style={{
-                              padding: 10, borderColor: colors.videoSeparator, borderWidth: 1, borderRadius: 5,
-                            }}
-                            >
-                              <Text style={{ color: colors.textColor, fontWeight: '700', textAlign: 'center' }}>{shareLink}</Text>
-                            </View>
-                            <Text style={{ color: colors.textSystemColor, textAlign: 'center' }}>
-                              This link will be valid for 15 minutes.
-                            </Text>
-                          </View>
-                          <View>
-                            <Pressable onPress={() => shareInvite()}>
-                              <BxActionComponent options={{ text: 'Share the link' }} />
-                            </Pressable>
-                          </View>
-                        </>
-                      ) : (
-                        <BxLoadingIndicator />
-                      )}
-                    </View>
+                    <UserList
+                      box={box}
+                      user={user}
+                      permissions={permissions}
+                      height={remainingHeight}
+                    />
                   </View>
                 ) : null}
               </Collapsible>
@@ -306,7 +268,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
               berryCount={berryCount}
               permissions={permissions}
               onEdit={() => setEditing(!isEditing)}
-              onShare={() => { setSharing(true); generateInvite(); }}
+              onShare={() => { setUserlistVisibility(true); }}
             />
             <Chat
               box={box}
