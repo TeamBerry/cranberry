@@ -10,7 +10,9 @@ const ProfilePicture = (props: { fileName?: string, size: number, style?: StyleP
     return (
       <Image
         source={{ uri: 'https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/default-picture' }}
-        style={[{ width: size, height: size, borderRadius: size / 2 }, style]}
+        style={[{
+          width: size, height: size, borderRadius: size / 2, backgroundColor: 'white',
+        }, style]}
       />
     );
   }
@@ -19,7 +21,9 @@ const ProfilePicture = (props: { fileName?: string, size: number, style?: StyleP
     <Image
       source={{ uri: `https://berrybox-user-pictures.s3-eu-west-1.amazonaws.com/profile-pictures/${fileName}` }}
       onError={() => setPictureLoading(false)}
-      style={[{ width: size, height: size, borderRadius: size / 2 }, style]}
+      style={[{
+        width: size, height: size, borderRadius: size / 2, backgroundColor: 'white',
+      }, style]}
     />
   );
 };
