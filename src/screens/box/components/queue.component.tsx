@@ -13,6 +13,7 @@ import ProfilePicture from '../../../components/profile-picture.component';
 import CollapseIcon from '../../../../assets/icons/open-collapse-icon.svg';
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
 import InviteIcon from '../../../../assets/icons/invite-icon.svg';
+import UsersIcon from '../../../../assets/icons/users-icon.svg';
 import SettingsIcon from '../../../../assets/icons/settings-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
@@ -263,7 +264,7 @@ const Queue = (props: {
             {permissions.includes('inviteUser') ? (
               <>
                 <Pressable style={[styles.shareSpace, { paddingRight: permissions.includes('editBox') ? 4 : 7 }]} onPress={onShare}>
-                  <InviteIcon width={20} height={20} fill={colors.textColor} />
+                  <UsersIcon width={20} height={20} fill={colors.textColor} />
                 </Pressable>
               </>
             ) : null}
