@@ -28,14 +28,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     color: '#009AEB',
   },
-  preselectedVideo: {
-    borderColor: '#EB8400',
-    borderWidth: 2,
-  },
-  nextVideoIndicator: {
-    fontFamily: 'Montserrat-SemiBold',
-    color: '#EB8400',
-  },
   priority: {
     paddingHorizontal: 5,
     marginRight: 5,

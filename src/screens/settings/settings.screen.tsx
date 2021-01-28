@@ -1,8 +1,7 @@
 import React from 'react';
 import {
-  StyleSheet, Text, View, Pressable, ToastAndroid,
+  StyleSheet, Text, View, Pressable, ToastAndroid, Switch,
 } from 'react-native';
-import { Switch } from 'react-native-paper';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import Config from 'react-native-config';
@@ -16,6 +15,7 @@ import ProfilePicture from '../../components/profile-picture.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 import { updateUser } from '../../redux/actions';
 import { AuthSubject } from '../../models/session.model';
+import BxHeader from '../../components/bx-header.component';
 
 const SettingsScreen = (props: {
   navigation, user: AuthSubject, updateUser, color: string, colorblind: boolean, picture: string
@@ -30,22 +30,6 @@ const SettingsScreen = (props: {
   };
 
   const styles = StyleSheet.create({
-    headerContainer: {
-      paddingVertical: 20,
-      paddingHorizontal: 10,
-      borderColor: '#191919',
-      borderStyle: 'solid',
-      borderBottomWidth: 1,
-      backgroundColor: colors.background,
-    },
-    headerStyle: {
-      height: 20,
-      elevation: 0,
-      shadowOpacity: 0,
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-    },
     userName: {
       color: colors.textColor,
       fontSize: 24,
@@ -95,12 +79,6 @@ const SettingsScreen = (props: {
       borderBottomWidth: 1,
       borderBottomColor: colors.videoSeparator,
       marginVertical: 5,
-    },
-    settingTitle: {
-      color: colors.textColor,
-      marginLeft: 30,
-      fontFamily: 'Montserrat-SemiBold',
-      fontSize: 18,
     },
   });
 
@@ -156,16 +134,7 @@ const SettingsScreen = (props: {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={styles.headerStyle}>
-          <Pressable
-            onPress={() => navigation.navigate('Home')}
-          >
-            <BackIcon width={20} height={20} fill={colors.textColor} />
-          </Pressable>
-          <Text style={styles.settingTitle}>Settings</Text>
-        </View>
-      </View>
+      <BxHeader text="Settings" onPress={() => navigation.navigate('Home')} />
       {user && color && colorblind !== null ? (
         <>
           <View style={styles.accountSummary}>
@@ -223,7 +192,11 @@ const SettingsScreen = (props: {
                 <Switch
                   value={colorblind}
                   onValueChange={(value) => updateSettings({ isColorblind: value, color: '#DF62A9' })}
-                  color="#009AEB"
+                  trackColor={{
+                    false: colors.inactiveColor,
+                    true: colors.activeColor,
+                  }}
+                  thumbColor="white"
                 />
               </View>
             </View>
