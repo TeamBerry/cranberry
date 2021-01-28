@@ -9,7 +9,6 @@ import Config from 'react-native-config';
 import axios from 'axios';
 import { getUser } from '../../redux/selectors';
 import { useTheme } from '../../shared/theme.context';
-import BackIcon from '../../../assets/icons/back-icon.svg';
 import BerriesIcon from '../../../assets/icons/berry-coin-icon.svg';
 import { AuthSubject } from '../../models/session.model';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
