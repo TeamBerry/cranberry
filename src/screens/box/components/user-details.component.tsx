@@ -6,7 +6,6 @@ import { ActiveSubscriber, Role, Permission } from '@teamberry/muscadine';
 import { RadioButton } from 'react-native-paper';
 import { useTheme } from '../../../shared/theme.context';
 import EmbeddedBackButton from '../../../components/embedded-back-button.component';
-import PresenceIndicator from '../../../components/presence-indicator.component';
 import ProfilePicture from '../../../components/profile-picture.component';
 import Box from '../../../models/box.model';
 import BxActionComponent from '../../../components/bx-action.component';
@@ -15,10 +14,11 @@ const UserDetails = (props: {
     selectedUser: ActiveSubscriber,
     boxAcl: Box['acl'],
     permissions: Array<Permission>,
-    onPress: () => void
+    goBack: () => void,
+    onRoleChange: (target: string, role: Role) => void
 }) => {
   const {
-    selectedUser, boxAcl, permissions, onPress,
+    selectedUser, boxAcl, permissions, goBack, onRoleChange,
   } = props;
   const { colors } = useTheme();
   const [selectedRole, setSelectedRole] = useState<Role>(selectedUser.role);
@@ -37,13 +37,9 @@ const UserDetails = (props: {
     },
   });
 
-  const assignRole = (target: string, role: Role) => {
-    console.log(target, role);
-  };
-
   return (
     <>
-      <EmbeddedBackButton text="Back to users" onPress={onPress} />
+      <EmbeddedBackButton text="Back to users" onPress={goBack} />
       <View style={{ padding: 20 }}>
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <View style={{ marginRight: 14 }}>
@@ -97,7 +93,7 @@ const UserDetails = (props: {
               />
             </View>
           ) : null}
-          <Pressable onPress={() => assignRole(selectedUser._id, selectedRole)}>
+          <Pressable onPress={() => onRoleChange(selectedUser._id, selectedRole)}>
             <BxActionComponent options={{ text: 'Assign Role' }} />
           </Pressable>
         </View>

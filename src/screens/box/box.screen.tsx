@@ -253,6 +253,7 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
                       box={box}
                       user={user}
                       permissions={permissions}
+                      socket={socket}
                       height={remainingHeight}
                     />
                   </View>

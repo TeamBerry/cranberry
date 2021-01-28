@@ -7,8 +7,8 @@ import {
 } from 'react-native';
 import Config from 'react-native-config';
 import { ScrollView } from 'react-native-gesture-handler';
-import Collapsible from 'react-native-collapsible';
-import { Use } from 'react-native-svg';
+import { Socket } from 'socket.io-client';
+import { RoleChangeRequest } from '@teamberry/muscadine/dist/interfaces/acl.interface';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
 import ProfilePicture from '../../../components/profile-picture.component';
 import Box from '../../../models/box.model';
@@ -19,7 +19,6 @@ import InviteIcon from '../../../../assets/icons/invite-icon.svg';
 import BxActionComponent from '../../../components/bx-action.component';
 import EmbeddedBackButton from '../../../components/embedded-back-button.component';
 import UserDetails from './user-details.component';
-import PresenceIndicator from '../../../components/presence-indicator.component';
 
 export type UsersDisplaySchema = Array<{
     title: string,
@@ -29,9 +28,15 @@ export type UsersDisplaySchema = Array<{
     list: Array<ActiveSubscriber>
 }>
 
-const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, box: Box, height: number }) => {
+const UserList = (props: {
+    user: AuthSubject,
+    permissions: Array<Permission>,
+    box: Box,
+    socket: Socket,
+    height: number
+}) => {
   const {
-    user, permissions, box, height,
+    user, permissions, box, height, socket,
   } = props;
   const [users, setUsers] = useState<UsersDisplaySchema>([]);
 
@@ -114,6 +119,19 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
     }
   };
 
+  const assignRole = (target: string, role: Role) => {
+    socket.emit('roleChange', {
+      scope: {
+        userToken: target,
+        boxToken: box._id,
+      },
+      role,
+      source: user._id,
+    } as RoleChangeRequest);
+
+    setTimeout(() => getUsers(), 4000);
+  };
+
   const styles = StyleSheet.create({
     container: {
       flex: 0,
@@ -125,6 +143,7 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
       flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 10,
+      paddingLeft: 20,
     },
     roleTitle: {
       color: colors.textColor,
@@ -138,39 +157,14 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
       flex: 1,
       alignItems: 'center',
       marginBottom: 10,
+      paddingLeft: 20,
+      paddingVertical: 5,
     },
     userName: {
       marginLeft: 5,
       fontSize: 11,
       fontFamily: 'Montserrat-Regular',
       color: colors.textColor,
-    },
-    presenceIndicatorContainer: {
-      height: 18,
-      width: 18,
-      borderRadius: 9,
-      backgroundColor: colors.background,
-      position: 'absolute',
-      top: 16,
-      left: 18,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    presenceIndicator: {
-      height: 12,
-      width: 12,
-      borderRadius: 6,
-      borderStyle: 'solid',
-    },
-    presenceIndicatorOffline: {
-      borderWidth: 3,
-      borderColor: colors.inactiveColor,
-    },
-    presenceIndicatorOnline: {
-      borderWidth: 1,
-      borderColor: colors.background,
-      backgroundColor: colors.successColor,
     },
     fab: {
       position: 'absolute',
@@ -182,15 +176,6 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
       padding: 15,
       borderRadius: 30,
       elevation: 10,
-    },
-    backPrompt: {
-      width: 140,
-      paddingLeft: 10,
-      paddingVertical: 10,
-      backgroundColor: colors.backgroundAlternateColor,
-      borderBottomRightRadius: 70,
-      display: 'flex',
-      flexDirection: 'row',
     },
   });
 
@@ -204,7 +189,7 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
                 <View style={{ paddingVertical: 20 }}>
                   {users && users.map((section) => (
                     <React.Fragment key={section.context}>
-                      <View style={{ marginBottom: 10, paddingLeft: 20 }}>
+                      <View style={{ marginBottom: 10 }}>
                         <View style={styles.roleTitleContainer}>
                           {section.icon ? (
                             <Image
@@ -222,25 +207,20 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
                         </View>
                         {section.list.map((member) => (
                           <React.Fragment key={member._id}>
-                            { section.actionsDisplayed && member._id !== user._id ? (
-
-                              <Pressable
-                                style={styles.userNameContainer}
-                                onPress={() => setSelectedUser(selectedUser !== member ? member : null)}
-                              >
-                                <View style={{ marginRight: 7 }}>
-                                  <ProfilePicture fileName={member.settings.picture} size={30} isOnline={member.origin !== null} />
-                                </View>
-                                <Text style={styles.userName}>{member.name}</Text>
-                              </Pressable>
-                            ) : (
-                              <View style={styles.userNameContainer}>
-                                <View style={{ marginRight: 7 }}>
-                                  <ProfilePicture fileName={member.settings.picture} size={30} isOnline={member.origin !== null} />
-                                </View>
-                                <Text style={styles.userName}>{member.name}</Text>
+                            <Pressable
+                              style={styles.userNameContainer}
+                              onPress={() => {
+                                if (section.actionsDisplayed && member._id !== user._id) {
+                                  setSelectedUser(selectedUser !== member ? member : null);
+                                }
+                              }}
+                              android_ripple={{ color: colors.backgroundAlternateColor }}
+                            >
+                              <View style={{ marginRight: 7 }}>
+                                <ProfilePicture fileName={member.settings.picture} size={30} isOnline={member.origin !== null} />
                               </View>
-                            )}
+                              <Text style={styles.userName}>{member.name}</Text>
+                            </Pressable>
                           </React.Fragment>
                         ))}
                       </View>
@@ -259,7 +239,13 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
               ) : null}
             </>
           ) : (
-            <UserDetails selectedUser={selectedUser} boxAcl={box.acl} permissions={permissions} onPress={() => setSelectedUser(null)} />
+            <UserDetails
+              selectedUser={selectedUser}
+              boxAcl={box.acl}
+              permissions={permissions}
+              goBack={() => setSelectedUser(null)}
+              onRoleChange={assignRole}
+            />
           )}
         </>
       ) : (
