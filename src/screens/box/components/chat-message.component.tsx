@@ -63,11 +63,6 @@ const styles = StyleSheet.create({
   userMessage: {
     paddingLeft: 4,
   },
-  userBadge: {
-    height: 16,
-    width: 16,
-    paddingTop: 3,
-  },
 });
 
 const ChatMessage = (props: { message: Message | FeedbackMessage | SystemMessage, colorblindMode: boolean }) => {
