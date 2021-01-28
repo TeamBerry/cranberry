@@ -112,6 +112,7 @@ const ModerationScreen = (props: {
             <Pressable
               style={styles.roleContainer}
               onPress={() => navigation.navigate('Permissions', { role: 'moderator' })}
+              android_ripple={{ color: colors.backgroundInactiveColor }}
             >
               <View style={styles.roleSpace}>
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -131,6 +132,7 @@ const ModerationScreen = (props: {
             <Pressable
               style={styles.roleContainer}
               onPress={() => navigation.navigate('Permissions', { role: 'vip' })}
+              android_ripple={{ color: colors.backgroundInactiveColor }}
             >
               <View style={styles.roleSpace}>
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -149,6 +151,7 @@ const ModerationScreen = (props: {
             <Pressable
               style={styles.roleContainer}
               onPress={() => navigation.navigate('Permissions', { role: 'simple' })}
+              android_ripple={{ color: colors.backgroundInactiveColor }}
             >
               <View style={styles.roleSpace}>
                 <Text style={styles.roleTitle}>Community Members</Text>

@@ -172,6 +172,7 @@ const SettingsScreen = (props: {
               <Pressable
                 style={styles.setting}
                 onPress={() => navigation.push('ColorSelect')}
+                android_ripple={{ color: colors.backgroundInactiveColor }}
               >
                 <View style={styles.settingSpace}>
                   <Text style={styles.settingName}>Username color</Text>
@@ -204,6 +205,7 @@ const SettingsScreen = (props: {
               <Pressable
                 style={styles.setting}
                 onPress={() => navigation.push('PictureDelete')}
+                android_ripple={{ color: colors.backgroundInactiveColor }}
               >
                 <Text style={styles.settingName}>Remove profile picture</Text>
                 <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
@@ -214,6 +216,7 @@ const SettingsScreen = (props: {
             <Pressable
               style={styles.setting}
               onPress={() => navigation.push('ChangePassword')}
+              android_ripple={{ color: colors.backgroundInactiveColor }}
             >
               <Text style={styles.settingName}>Change password</Text>
               <BackIcon height={20} width={20} fill={colors.textSystemColor} rotation={180} />
