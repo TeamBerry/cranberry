@@ -147,7 +147,7 @@ const ModerationScreen = (props: {
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                   <Image
                     style={{ width: 16, height: 16, marginRight: 5 }}
-                    source={require('../../../assets/badges/moderator-badge.png')}
+                    source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/moderator-badge.png' }}
                   />
                   <Text style={styles.roleTitle}>Moderators</Text>
                 </View>
@@ -166,7 +166,7 @@ const ModerationScreen = (props: {
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                   <Image
                     style={{ width: 16, height: 16, marginRight: 5 }}
-                    source={require('../../../assets/badges/vip-badge.png')}
+                    source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/vip-badge.png' }}
                   />
                   <Text style={styles.roleTitle}>VIPs</Text>
                 </View>
@@ -197,7 +197,7 @@ const ModerationScreen = (props: {
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                   <Image
                     style={{ width: 16, height: 16, marginRight: 5 }}
-                    source={require('../../../assets/badges/creator-badge.png')}
+                    source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/creator-badge.png' }}
                   />
                   <Text style={styles.roleTitle}>Box Creator</Text>
                 </View>
@@ -214,7 +214,7 @@ const ModerationScreen = (props: {
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                   <Image
                     style={{ width: 16, height: 16, marginRight: 5 }}
-                    source={require('../../../assets/badges/staff-badge.png')}
+                    source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/staff-badge.png' }}
                   />
                   <Text style={styles.roleTitle}>Staff</Text>
                 </View>

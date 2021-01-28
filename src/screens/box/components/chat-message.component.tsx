@@ -109,7 +109,7 @@ const ChatMessage = (props: { message: Message | FeedbackMessage | SystemMessage
         return (
           <Image
             style={{ width: 16, height: 16 }}
-            source={require('../../../../assets/badges/vip-badge.png')}
+            source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/vip-badge.png' }}
           />
         );
 
@@ -117,7 +117,7 @@ const ChatMessage = (props: { message: Message | FeedbackMessage | SystemMessage
         return (
           <Image
             style={{ width: 16, height: 16 }}
-            source={require('../../../../assets/badges/creator-badge.png')}
+            source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/creator-badge.png' }}
           />
         );
 
@@ -125,7 +125,7 @@ const ChatMessage = (props: { message: Message | FeedbackMessage | SystemMessage
         return (
           <Image
             style={{ width: 16, height: 16 }}
-            source={require('../../../../assets/badges/moderator-badge.png')}
+            source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/moderator-badge.png' }}
           />
         );
 
@@ -148,7 +148,7 @@ const ChatMessage = (props: { message: Message | FeedbackMessage | SystemMessage
         {message.author._id === Config.ADMIN_ID ? (
           <Image
             style={{ width: 16, height: 16 }}
-            source={require('../../../../assets/badges/staff-badge.png')}
+            source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/staff-badge.png' }}
           />
         ) : null}
         <RoleBadge />
