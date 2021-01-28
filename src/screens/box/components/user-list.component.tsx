@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import Config from 'react-native-config';
 import { ScrollView } from 'react-native-gesture-handler';
+import Collapsible from 'react-native-collapsible';
+import { Use } from 'react-native-svg';
 import BxLoadingIndicator from '../../../components/bx-loading-indicator.component';
 import ProfilePicture from '../../../components/profile-picture.component';
 import Box from '../../../models/box.model';
@@ -14,8 +16,10 @@ import { AuthSubject } from '../../../models/session.model';
 import { useTheme } from '../../../shared/theme.context';
 
 import InviteIcon from '../../../../assets/icons/invite-icon.svg';
-import BackIcon from '../../../../assets/icons/back-icon.svg';
 import BxActionComponent from '../../../components/bx-action.component';
+import EmbeddedBackButton from '../../../components/embedded-back-button.component';
+import UserDetails from './user-details.component';
+import PresenceIndicator from '../../../components/presence-indicator.component';
 
 export type UsersDisplaySchema = Array<{
     title: string,
@@ -34,6 +38,8 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
   // Sharing
   const [isSharing, setSharing] = useState(false);
   const [shareLink, setShareLink] = useState<string>(null);
+
+  const [selectedUser, setSelectedUser] = useState <ActiveSubscriber>(null);
 
   const { colors } = useTheme();
 
@@ -192,67 +198,73 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
     <View style={styles.container}>
       { !isSharing ? (
         <>
-          <ScrollView>
-            <View style={{ paddingVertical: 20 }}>
-              {users && users.map((section) => (
-                <React.Fragment key={section.context}>
-                  <View style={{ marginBottom: 10, paddingLeft: 20 }}>
-                    <View style={styles.roleTitleContainer}>
-                      {section.icon ? (
-                        <Image
-                          style={{ width: 18, height: 18, marginRight: 10 }}
-                          source={{ uri: section.icon }}
-                        />
-                      ) : null}
-                      <Text style={styles.roleTitle}>
-                        {section.title}
-                        {' '}
-                        -
-                        {' '}
-                        {section.list.length}
-                      </Text>
-                    </View>
-                    {section.list.map((member) => (
-                      <React.Fragment key={member._id}>
-                        <View style={styles.userNameContainer}>
-                          <View style={{ marginRight: 7 }}>
-                            <ProfilePicture fileName={member.settings.picture} size={30} />
-                            <View style={styles.presenceIndicatorContainer}>
-                              <View style={[
-                                styles.presenceIndicator,
-                                member.origin !== null ? styles.presenceIndicatorOnline : styles.presenceIndicatorOffline,
-                              ]}
-                              />
-                            </View>
-                          </View>
-                          <Text style={styles.userName}>{member.name}</Text>
+          { !selectedUser ? (
+            <>
+              <ScrollView>
+                <View style={{ paddingVertical: 20 }}>
+                  {users && users.map((section) => (
+                    <React.Fragment key={section.context}>
+                      <View style={{ marginBottom: 10, paddingLeft: 20 }}>
+                        <View style={styles.roleTitleContainer}>
+                          {section.icon ? (
+                            <Image
+                              style={{ width: 18, height: 18, marginRight: 10 }}
+                              source={{ uri: section.icon }}
+                            />
+                          ) : null}
+                          <Text style={styles.roleTitle}>
+                            {section.title}
+                            {' '}
+                            -
+                            {' '}
+                            {section.list.length}
+                          </Text>
                         </View>
-                      </React.Fragment>
-                    ))}
-                  </View>
-                </React.Fragment>
-              ))}
-            </View>
-          </ScrollView>
-          {permissions.includes('inviteUser') ? (
-            <Pressable
-              style={styles.fab}
-              onPress={() => { setSharing(true); generateInvite(); }}
-              android_ripple={{ color: '#47B4EE', radius: 28 }}
-            >
-              <InviteIcon width={25} height={25} fill={colors.textColor} />
-            </Pressable>
-          ) : null}
+                        {section.list.map((member) => (
+                          <React.Fragment key={member._id}>
+                            { section.actionsDisplayed ? (
+
+                              <Pressable
+                                style={styles.userNameContainer}
+                                onPress={() => setSelectedUser(selectedUser !== member ? member : null)}
+                              >
+                                <View style={{ marginRight: 7 }}>
+                                  <ProfilePicture fileName={member.settings.picture} size={30} isOnline={member.origin !== null} />
+                                </View>
+                                <Text style={styles.userName}>{member.name}</Text>
+                              </Pressable>
+                            ) : (
+                              <View style={styles.userNameContainer}>
+                                <View style={{ marginRight: 7 }}>
+                                  <ProfilePicture fileName={member.settings.picture} size={30} isOnline={member.origin !== null} />
+                                </View>
+                                <Text style={styles.userName}>{member.name}</Text>
+                              </View>
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </View>
+                    </React.Fragment>
+                  ))}
+                </View>
+              </ScrollView>
+              {permissions.includes('inviteUser') ? (
+                <Pressable
+                  style={styles.fab}
+                  onPress={() => { setSharing(true); generateInvite(); }}
+                  android_ripple={{ color: '#47B4EE', radius: 28 }}
+                >
+                  <InviteIcon width={25} height={25} fill={colors.textColor} />
+                </Pressable>
+              ) : null}
+            </>
+          ) : (
+            <UserDetails selectedUser={selectedUser} boxAcl={box.acl} onPress={() => setSelectedUser(null)} />
+          )}
         </>
       ) : (
         <>
-          <Pressable
-            style={styles.backPrompt}
-            onPress={() => setSharing(false)}
-          >
-            <BackIcon width={20} height={20} fill={colors.textSystemColor} />
-            <Text style={{ color: colors.textSystemColor }}>Back to users</Text>
-          </Pressable>
+          <EmbeddedBackButton text="Back to users" onPress={() => setSharing(false)} />
           <View style={{ padding: 20 }}>
             <Text style={{ color: colors.textColor, textAlign: 'center' }}>You can send this invite link to your friends</Text>
             {shareLink ? (

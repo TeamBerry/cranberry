@@ -1,0 +1,98 @@
+import React, { useState } from 'react';
+import {
+  Image, Pressable, Text, StyleSheet, View,
+} from 'react-native';
+import { ActiveSubscriber, Role, Permission } from '@teamberry/muscadine';
+import { RadioButton } from 'react-native-paper';
+import { useTheme } from '../../../shared/theme.context';
+import EmbeddedBackButton from '../../../components/embedded-back-button.component';
+import PresenceIndicator from '../../../components/presence-indicator.component';
+import ProfilePicture from '../../../components/profile-picture.component';
+import Box from '../../../models/box.model';
+import BxActionComponent from '../../../components/bx-action.component';
+
+const UserDetails = (props: { selectedUser: ActiveSubscriber, boxAcl: Box['acl'], onPress: () => void }) => {
+  const { selectedUser, boxAcl, onPress } = props;
+  const { colors } = useTheme();
+  const [selectedRole, setSelectedRole] = useState<Role>(selectedUser.role);
+
+  const styles = StyleSheet.create({
+    roleSelectorContainer: {
+      backgroundColor: colors.backgroundChatColor,
+      padding: 20,
+      borderRadius: 5,
+      marginTop: 10,
+    },
+    roleTitle: {
+      fontSize: 12,
+      color: colors.textColor,
+      fontFamily: 'Montserrat-SemiBold',
+    },
+  });
+
+  const assignRole = (target: string, role: Role) => {
+    console.log(target, role);
+  };
+
+  return (
+    <>
+      <EmbeddedBackButton text="Back to users" onPress={onPress} />
+      <View style={{ padding: 20 }}>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ marginRight: 14 }}>
+            <ProfilePicture fileName={selectedUser.settings.picture} size={50} isOnline={selectedUser.origin !== null} />
+          </View>
+          <Text style={{ fontFamily: 'Montserrat-SemiBold', color: colors.textColor, fontSize: 20 }}>{selectedUser.name}</Text>
+        </View>
+        <View style={styles.roleSelectorContainer}>
+          <Text style={{ color: colors.textSystemColor, fontFamily: 'Montserrat-SemiBold', marginBottom: 10 }}>Assign role</Text>
+          <View style={{ flexDirection: 'column' }}>
+            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <Image
+                  style={{ width: 16, height: 16, marginRight: 5 }}
+                  source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/moderator-badge.png' }}
+                />
+                <Text style={styles.roleTitle}>Moderator</Text>
+              </View>
+              <RadioButton
+                value="moderator"
+                status={selectedRole === 'moderator' ? 'checked' : 'unchecked'}
+                onPress={() => setSelectedRole('moderator')}
+              />
+            </View>
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <Image
+                style={{ width: 16, height: 16, marginRight: 5 }}
+                source={{ uri: 'https://role-badges.s3-eu-west-1.amazonaws.com/vip-badge.png' }}
+              />
+              <Text style={styles.roleTitle}>VIP</Text>
+            </View>
+            <RadioButton
+              value="vip"
+              status={selectedRole === 'vip' ? 'checked' : 'unchecked'}
+              onPress={() => setSelectedRole('vip')}
+            />
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={styles.roleTitle}>Community</Text>
+            </View>
+            <RadioButton
+              value="simple"
+              status={selectedRole === 'simple' ? 'checked' : 'unchecked'}
+              onPress={() => setSelectedRole('simple')}
+            />
+          </View>
+          <Pressable onPress={() => assignRole(selectedUser._id, selectedRole)}>
+            <BxActionComponent options={{ text: 'Assign Role' }} />
+          </Pressable>
+        </View>
+      </View>
+    </>
+  );
+};
+
+export default UserDetails;
