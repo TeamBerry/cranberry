@@ -76,7 +76,7 @@ const QueueVideoActions = (props: {
                 type: 'skip',
                 text: permissions.includes('skipVideo') ? 'Skip' : '20 $BC$',
                 textDisplay: 'full',
-                context: permissions.includes('forcePlay') ? 'primary' : 'berries',
+                context: permissions.includes('skipVideo') ? 'primary' : 'berries',
               }}
               />
             </Pressable>

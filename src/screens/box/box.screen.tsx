@@ -215,51 +215,49 @@ const BoxScreen = (props: { route, navigation, user: AuthSubject }) => {
       <View style={{ flex: 1, alignContent: 'flex-end' }}>
         {box && berryCount !== null && permissions ? (
           <>
-            { permissions.includes('editBox') || permissions.includes('inviteUser') ? (
-              <Collapsible
-                collapsed={!isEditing && !isUserlistVisible}
-                style={{ height: remainingHeight + 50 }}
-              >
-                { isEditing ? (
-                  <View>
-                    <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
-                      <Text style={[styles.titlePage, { color: colors.textColor }]}>Box Settings</Text>
-                      <Pressable onPress={() => setEditing(false)}>
-                        <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
-                      </Pressable>
-                    </View>
-                    <KeyboardAvoidingView
-                      style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50 }]}
-                      behavior="height"
-                    >
-                      <BoxForm
-                        box={box}
-                        user={user}
-                        onSuccess={() => { setEditing(false); setUpdated(true); }}
-                        onError={() => { console.log('Error updating box'); }}
-                      />
-                    </KeyboardAvoidingView>
+            <Collapsible
+              collapsed={!isEditing && !isUserlistVisible}
+              style={{ height: remainingHeight + 50 }}
+            >
+              { isEditing ? (
+                <View>
+                  <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
+                    <Text style={[styles.titlePage, { color: colors.textColor }]}>Box Settings</Text>
+                    <Pressable onPress={() => setEditing(false)}>
+                      <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
+                    </Pressable>
                   </View>
-                ) : null}
-                { isUserlistVisible ? (
-                  <View>
-                    <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
-                      <Text style={[styles.titlePage, { color: colors.textColor }]}>Users</Text>
-                      <Pressable onPress={() => setUserlistVisibility(false)}>
-                        <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
-                      </Pressable>
-                    </View>
-                    <UserList
+                  <KeyboardAvoidingView
+                    style={[styles.container, { backgroundColor: colors.background, height: remainingHeight - 50 }]}
+                    behavior="height"
+                  >
+                    <BoxForm
                       box={box}
                       user={user}
-                      permissions={permissions}
-                      socket={socket}
-                      height={remainingHeight}
+                      onSuccess={() => { setEditing(false); setUpdated(true); }}
+                      onError={() => { console.log('Error updating box'); }}
                     />
+                  </KeyboardAvoidingView>
+                </View>
+              ) : null}
+              { isUserlistVisible ? (
+                <View>
+                  <View style={[styles.headerContainer, { backgroundColor: colors.backgroundSecondaryAlternateColor }]}>
+                    <Text style={[styles.titlePage, { color: colors.textColor }]}>Users</Text>
+                    <Pressable onPress={() => setUserlistVisibility(false)}>
+                      <ErrorIcon width={20} height={20} fill={colors.textColor} style={{ marginRight: 10 }} />
+                    </Pressable>
                   </View>
-                ) : null}
-              </Collapsible>
-            ) : null}
+                  <UserList
+                    box={box}
+                    user={user}
+                    permissions={permissions}
+                    socket={socket}
+                    height={remainingHeight}
+                  />
+                </View>
+              ) : null}
+            </Collapsible>
             <Queue
               box={box}
               user={user}
