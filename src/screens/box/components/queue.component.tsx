@@ -391,7 +391,7 @@ const Queue = (props: {
                 onPress={() => setYoutubeSearching(true)}
                 android_ripple={{ color: '#47B4EE', radius: 28 }}
               >
-                <AddVideosIcon width={25} height={25} fill={colors.textColor} />
+                <AddVideosIcon width={25} height={25} fill="white" />
               </Pressable>
             ) : null}
           </>

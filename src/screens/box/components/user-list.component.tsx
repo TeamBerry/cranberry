@@ -235,7 +235,7 @@ const UserList = (props: {
                   onPress={() => { setSharing(true); generateInvite(); }}
                   android_ripple={{ color: '#47B4EE', radius: 28 }}
                 >
-                  <InviteIcon width={25} height={25} fill={colors.textColor} />
+                  <InviteIcon width={25} height={25} fill="white" />
                 </Pressable>
               ) : null}
             </>
