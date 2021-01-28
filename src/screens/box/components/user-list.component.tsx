@@ -242,7 +242,6 @@ const UserList = (props: {
           ) : (
             <UserDetails
               selectedUser={selectedUser}
-              boxAcl={box.acl}
               permissions={permissions}
               goBack={() => setSelectedUser(null)}
               onRoleChange={assignRole}

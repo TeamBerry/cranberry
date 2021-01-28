@@ -7,18 +7,16 @@ import { RadioButton } from 'react-native-paper';
 import { useTheme } from '../../../shared/theme.context';
 import EmbeddedBackButton from '../../../components/embedded-back-button.component';
 import ProfilePicture from '../../../components/profile-picture.component';
-import Box from '../../../models/box.model';
 import BxActionComponent from '../../../components/bx-action.component';
 
 const UserDetails = (props: {
     selectedUser: ActiveSubscriber,
-    boxAcl: Box['acl'],
     permissions: Array<Permission>,
     goBack: () => void,
     onRoleChange: (target: string, role: Role) => void
 }) => {
   const {
-    selectedUser, boxAcl, permissions, goBack, onRoleChange,
+    selectedUser, permissions, goBack, onRoleChange,
   } = props;
   const { colors } = useTheme();
   const [selectedRole, setSelectedRole] = useState<Role>(selectedUser.role);
