@@ -222,7 +222,7 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
                         </View>
                         {section.list.map((member) => (
                           <React.Fragment key={member._id}>
-                            { section.actionsDisplayed ? (
+                            { section.actionsDisplayed && member._id !== user._id ? (
 
                               <Pressable
                                 style={styles.userNameContainer}
@@ -259,7 +259,7 @@ const UserList = (props: { user: AuthSubject, permissions: Array<Permission>, bo
               ) : null}
             </>
           ) : (
-            <UserDetails selectedUser={selectedUser} boxAcl={box.acl} onPress={() => setSelectedUser(null)} />
+            <UserDetails selectedUser={selectedUser} boxAcl={box.acl} permissions={permissions} onPress={() => setSelectedUser(null)} />
           )}
         </>
       ) : (
