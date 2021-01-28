@@ -10,12 +10,12 @@ import { connect } from 'react-redux';
 import { useTheme } from '../../shared/theme.context';
 import { getUser } from '../../redux/selectors';
 
-import BackIcon from '../../../assets/icons/back-icon.svg';
 import FormTextInput from '../../components/form-text-input.component';
 import BxActionComponent from '../../components/bx-action.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 import AuthContext from '../../shared/auth.context';
 import { AuthSubject } from '../../models/session.model';
+import BxHeader from '../../components/bx-header.component';
 
 const ChangePasswordScreen = (props: { navigation, user: AuthSubject }) => {
   const { navigation, user } = props;
@@ -24,26 +24,6 @@ const ChangePasswordScreen = (props: { navigation, user: AuthSubject }) => {
   const { signOut } = useContext(AuthContext);
 
   const styles = StyleSheet.create({
-    headerContainer: {
-      paddingVertical: 20,
-      paddingHorizontal: 10,
-      borderColor: '#191919',
-      borderStyle: 'solid',
-      borderBottomWidth: 1,
-      backgroundColor: colors.background,
-    },
-    headerStyle: {
-      height: 20,
-      elevation: 0,
-      shadowOpacity: 0,
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-    },
-    settingTitle: {
-      color: colors.textColor,
-      marginLeft: 30,
-      fontWeight: '700',
-    },
     formContainer: {
       flex: 1,
       alignItems: 'center',
@@ -59,16 +39,7 @@ const ChangePasswordScreen = (props: { navigation, user: AuthSubject }) => {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={styles.headerStyle}>
-          <Pressable
-            onPress={() => navigation.pop()}
-          >
-            <BackIcon width={20} height={20} fill={colors.textColor} />
-          </Pressable>
-          <Text style={styles.settingTitle}>Change your password</Text>
-        </View>
-      </View>
+      <BxHeader text="Change your password" onPress={() => navigation.pop()} />
       { user ? (
         <KeyboardAvoidingView style={styles.formContainer}>
           <Formik

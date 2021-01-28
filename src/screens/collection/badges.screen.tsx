@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet, Text, View, Pressable, ToastAndroid, FlatList,
+  Text, ToastAndroid, FlatList,
 } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -8,12 +8,12 @@ import Config from 'react-native-config';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AuthSubject } from '../../models/session.model';
 import { useTheme } from '../../shared/theme.context';
-import BackIcon from '../../../assets/icons/back-icon.svg';
 import { updateUser } from '../../redux/actions';
 import Badge from '../../models/badge.model';
 import BadgeCard from '../../components/badge-card.component';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 import User from '../../models/user.model';
+import BxHeader from '../../components/bx-header.component';
 
 const BadgesScreen = (props: {
     navigation, user: AuthSubject, displayedBadge: string, updateUser
@@ -25,30 +25,6 @@ const BadgesScreen = (props: {
   const [badges, setBadges] = useState<Array<Badge>>([]);
   const [userBadges, setUserBadges] = useState<User['badges']>([]);
   const [userBadgeIds, setUserBadgeIds] = useState<Array<string>>([]);
-  const styles = StyleSheet.create({
-    headerContainer: {
-      paddingVertical: 20,
-      paddingHorizontal: 10,
-      borderColor: '#191919',
-      borderStyle: 'solid',
-      borderBottomWidth: 1,
-      backgroundColor: colors.background,
-    },
-    headerStyle: {
-      height: 20,
-      elevation: 0,
-      shadowOpacity: 0,
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-    },
-    settingTitle: {
-      color: colors.textColor,
-      marginLeft: 30,
-      fontFamily: 'Montserrat-SemiBold',
-      fontSize: 18,
-    },
-  });
 
   const getBadges = async () => {
     const badges = await (await axios.get(`${Config.API_URL}/badges`)).data;
@@ -80,16 +56,7 @@ const BadgesScreen = (props: {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={styles.headerStyle}>
-          <Pressable
-            onPress={() => navigation.navigate('Home')}
-          >
-            <BackIcon width={20} height={20} fill={colors.textColor} />
-          </Pressable>
-          <Text style={styles.settingTitle}>Badges</Text>
-        </View>
-      </View>
+      <BxHeader text="Badges" onPress={() => navigation.navigate('Home')} />
       { user && badges && userBadges && userBadgeIds ? (
         <>
           <Text style={{

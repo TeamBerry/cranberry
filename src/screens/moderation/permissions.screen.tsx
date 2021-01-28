@@ -14,6 +14,7 @@ import BerriesIcon from '../../../assets/icons/berry-coin-icon.svg';
 import { AuthSubject } from '../../models/session.model';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
 import BxActionComponent from '../../components/bx-action.component';
+import BxHeader from '../../components/bx-header.component';
 
 const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
   const { route, navigation, user } = props;
@@ -140,42 +141,6 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
   };
 
   const styles = StyleSheet.create({
-    headerContainer: {
-      paddingVertical: 20,
-      paddingHorizontal: 10,
-      borderColor: '#191919',
-      borderStyle: 'solid',
-      borderBottomWidth: 1,
-      backgroundColor: colors.background,
-    },
-    headerStyle: {
-      height: 20,
-      elevation: 0,
-      shadowOpacity: 0,
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-    },
-    previewContainer: {
-      marginTop: 20,
-    },
-    preview: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      marginVertical: 20,
-    },
-    colorPreview: {
-      width: 150,
-      padding: 10,
-      borderRadius: 5,
-      textAlign: 'center',
-      borderWidth: 1,
-      borderColor: '#B3B3B3',
-    },
-    settingTitle: {
-      color: colors.textColor,
-      marginLeft: 30,
-      fontFamily: 'Montserrat-SemiBold',
-    },
     form: {
       paddingBottom: 50,
       paddingHorizontal: 15,
@@ -206,16 +171,7 @@ const PermissionsScreen = (props: { route, navigation, user: AuthSubject }) => {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={styles.headerStyle}>
-          <Pressable
-            onPress={() => navigation.pop()}
-          >
-            <BackIcon width={20} height={20} fill={colors.textColor} />
-          </Pressable>
-          <Text style={styles.settingTitle}>Update role</Text>
-        </View>
-      </View>
+      <BxHeader text="Update role" onPress={() => navigation.pop()} />
       <View style={{
         display: 'flex', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5,
       }}

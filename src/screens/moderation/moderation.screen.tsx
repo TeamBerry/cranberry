@@ -11,6 +11,7 @@ import { useTheme } from '../../shared/theme.context';
 
 import BackIcon from '../../../assets/icons/back-icon.svg';
 import BxLoadingIndicator from '../../components/bx-loading-indicator.component';
+import BxHeader from '../../components/bx-header.component';
 
 const ModerationScreen = (props: {
     navigation, user: AuthSubject
@@ -20,28 +21,6 @@ const ModerationScreen = (props: {
   const [isHelperOpen, setHelperState] = useState(false);
 
   const styles = StyleSheet.create({
-    headerContainer: {
-      paddingVertical: 20,
-      paddingHorizontal: 10,
-      borderColor: '#191919',
-      borderStyle: 'solid',
-      borderBottomWidth: 1,
-      backgroundColor: colors.background,
-    },
-    headerStyle: {
-      height: 20,
-      elevation: 0,
-      shadowOpacity: 0,
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-    },
-    settingTitle: {
-      color: colors.textColor,
-      marginLeft: 30,
-      fontFamily: 'Montserrat-SemiBold',
-      fontSize: 18,
-    },
     roleContainer: {
       paddingVertical: 15,
       flexDirection: 'row',
@@ -88,16 +67,7 @@ const ModerationScreen = (props: {
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={styles.headerStyle}>
-          <Pressable
-            onPress={() => navigation.navigate('Home')}
-          >
-            <BackIcon width={20} height={20} fill={colors.textColor} />
-          </Pressable>
-          <Text style={styles.settingTitle}>Moderation</Text>
-        </View>
-      </View>
+      <BxHeader text="Moderation" onPress={() => navigation.navigate('Home')} />
       {user ? (
         <ScrollView style={{ backgroundColor: colors.background, height: '100%' }}>
           <Text style={{

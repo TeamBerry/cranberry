@@ -8,10 +8,10 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useTheme } from '../../shared/theme.context';
-import BackIcon from '../../../assets/icons/back-icon.svg';
 import BxActionComponent from '../../components/bx-action.component';
 import { updateUser } from '../../redux/actions';
 import { AuthSubject } from '../../models/session.model';
+import BxHeader from '../../components/bx-header.component';
 
 const ColorSelectScreen = (props: { navigation, user: AuthSubject, color: string, updateUser }) => {
   const {
@@ -34,21 +34,6 @@ const ColorSelectScreen = (props: { navigation, user: AuthSubject, color: string
   };
 
   const styles = StyleSheet.create({
-    headerContainer: {
-      paddingVertical: 20,
-      paddingHorizontal: 10,
-      borderColor: '#191919',
-      borderStyle: 'solid',
-      borderBottomWidth: 1,
-      backgroundColor: colors.background,
-    },
-    headerStyle: {
-      height: 20,
-      elevation: 0,
-      shadowOpacity: 0,
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-    },
     previewContainer: {
       marginTop: 20,
     },
@@ -65,25 +50,11 @@ const ColorSelectScreen = (props: { navigation, user: AuthSubject, color: string
       borderWidth: 1,
       borderColor: '#B3B3B3',
     },
-    settingTitle: {
-      color: colors.textColor,
-      marginLeft: 30,
-      fontFamily: 'Montserrat-SemiBold',
-    },
   });
 
   return (
     <>
-      <View style={styles.headerContainer}>
-        <View style={styles.headerStyle}>
-          <Pressable
-            onPress={() => navigation.pop()}
-          >
-            <BackIcon width={20} height={20} fill={colors.textColor} />
-          </Pressable>
-          <Text style={styles.settingTitle}>Change your user color</Text>
-        </View>
-      </View>
+      <BxHeader text="Change your user color" onPress={() => navigation.pop()} />
       { color ? (
         <View style={{ marginHorizontal: 20 }}>
           <View style={{ height: 300 }}>
