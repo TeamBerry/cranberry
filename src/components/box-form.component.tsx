@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import {
-  View, Pressable, Text, StyleSheet,
+  View, Pressable, Text, StyleSheet, Switch, ScrollView,
 } from 'react-native';
 import axios, { AxiosResponse } from 'axios';
-import { ScrollView, Switch } from 'react-native-gesture-handler';
 import Config from 'react-native-config';
 import BxActionComponent from './bx-action.component';
 import BxLoadingIndicator from './bx-loading-indicator.component';
@@ -168,7 +167,11 @@ const BoxForm = ({
                 <Switch
                   value={values.private}
                   onValueChange={(value) => setFieldValue('private', value)}
-                  color="#009AEB"
+                  trackColor={{
+                    false: colors.inactiveColor,
+                    true: colors.activeColor,
+                  }}
+                  thumbColor="white"
                 />
               </View>
               <Text style={{ color: colors.textSystemColor }}>
@@ -192,7 +195,11 @@ const BoxForm = ({
                 <Switch
                   value={values.random}
                   onValueChange={(value) => setFieldValue('random', value)}
-                  color="#009AEB"
+                  trackColor={{
+                    false: colors.inactiveColor,
+                    true: colors.activeColor,
+                  }}
+                  thumbColor="white"
                 />
               </View>
               <Text style={{ color: colors.textSystemColor }}>
@@ -210,7 +217,11 @@ const BoxForm = ({
                 <Switch
                   value={values.loop}
                   onValueChange={(value) => setFieldValue('loop', value)}
-                  color="#009AEB"
+                  trackColor={{
+                    false: colors.inactiveColor,
+                    true: colors.activeColor,
+                  }}
+                  thumbColor="white"
                 />
               </View>
               <Text style={{ color: colors.textSystemColor }}>Played videos will be automatically requeued.</Text>
@@ -252,7 +263,11 @@ const BoxForm = ({
                 <Switch
                   value={values.berries}
                   onValueChange={(value) => setFieldValue('berries', value)}
-                  color="#009AEB"
+                  trackColor={{
+                    false: colors.inactiveColor,
+                    true: colors.activeColor,
+                  }}
+                  thumbColor="white"
                 />
               </View>
               <Text style={{ color: colors.textSystemColor }}>
