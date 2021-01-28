@@ -92,8 +92,9 @@ const UserList = (props: {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (isSharing) {
+      if (isSharing || selectedUser) {
         setSharing(false);
+        setSelectedUser(null);
         return true;
       }
 
@@ -101,7 +102,7 @@ const UserList = (props: {
     });
 
     return () => backHandler.remove();
-  }, [isSharing]);
+  }, [isSharing, selectedUser]);
 
   const generateInvite = async () => {
     const invite = await axios.post(`${Config.API_URL}/boxes/${box._id}/invite`, null);
