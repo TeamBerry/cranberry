@@ -26,6 +26,7 @@ const ModerationScreen = (props: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+      paddingHorizontal: 10,
     },
     roleSpace: {
       flex: 1,
@@ -51,6 +52,7 @@ const ModerationScreen = (props: {
       fontWeight: '700',
       color: colors.textSystemColor,
       marginTop: 10,
+      marginHorizontal: 10,
     },
     helpButton: {
       height: 40,
@@ -107,7 +109,7 @@ const ModerationScreen = (props: {
               </Text>
             </View>
           </Collapsible>
-          <View style={{ marginHorizontal: 10 }}>
+          <View>
             <Text style={styles.settingSectionTitle}>Customizable Roles</Text>
             <Pressable
               style={styles.roleContainer}

@@ -65,7 +65,7 @@ const Chat = (props: {
       padding: 7,
       borderRadius: 6,
       margin: 5,
-      backgroundColor: colors.backgroundInactiveColor,
+      backgroundColor: colors.backgroundChatColor,
     },
     scrollButton: {
       display: 'flex',
@@ -112,6 +112,9 @@ const Chat = (props: {
     const autoScrollThreshold = nativeScrollEvent.contentSize.height - 20;
 
     setAutoScroll(scrollPosition >= autoScrollThreshold);
+    if (scrollPosition >= autoScrollThreshold) {
+      setNewMessageAlert(false);
+    }
   };
 
   const scrollToBottom = () => {

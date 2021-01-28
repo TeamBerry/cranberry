@@ -46,6 +46,7 @@ const SettingsScreen = (props: {
       paddingVertical: 15,
       flexDirection: 'row',
       justifyContent: 'space-between',
+      paddingHorizontal: 10,
     },
     settingSpace: {
       flex: 1,
@@ -74,6 +75,7 @@ const SettingsScreen = (props: {
       fontWeight: '700',
       color: colors.textSystemColor,
       marginTop: 10,
+      paddingHorizontal: 10,
     },
     separator: {
       borderBottomWidth: 1,
@@ -164,7 +166,7 @@ const SettingsScreen = (props: {
             </Pressable>
             <Text style={styles.userName}>{user.name}</Text>
           </View>
-          <View style={{ paddingHorizontal: 10, backgroundColor: colors.background, height: '100%' }}>
+          <View style={{ backgroundColor: colors.background, height: '100%' }}>
             <Text style={styles.settingSectionTitle}>Appearance & Accessibility</Text>
             {colorblind === true ? (
               null
