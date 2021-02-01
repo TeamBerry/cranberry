@@ -17,6 +17,7 @@ import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
 import { AuthSubject } from '../../../models/session.model';
+import EmojiBoard from '../../../components/EmojiBoard/emoji-board';
 
 const Chat = (props: {
     socket: Socket,
@@ -79,6 +80,7 @@ const Chat = (props: {
   const [messageInput, setMessageInput] = useState('');
   const [hasNewMessages, setNewMessageAlert] = useState(false);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
+  const [isEmojiBoardShown, showEmojiBoard] = useState(false);
 
   // Auto Scroll. Use Effect cannot access the refreshed state of the auto scroll without having listener control
   // on the chat socket. useRef is the solution, since the hook has access to it.
@@ -178,6 +180,9 @@ const Chat = (props: {
       <View style={{ paddingHorizontal: 5 }}>
         {user && user.mail ? (
           <View style={{ display: 'flex', flexDirection: 'row' }}>
+            <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showEmojiBoard(!isEmojiBoardShown)}>
+              <Text style={{ fontSize: 20, paddingRight: 7 }}>😀</Text>
+            </Pressable>
             <TextInput
               style={styles.chatInput}
               placeholder="Type to chat..."
@@ -200,6 +205,11 @@ const Chat = (props: {
       </View>
       <Collapsible collapsed={!isBerriesHelperShown}>
         <BerryHelper box={box} permissions={permissions} />
+      </Collapsible>
+      <Collapsible collapsed={!isEmojiBoardShown}>
+        <EmojiBoard
+          selectedEmoji={(emoji) => console.log('EMOJI TO ADD: ', emoji)}
+        />
       </Collapsible>
     </KeyboardAvoidingView>
   );
