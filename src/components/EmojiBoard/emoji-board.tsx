@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  FlatList, Pressable, View, Text, StyleSheet,
+} from 'react-native';
 import emojiDataSource from 'emoji-datasource';
-import TabBar from './tab-bar.component';
-import EmojiPager from './emoji-pager.component';
+import ViewPager from '@react-native-community/viewpager';
 
 export type Emoji = {
     'added_in': string,
@@ -76,23 +77,100 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
     },
   ];
 
+  const _emojiPager = useRef(null);
+
+  const unifiedToChar = (unified) => String.fromCodePoint(...unified.split('-').map((u) => `0x${u}`));
+  const sortEmoji = (list) => list.sort((a, b) => a.sort_order - b.sort_order);
+
+  useEffect(() => {
+    const targetCategory = categories.findIndex((c) => activeCategory === c.key);
+    if (_emojiPager && _emojiPager.current && targetCategory !== -1) {
+      _emojiPager.current?.setPage(targetCategory);
+    }
+  }, [activeCategory]);
+
+  const displayData: Array<{ title: string, data: Array<Emoji> }> = [];
+
+  categories.map((c) => {
+    const emojisOfCategory = emojiList.filter((e) => e.category === c.name);
+    return displayData.push({ title: c.name, data: sortEmoji(emojisOfCategory) });
+  });
+
+  const styles = StyleSheet.create({
+    tabBar: {
+      height: 40,
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+  });
+
+  if (displayData.length === 0) {
+    return null;
+  }
+
+  const renderEmojiCell = (emoji: Emoji) => {
+    const displayableEmoji = unifiedToChar(emoji.unified);
+
+    return (
+      <Pressable
+        style={{
+          height: 42, alignItems: 'center', justifyContent: 'center', padding: 5,
+        }}
+        onPress={() => selectedEmoji(displayableEmoji)}
+        key={emoji.unified}
+      >
+        <Text style={{ fontSize: 26 }}>
+          {displayableEmoji}
+        </Text>
+      </Pressable>
+    );
+  };
+
   if (!emojiList) {
     return null;
   }
 
   return (
     <View style={{ backgroundColor: '#121212', height: 170 }}>
-      <EmojiPager
-        categories={categories}
-        emojiList={emojiList}
-        activeCategory={activeCategory}
-        selectedEmoji={selectedEmoji}
-      />
-      <TabBar
-        categories={categories}
-        activeCategory={activeCategory}
-        selectedCategory={(category) => setActiveCategory(category)}
-      />
+      <ViewPager
+        initialPage={0}
+        style={{ height: 130 }}
+        ref={_emojiPager}
+        onPageSelected={(e) => setActiveCategory(categories[e.nativeEvent.position].key)}
+      >
+        {displayData.map((section) => (
+          <View key={section.title}>
+            <FlatList
+              data={section.data}
+              renderItem={({ item }) => renderEmojiCell(item)}
+              numColumns={8}
+              keyExtractor={(item) => item.unified}
+              initialNumToRender={40}
+            />
+          </View>
+        ))}
+      </ViewPager>
+      <View style={styles.tabBar}>
+        {categories.map((c) => (
+          <Pressable
+            key={c.key}
+            onPress={() => setActiveCategory(c.key)}
+            style={{
+              flex: 1,
+              height: 40,
+              borderColor: activeCategory === c.key ? '#383838' : '#121212',
+              borderTopWidth: 2,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            android_ripple={{ color: '#272727' }}
+          >
+            <Text>{c.icon}</Text>
+          </Pressable>
+        ))}
+      </View>
     </View>
   );
 };
