@@ -106,12 +106,19 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
     },
   });
 
+  if (!emojiList) {
+    return null;
+  }
+
   if (displayData.length === 0) {
     return null;
   }
 
-  const renderEmojiCell = (emoji: Emoji) => {
-    const displayableEmoji = unifiedToChar(emoji.unified);
+  const renderEmojiCell = ({ item }) => {
+    if (item.unified === '1F600') {
+      console.log('RENDERING');
+    }
+    const displayableEmoji = unifiedToChar(item.unified);
 
     return (
       <Pressable
@@ -119,7 +126,6 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
           height: 42, alignItems: 'center', justifyContent: 'center', padding: 5,
         }}
         onPress={() => selectedEmoji(displayableEmoji)}
-        key={emoji.unified}
       >
         <Text style={{ fontSize: 26 }}>
           {displayableEmoji}
@@ -127,10 +133,6 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
       </Pressable>
     );
   };
-
-  if (!emojiList) {
-    return null;
-  }
 
   return (
     <View style={{ backgroundColor: '#121212', height: 170 }}>
@@ -144,10 +146,13 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
           <View key={section.title}>
             <FlatList
               data={section.data}
-              renderItem={({ item }) => renderEmojiCell(item)}
+              renderItem={renderEmojiCell}
               numColumns={8}
               keyExtractor={(item) => item.unified}
-              initialNumToRender={40}
+              initialNumToRender={10}
+              getItemLayout={(data, index) => (
+                { length: 42, offset: 42 * index, index }
+              )}
             />
           </View>
         ))}
@@ -175,4 +180,6 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
   );
 };
 
-export default EmojiBoard;
+const isEqual = () => true;
+
+export default React.memo(EmojiBoard, isEqual);
