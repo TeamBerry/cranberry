@@ -25,11 +25,12 @@ const TabBar = (props: { categories, activeCategory: string, selectedCategory: (
           style={{
             flex: 1,
             height: 40,
-            borderColor: activeCategory === c.key ? '#09AEBD' : '#121212',
+            borderColor: activeCategory === c.key ? '#383838' : '#121212',
             borderTopWidth: 2,
             alignItems: 'center',
             justifyContent: 'center',
           }}
+          android_ripple={{ color: '#272727' }}
         >
           <Text>{c.icon}</Text>
         </Pressable>

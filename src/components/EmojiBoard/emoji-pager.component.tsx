@@ -1,24 +1,23 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
+import ViewPager from '@react-native-community/viewpager';
 import {
-  FlatList,
   Pressable,
   Text,
   View,
-  useWindowDimensions,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import { Emoji } from './emoji-board';
 
 const EmojiPager = (props: {
     categories,
     emojiList: Array<Emoji>,
     activeCategory: string,
-    selectedEmoji: (emoji: Emoji) => void
+    selectedEmoji: (emoji: string) => void
+    onCategorySelected: (page: number) => void
 }) => {
   const {
-    categories, emojiList, activeCategory, selectedEmoji,
+    categories, emojiList, selectedEmoji, activeCategory,
   } = props;
-  const window = useWindowDimensions();
   const _emojiPager = useRef(null);
 
   const unifiedToChar = (unified) => String.fromCodePoint(...unified.split('-').map((u) => `0x${u}`));
@@ -27,9 +26,7 @@ const EmojiPager = (props: {
   useEffect(() => {
     const targetCategory = categories.findIndex((c) => activeCategory === c.key);
     if (_emojiPager && _emojiPager.current && targetCategory !== -1) {
-      _emojiPager.current.scrollToIndex({
-        index: targetCategory,
-      });
+      _emojiPager.current?.setPage(targetCategory);
     }
   }, [activeCategory]);
 
@@ -44,40 +41,42 @@ const EmojiPager = (props: {
     return null;
   }
 
-  const renderEmojiCell = (emoji: Emoji) => (
-    <Pressable
-      style={{
-        height: 40, alignItems: 'center', justifyContent: 'center', padding: 5,
-      }}
-      onPress={() => selectedEmoji(emoji)}
-    >
-      <Text style={{ fontSize: 24 }}>
-        {unifiedToChar(emoji.unified)}
-      </Text>
-    </Pressable>
-  );
+  const renderEmojiCell = (emoji: Emoji) => {
+    const displayableEmoji = unifiedToChar(emoji.unified);
 
-  const renderTab = (set: Array<Emoji>) => (
-    <ScrollView style={{ height: 160, width: window.width }}>
-      <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-        {set.map((e) => renderEmojiCell(e))}
-      </View>
-    </ScrollView>
-  );
+    return (
+      <Pressable
+        style={{
+          height: 42, alignItems: 'center', justifyContent: 'center', padding: 5,
+        }}
+        onPress={() => selectedEmoji(displayableEmoji)}
+        key={emoji.unified}
+      >
+        <Text style={{ fontSize: 26 }}>
+          {displayableEmoji}
+        </Text>
+      </Pressable>
+    );
+  };
 
   return (
-    <FlatList
+    <ViewPager
+      initialPage={0}
+      style={{ height: 130 }}
       ref={_emojiPager}
-      data={displayData}
-      renderItem={({ item }) => renderTab(item.data)}
-      horizontal
-      initialNumToRender={2}
-      keyExtractor={(item, index) => item.title + index}
-      getItemLayout={(data, index) => (
-        { length: window.width, offset: window.width * index, index }
-      )}
-      scrollEnabled={false}
-    />
+    >
+      {displayData.map((section) => (
+        <View key={section.title}>
+          <FlatList
+            data={section.data}
+            renderItem={({ item }) => renderEmojiCell(item)}
+            numColumns={8}
+            keyExtractor={(item) => item.unified}
+            initialNumToRender={40}
+          />
+        </View>
+      ))}
+    </ViewPager>
   );
 };
 

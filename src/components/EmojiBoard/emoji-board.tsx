@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import emoji from 'emoji-datasource';
+import emojiDataSource from 'emoji-datasource';
 import TabBar from './tab-bar.component';
 import EmojiPager from './emoji-pager.component';
 
@@ -28,31 +28,31 @@ export type Emoji = {
     'unified': string
 }
 
-const EmojiBoard = (props: { selectedEmoji: (emoji: Emoji) => void }) => {
+const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
   const { selectedEmoji } = props;
   const [activeCategory, setActiveCategory] = useState('emotions');
-  const emojiList = emoji.filter((e) => !e.obsoleted_by);
+  const emojiList = emojiDataSource.filter((e) => !e.obsoleted_by);
 
   const categories = [
     {
       key: 'emotions',
       name: 'Smileys & Emotion',
-      icon: '😀',
+      icon: '🙂',
     },
     {
       key: 'animals',
       name: 'Animals & Nature',
-      icon: '🦄',
+      icon: '🐣',
     },
     {
       key: 'food',
       name: 'Food & Drink',
-      icon: '🍔',
+      icon: '🍏',
     },
     {
       key: 'activities',
       name: 'Activities',
-      icon: '⚾️',
+      icon: '⚽',
     },
     {
       key: 'travel',
@@ -72,7 +72,7 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: Emoji) => void }) => {
     {
       key: 'flags',
       name: 'Flags',
-      icon: '🏳️‍🌈',
+      icon: '🏳️',
     },
   ];
 
@@ -81,7 +81,7 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: Emoji) => void }) => {
   }
 
   return (
-    <View style={{ backgroundColor: '#121212', height: 200 }}>
+    <View style={{ backgroundColor: '#121212', height: 170 }}>
       <EmojiPager
         categories={categories}
         emojiList={emojiList}

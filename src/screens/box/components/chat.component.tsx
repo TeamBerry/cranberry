@@ -161,6 +161,10 @@ const Chat = (props: {
     return null;
   };
 
+  const AddEmojiToChat = (emoji: string) => {
+    setMessageInput((value) => `${value}${emoji}`);
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -190,6 +194,7 @@ const Chat = (props: {
               onChangeText={(text) => setMessageInput(text)}
               value={messageInput}
               onSubmitEditing={() => sendMessage()}
+              onFocus={() => showEmojiBoard(false)}
             />
             {user && box?.options?.berries && box?.creator?._id !== user._id ? (
               <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
@@ -208,7 +213,7 @@ const Chat = (props: {
       </Collapsible>
       <Collapsible collapsed={!isEmojiBoardShown}>
         <EmojiBoard
-          selectedEmoji={(emoji) => console.log('EMOJI TO ADD: ', emoji)}
+          selectedEmoji={(emoji) => AddEmojiToChat(emoji)}
         />
       </Collapsible>
     </KeyboardAvoidingView>
