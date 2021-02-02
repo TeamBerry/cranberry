@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import {
   FlatList, Pressable, View, Text, StyleSheet,
 } from 'react-native';
 import emojiDataSource from 'emoji-datasource';
-import ViewPager from '@react-native-community/viewpager';
+import ViewPager, { ViewPagerOnPageSelectedEvent } from '@react-native-community/viewpager';
 
 export type Emoji = {
     'added_in': string,
@@ -32,6 +34,8 @@ export type Emoji = {
 const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
   const { selectedEmoji } = props;
   const [activeCategory, setActiveCategory] = useState('emotions');
+  const _emojiPager = useRef(null);
+
   const emojiList = emojiDataSource.filter((e) => !e.obsoleted_by);
 
   const categories = [
@@ -77,11 +81,6 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
     },
   ];
 
-  const _emojiPager = useRef(null);
-
-  const unifiedToChar = (unified) => String.fromCodePoint(...unified.split('-').map((u) => `0x${u}`));
-  const sortEmoji = (list) => list.sort((a, b) => a.sort_order - b.sort_order);
-
   useEffect(() => {
     const targetCategory = categories.findIndex((c) => activeCategory === c.key);
     if (_emojiPager && _emojiPager.current && targetCategory !== -1) {
@@ -89,12 +88,14 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
     }
   }, [activeCategory]);
 
-  const displayData: Array<{ title: string, data: Array<Emoji> }> = [];
-
-  categories.map((c) => {
-    const emojisOfCategory = emojiList.filter((e) => e.category === c.name);
-    return displayData.push({ title: c.name, data: sortEmoji(emojisOfCategory) });
-  });
+  const displayData: Array<{ title: string, data: Array<Emoji> }> = categories.map(
+    (c) => ({
+      title: c.name,
+      data: emojiList
+        .filter((e) => e.category === c.name)
+        .sort((a, b) => a.sort_order - b.sort_order),
+    }),
+  );
 
   const styles = StyleSheet.create({
     tabBar: {
@@ -114,25 +115,34 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
     return null;
   }
 
-  const renderEmojiCell = ({ item }) => {
-    if (item.unified === '1F600') {
-      console.log('RENDERING');
-    }
-    const displayableEmoji = unifiedToChar(item.unified);
+  const renderEmojiCell = useCallback(
+    ({ item }) => {
+      if (item.unified === '1F600') {
+        console.log('RENDERING');
+      }
+      const displayableEmoji = String.fromCodePoint(...item.unified.split('-').map((u) => `0x${u}`));
 
-    return (
-      <Pressable
-        style={{
-          height: 42, alignItems: 'center', justifyContent: 'center', padding: 5,
-        }}
-        onPress={() => selectedEmoji(displayableEmoji)}
-      >
-        <Text style={{ fontSize: 26 }}>
-          {displayableEmoji}
-        </Text>
-      </Pressable>
-    );
+      return (
+        <Pressable
+          style={{
+            height: 42, alignItems: 'center', justifyContent: 'center', padding: 5,
+          }}
+          key={item.unified}
+          onPress={() => selectedEmoji(displayableEmoji)}
+        >
+          <Text style={{ fontSize: 26 }}>
+            {displayableEmoji}
+          </Text>
+        </Pressable>
+      );
+    }, [],
+  );
+
+  const setCategory = (e: ViewPagerOnPageSelectedEvent) => {
+    setActiveCategory(categories[e.nativeEvent.position].key);
   };
+
+  const extractEmojiKey = (item) => item.unified;
 
   return (
     <View style={{ backgroundColor: '#121212', height: 170 }}>
@@ -140,7 +150,7 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
         initialPage={0}
         style={{ height: 130 }}
         ref={_emojiPager}
-        onPageSelected={(e) => setActiveCategory(categories[e.nativeEvent.position].key)}
+        onPageSelected={setCategory}
       >
         {displayData.map((section) => (
           <View key={section.title}>
@@ -148,11 +158,11 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
               data={section.data}
               renderItem={renderEmojiCell}
               numColumns={8}
-              keyExtractor={(item) => item.unified}
               initialNumToRender={10}
-              getItemLayout={(data, index) => (
+              getItemLayout={(_, index) => (
                 { length: 42, offset: 42 * index, index }
               )}
+              keyExtractor={extractEmojiKey}
             />
           </View>
         ))}
@@ -180,6 +190,4 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
   );
 };
 
-const isEqual = () => true;
-
-export default React.memo(EmojiBoard, isEqual);
+export default React.memo(EmojiBoard);
