@@ -19,6 +19,8 @@ import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
 import { AuthSubject } from '../../../models/session.model';
 import EmojiBoard from '../../../components/EmojiBoard/emoji-board';
+import EmojiIcon from '../../../../assets/icons/toggle-emoji-icon.svg';
+import KeyboardIcon from '../../../../assets/icons/toggle-keyboard-icon.svg';
 
 const Chat = (props: {
     socket: Socket,
@@ -248,9 +250,9 @@ const Chat = (props: {
               />
               <Pressable onPress={() => toggleEmojiBoard()} style={styles.emojiTogglerContainer}>
                 {isEmojiBoardShown ? (
-                  <Text style={{ fontSize: 20 }}>⌨</Text>
+                  <KeyboardIcon height={20} width={20} fill={colors.textColor} />
                 ) : (
-                  <Text style={{ fontSize: 20 }}>🙂</Text>
+                  <EmojiIcon height={20} width={20} fill={colors.textColor} />
                 )}
               </Pressable>
             </View>
