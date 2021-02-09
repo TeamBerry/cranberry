@@ -7,6 +7,8 @@ import {
 import emojiDataSource from 'emoji-datasource';
 import ViewPager, { ViewPagerOnPageSelectedEvent } from '@react-native-community/viewpager';
 import EmojiView from './emoji-view';
+import BackspaceIcon from '../../../assets/icons/backspace-icon.svg';
+import { useTheme } from '../../shared/theme.context';
 
 export type Emoji = {
     'added_in': string,
@@ -32,10 +34,15 @@ export type Emoji = {
     'unified': string
 }
 
-const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
-  const { selectedEmoji } = props;
+const EmojiBoard = (props: {
+    selectedEmoji: (emoji: string) => void,
+    shortBackspace: () => void,
+    longBackspace: () => void,
+}) => {
+  const { selectedEmoji, shortBackspace, longBackspace } = props;
   const [activeCategory, setActiveCategory] = useState('emotions');
   const _emojiPager = useRef(null);
+  const { colors } = useTheme();
 
   const emojiList = emojiDataSource.filter((e) => !e.obsoleted_by);
 
@@ -155,6 +162,19 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
             <Text>{c.icon}</Text>
           </Pressable>
         ))}
+        <Pressable
+          onPress={shortBackspace}
+          onLongPress={longBackspace}
+          style={{
+            flex: 1,
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          android_ripple={{ color: '#272727' }}
+        >
+          <BackspaceIcon width={20} height={20} fill={colors.textSystemColor} />
+        </Pressable>
       </View>
     </View>
   );

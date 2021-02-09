@@ -11,16 +11,16 @@ import Collapsible from 'react-native-collapsible';
 import { Socket } from 'socket.io-client';
 import ChatMessage from './chat-message.component';
 import DownIcon from '../../../../assets/icons/down-icon.svg';
-import SendMessage from '../../../../assets/icons/chat-icon.svg';
+import SendMessage from '../../../../assets/icons/send-message-icon.svg';
+import EmojiBoard from '../../../components/EmojiBoard/emoji-board';
+import EmojiIcon from '../../../../assets/icons/toggle-emoji-icon.svg';
+import KeyboardIcon from '../../../../assets/icons/toggle-keyboard-icon.svg';
 
 import Box from '../../../models/box.model';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
 import { useTheme } from '../../../shared/theme.context';
 import { AuthSubject } from '../../../models/session.model';
-import EmojiBoard from '../../../components/EmojiBoard/emoji-board';
-import EmojiIcon from '../../../../assets/icons/toggle-emoji-icon.svg';
-import KeyboardIcon from '../../../../assets/icons/toggle-keyboard-icon.svg';
 
 const Chat = (props: {
     socket: Socket,
@@ -189,8 +189,16 @@ const Chat = (props: {
     return null;
   };
 
-  const AddEmojiToChat = (emoji: string) => {
+  const addEmojiToChat = (emoji: string) => {
     setMessageInput((value) => `${value}${emoji}`);
+  };
+
+  const shortBackspace = () => {
+    setMessageInput((text) => text.slice(0, text.length - 1));
+  };
+
+  const longBackspace = () => {
+    setMessageInput('');
   };
 
   const toggleEmojiBoard = () => {
@@ -278,7 +286,9 @@ const Chat = (props: {
           </Collapsible>
           <Collapsible collapsed={!isEmojiBoardShown}>
             <EmojiBoard
-              selectedEmoji={(emoji) => AddEmojiToChat(emoji)}
+              selectedEmoji={addEmojiToChat}
+              shortBackspace={shortBackspace}
+              longBackspace={longBackspace}
             />
           </Collapsible>
         </>
