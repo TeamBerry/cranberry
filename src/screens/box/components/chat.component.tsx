@@ -10,8 +10,9 @@ import {
 import Collapsible from 'react-native-collapsible';
 import { Socket } from 'socket.io-client';
 import ChatMessage from './chat-message.component';
-
 import DownIcon from '../../../../assets/icons/down-icon.svg';
+import SendMessage from '../../../../assets/icons/chat-icon.svg';
+
 import Box from '../../../models/box.model';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
@@ -27,6 +28,7 @@ const Chat = (props: {
     user: AuthSubject
 }) => {
   const _chatRef = useRef(null);
+  const _chatInputRef = useRef(null);
   const {
     socket, box, berryCount, permissions, user,
   } = props;
@@ -53,14 +55,23 @@ const Chat = (props: {
     messageList: {
       paddingTop: 0,
     },
-    chatInput: {
-      padding: 10,
+    inputContainer: {
       marginBottom: 5,
       height: 40,
       borderRadius: 5,
       flex: 1,
       backgroundColor: colors.backgroundChatColor,
+      display: 'flex',
+      flexDirection: 'row',
+    },
+    chatInput: {
+      padding: 10,
+      flex: 1,
       color: colors.textColor,
+    },
+    emojiTogglerContainer: {
+      paddingHorizontal: 7,
+      justifyContent: 'center',
     },
     scrollButtonContainer: {
       padding: 7,
@@ -73,6 +84,16 @@ const Chat = (props: {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    sendMessageButton: {
+      backgroundColor: '#009AEB',
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginHorizontal: 5,
     },
   });
 
@@ -138,6 +159,11 @@ const Chat = (props: {
     });
     socket.emit('chat', newMessage);
     setMessageInput('');
+
+    if (_chatInputRef && _chatInputRef.current) {
+      _chatInputRef.current.blur();
+    }
+    showEmojiBoard(false);
   };
 
   const ResumeScrollButton = () => {
@@ -165,6 +191,26 @@ const Chat = (props: {
     setMessageInput((value) => `${value}${emoji}`);
   };
 
+  const toggleEmojiBoard = () => {
+    showBerriesHelper(false);
+
+    if (_chatInputRef && _chatInputRef.current) {
+      if (isEmojiBoardShown) {
+        _chatInputRef.current.focus();
+      } else {
+        _chatInputRef.current.blur();
+      }
+    }
+
+    showEmojiBoard(!isEmojiBoardShown);
+  };
+
+  const toggleBerriesHelper = () => {
+    showEmojiBoard(false);
+
+    showBerriesHelper(!isBerriesHelperShown);
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -184,21 +230,36 @@ const Chat = (props: {
       <View style={{ paddingHorizontal: 5 }}>
         {user && user.mail ? (
           <View style={{ display: 'flex', flexDirection: 'row' }}>
-            <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showEmojiBoard(!isEmojiBoardShown)}>
-              <Text style={{ fontSize: 20, paddingRight: 7 }}>😀</Text>
-            </Pressable>
-            <TextInput
-              style={styles.chatInput}
-              placeholder="Type to chat..."
-              placeholderTextColor={colors.textSystemColor}
-              onChangeText={(text) => setMessageInput(text)}
-              value={messageInput}
-              onSubmitEditing={() => sendMessage()}
-              onFocus={() => showEmojiBoard(false)}
-            />
             {user && box?.options?.berries && box?.creator?._id !== user._id ? (
-              <Pressable style={{ flex: 0, justifyContent: 'center' }} onPress={() => showBerriesHelper(!isBerriesHelperShown)}>
+              <Pressable style={{ flex: 0, justifyContent: 'center', marginRight: 5 }} onPress={() => toggleBerriesHelper()}>
                 <BerryCounter count={berryCount} />
+              </Pressable>
+            ) : null}
+            <View style={styles.inputContainer}>
+              <TextInput
+                ref={_chatInputRef}
+                style={styles.chatInput}
+                placeholder="Type to chat..."
+                placeholderTextColor={colors.textSystemColor}
+                onChangeText={(text) => setMessageInput(text)}
+                value={messageInput}
+                onSubmitEditing={() => sendMessage()}
+                onFocus={() => showEmojiBoard(false)}
+              />
+              <Pressable onPress={() => toggleEmojiBoard()} style={styles.emojiTogglerContainer}>
+                {isEmojiBoardShown ? (
+                  <Text style={{ fontSize: 20 }}>⌨</Text>
+                ) : (
+                  <Text style={{ fontSize: 20 }}>🙂</Text>
+                )}
+              </Pressable>
+            </View>
+            { messageInput.length > 0 ? (
+              <Pressable
+                onPress={() => sendMessage()}
+                style={styles.sendMessageButton}
+              >
+                <SendMessage width={20} height={20} fill={colors.textColor} />
               </Pressable>
             ) : null}
           </View>
@@ -208,14 +269,18 @@ const Chat = (props: {
           </View>
         )}
       </View>
-      <Collapsible collapsed={!isBerriesHelperShown}>
-        <BerryHelper box={box} permissions={permissions} />
-      </Collapsible>
-      <Collapsible collapsed={!isEmojiBoardShown}>
-        <EmojiBoard
-          selectedEmoji={(emoji) => AddEmojiToChat(emoji)}
-        />
-      </Collapsible>
+      { user && user.mail ? (
+        <>
+          <Collapsible collapsed={!isBerriesHelperShown}>
+            <BerryHelper box={box} permissions={permissions} />
+          </Collapsible>
+          <Collapsible collapsed={!isEmojiBoardShown}>
+            <EmojiBoard
+              selectedEmoji={(emoji) => AddEmojiToChat(emoji)}
+            />
+          </Collapsible>
+        </>
+      ) : null}
     </KeyboardAvoidingView>
   );
 };
