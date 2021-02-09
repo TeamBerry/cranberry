@@ -138,9 +138,9 @@ const EmojiBoard = (props: {
       sections[0].data.splice(emojiIndex, 1);
     }
     sections[0].data.unshift(emoji);
-    // Keep only the 50 first emojis
-    sections[0].data.slice(0, 50);
-
+    // Keep only the 48 first emojis
+    sections[0].data.splice(48, 1);
+    // Update history in storage
     AsyncStorage.setItem('BBOX-emoji-history', JSON.stringify(sections[0].data));
 
     // Send emoji to parent
