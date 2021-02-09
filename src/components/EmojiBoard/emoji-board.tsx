@@ -6,33 +6,14 @@ import {
 } from 'react-native';
 import emojiDataSource from 'emoji-datasource';
 import ViewPager, { ViewPagerOnPageSelectedEvent } from '@react-native-community/viewpager';
-import EmojiView from './emoji-view';
-import BackspaceIcon from '../../../assets/icons/backspace-icon.svg';
-import { useTheme } from '../../shared/theme.context';
+import AsyncStorage from '@react-native-community/async-storage';
 
-export type Emoji = {
-    'added_in': string,
-    'au': string,
-    'category': string,
-    'docomo': string,
-    'google': string,
-    'has_img_apple': boolean,
-    'has_img_facebook': boolean,
-    'has_img_google': boolean,
-    'has_img_twitter': boolean,
-    'image': string,
-    'name': string,
-    'non_qualified': unknown,
-    'sheet_x': number,
-    'sheet_y': number,
-    'short_name': string,
-    'short_names': Array<string>,
-    'softbank': string,
-    'sort_order': number,
-    'text': string,
-    'texts': Array<string>,
-    'unified': string
-}
+import EmojiView from './emoji-view';
+import { useTheme } from '../../shared/theme.context';
+import BackspaceIcon from '../../../assets/icons/backspace-icon.svg';
+import HistoryIcon from '../../../assets/icons/history-icon.svg';
+import { IEmoji } from './types';
+import EmojiClass from './emoji-methods';
 
 const EmojiBoard = (props: {
     selectedEmoji: (emoji: string) => void,
@@ -41,12 +22,18 @@ const EmojiBoard = (props: {
 }) => {
   const { selectedEmoji, shortBackspace, longBackspace } = props;
   const [activeCategory, setActiveCategory] = useState('emotions');
+  const [sections, setSections] = useState<{ title: string, data: Array<IEmoji> }[]>([]);
   const _emojiPager = useRef(null);
   const { colors } = useTheme();
 
   const emojiList = emojiDataSource.filter((e) => !e.obsoleted_by);
 
   const categories = [
+    {
+      key: 'history',
+      name: 'History',
+      icon: () => <HistoryIcon width={20} height={20} fill={colors.textSystemColor} />,
+    },
     {
       key: 'emotions',
       name: 'Smileys & Emotion',
@@ -101,14 +88,26 @@ const EmojiBoard = (props: {
     }
   }, [activeCategory]);
 
-  const displayData: Array<{ title: string, data: Array<Emoji> }> = categories.map(
-    (c) => ({
-      title: c.name,
-      data: emojiList
-        .filter((e) => e.category === c.name)
-        .sort((a, b) => a.sort_order - b.sort_order),
-    }),
-  );
+  useEffect(() => {
+    const fillData = async () => {
+      const displayData: Array<{ title: string, data: Array<IEmoji> }> = categories.map(
+        (c) => ({
+          title: c.name,
+          data: c.key !== 'history'
+            ? emojiList
+              .filter((e) => e.category === c.name)
+              .sort((a, b) => a.sort_order - b.sort_order)
+            : [],
+        }),
+      );
+
+      displayData[0].data = JSON.parse(await AsyncStorage.getItem('BBOX-emoji-history')) ?? [];
+
+      setSections(displayData);
+    };
+
+    fillData();
+  }, []);
 
   const styles = StyleSheet.create({
     tabBar: {
@@ -124,7 +123,7 @@ const EmojiBoard = (props: {
     return null;
   }
 
-  if (displayData.length === 0) {
+  if (sections.length === 0) {
     return null;
   }
 
@@ -132,16 +131,32 @@ const EmojiBoard = (props: {
     setActiveCategory(categories[e.nativeEvent.position].key);
   };
 
+  const selectEmoji = (emoji: IEmoji) => {
+    // Add it to history
+    const emojiIndex = sections[0].data.indexOf(emoji);
+    if (emojiIndex !== -1) {
+      sections[0].data.splice(emojiIndex, 1);
+    }
+    sections[0].data.unshift(emoji);
+    // Keep only the 50 first emojis
+    sections[0].data.slice(0, 50);
+
+    AsyncStorage.setItem('BBOX-emoji-history', JSON.stringify(sections[0].data));
+
+    // Send emoji to parent
+    selectedEmoji(EmojiClass.emojiToDisplay({ emoji }));
+  };
+
   return (
     <View style={{ backgroundColor: '#121212', height: 170 }}>
       <ViewPager
-        initialPage={0}
+        initialPage={1}
         style={{ height: 130 }}
         ref={_emojiPager}
         onPageSelected={setCategory}
       >
-        {displayData.map((section) => (
-          <EmojiView section={section} selectedEmoji={selectedEmoji} />
+        {sections.map((section) => (
+          <EmojiView section={section} selectedEmoji={selectEmoji} />
         ))}
       </ViewPager>
       <View style={styles.tabBar}>
@@ -159,7 +174,11 @@ const EmojiBoard = (props: {
             }}
             android_ripple={{ color: '#272727' }}
           >
-            <Text>{c.icon}</Text>
+            { typeof c.icon === 'string' ? (
+              <Text>{c.icon}</Text>
+            ) : (
+              c.icon
+            )}
           </Pressable>
         ))}
         <Pressable

@@ -1,31 +1,30 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   FlatList, View, Pressable, Text,
 } from 'react-native';
+import { IEmoji } from './types';
 
-const EmojiView = (props: { section, selectedEmoji: (string) => void }) => {
+const EmojiView = (props: { section, selectedEmoji: (emoji: IEmoji) => void }) => {
   const { section, selectedEmoji } = props;
   const extractEmojiKey = (item) => item.unified;
 
-  const renderEmojiCell = useCallback(
-    ({ item }) => {
-      const displayableEmoji = String.fromCodePoint(...item.unified.split('-').map((u) => `0x${u}`));
+  const renderEmojiCell = ({ item }) => {
+    const displayableEmoji = String.fromCodePoint(...item.unified.split('-').map((u) => `0x${u}`));
 
-      return (
-        <Pressable
-          style={{
-            height: 42, alignItems: 'center', justifyContent: 'center', padding: 5,
-          }}
-          key={item.unified}
-          onPress={() => selectedEmoji(displayableEmoji)}
-        >
-          <Text style={{ fontSize: 26 }}>
-            {displayableEmoji}
-          </Text>
-        </Pressable>
-      );
-    }, [],
-  );
+    return (
+      <Pressable
+        style={{
+          height: 42, alignItems: 'center', justifyContent: 'center', padding: 5,
+        }}
+        key={item.unified}
+        onPress={() => selectedEmoji(item)}
+      >
+        <Text style={{ fontSize: 26 }}>
+          {displayableEmoji}
+        </Text>
+      </Pressable>
+    );
+  };
 
   return (
     <View key={section.title}>
@@ -43,6 +42,6 @@ const EmojiView = (props: { section, selectedEmoji: (string) => void }) => {
   );
 };
 
-const isEqual = () => true;
+const isEqual = (prevProps, nextProps) => prevProps.section.data.length === nextProps.section.data.length;
 
 export default React.memo(EmojiView, isEqual);
