@@ -46,6 +46,11 @@ const EmojiBoard = (props: { selectedEmoji: (emoji: string) => void }) => {
       icon: '🙂',
     },
     {
+      key: 'people',
+      name: 'People & Body',
+      icon: '👋',
+    },
+    {
       key: 'animals',
       name: 'Animals & Nature',
       icon: '🐣',
