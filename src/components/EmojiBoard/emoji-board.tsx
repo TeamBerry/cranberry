@@ -13,6 +13,7 @@ import { useTheme } from '../../shared/theme.context';
 import BackspaceIcon from '../../../assets/icons/backspace-icon.svg';
 import HistoryIcon from '../../../assets/icons/history-icon.svg';
 import { IEmoji } from './emoji-interface';
+import { BxLoadingIndicator } from '../bx-loading-indicator.component';
 
 const EmojiBoard = (props: {
     selectedEmoji: (emoji: string) => void,
@@ -105,7 +106,9 @@ const EmojiBoard = (props: {
       setSections(displayData);
     };
 
-    fillData();
+    setTimeout(() => {
+      fillData();
+    }, 500);
   }, []);
 
   const styles = StyleSheet.create({
@@ -152,52 +155,58 @@ const EmojiBoard = (props: {
 
   return (
     <View style={{ backgroundColor: '#121212', height: 170 }}>
-      <ViewPager
-        initialPage={0}
-        style={{ height: 130 }}
-        ref={_emojiPager}
-        onPageSelected={setCategory}
-      >
-        {sections.map((section) => (
-          <EmojiView section={section} selectedEmoji={selectEmoji} key={section.title} />
-        ))}
-      </ViewPager>
-      <View style={styles.tabBar}>
-        {categories.map((c) => (
-          <Pressable
-            key={c.key}
-            onPress={() => setActiveCategory(c.key)}
-            style={{
-              flex: 1,
-              height: 40,
-              borderColor: activeCategory === c.key ? '#383838' : '#121212',
-              borderTopWidth: 2,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            android_ripple={{ color: '#272727' }}
+      { sections ? (
+        <>
+          <ViewPager
+            initialPage={0}
+            style={{ height: 130 }}
+            ref={_emojiPager}
+            onPageSelected={setCategory}
           >
-            { typeof c.icon === 'string' ? (
-              <Text>{c.icon}</Text>
-            ) : (
-              c.icon
-            )}
-          </Pressable>
-        ))}
-        <Pressable
-          onPress={shortBackspace}
-          onLongPress={longBackspace}
-          style={{
-            flex: 1,
-            height: 40,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          android_ripple={{ color: '#272727' }}
-        >
-          <BackspaceIcon width={20} height={20} fill={colors.textSystemColor} />
-        </Pressable>
-      </View>
+            {sections.map((section) => (
+              <EmojiView section={section} selectedEmoji={selectEmoji} key={section.title} />
+            ))}
+          </ViewPager>
+          <View style={styles.tabBar}>
+            {categories.map((c) => (
+              <Pressable
+                key={c.key}
+                onPress={() => setActiveCategory(c.key)}
+                style={{
+                  flex: 1,
+                  height: 40,
+                  borderColor: activeCategory === c.key ? '#383838' : '#121212',
+                  borderTopWidth: 2,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                android_ripple={{ color: '#272727' }}
+              >
+                { typeof c.icon === 'string' ? (
+                  <Text>{c.icon}</Text>
+                ) : (
+                  c.icon
+                )}
+              </Pressable>
+            ))}
+            <Pressable
+              onPress={shortBackspace}
+              onLongPress={longBackspace}
+              style={{
+                flex: 1,
+                height: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              android_ripple={{ color: '#272727' }}
+            >
+              <BackspaceIcon width={20} height={20} fill={colors.textSystemColor} />
+            </Pressable>
+          </View>
+        </>
+      ) : (
+        <BxLoadingIndicator />
+      )}
     </View>
   );
 };

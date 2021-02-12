@@ -256,9 +256,9 @@ const Chat = (props: {
         ))}
       </ScrollView>
       <ResumeScrollButton />
-      <View style={{ paddingHorizontal: 5 }}>
-        {user && user.mail ? (
-          <View style={{ display: 'flex', flexDirection: 'row' }}>
+      {user && user.mail ? (
+        <>
+          <View style={{ display: 'flex', flexDirection: 'row', paddingHorizontal: 5 }}>
             {user && box?.options?.berries && box?.creator?._id !== user._id ? (
               <Pressable style={{ flex: 0, justifyContent: 'center', marginRight: 5 }} onPress={() => toggleBerriesHelper()}>
                 <BerryCounter count={berryCount} />
@@ -292,14 +292,6 @@ const Chat = (props: {
               </Pressable>
             ) : null}
           </View>
-        ) : (
-          <View style={{ display: 'flex', height: 30 }}>
-            <Text style={{ color: colors.textColor, textAlign: 'center' }}>Create an account or log in to chat with everyone!</Text>
-          </View>
-        )}
-      </View>
-      { user && user.mail ? (
-        <>
           <Collapsible collapsed={!isBerriesHelperShown}>
             <BerryHelper box={box} permissions={permissions} />
           </Collapsible>
@@ -311,7 +303,11 @@ const Chat = (props: {
             />
           </Collapsible>
         </>
-      ) : null}
+      ) : (
+        <View style={{ display: 'flex', height: 30, paddingHorizontal: 5 }}>
+          <Text style={{ color: colors.textColor, textAlign: 'center' }}>Create an account or log in to chat with everyone!</Text>
+        </View>
+      )}
     </KeyboardAvoidingView>
   );
 };
