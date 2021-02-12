@@ -50,7 +50,7 @@
         "yup": "0.32.8"
     },
     "devDependencies": {
-        "@babel/core": "7.12.13",
+        "@babel/core": "7.12.16",
         "@types/react": "17.0.1",
         "@types/react-native": "0.63.48",
         "@types/yup": "0.29.11",
@@ -68,7 +68,7 @@
         "metro-react-native-babel-preset": "0.65.0",
         "react-native-svg-transformer": "0.14.3",
         "react-test-renderer": "17.0.1",
-        "typescript": "4.1.3"
+        "typescript": "4.1.5"
     },
     "private": true,
     "version": "0.17.0"
