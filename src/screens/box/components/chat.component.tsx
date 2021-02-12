@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable, ScrollView,
 } from 'react-native';
+import runes from 'runes2';
 
 import {
   Message, FeedbackMessage, SystemMessage, Permission,
@@ -194,7 +195,7 @@ const Chat = (props: {
   };
 
   const shortBackspace = () => {
-    setMessageInput((text) => text.slice(0, text.length - 1));
+    setMessageInput((messageInput) => runes(messageInput).slice(0, -1).join(''));
   };
 
   const longBackspace = () => {

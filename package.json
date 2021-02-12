@@ -45,6 +45,7 @@
         "react-native-youtube": "2.0.1",
         "react-redux": "7.2.2",
         "redux": "4.0.5",
+        "runes2": "^0.4.14",
         "socket.io-client": "3.1.1",
         "yup": "0.32.8"
     },
