@@ -159,7 +159,7 @@ const EmojiBoard = (props: {
         onPageSelected={setCategory}
       >
         {sections.map((section) => (
-          <EmojiView section={section} selectedEmoji={selectEmoji} />
+          <EmojiView section={section} selectedEmoji={selectEmoji} key={section.title} />
         ))}
       </ViewPager>
       <View style={styles.tabBar}>
