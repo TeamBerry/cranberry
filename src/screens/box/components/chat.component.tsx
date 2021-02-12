@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable, ScrollView,
+  TextInput, StyleSheet, KeyboardAvoidingView, View, NativeScrollEvent, Text, Pressable, ScrollView, BackHandler,
 } from 'react-native';
 import runes from 'runes2';
 
@@ -131,6 +131,24 @@ const Chat = (props: {
       }
     });
   }, []);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (!isBerriesHelperShown && !isEmojiBoardShown) {
+        return true;
+      }
+
+      if (isEmojiBoardShown || isBerriesHelperShown) {
+        showBerriesHelper(false);
+        showEmojiBoard(false);
+        return true;
+      }
+
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [isBerriesHelperShown, isEmojiBoardShown]);
 
   const handleScroll = (nativeScrollEvent: NativeScrollEvent) => {
     const scrollPosition = nativeScrollEvent.layoutMeasurement.height
