@@ -153,7 +153,7 @@ const EmojiBoard = (props: {
   return (
     <View style={{ backgroundColor: '#121212', height: 170 }}>
       <ViewPager
-        initialPage={1}
+        initialPage={0}
         style={{ height: 130 }}
         ref={_emojiPager}
         onPageSelected={setCategory}
