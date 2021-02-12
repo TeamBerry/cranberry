@@ -134,10 +134,6 @@ const Chat = (props: {
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (!isBerriesHelperShown && !isEmojiBoardShown) {
-        return true;
-      }
-
       if (isEmojiBoardShown || isBerriesHelperShown) {
         showBerriesHelper(false);
         showEmojiBoard(false);
