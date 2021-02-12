@@ -12,8 +12,7 @@ import EmojiView from './emoji-view';
 import { useTheme } from '../../shared/theme.context';
 import BackspaceIcon from '../../../assets/icons/backspace-icon.svg';
 import HistoryIcon from '../../../assets/icons/history-icon.svg';
-import { IEmoji } from './types';
-import EmojiClass from './emoji-methods';
+import { IEmoji } from './emoji-interface';
 
 const EmojiBoard = (props: {
     selectedEmoji: (emoji: string) => void,
@@ -131,7 +130,7 @@ const EmojiBoard = (props: {
     setActiveCategory(categories[e.nativeEvent.position].key);
   };
 
-  const selectEmoji = (emoji: IEmoji) => {
+  const selectEmoji = (emoji: IEmoji, displayableEmoji: string) => {
     // Add it to history
     const emojiIndex = sections[0].data.indexOf(emoji);
     if (emojiIndex !== -1) {
@@ -144,7 +143,7 @@ const EmojiBoard = (props: {
     AsyncStorage.setItem('BBOX-emoji-history', JSON.stringify(sections[0].data));
 
     // Send emoji to parent
-    selectedEmoji(EmojiClass.emojiToDisplay({ emoji }));
+    selectedEmoji(displayableEmoji);
   };
 
   return (
