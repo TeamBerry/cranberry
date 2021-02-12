@@ -46,6 +46,4 @@ target 'cranberry' do
 
   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
-  pod 'react-native-viewpager', :path => '../node_modules/@react-native-community/viewpager'
-
 end

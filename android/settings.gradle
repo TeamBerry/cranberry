@@ -1,6 +1,4 @@
 rootProject.name = 'cranberry'
-include ':@react-native-community_viewpager'
-project(':@react-native-community_viewpager').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/viewpager/android')
 include ':react-native-config'
 project(':react-native-config').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-config/android')
 
