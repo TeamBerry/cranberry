@@ -132,15 +132,19 @@ const EmojiBoard = (props: {
 
   const selectEmoji = (emoji: IEmoji, displayableEmoji: string) => {
     // Add it to history
-    const emojiIndex = sections[0].data.indexOf(emoji);
-    if (emojiIndex !== -1) {
-      sections[0].data.splice(emojiIndex, 1);
+    const emojiIndex = sections[0].data.findIndex((historyItem) => historyItem.unified === emoji.unified);
+
+    // To limit requests to async storage, multiple taps on the same emoji will not trigger the refresh of history
+    if (emojiIndex !== 0) {
+      if (emojiIndex !== -1) {
+        sections[0].data.splice(emojiIndex, 1);
+      }
+      sections[0].data.unshift(emoji);
+      // Keep only the 48 first emojis
+      sections[0].data.splice(48, 1);
+      // Update history in storage
+      AsyncStorage.setItem('BBOX-emoji-history', JSON.stringify(sections[0].data));
     }
-    sections[0].data.unshift(emoji);
-    // Keep only the 48 first emojis
-    sections[0].data.splice(48, 1);
-    // Update history in storage
-    AsyncStorage.setItem('BBOX-emoji-history', JSON.stringify(sections[0].data));
 
     // Send emoji to parent
     selectedEmoji(displayableEmoji);
