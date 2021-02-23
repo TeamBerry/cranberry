@@ -13,7 +13,7 @@ import { useTheme } from '../../shared/theme.context';
 import BackspaceIcon from '../../../assets/icons/backspace-icon.svg';
 import HistoryIcon from '../../../assets/icons/history-icon.svg';
 import { IEmoji } from './emoji-interface';
-import { BxLoadingIndicator } from '../bx-loading-indicator.component';
+import BxLoadingIndicator from '../bx-loading-indicator.component';
 
 const EmojiBoard = (props: {
     selectedEmoji: (emoji: string) => void,
@@ -118,6 +118,7 @@ const EmojiBoard = (props: {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-around',
+      backgroundColor: colors.backgroundSecondaryAlternateColor,
     },
   });
 
@@ -175,7 +176,7 @@ const EmojiBoard = (props: {
                 style={{
                   flex: 1,
                   height: 40,
-                  borderColor: activeCategory === c.key ? '#383838' : '#121212',
+                  borderColor: activeCategory === c.key ? '#383838' : colors.backgroundSecondaryAlternateColor,
                   borderTopWidth: 2,
                   alignItems: 'center',
                   justifyContent: 'center',
