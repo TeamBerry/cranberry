@@ -19,7 +19,7 @@ const EmojiView = (props: { section, selectedEmoji: (emoji: IEmoji, displayableE
         key={item.unified}
         onPress={() => selectedEmoji(item, displayableEmoji)}
       >
-        <Text style={{ fontSize: 26 }}>
+        <Text style={{ fontSize: 26, color: 'white' }}>
           {displayableEmoji}
         </Text>
       </Pressable>
@@ -27,9 +27,14 @@ const EmojiView = (props: { section, selectedEmoji: (emoji: IEmoji, displayableE
   };
 
   return (
-    <View key={section.title}>
+    <View
+      key={section.title}
+    >
       <FlatList
         data={section.data}
+        contentContainerStyle={{
+          paddingHorizontal: 8,
+        }}
         renderItem={renderEmojiCell}
         numColumns={8}
         initialNumToRender={10}
