@@ -13,6 +13,7 @@ import { useTheme } from '../../shared/theme.context';
 import BackspaceIcon from '../../../assets/icons/backspace-icon.svg';
 import HistoryIcon from '../../../assets/icons/history-icon.svg';
 import { IEmoji } from './emoji-interface';
+import BxLoadingIndicator from '../bx-loading-indicator.component';
 
 const EmojiBoard = (props: {
     selectedEmoji: (emoji: string) => void,
