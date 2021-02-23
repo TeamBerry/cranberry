@@ -275,6 +275,28 @@ const BoxForm = ({
                 the berries to skip a video or select the next video to play.
               </Text>
             </View>
+            { !box._id ? (
+              <View style={{
+                padding: 10, marginVertical: 15, backgroundColor: colors.backgroundAlternateColor, borderRadius: 6,
+              }}
+              >
+                <Text style={{ color: colors.textSystemColor, textAlign: 'center', marginBottom: 10 }}>
+                  ⚠️ A few rules before you go! ⚠️
+                </Text>
+                <Text style={{ color: colors.textSystemColor, marginVertical: 5 }}>
+                  <Text style={{ color: colors.activeColor }}> ● </Text>
+                  After a 24-hour period of inactivity (no video playing), your box will be automatically closed.
+                  <Text style={{ color: colors.textSystemColor, fontStyle: 'italic' }}>
+                    (You can re-open the box as you wish, only on the web client at the moment).
+                  </Text>
+                </Text>
+                <Text style={{ color: colors.textSystemColor, marginVertical: 5 }}>
+                  <Text style={{ color: colors.activeColor }}> ● </Text>
+                  After a 7-day period of inactivity, your box will be automatically deleted.
+                  <Text style={{ fontWeight: '700' }}>This operation is irreversible.</Text>
+                </Text>
+              </View>
+            ) : null}
             {!isUpserting ? (
               <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
                 <BxActionComponent options={{ text: box._id ? 'Save Modifications' : 'Create Box' }} />
