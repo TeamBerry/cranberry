@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import {
-  View, Pressable, Text, StyleSheet,
+  View, Pressable, Text, StyleSheet, Switch, ScrollView,
 } from 'react-native';
 import axios, { AxiosResponse } from 'axios';
-import { ScrollView, Switch } from 'react-native-gesture-handler';
 import Config from 'react-native-config';
 import BxActionComponent from './bx-action.component';
 import BxLoadingIndicator from './bx-loading-indicator.component';
@@ -168,7 +167,11 @@ const BoxForm = ({
                 <Switch
                   value={values.private}
                   onValueChange={(value) => setFieldValue('private', value)}
-                  color="#009AEB"
+                  trackColor={{
+                    false: colors.inactiveColor,
+                    true: colors.activeColor,
+                  }}
+                  thumbColor="white"
                 />
               </View>
               <Text style={{ color: colors.textSystemColor }}>
@@ -192,7 +195,11 @@ const BoxForm = ({
                 <Switch
                   value={values.random}
                   onValueChange={(value) => setFieldValue('random', value)}
-                  color="#009AEB"
+                  trackColor={{
+                    false: colors.inactiveColor,
+                    true: colors.activeColor,
+                  }}
+                  thumbColor="white"
                 />
               </View>
               <Text style={{ color: colors.textSystemColor }}>
@@ -210,7 +217,11 @@ const BoxForm = ({
                 <Switch
                   value={values.loop}
                   onValueChange={(value) => setFieldValue('loop', value)}
-                  color="#009AEB"
+                  trackColor={{
+                    false: colors.inactiveColor,
+                    true: colors.activeColor,
+                  }}
+                  thumbColor="white"
                 />
               </View>
               <Text style={{ color: colors.textSystemColor }}>Played videos will be automatically requeued.</Text>
@@ -252,7 +263,11 @@ const BoxForm = ({
                 <Switch
                   value={values.berries}
                   onValueChange={(value) => setFieldValue('berries', value)}
-                  color="#009AEB"
+                  trackColor={{
+                    false: colors.inactiveColor,
+                    true: colors.activeColor,
+                  }}
+                  thumbColor="white"
                 />
               </View>
               <Text style={{ color: colors.textSystemColor }}>
@@ -260,6 +275,28 @@ const BoxForm = ({
                 the berries to skip a video or select the next video to play.
               </Text>
             </View>
+            { !box._id ? (
+              <View style={{
+                padding: 10, marginVertical: 15, backgroundColor: colors.backgroundAlternateColor, borderRadius: 6,
+              }}
+              >
+                <Text style={{ color: colors.textSystemColor, textAlign: 'center', marginBottom: 10 }}>
+                  ⚠️ A few rules before you go! ⚠️
+                </Text>
+                <Text style={{ color: colors.textSystemColor, marginVertical: 5 }}>
+                  <Text style={{ color: colors.activeColor }}> ● </Text>
+                  After a 24-hour period of inactivity (no video playing), your box will be automatically closed.
+                  <Text style={{ color: colors.textSystemColor, fontStyle: 'italic' }}>
+                    (You can re-open the box as you wish, only on the web client at the moment).
+                  </Text>
+                </Text>
+                <Text style={{ color: colors.textSystemColor, marginVertical: 5 }}>
+                  <Text style={{ color: colors.activeColor }}> ● </Text>
+                  After a 7-day period of inactivity, your box will be automatically deleted.
+                  <Text style={{ fontWeight: '700' }}>This operation is irreversible.</Text>
+                </Text>
+              </View>
+            ) : null}
             {!isUpserting ? (
               <Pressable onPress={() => handleSubmit()} disabled={!isValid}>
                 <BxActionComponent options={{ text: box._id ? 'Save Modifications' : 'Create Box' }} />

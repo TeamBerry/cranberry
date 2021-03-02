@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View, Text, StyleSheet, Pressable,
+} from 'react-native';
 
 import PlayIcon from '../../assets/icons/play-later-icon.svg';
 import PlayNextIcon from '../../assets/icons/play-next-icon.svg';
@@ -106,11 +108,19 @@ const parseText = (text: string) => {
   );
 };
 
-const BxButtonComponent = ({ options }: { options: Partial<ButtonOptions> }) => {
+const BxButtonComponent = (props: {
+    options: Partial<ButtonOptions>,
+    onPress: () => void
+}) => {
+  const { options, onPress } = props;
   const context = options.context ? `button${options.context.charAt(0).toUpperCase() + options.context.slice(1)}` : 'buttonPrimary';
 
   return (
-    <View style={[styles.button, styles[context]]}>
+    <Pressable
+      style={[styles.button, styles[context]]}
+      onPress={onPress}
+      android_ripple={{ color: '#272727' }}
+    >
       {options.type ? (
         <View style={styles.buttonIcon}>
           <InsertIcon type={options.type} />
@@ -119,7 +129,7 @@ const BxButtonComponent = ({ options }: { options: Partial<ButtonOptions> }) => 
       {options.textDisplay === 'full' ? (
         parseText(options.text)
       ) : null}
-    </View>
+    </Pressable>
   );
 };
 

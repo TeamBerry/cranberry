@@ -37,7 +37,7 @@ export const darkColors = {
   backgroundSecondaryColor: '#404040',
   backgroundAlternateColor: '#111111',
   backgroundSecondaryAlternateColor: '#191919',
-  backgroundInactiveColor: '#252525',
+  backgroundInactiveColor: '#070707',
   backgroundChatColor: '#303030',
   deepBackground: '#191919',
   // Text

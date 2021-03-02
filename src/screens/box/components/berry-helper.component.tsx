@@ -68,7 +68,7 @@ const BerryHelper = (props: { box: Box, permissions: Array<Permission> }) => {
               <PlayNextIcon width={20} height={20} fill={colors.textColor} />
               <ActionValue value={10} />
             </View>
-            <Text style={[styles.actionDescription, { color: colors.textColor }]}>Plays the selected video after the current one.</Text>
+            <Text style={[styles.actionDescription, { color: colors.textColor }]}>Puts the selected video into the priority queue.</Text>
           </View>
         ) : null}
         {!permissions.includes('skipVideo') && box.options.berries ? (
@@ -77,7 +77,7 @@ const BerryHelper = (props: { box: Box, permissions: Array<Permission> }) => {
               <SkipIcon width={20} height={20} fill={colors.textColor} />
               <ActionValue value={20} />
             </View>
-            <Text style={[styles.actionDescription, { color: colors.textColor }]}>Skips the current video</Text>
+            <Text style={[styles.actionDescription, { color: colors.textColor }]}>Skips the current video.</Text>
           </View>
         ) : null}
         {!permissions.includes('forcePlay') && box.options.berries ? (

@@ -10,7 +10,7 @@ const BerryCounter = (props: { count: number }) => {
 
   return (
     <View style={{
-      flex: 0, flexDirection: 'row', alignItems: 'center', paddingLeft: 5,
+      flex: 0, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5,
     }}
     >
       <BerriesIcon width={20} height={20} />

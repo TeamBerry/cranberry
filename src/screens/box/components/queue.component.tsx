@@ -4,7 +4,6 @@ import {
 } from 'react-native';
 import { QueueItem, Permission, PlayingItem } from '@teamberry/muscadine';
 import Collapsible from 'react-native-collapsible';
-import { Snackbar } from 'react-native-paper';
 
 import Box from '../../../models/box.model';
 import QueueVideo from './queue-video.component';
@@ -12,7 +11,7 @@ import ProfilePicture from '../../../components/profile-picture.component';
 
 import CollapseIcon from '../../../../assets/icons/open-collapse-icon.svg';
 import BerriesIcon from '../../../../assets/icons/berry-coin-icon.svg';
-import InviteIcon from '../../../../assets/icons/invite-icon.svg';
+import UsersIcon from '../../../../assets/icons/users-icon.svg';
 import SettingsIcon from '../../../../assets/icons/settings-icon.svg';
 import BerryCounter from './berry-counter.component';
 import BerryHelper from './berry-helper.component';
@@ -84,8 +83,6 @@ const Queue = (props: {
   const { colors } = useTheme();
 
   const [isCollapsed, setCollapse] = useState(true);
-  const [error, setError] = useState(false);
-  const [hasUpdatedSuccessfully, setUpdateState] = useState(false);
   const [queueVideos, setQueueVideos] = useState<Array<QueueItem>>([]);
   const [priorityVideos, setPriorityVideos] = useState<Array<QueueItem>>([]);
   const [isBerriesHelperShown, showBerriesHelper] = useState(false);
@@ -254,25 +251,17 @@ const Queue = (props: {
             <CollapseIcon width={30} height={30} fill={colors.textColor} />
           </Animated.View>
         </Pressable>
-        {permissions.includes('editBox') || permissions.includes('inviteUser') ? (
-          <>
-            <View style={{
-              height: '55%', width: 1, marginLeft: 5, marginRight: 10, backgroundColor: '#777777',
-            }}
-            />
-            {permissions.includes('inviteUser') ? (
-              <>
-                <Pressable style={[styles.shareSpace, { paddingRight: permissions.includes('editBox') ? 4 : 7 }]} onPress={onShare}>
-                  <InviteIcon width={20} height={20} fill={colors.textColor} />
-                </Pressable>
-              </>
-            ) : null}
-            {permissions.includes('editBox') ? (
-              <Pressable style={[styles.shareSpace, { paddingRight: 7 }]} onPress={onEdit}>
-                <SettingsIcon width={20} height={20} fill={colors.textColor} />
-              </Pressable>
-            ) : null}
-          </>
+        <View style={{
+          height: '55%', width: 1, marginLeft: 5, marginRight: 10, backgroundColor: '#777777',
+        }}
+        />
+        <Pressable style={[styles.shareSpace, { paddingRight: permissions.includes('editBox') ? 4 : 7 }]} onPress={onShare}>
+          <UsersIcon width={20} height={20} fill={colors.textColor} />
+        </Pressable>
+        {permissions.includes('editBox') ? (
+          <Pressable style={[styles.shareSpace, { paddingRight: 7 }]} onPress={onEdit}>
+            <SettingsIcon width={20} height={20} fill={colors.textColor} />
+          </Pressable>
         ) : null}
       </View>
       <Collapsible
@@ -402,36 +391,12 @@ const Queue = (props: {
                 onPress={() => setYoutubeSearching(true)}
                 android_ripple={{ color: '#47B4EE', radius: 28 }}
               >
-                <AddVideosIcon width={25} height={25} fill={colors.textColor} />
+                <AddVideosIcon width={25} height={25} fill="white" />
               </Pressable>
             ) : null}
           </>
         ) : null}
       </Collapsible>
-      <Snackbar
-        visible={hasUpdatedSuccessfully}
-        duration={1500}
-        style={{
-          backgroundColor: '#090909',
-          borderLeftColor: '#0CEBC0',
-          borderLeftWidth: 10,
-        }}
-        onDismiss={() => setUpdateState(false)}
-      >
-        <Text style={{ color: 'white' }}>Option updated successfully.</Text>
-      </Snackbar>
-      <Snackbar
-        visible={error}
-        duration={5000}
-        style={{
-          backgroundColor: '#090909',
-          borderLeftColor: '#B30F4F',
-          borderLeftWidth: 10,
-        }}
-        onDismiss={() => setError(false)}
-      >
-        <Text style={{ color: 'white' }}>Something wrong happened. Please try again.</Text>
-      </Snackbar>
     </>
   );
 };
