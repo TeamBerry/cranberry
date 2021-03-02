@@ -33,7 +33,7 @@ const HomeScreen = (props: { navigation, user: AuthSubject, picture: string }) =
 
   const checkCompatibility = async () => {
     try {
-      await axios.post(`${Config.API_URL}/auth/compat`, { version: '0.17.0' });
+      await axios.post(`${Config.API_URL}/auth/compat`, { version: '1.0.0' });
     } catch (error) {
       setAllowed(false);
     }
