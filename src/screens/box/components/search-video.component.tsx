@@ -1,6 +1,6 @@
 import React, { } from 'react';
 import {
-  Image, View, Text, StyleSheet, Pressable,
+  Image, View, Text, StyleSheet,
 } from 'react-native';
 import { Permission } from '@teamberry/muscadine';
 
@@ -74,40 +74,40 @@ const SearchVideo = (props: Props) => {
           {!isAlreadyInQueue ? (
             <>
               {permissions.includes('addVideo') ? (
-                <Pressable onPress={() => onPress(video)}>
-                  <BxButtonComponent options={{
+                <BxButtonComponent
+                  options={{
                     type: 'play',
                     text: 'Later',
                     textDisplay: 'full',
                   }}
-                  />
-                </Pressable>
+                  onPress={() => onPress(video)}
+                />
               ) : null}
             </>
           ) : null}
           {(permissions.includes('forceNext') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
                 || berriesEnabled ? (
-                  <Pressable onPress={() => onPress(video, 'next')}>
-                    <BxButtonComponent options={{
+                  <BxButtonComponent
+                    options={{
                       type: 'forceNext',
                       text: permissions.includes('forceNext') ? 'Next' : '10 $BC$',
                       textDisplay: 'full',
                       context: permissions.includes('forceNext') ? 'primary' : 'berries',
                     }}
-                    />
-                  </Pressable>
+                    onPress={() => onPress(video, 'next')}
+                  />
             ) : null}
           {(permissions.includes('forcePlay') && (isAlreadyInQueue || (!isAlreadyInQueue && permissions.includes('addVideo'))))
                 || berriesEnabled ? (
-                  <Pressable onPress={() => onPress(video, 'now')}>
-                    <BxButtonComponent options={{
+                  <BxButtonComponent
+                    options={{
                       type: 'forcePlay',
                       text: permissions.includes('forcePlay') ? 'Now' : '30 $BC$',
                       textDisplay: 'full',
                       context: permissions.includes('forcePlay') ? 'primary' : 'berries',
                     }}
-                    />
-                  </Pressable>
+                    onPress={() => onPress(video, 'now')}
+                  />
             ) : null}
         </>
       </View>
