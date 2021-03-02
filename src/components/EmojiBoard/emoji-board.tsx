@@ -26,7 +26,8 @@ const EmojiBoard = (props: {
   const _emojiPager = useRef(null);
   const { colors } = useTheme();
 
-  const emojiList = emojiDataSource.filter((e) => !e.obsoleted_by);
+  // Temporarily exclude 1F9D1 emojis since fallback breaks the display.
+  const emojiList = emojiDataSource.filter((e) => !e.obsoleted_by && !e.unified.includes('1F9D1'));
 
   const categories = [
     {
